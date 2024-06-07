@@ -11,8 +11,8 @@ namespace World{
     public int id;
     public int x;
     public int y;
-    public int width = 20;
-    public int height = 10;
+    public int width = 100;
+    public int height = 100;
     private CellData[,] _cellDatas;
     [SerializeField] private List<CellData> debugList = new();
 
@@ -45,6 +45,10 @@ namespace World{
       }
 
       noiseMap.Dispose();
+    }
+
+    public CellData GetCellData(int x, int y){
+      return _cellDatas[x, y];
     }
   }
 }

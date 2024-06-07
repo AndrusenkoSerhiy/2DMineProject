@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using Unity.Collections;
 using UnityEngine;
 
 namespace World{
   public class ChunkGenerator : MonoBehaviour{
-    public int s_width = 64;
-    public int s_height = 128;
+    public int s_width = 10;
+    public int s_height = 10;
     [SerializeField] private ChunkData[,] _chunkObjects;
     [SerializeField] private List<ChunkData> debugList = new();
 
-    private void Awake(){
+    public void Init(){
       GenerateChunkDatas();
     }
 
@@ -23,6 +22,10 @@ namespace World{
           id++;
         }
       }
+    }
+
+    public ChunkData GetChunk(int x, int y){
+      return _chunkObjects[x, y];
     }
   }
 }

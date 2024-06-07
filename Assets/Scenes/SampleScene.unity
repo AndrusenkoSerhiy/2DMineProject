@@ -652,7 +652,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2029740218}
+  - component: {fileID: 2029740221}
   - component: {fileID: 2029740219}
+  - component: {fileID: 2029740220}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -690,6 +692,35 @@ MonoBehaviour:
   s_width: 10
   s_height: 10
   debugList: []
+--- !u!114 &2029740220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029740217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 681e525644be41e589b200b0b46739c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellObjectPrefab: {fileID: 1863431300587650840, guid: 9f91d77e0979c5743a8ab9658b3ea6c4, type: 3}
+  initialPoolSize: 200
+  maxPoolSize: 300
+--- !u!114 &2029740221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029740217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9a064f5ac5c4343a7a99341ca32a955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cellObjectsPool: {fileID: 2029740220}
+  _chunkGenerator: {fileID: 2029740219}
 --- !u!4 &1544650613753345494 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4355495910406124574, guid: dad243d646d1c004b865c93c8df6515d, type: 3}

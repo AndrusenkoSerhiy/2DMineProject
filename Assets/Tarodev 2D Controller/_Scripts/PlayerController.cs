@@ -19,6 +19,7 @@ namespace TarodevController
         private FrameInput _frameInput;
         private Vector2 _frameVelocity;
         private bool _cachedQueryStartInColliders;
+        [SerializeField] private Animator _animator;
 
         #region Interface
 
@@ -42,6 +43,11 @@ namespace TarodevController
         {
             _time += Time.deltaTime;
             GatherInput();
+
+            if (Input.GetKeyDown(KeyCode.PageUp))
+            {
+                _animator.SetTrigger("Attack");
+            }
         }
 
         private void GatherInput()
@@ -58,7 +64,7 @@ namespace TarodevController
                 _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < _stats.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.x);
                 _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < _stats.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.y);
             }
-
+            
             if (_frameInput.JumpDown)
             {
                 _jumpToConsume = true;
@@ -140,6 +146,8 @@ namespace TarodevController
 
         private void ExecuteJump()
         {
+            _animator.SetBool("JumpDown", false);
+            _animator.SetTrigger("Jump");
             _endedJumpEarly = false;
             _timeJumpWasPressed = 0;
             _bufferedJumpUsable = false;
@@ -163,6 +171,21 @@ namespace TarodevController
             {
                 _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _frameInput.Move.x * _stats.MaxSpeed, _stats.Acceleration * Time.fixedDeltaTime);
             }
+            Flip();
+        }
+
+        private void Flip()
+        {
+            _animator.SetFloat("VelocityX", _frameVelocity.x);
+            
+            if(_frameVelocity.x == 0)
+                return;
+            
+            var direction = Mathf.Sign(_frameVelocity.x);
+            var localScale = transform.localScale;
+            localScale.x = direction;
+            transform.localScale = localScale;
+            //Debug.LogError($"frameVelocity {_frameVelocity.x} | {direction}");
         }
 
         #endregion
@@ -180,6 +203,12 @@ namespace TarodevController
                 var inAirGravity = _stats.FallAcceleration;
                 if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
                 _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+
+                if (_frameVelocity.y < 0)
+                {
+                    _animator.SetBool("JumpDown", true);
+                }
+                
             }
         }
 

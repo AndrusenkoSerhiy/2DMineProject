@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 1770018254}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -725,8 +725,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7167c6c9f514794a95c68fa6565fece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  s_width: 10
-  s_height: 10
+  s_width: 3
+  s_height: 2
   debugList: []
 --- !u!114 &2029740220
 MonoBehaviour:
@@ -741,7 +741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellObjectPrefab: {fileID: 1863431300587650840, guid: 9f91d77e0979c5743a8ab9658b3ea6c4, type: 3}
-  initialPoolSize: 200
+  initialPoolSize: 100
   maxPoolSize: 300
 --- !u!114 &2029740221
 MonoBehaviour:
@@ -770,6 +770,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 660024517565497304, guid: dad243d646d1c004b865c93c8df6515d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2428154648203464867, guid: dad243d646d1c004b865c93c8df6515d, type: 3}
       propertyPath: m_Name
       value: Player

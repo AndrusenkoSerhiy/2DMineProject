@@ -11,7 +11,7 @@ namespace World{
     public int id;
     public int x;
     public int y;
-    public int width = 100;
+    public int width = 50;
     public int height = 100;
     private CellData[,] _cellDatas;
     [SerializeField] private List<CellData> debugList = new();

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3553642413029047432}
   - component: {fileID: -5308872911570051922}
   - component: {fileID: -7434203651285842808}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CellObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e6f369da1b4ceca204d884cd707fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxHealth: 10
 --- !u!212 &3553642413029047432
 SpriteRenderer:
   m_ObjectHideFlags: 0

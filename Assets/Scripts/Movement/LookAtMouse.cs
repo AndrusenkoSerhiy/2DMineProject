@@ -30,7 +30,12 @@ namespace Movement{
 
       // Calculate the angle between the sprite's forward direction and the direction to the mouse
       float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+      Debug.Log("angle "+angle);
       angleOffset = angle > 0 ? 88f : 92f;
+      if (angle > MinMaxAngle.y || angle < MinMaxAngle.x) {
+        //todo FlipToMouse
+        //return;
+      }
       // Clamp the angle within the defined bounds
       angle = Mathf.Clamp(angle, MinMaxAngle.x, MinMaxAngle.y);
       // Apply the rotation to the sprite in the Z-axis

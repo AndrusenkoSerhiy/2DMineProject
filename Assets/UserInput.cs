@@ -25,6 +25,6 @@ public class UserInput : MonoBehaviour
 
     private void OnDisable()
     {
-        controls.Disable();
+        controls?.Disable();
     }
 }

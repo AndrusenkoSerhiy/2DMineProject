@@ -56,6 +56,12 @@ namespace TarodevController {
     public float JumpBuffer = .2f;
 
     [Header("ATTACK")]
+    public LayerMask AttackLayer;
+
     public float AttackDamage = 5f;
+
+    public float AttackRange = 1.8f;
+
+    public float TimeBtwAttacks = 0.2f;
   }
 }

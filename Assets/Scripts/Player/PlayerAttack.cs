@@ -1,26 +1,29 @@
+using Animation;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using Animation;
 using TarodevController;
 using UnityEngine;
-using UnityEngine.Rendering;
 using World;
 
 public class PlayerAttack : MonoBehaviour {
-  [SerializeField] private Transform _attackTransform;
-  [SerializeField] private float _attackRange = 0.5f;
-  [SerializeField] private float _timeBtwAttacks = 0.2f;
-  [SerializeField] private LayerMask _attackLayer;
-  [SerializeField] private CellObjectsPool _pool;
-  [SerializeField] private ScriptableStats _stats;
-  [SerializeField] private Animator _animator;
+  [SerializeField] private Transform attackTransform;
+
+  [SerializeField] private CellObjectsPool pool;
+
+  [SerializeField] private ScriptableStats stats;
+
+  [SerializeField] private Animator animator;
+
   [SerializeField] private AnimatorEventReceiver eventReceiver;
-  public bool ShouldBeDamaging { get; private set; } = false;
+
+  public bool shouldBeDamaging { get; private set; } = false;
+
   private List<IDamageable> iDamageables = new List<IDamageable>();
 
-  private float _attackTimeCounter;
+  private float attackTimeCounter;
 
-  private IDamageable _currentTarget;
+  private IDamageable currentTarget;
 
   private void Awake() {
     eventReceiver.OnAnimationStarted += HandleAnimationStarted;
@@ -33,34 +36,36 @@ public class PlayerAttack : MonoBehaviour {
   }
 
   private void Start() {
-    _attackTimeCounter = _timeBtwAttacks;
+    attackTimeCounter = stats.TimeBtwAttacks;
   }
 
   private void Update() {
     HighlightTarget();
 
-    if (UserInput.instance.controls.GamePlay.Attack.WasPressedThisFrame() && _attackTimeCounter >= _timeBtwAttacks) {
-      _attackTimeCounter = 0f;
-      _animator.SetTrigger("Attack");
+    if (UserInput.instance.controls.GamePlay.Attack.WasPressedThisFrame()
+      && currentTarget != null && attackTimeCounter >= stats.TimeBtwAttacks) {
+      attackTimeCounter = 0f;
+      animator.SetTrigger("Attack");
     }
 
-    _attackTimeCounter += Time.deltaTime;
+    attackTimeCounter += Time.deltaTime;
   }
 
   private void HighlightTarget() {
-    var mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    float attackRange = stats.AttackRange;
+    Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-    var hit = Physics2D.OverlapPoint(mousePoint, _attackLayer);
+    Collider2D hit = Physics2D.OverlapPoint(mousePoint, stats.AttackLayer);
     if (hit == null || !hit.TryGetComponent(out IDamageable iDamageable)) {
       ClearTarget();
       return;
     }
 
-    if (iDamageable == _currentTarget) {
+    if (iDamageable == currentTarget) {
       return;
     }
 
-    var collision = CheckAttackCollision(_attackTransform.position, _attackRange, hit);
+    bool collision = CheckAttackCollision(attackTransform.position, attackRange, hit);
     if (!collision) {
       ClearTarget();
       return;
@@ -72,35 +77,35 @@ public class PlayerAttack : MonoBehaviour {
     HighlightTarget(hit.gameObject);
   }
 
-  bool CheckAttackCollision(Vector2 circleCenter, float circleRadius, Collider2D collider) {
+  private bool CheckAttackCollision(Vector2 circleCenter, float circleRadius, Collider2D collider) {
     // Get the collider's bounds
-    var bounds = collider.bounds;
+    Bounds bounds = collider.bounds;
 
     // Find the closest point on the collider to the center of the circle
-    var closestX = Mathf.Clamp(circleCenter.x, bounds.min.x, bounds.max.x);
-    var closestY = Mathf.Clamp(circleCenter.y, bounds.min.y, bounds.max.y);
+    float closestX = Mathf.Clamp(circleCenter.x, bounds.min.x, bounds.max.x);
+    float closestY = Mathf.Clamp(circleCenter.y, bounds.min.y, bounds.max.y);
 
     // Calculate the distance between the closest point and the circle's center
-    var distanceX = circleCenter.x - closestX;
-    var distanceY = circleCenter.y - closestY;
+    float distanceX = circleCenter.x - closestX;
+    float distanceY = circleCenter.y - closestY;
 
     // Calculate the distance squared (avoid square root for performance)
-    var distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+    float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
 
     // Check if the distance is less than or equal to the circle's radius squared
     return distanceSquared <= (circleRadius * circleRadius);
   }
 
   private void SetTarget(IDamageable target) {
-    _currentTarget = target;
+    currentTarget = target;
   }
 
   private void RemoveTarget() {
-    _currentTarget = null;
+    currentTarget = null;
   }
 
   private void ClearTarget() {
-    if (_currentTarget == null) {
+    if (currentTarget == null) {
       return;
     }
 
@@ -116,7 +121,7 @@ public class PlayerAttack : MonoBehaviour {
   }
 
   private void ResetTargetHighlight() {
-    if (_currentTarget is MonoBehaviour mb) {
+    if (currentTarget is MonoBehaviour mb) {
       Renderer renderer = mb.GetComponent<Renderer>();
       if (renderer != null) {
         renderer.material.color = Color.white; // Reset to original color
@@ -125,24 +130,24 @@ public class PlayerAttack : MonoBehaviour {
   }
 
   private void Attack() {
-    if (_currentTarget == null || _currentTarget.HasTakenDamage) {
+    if (currentTarget == null || currentTarget.HasTakenDamage) {
       return;
     }
 
-    _currentTarget.Damage(_stats.AttackDamage);
-    iDamageables.Add(_currentTarget);
+    currentTarget.Damage(stats.AttackDamage);
+    iDamageables.Add(currentTarget);
 
-    float hp = _currentTarget.GetHealth();
+    float hp = currentTarget.GetHealth();
     if (hp <= 0) {
-      _pool.ReturnObject(_currentTarget as CellObject);
+      pool.ReturnObject(currentTarget as CellObject);
       ClearTarget();
     }
   }
 
   public IEnumerator DamageWhileSlashIsActive() {
-    ShouldBeDamaging = true;
+    shouldBeDamaging = true;
 
-    while (ShouldBeDamaging) {
+    while (shouldBeDamaging) {
       Attack();
 
       yield return null;
@@ -160,20 +165,28 @@ public class PlayerAttack : MonoBehaviour {
   }
 
   public void ShouldBeDamagingToFalse() {
-    ShouldBeDamaging = false;
+    shouldBeDamaging = false;
   }
 
   private void OnDrawGizmosSelected() {
-    Gizmos.DrawWireSphere(_attackTransform.position, _attackRange);
+    float attackRange = stats.AttackRange;
+    Gizmos.DrawWireSphere(attackTransform.position, attackRange);
 
     Gizmos.color = Color.red;
-    Gizmos.DrawWireSphere(_attackTransform.position, _attackRange);
+    Gizmos.DrawWireSphere(attackTransform.position, attackRange);
+  }
+
+  private void ShakeTarget() {
+    if (currentTarget is MonoBehaviour mb) {
+      mb.transform.DOShakePosition(0.5f, 0.1f, 10, 90, false, true);
+    }
   }
 
   #region Animation Triggers
 
   private void HandleAnimationStarted(AnimationEvent animationEvent) {
     StartCoroutine(DamageWhileSlashIsActive());
+    ShakeTarget();
   }
 
   private void HandleAnimationEnded(AnimationEvent animationEvent) {

@@ -497,15 +497,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ca3740a6c15bf4d8e32e916714be05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackTransform: {fileID: 5909884442351797668}
-  _attackRange: 1.8
-  _timeBtwAttacks: 0.2
-  _attackLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  _pool: {fileID: 0}
-  _stats: {fileID: 11400000, guid: f466aaaed84a1724aa4ee50d71efff18, type: 2}
-  _animator: {fileID: 660024517565497304}
+  attackTransform: {fileID: 5909884442351797668}
+  pool: {fileID: 0}
+  stats: {fileID: 11400000, guid: f466aaaed84a1724aa4ee50d71efff18, type: 2}
+  animator: {fileID: 660024517565497304}
   eventReceiver: {fileID: 26490067836260254}
 --- !u!50 &7677545041897933634
 Rigidbody2D:

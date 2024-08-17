@@ -5,50 +5,73 @@ using Unity.Jobs;
 using UnityEngine;
 using World.Jobs;
 
-namespace World{
+namespace World {
   [Serializable]
-  public class ChunkData{
-    public Tuple<int,int> id;
+  public class ChunkData {
+    public Tuple<int, int> id;
     public int x;
     public int y;
     public int width = 100;
     public int height = 50;
     private CellData[,] _cellDatas;
     [SerializeField] private List<CellData> debugList = new();
+    private NativeArray<float> noiseMap;
+    private NativeArray<float> smoothedNoiseMap;
 
-    public ChunkData(Tuple<int,int> id, int x, int y){
+    public ChunkData(Tuple<int, int> id, int x, int y) {
       this.id = id;
       this.x = x;
       this.y = y;
       _cellDatas = new CellData[height, width];
       GenerateNoise();
+      ApplyCells();
+      noiseMap.Dispose();
+      smoothedNoiseMap.Dispose();
     }
 
-    void GenerateNoise(){
-      NativeArray<float> noiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
+    void GenerateNoise() {
+      noiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
 
-      PerlinNoiseParallelJob noiseJob = new PerlinNoiseParallelJob{
+      PerlinNoiseParallelJob perlinJob = new PerlinNoiseParallelJob {
         width = width,
         scale = 25f,
         noiseMap = noiseMap
       };
 
-      JobHandle jobHandle = noiseJob.Schedule(width * height, 64);
-      jobHandle.Complete();
+      JobHandle perlinHandle = perlinJob.Schedule(width * height, 64);
+      perlinHandle.Complete();
 
-      for (int i = 0; i < height; i++){
-        for (int j = 0; j < width; j++){
-          var perlin = noiseMap[i + j * height];
+      smoothedNoiseMap = new NativeArray<float>(width * height, Allocator.Persistent);
+
+      CellularAutomataSmoothingJob caSmoothingJob = new CellularAutomataSmoothingJob {
+        width = width,
+        height = height,
+        noiseMap = noiseMap,
+        smoothedNoiseMap = smoothedNoiseMap
+      };
+
+      JobHandle caHandle = caSmoothingJob.Schedule(width * height, 64, perlinHandle);
+      caHandle.Complete();
+    }
+
+    void ApplyCells() {
+      for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+          var perlin = smoothedNoiseMap[i + j * height];
           _cellDatas[i, j] = new CellData(i, j, perlin);
           debugList.Add(_cellDatas[i, j]);
         }
       }
-
-      noiseMap.Dispose();
     }
 
-    public CellData GetCellData(int x, int y){
+    public CellData GetCellData(int x, int y) {
       return _cellDatas[x, y];
+    }
+
+    void OnDestroy() {
+      // Dispose of NativeArrays when done
+      if (noiseMap.IsCreated) noiseMap.Dispose();
+      if (smoothedNoiseMap.IsCreated) smoothedNoiseMap.Dispose();
     }
   }
 }

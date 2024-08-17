@@ -16,10 +16,10 @@ public class UserInput : MonoBehaviour {
   }
 
   private void OnEnable() {
-    controls.Enable();
+    controls?.Enable();
   }
 
   private void OnDisable() {
-    controls.Disable();
+    controls?.Disable();
   }
 }

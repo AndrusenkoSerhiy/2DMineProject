@@ -1,11 +1,12 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace World{
   public class ChunkGenerator : MonoBehaviour{
-    public int s_width = 10;
-    public int s_height = 10;
-    [SerializeField] private ChunkData[,] _chunkObjects;
+    public int SectorsStartRangeX = 10;
+    public int SectorsStartRangeY = 10;
+    private Dictionary<Tuple<int,int>, ChunkData> _chunkObjects;
     [SerializeField] private List<ChunkData> debugList = new();
 
     public void Init(){
@@ -13,19 +14,22 @@ namespace World{
     }
 
     void GenerateChunkDatas(){
-      _chunkObjects = new ChunkData[s_width, s_height];
-      int id = 0;
-      for (int x = 0; x < s_width; x++){
-        for (int y = 0; y < s_height; y++){
-          _chunkObjects[x, y] = new ChunkData(x, y, id);
-          debugList.Add(_chunkObjects[x, y]);
-          id++;
+      _chunkObjects = new Dictionary<Tuple<int, int>, ChunkData>();
+      for (int x = -SectorsStartRangeX; x <= SectorsStartRangeX; x++){
+        for (int y = 0; y <= SectorsStartRangeY; y++) {
+          GenerateChunk(y, x);
         }
       }
     }
 
-    public ChunkData GetChunk(int x, int y){
-      return _chunkObjects[x, y];
+    void GenerateChunk(int y, int x) {
+      var key = Tuple.Create(x, y);
+      _chunkObjects[key] = new ChunkData(key, x, y);
+    }
+
+    public ChunkData GetChunk(int y, int x){
+      var key = Tuple.Create(y, x);
+      return _chunkObjects.ContainsKey(key) ? _chunkObjects[key] : null;
     }
   }
 }

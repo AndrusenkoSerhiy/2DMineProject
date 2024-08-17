@@ -8,19 +8,19 @@ using World.Jobs;
 namespace World{
   [Serializable]
   public class ChunkData{
-    public int id;
+    public Tuple<int,int> id;
     public int x;
     public int y;
-    public int width = 50;
-    public int height = 100;
+    public int width = 100;
+    public int height = 50;
     private CellData[,] _cellDatas;
     [SerializeField] private List<CellData> debugList = new();
 
-    public ChunkData(int id, int x, int y){
+    public ChunkData(Tuple<int,int> id, int x, int y){
       this.id = id;
       this.x = x;
       this.y = y;
-      _cellDatas = new CellData[width, height];
+      _cellDatas = new CellData[height, width];
       GenerateNoise();
     }
 
@@ -36,9 +36,9 @@ namespace World{
       JobHandle jobHandle = noiseJob.Schedule(width * height, 64);
       jobHandle.Complete();
 
-      for (int i = 0; i < width; i++){
-        for (int j = 0; j < height; j++){
-          var perlin = noiseMap[i + j * width];
+      for (int i = 0; i < height; i++){
+        for (int j = 0; j < width; j++){
+          var perlin = noiseMap[i + j * height];
           _cellDatas[i, j] = new CellData(i, j, perlin);
           debugList.Add(_cellDatas[i, j]);
         }

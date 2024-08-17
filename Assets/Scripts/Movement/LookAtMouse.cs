@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Movement {
-  public class LookAtMouse : MonoBehaviour {
+namespace Movement{
+  public class LookAtMouse : MonoBehaviour{
     // Define the maximum and minimum angles for rotation
     [SerializeField] private Vector2 MinMaxAngle;
     [SerializeField] private Transform FlipTarget;
@@ -11,14 +10,14 @@ namespace Movement {
     private float rotationCoef = 1f;
     private float angleOffset = 80f;
 
-    private void Awake() {
+    private void Awake(){
       _camera = Camera.main;
       isFlipped = false;
       rotationCoef = 1f;
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update(){
       // Get the mouse position in world coordinates
       Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
       mousePosition.z = 0f;
@@ -31,14 +30,8 @@ namespace Movement {
 
       // Calculate the angle between the sprite's forward direction and the direction to the mouse
       float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-      Debug.Log("angle " + angle);
       angleOffset = angle > 0 ? 88f : 92f;
-      Transform player = transform.root;
-      Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
-      if (playerRb.velocity == Vector2.zero && (angle > MinMaxAngle.y || angle < MinMaxAngle.x)) {
-        var localScale = player.localScale;
-        localScale.x = -localScale.x;
-        player.localScale = localScale;
+      if (angle > MinMaxAngle.y || angle < MinMaxAngle.x) {
         //todo FlipToMouse
         //return;
       }

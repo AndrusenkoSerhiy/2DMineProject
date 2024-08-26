@@ -18,6 +18,8 @@ namespace World {
         for (int n = 0; n <= _chunkGenerator.SectorsStartRangeX; n++) {
           var startChunk = _chunkGenerator.GetChunk(k, n);
           if(startChunk == null) continue;
+          var go = new GameObject();
+          go.name = k+" " + n;
           float stepX = 1.32f;
           float stepY = 1.3f;
           coords.x = k * (startChunk.width * stepX);
@@ -27,6 +29,7 @@ namespace World {
               if (startChunk.GetCellData(i, j).perlin > 0.45f) {
                 var cellObject = _cellObjectsPool.GetObject();
                 cellObject.transform.position = coords;
+                cellObject.transform.SetParent(go.transform);
               }
               coords.x += stepX;
             }

@@ -176,16 +176,21 @@ namespace TarodevController
 
         private void Flip()
         {
-            _animator.SetFloat("VelocityX", _frameVelocity.x);
-            
-            if(_frameVelocity.x == 0)
-                return;
+            if (_frameVelocity.x == 0) {
+              SetAnimVelocity(0);
+              return;
+            }
             
             var direction = Mathf.Sign(_frameVelocity.x);
+            SetAnimVelocity(direction);
             var localScale = transform.localScale;
             localScale.x = direction;
             transform.localScale = localScale;
-            //Debug.LogError($"frameVelocity {_frameVelocity.x} | {direction}");
+              //Debug.LogError($"frameVelocity {_frameVelocity.x} | {direction}");
+        }
+
+        private void SetAnimVelocity(float value) {
+          _animator.SetFloat("VelocityX", value);
         }
 
         #endregion

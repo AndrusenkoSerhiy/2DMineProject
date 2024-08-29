@@ -3,24 +3,24 @@ using UnityEngine;
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
     private CellData _cellData;
-
     [SerializeField] private float _maxHealth = 10f;
-
-    private float _currentHealth;
-
-    public bool HasTakenDamage { get; set; }
+    private UnitHealth _unitHealth;
 
     private void Start() {
-      _currentHealth = _maxHealth;
+      _unitHealth = new UnitHealth(_maxHealth);
+    }
+
+    public bool HasTakenDamage {
+      get { return _unitHealth.HasTakenDamage; }
+      set { _unitHealth.HasTakenDamage = value; }
     }
 
     public void Damage(float damage) {
-      HasTakenDamage = true;
-      _currentHealth -= damage;
+      _unitHealth.TakeDamage(damage);
     }
 
     public float GetHealth() {
-      return _currentHealth;
+      return _unitHealth.Health;
     }
   }
 }

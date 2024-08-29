@@ -724,6 +724,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4355495910406124574}
+  - component: {fileID: 4951586190832703889}
   - component: {fileID: 8477253461445747588}
   - component: {fileID: 3203884702869887430}
   - component: {fileID: 7677545041897933634}
@@ -753,7 +754,7 @@ Transform:
   - {fileID: 1318513823404274074}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8477253461445747588
+--- !u!114 &4951586190832703889
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -761,6 +762,20 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2428154648203464867}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e53a4acc64aaae940a8f27318db7058b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
+  _animator: {fileID: 660024517565497304}
+--- !u!114 &8477253461445747588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2428154648203464867}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f61c64124c8575748994f087b9dc1b8a, type: 3}
   m_Name: 
@@ -781,7 +796,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackTransform: {fileID: 5909884442351797668}
   pool: {fileID: 0}
-  stats: {fileID: 11400000, guid: f466aaaed84a1724aa4ee50d71efff18, type: 2}
+  stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
   animator: {fileID: 660024517565497304}
   eventReceiver: {fileID: 26490067836260254}
 --- !u!50 &7677545041897933634

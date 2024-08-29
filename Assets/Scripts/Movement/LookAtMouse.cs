@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-namespace Movement{
-  public class LookAtMouse : MonoBehaviour{
+namespace Movement {
+  public class LookAtMouse : MonoBehaviour {
     // Define the maximum and minimum angles for rotation
     [SerializeField] private Vector2 MinMaxAngle;
     [SerializeField] private Transform FlipTarget;
@@ -10,14 +10,14 @@ namespace Movement{
     private float rotationCoef = 1f;
     private float angleOffset = 80f;
 
-    private void Awake(){
+    private void Awake() {
       _camera = Camera.main;
       isFlipped = false;
       rotationCoef = 1f;
     }
 
     // Update is called once per frame
-    void Update(){
+    void Update() {
       // Get the mouse position in world coordinates
       Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
       mousePosition.z = 0f;
@@ -25,6 +25,12 @@ namespace Movement{
       // Calculate the direction from the sprite to the mouse position
       Vector3 direction = mousePosition - transform.position;
       isFlipped = (FlipTarget.localScale.x < 0f);
+
+      // Flip player
+      Vector3 localScale = FlipTarget.localScale;
+      localScale.x = Mathf.Sign(direction.x);
+      FlipTarget.localScale = localScale;
+
       rotationCoef = isFlipped ? -1f : 1f;
       direction.x *= rotationCoef;
 

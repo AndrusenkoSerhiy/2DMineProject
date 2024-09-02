@@ -767,6 +767,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
   _animator: {fileID: 660024517565497304}
+  MinMaxAngle: {x: -20, y: 20}
+  Head: {fileID: 1976719180885785715}
 --- !u!114 &3203884702869887430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2056,9 +2058,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1976719180885785715}
-  - component: {fileID: 3459536582287104489}
   m_Layer: 6
-  m_Name: LookAtControll
+  m_Name: HeadContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2081,20 +2082,6 @@ Transform:
   - {fileID: 1386512741761129990}
   m_Father: {fileID: 7205476990964589703}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3459536582287104489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8520750308421351597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb670a04fcb04660b837ead8a922e0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MinMaxAngle: {x: -20, y: 20}
-  FlipTarget: {fileID: 4355495910406124574}
 --- !u!1 &8869833174489940064
 GameObject:
   m_ObjectHideFlags: 0

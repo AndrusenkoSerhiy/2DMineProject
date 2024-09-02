@@ -22,6 +22,9 @@ namespace Player
     [Header("MOVEMENT")]
     [Tooltip("The top horizontal movement speed")]
     public float MaxSpeed = 14;
+    
+    [Tooltip("The top horizontal back movement speed")]
+    public float MaxBackSpeed = 7;
 
     [Tooltip("The player's capacity to gain horizontal speed")]
     public float Acceleration = 120;

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player {
   /// <summary>
@@ -27,7 +28,7 @@ namespace Player {
     private float rotationCoef = 1f;
     private float angleOffset = 80f;
     
-    
+    [SerializeField] private Animator _landingAnimator;
 
     #region Interface
 
@@ -59,8 +60,8 @@ namespace Player {
 
     private void GatherInput() {
       _frameInput = new FrameInput {
-        JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
-        JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
+        JumpDown = Input.GetButtonDown("Jump"),
+        JumpHeld = Input.GetButton("Jump"),
         Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
       };
 
@@ -137,6 +138,7 @@ namespace Player {
         _bufferedJumpUsable = true;
         _endedJumpEarly = false;
         GroundedChanged?.Invoke(true, Mathf.Abs(_frameVelocity.y));
+        PlayLandingEffect();
       }
       // Left the Ground
       else if (_grounded && !groundHit) {
@@ -146,6 +148,10 @@ namespace Player {
       }
 
       Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
+    }
+
+    private void PlayLandingEffect() {
+      _landingAnimator.SetTrigger("Play");
     }
 
     #endregion
@@ -228,6 +234,7 @@ namespace Player {
         if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
         _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
 
+        //start falling down
         if (_frameVelocity.y < 0) {
           _animator.SetBool("JumpDown", true);
         }

@@ -2403,6 +2403,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1770018258}
     m_Modifications:
+    - target: {fileID: 25200894084720849, guid: f228d4976dba29848ac7d27166161a57, type: 3}
+      propertyPath: UVModule.sprites.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ed6c6f150015494289391401ed794e6, type: 3}
+    - target: {fileID: 885602478154491853, guid: f228d4976dba29848ac7d27166161a57, type: 3}
+      propertyPath: UVModule.sprites.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ed6c6f150015494289391401ed794e6, type: 3}
     - target: {fileID: 1355701669101239786, guid: f228d4976dba29848ac7d27166161a57, type: 3}
       propertyPath: m_Name
       value: Particles

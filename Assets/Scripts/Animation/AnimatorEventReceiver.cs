@@ -1,17 +1,14 @@
-using System;
+using Animation;
 using UnityEngine;
 
 namespace Animation {
   public class AnimatorEventReceiver : MonoBehaviour {
-    public event Action<AnimationEvent> OnAnimationEnded;
-    public event Action<AnimationEvent> OnAnimationStarted;
-
-    void OnAnimationEnd(AnimationEvent animationEvent) {
-      OnAnimationEnded?.Invoke(animationEvent);
+    public void TriggerAttackEnd(AnimationEvent animationEvent) {
+      AnimationEventManager.TriggerAttackEnded(animationEvent);
     }
 
-    void OnAnimationStart(AnimationEvent animationEvent) {
-      OnAnimationStarted?.Invoke(animationEvent);
+    public void TriggerAttackStart(AnimationEvent animationEvent) {
+      AnimationEventManager.TriggerAttackStarted(animationEvent);
     }
   }
 }

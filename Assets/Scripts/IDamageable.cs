@@ -6,4 +6,8 @@ public interface IDamageable {
   public void Damage(float damage);
 
   public float GetHealth();
+
+  public float GetMaxHealth();
+
+  public void AfterDamageReceived();
 }

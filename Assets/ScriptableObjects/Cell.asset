@@ -16,5 +16,7 @@ MonoBehaviour:
   maxShakeDuration: 0.5
   minShakeIntensity: 0.05
   maxShakeIntensity: 0.2
-  vibrato: 10
+  minVibrato: 10
+  maxVibrato: 100
   randomness: 90
+  scaleFactor: {x: 1.2, y: 1.2}

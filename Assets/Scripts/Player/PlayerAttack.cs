@@ -1,5 +1,4 @@
-using Animation;
-using DG.Tweening;
+// using Animation;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,8 +15,6 @@ namespace Player {
 
     [SerializeField] private Animator animator;
 
-    [SerializeField] private AnimatorEventReceiver eventReceiver;
-
     public bool shouldBeDamaging { get; private set; } = false;
 
     private List<IDamageable> iDamageables = new List<IDamageable>();
@@ -27,13 +24,13 @@ namespace Player {
     private IDamageable currentTarget;
 
     private void Awake() {
-      eventReceiver.OnAnimationStarted += HandleAnimationStarted;
-      eventReceiver.OnAnimationEnded += HandleAnimationEnded;
+      AnimationEventManager.OnAttackStarted += HandleAnimationStarted;
+      AnimationEventManager.OnAttackEnded += HandleAnimationEnded;
     }
 
     private void OnDestroy() {
-      eventReceiver.OnAnimationStarted -= HandleAnimationStarted;
-      eventReceiver.OnAnimationEnded -= HandleAnimationEnded;
+      AnimationEventManager.OnAttackStarted -= HandleAnimationStarted;
+      AnimationEventManager.OnAttackEnded -= HandleAnimationEnded;
     }
 
     private void Start() {
@@ -119,6 +116,10 @@ namespace Player {
 
       currentTarget.Damage(stats.AttackDamage);
       iDamageables.Add(currentTarget);
+    }
+
+    private void DestroyTarget() {
+      if (currentTarget == null) return;
 
       float hp = currentTarget.GetHealth();
       if (hp <= 0) {
@@ -159,21 +160,18 @@ namespace Player {
       Gizmos.DrawWireSphere(attackTransform.position, attackRange);
     }
 
-    private void ShakeTarget() {
-      if (currentTarget is MonoBehaviour mb) {
-        mb.transform.DOShakePosition(0.5f, 0.1f, 10, 90, false, true);
-      }
-    }
-
     #region Animation Triggers
 
     private void HandleAnimationStarted(AnimationEvent animationEvent) {
       StartCoroutine(DamageWhileSlashIsActive());
-      ShakeTarget();
+      Debug.Log("Attack started");
+      currentTarget?.AfterDamageReceived();
     }
 
     private void HandleAnimationEnded(AnimationEvent animationEvent) {
       ShouldBeDamagingToFalse();
+      Debug.Log("Attack ended");
+      DestroyTarget();
     }
 
     #endregion

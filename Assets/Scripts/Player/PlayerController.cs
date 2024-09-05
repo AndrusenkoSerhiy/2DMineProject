@@ -1,4 +1,5 @@
 using System;
+using Pool;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -27,8 +28,6 @@ namespace Player {
     private bool isFlipped = false;
     private float rotationCoef = 1f;
     private float angleOffset = 80f;
-    
-    [SerializeField] private Animator _landingAnimator;
 
     #region Interface
 
@@ -151,7 +150,7 @@ namespace Player {
     }
 
     private void PlayLandingEffect() {
-      _landingAnimator.SetTrigger("Play");
+      ObjectPooler.Instance.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
     }
 
     #endregion

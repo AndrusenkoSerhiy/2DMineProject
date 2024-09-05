@@ -11,5 +11,6 @@ namespace World {
     public int minVibrato = 10;
     public int maxVibrato = 100;
     public float randomness = 90;
+    public Vector2 scaleFactor = new Vector2(1.2f, 1.2f);
   }
 }

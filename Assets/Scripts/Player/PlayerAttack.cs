@@ -22,6 +22,7 @@ namespace Player {
     private float attackTimeCounter;
 
     private IDamageable currentTarget;
+    private Renderer currentTargetRenderer;
 
     private void Awake() {
       AnimationEventManager.OnAttackStarted += HandleAnimationStarted;
@@ -73,15 +74,19 @@ namespace Player {
       ClearTarget();
 
       SetTarget(iDamageable);
-      HighlightTarget(hit.gameObject);
+      Highlight();
     }
 
     private void SetTarget(IDamageable target) {
       currentTarget = target;
+      if (currentTarget is MonoBehaviour mb) {
+        currentTargetRenderer = mb.GetComponentInChildren<Renderer>();
+      }
     }
 
     private void RemoveTarget() {
       currentTarget = null;
+      currentTargetRenderer = null;
     }
 
     private void ClearTarget() {
@@ -89,24 +94,22 @@ namespace Player {
         return;
       }
 
-      ResetTargetHighlight();
+      ResetHighlight();
       RemoveTarget();
     }
 
-    private void HighlightTarget(GameObject obj) {
-      Renderer renderer = obj.GetComponent<Renderer>();
-      if (renderer != null) {
-        renderer.material.SetInt("_ShowOutline", 1);
+    private void Highlight() {
+      if (currentTargetRenderer == null) {
+        return;
       }
+      currentTargetRenderer.material.SetInt("_ShowOutline", 1);
     }
 
-    private void ResetTargetHighlight() {
-      if (currentTarget is MonoBehaviour mb) {
-        Renderer renderer = mb.GetComponent<Renderer>();
-        if (renderer != null) {
-          renderer.material.SetInt("_ShowOutline", 0);
-        }
+    private void ResetHighlight() {
+      if (currentTargetRenderer == null) {
+        return;
       }
+      currentTargetRenderer.material.SetInt("_ShowOutline", 0);
     }
 
     private void Attack() {

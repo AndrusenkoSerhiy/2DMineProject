@@ -48,8 +48,7 @@ namespace World {
 
       float shakeDuration = Mathf.Lerp(_cellStats.minShakeDuration, _cellStats.maxShakeDuration, 1 - healthPercentage);
       float shakeIntensity = Mathf.Lerp(_cellStats.minShakeIntensity, _cellStats.maxShakeIntensity, 1 - healthPercentage);
-
-      int vibrato = (int)(_cellStats.vibrato / healthPercentage);
+      int vibrato = Mathf.RoundToInt(Mathf.Lerp(_cellStats.minVibrato, _cellStats.maxVibrato, 1 - healthPercentage));
 
       transform.DOShakePosition(shakeDuration, shakeIntensity, vibrato, _cellStats.randomness, false, true)
         .OnComplete(() => {

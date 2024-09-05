@@ -99,7 +99,7 @@ namespace Player {
     private void HighlightTarget(GameObject obj) {
       Renderer renderer = obj.GetComponent<Renderer>();
       if (renderer != null) {
-        renderer.material.color = Color.yellow; // Highlight color
+        renderer.material.SetInt("_ShowOutline", 1);
       }
     }
 
@@ -107,7 +107,7 @@ namespace Player {
       if (currentTarget is MonoBehaviour mb) {
         Renderer renderer = mb.GetComponent<Renderer>();
         if (renderer != null) {
-          renderer.material.color = Color.white; // Reset to original color
+          renderer.material.SetInt("_ShowOutline", 0);
         }
       }
     }

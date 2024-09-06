@@ -7,10 +7,12 @@ namespace World {
     [SerializeField] private float maxHealth = 10f;
     [SerializeField] private CellStats cellStats;
     [SerializeField] private Transform sprite;
+    [SerializeField] private Transform damageOverlay;
+    [SerializeField] private Sprite[] damageOverlays;
 
+    private SpriteRenderer damageOverlayRenderer;
     private CellData _cellData;
     private UnitHealth unitHealth;
-
     private Renderer cellRenderer;
     private Tween currentShakeTween;
     private Vector3 originalPosition;
@@ -28,6 +30,8 @@ namespace World {
 
     public void Damage(float damage) {
       unitHealth.TakeDamage(damage);
+
+      UpdateDamageOverlay();
     }
 
     public float GetHealth() {
@@ -49,7 +53,7 @@ namespace World {
       originalScale = sprite.localScale;
       float healthPercentage = GetHealth() / GetMaxHealth();
 
-      cellRenderer = sprite.GetComponent<Renderer>();
+      cellRenderer = GetCellRenderer();
       originalSortingOrder = cellRenderer.sortingOrder;
       cellRenderer.sortingOrder += 1;
 
@@ -77,6 +81,39 @@ namespace World {
       sprite.position = originalPosition;
       sprite.localScale = originalScale;
       cellRenderer.sortingOrder = originalSortingOrder;
+    }
+
+    private Renderer GetCellRenderer() {
+      if (cellRenderer == null) {
+        return sprite.GetComponent<Renderer>();
+      }
+      return cellRenderer;
+    }
+
+    private void UpdateDamageOverlay() {
+      if (unitHealth.Health == unitHealth.MaxHealth) {
+        return;
+      }
+      damageOverlayRenderer = GetDamageOverlayRenderer();
+      // Calculate which overlay to show based on health percentage and total overlays
+      float healthPercentage = GetHealth() / GetMaxHealth();
+      int overlayIndex = Mathf.FloorToInt((1f - healthPercentage) * damageOverlays.Length);
+
+      if (overlayIndex < damageOverlays.Length && overlayIndex >= 0) {
+        damageOverlayRenderer.sprite = damageOverlays[overlayIndex];
+        damageOverlay.gameObject.SetActive(true);
+      }
+      else {
+        damageOverlayRenderer.sprite = null;
+        damageOverlay.gameObject.SetActive(false);
+      }
+    }
+
+    private SpriteRenderer GetDamageOverlayRenderer() {
+      if (damageOverlayRenderer == null) {
+        return damageOverlay.GetComponent<SpriteRenderer>();
+      }
+      return damageOverlayRenderer;
     }
   }
 }

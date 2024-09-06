@@ -130,9 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e6f369da1b4ceca204d884cd707fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
-  _cellStats: {fileID: 11400000, guid: fa1f1480960c2b74f8aced5eacbdddb9, type: 2}
-  _spriteTr: {fileID: 5955769712249009867}
+  maxHealth: 50
+  cellStats: {fileID: 11400000, guid: fa1f1480960c2b74f8aced5eacbdddb9, type: 2}
+  sprite: {fileID: 5955769712249009867}
 --- !u!61 &-5308872911570051922
 BoxCollider2D:
   m_ObjectHideFlags: 0

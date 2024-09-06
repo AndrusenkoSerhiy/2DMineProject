@@ -41,13 +41,18 @@ namespace Player {
     private void Update() {
       HighlightTarget();
 
-      if (UserInput.instance.controls.GamePlay.Attack.WasPressedThisFrame()
-        && currentTarget != null && attackTimeCounter >= stats.TimeBtwAttacks) {
-        attackTimeCounter = 0f;
-        animator.SetTrigger("Attack");
+      // Handle attack
+      if (UserInput.Instance.IsAttacking() && currentTarget != null
+        && attackTimeCounter >= stats.TimeBtwAttacks) {
+        TriggerAttack();
       }
 
       attackTimeCounter += Time.deltaTime;
+    }
+
+    private void TriggerAttack() {
+      attackTimeCounter = 0f;
+      animator.SetTrigger("Attack");
     }
 
     private void HighlightTarget() {
@@ -167,13 +172,13 @@ namespace Player {
 
     private void HandleAnimationStarted(AnimationEvent animationEvent) {
       StartCoroutine(DamageWhileSlashIsActive());
-      Debug.Log("Attack started");
+      // Debug.Log("Attack started");
       currentTarget?.AfterDamageReceived();
     }
 
     private void HandleAnimationEnded(AnimationEvent animationEvent) {
       ShouldBeDamagingToFalse();
-      Debug.Log("Attack ended");
+      // Debug.Log("Attack ended");
       DestroyTarget();
     }
 

@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using World.Jobs;
+using Unity.Burst;
 
 namespace World {
   [Serializable]
@@ -31,10 +32,11 @@ namespace World {
 
     void GenerateNoise() {
       noiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
-
+      float randomSeed = UnityEngine.Random.Range(0f, 10000f);
       PerlinNoiseParallelJob perlinJob = new PerlinNoiseParallelJob {
         width = width,
         scale = 25f,
+        seed = randomSeed,
         noiseMap = noiseMap
       };
 

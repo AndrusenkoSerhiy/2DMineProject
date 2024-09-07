@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Cell
   m_EditorClassIdentifier: 
   minShakeDuration: 0.2
-  maxShakeDuration: 0.5
+  maxShakeDuration: 0.2
   minShakeIntensity: 0.05
   maxShakeIntensity: 0.2
   minVibrato: 10
   maxVibrato: 100
   randomness: 90
-  scaleFactor: {x: 1.2, y: 1.2}
+  scaleFactor: {x: 1.1, y: 1.1}

@@ -1,15 +1,16 @@
 using UnityEngine;
 using DG.Tweening;
 using System;
+using Scriptables;
 
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
-    [SerializeField] private float maxHealth = 10f;
     [SerializeField] private CellStats cellStats;
-    [SerializeField] private Transform sprite;
+    [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
-
+    
+    private ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
     private CellData _cellData;
     private UnitHealth unitHealth;
@@ -19,8 +20,10 @@ namespace World {
     private Vector3 originalScale;
     private int originalSortingOrder;
 
-    private void Start() {
-      unitHealth = new UnitHealth(maxHealth);
+    public void Init(ResourceData data) {
+      resourceData = data;
+      unitHealth = new UnitHealth(resourceData.Durability);
+      sprite.sprite = data.Sprite;
     }
 
     public bool HasTakenDamage {
@@ -49,8 +52,8 @@ namespace World {
     private void Shake() {
       ResetShake();
 
-      originalPosition = sprite.position;
-      originalScale = sprite.localScale;
+      originalPosition = sprite.transform.position;
+      originalScale = sprite.transform.localScale;
       float healthPercentage = GetHealth() / GetMaxHealth();
 
       cellRenderer = GetCellRenderer();
@@ -66,9 +69,9 @@ namespace World {
       Vector3 shakeScale = originalScale;
       shakeScale.x *= scaleFactorX;
       shakeScale.y *= scaleFactorY;
-      sprite.localScale = shakeScale;
+      sprite.transform.localScale = shakeScale;
 
-      currentShakeTween = sprite.DOShakePosition(shakeDuration, shakeIntensity, vibrato, cellStats.randomness, false, true)
+      currentShakeTween = sprite.transform.DOShakePosition(shakeDuration, shakeIntensity, vibrato, cellStats.randomness, false, true)
         .OnComplete(() => ResetShake());
     }
 
@@ -78,8 +81,8 @@ namespace World {
       }
 
       currentShakeTween.Kill();
-      sprite.position = originalPosition;
-      sprite.localScale = originalScale;
+      sprite.transform.position = originalPosition;
+      sprite.transform.localScale = originalScale;
       cellRenderer.sortingOrder = originalSortingOrder;
     }
 

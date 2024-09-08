@@ -21,14 +21,17 @@ namespace Player {
     private bool _cachedQueryStartInColliders;
     [SerializeField] private Animator _animator;
     
-    [SerializeField] private Vector2 MinMaxAngle;
     [SerializeField] private Transform Head;
+    [SerializeField] private float _flipDeadZone = 1;
     
     private Camera _camera;
     private bool isFlipped = false;
     private float rotationCoef = 1f;
     private float angleOffset = 80f;
 
+    [SerializeField] private float _topAngleLimit = 20;
+    [SerializeField] private float _bottomAngleLimit = -20;
+    
     #region Interface
 
     public Vector2 FrameInput => _frameInput.Move;
@@ -54,7 +57,36 @@ namespace Player {
     private void Update() {
       _time += Time.deltaTime;
       GatherInput();
-      LookAt();
+      LookAtMouse();
+    }
+
+    private void LookAtMouse() {
+      var dir = ((Vector2)_camera.ScreenToWorldPoint(Input.mousePosition) - (Vector2)Head.position);
+      FlipX();
+      dir.x *= Mathf.Sign(transform.localScale.x);
+      // Calculate the target angle based on the direction
+      float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+      // Clamp the target angle within the specified limits
+      float clampedAngle = Mathf.Clamp(targetAngle, _bottomAngleLimit, _topAngleLimit) * Mathf.Sign(transform.localScale.x);
+
+      // Apply the clamped angle to the head
+      Head.rotation = Quaternion.Euler(0, 0, clampedAngle+Mathf.Sign(transform.localScale.x)*90);
+    }
+
+    private void FlipX() {
+      Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+      var direction = (mousePosition - (Vector2)Head.position).normalized;
+      
+      if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone){
+        // Flip player
+        Vector3 localScale = transform.localScale;
+        localScale.x = Mathf.Sign(direction.x);
+        transform.localScale = localScale;
+
+        rotationCoef = isFlipped ? -1f : 1f;
+        direction.x *= rotationCoef;
+      }
     }
 
     private void GatherInput() {
@@ -83,36 +115,6 @@ namespace Player {
       HandleGravity();
 
       ApplyMovement();
-    }
-
-    private void LookAt() {
-      // Get the mouse position in world coordinates
-      Vector3 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-      mousePosition.z = 0f;
-      //Debug.Log("Mouse pos : "+mousePosition + " | "+Input.mousePosition);
-      // Calculate the direction from the sprite to the mouse position
-      Vector3 direction = mousePosition - transform.position;
-      isFlipped = (transform.localScale.x < 0f);
-
-      // Flip player
-      Vector3 localScale = transform.localScale;
-      localScale.x = Mathf.Sign(direction.x);
-      transform.localScale = localScale;
-
-      rotationCoef = isFlipped ? -1f : 1f;
-      direction.x *= rotationCoef;
-
-      // Calculate the angle between the sprite's forward direction and the direction to the mouse
-      float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-      angleOffset = angle > 0 ? 88f : 92f;
-      if (angle > MinMaxAngle.y || angle < MinMaxAngle.x) {
-        //todo FlipToMouse
-        //return;
-      }
-      // Clamp the angle within the defined bounds
-      angle = Mathf.Clamp(angle, MinMaxAngle.x, MinMaxAngle.y);
-      // Apply the rotation to the sprite in the Z-axis
-      Head.rotation = Quaternion.Euler(0f, 0f, rotationCoef * (angle + angleOffset));
     }
 
     #region Collisions

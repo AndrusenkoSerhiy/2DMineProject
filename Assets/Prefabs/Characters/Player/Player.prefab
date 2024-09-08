@@ -767,8 +767,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
   _animator: {fileID: 660024517565497304}
-  MinMaxAngle: {x: -20, y: 20}
   Head: {fileID: 1976719180885785715}
+  _flipDeadZone: 0.5
+  _topAngleLimit: 20
+  _bottomAngleLimit: -20
 --- !u!114 &3203884702869887430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -785,7 +787,6 @@ MonoBehaviour:
   pool: {fileID: 0}
   stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
   animator: {fileID: 660024517565497304}
-  eventReceiver: {fileID: 26490067836260254}
 --- !u!50 &7677545041897933634
 Rigidbody2D:
   serializedVersion: 4

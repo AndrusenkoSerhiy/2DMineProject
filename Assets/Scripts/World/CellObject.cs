@@ -9,7 +9,7 @@ namespace World {
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
-    
+
     private ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
     private CellData _cellData;
@@ -34,7 +34,7 @@ namespace World {
     public void Damage(float damage) {
       unitHealth.TakeDamage(damage);
 
-      UpdateDamageOverlay();
+      UpdateDamageOverlay(damage);
     }
 
     public float GetHealth() {
@@ -93,14 +93,29 @@ namespace World {
       return cellRenderer;
     }
 
-    private void UpdateDamageOverlay() {
+    private void UpdateDamageOverlay(float damage) {
       if (unitHealth.Health == unitHealth.MaxHealth) {
         return;
       }
       damageOverlayRenderer = GetDamageOverlayRenderer();
-      // Calculate which overlay to show based on health percentage and total overlays
-      float healthPercentage = GetHealth() / GetMaxHealth();
-      int overlayIndex = Mathf.FloorToInt((1f - healthPercentage) * damageOverlays.Length);
+
+      float healthPercentage = unitHealth.Health / unitHealth.MaxHealth;
+      int hpSteps = (int)(unitHealth.MaxHealth / damage);
+
+      int overlayIndex;
+
+      if (hpSteps >= damageOverlays.Length) {
+        // Normal case: show one overlay for each HP step
+        overlayIndex = Mathf.FloorToInt((1f - healthPercentage) * damageOverlays.Length);
+      }
+      else {
+        // Calculate the overlay index by skipping initial overlays
+        int skippedOverlays = damageOverlays.Length - hpSteps;
+        overlayIndex = skippedOverlays + Mathf.FloorToInt((1f - healthPercentage) * hpSteps);
+      }
+
+      // Ensure the overlayIndex is within the valid range
+      overlayIndex = Mathf.Clamp(overlayIndex, 0, damageOverlays.Length - 1);
 
       if (overlayIndex < damageOverlays.Length && overlayIndex >= 0) {
         damageOverlayRenderer.sprite = damageOverlays[overlayIndex];

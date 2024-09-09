@@ -1,4 +1,5 @@
 using Unity.VisualScripting;
+using World;
 
 public interface IDamageable {
   public bool HasTakenDamage { get; set; }
@@ -10,4 +11,7 @@ public interface IDamageable {
   public float GetMaxHealth();
 
   public void AfterDamageReceived();
+
+  //TODO refactor
+  public void DestroyObject(CellObjectsPool pool);
 }

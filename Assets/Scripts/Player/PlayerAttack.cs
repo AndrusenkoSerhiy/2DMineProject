@@ -131,7 +131,8 @@ namespace Player {
 
       float hp = currentTarget.GetHealth();
       if (hp <= 0) {
-        pool.ReturnObject(currentTarget as CellObject);
+        //TODO refactor, remove pool
+        currentTarget.DestroyObject(pool);
         ClearTarget();
       }
     }

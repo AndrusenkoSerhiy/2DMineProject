@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using Scriptables;
+using Pool;
 
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
@@ -43,6 +44,13 @@ namespace World {
 
     public float GetMaxHealth() {
       return unitHealth.MaxHealth;
+    }
+
+    public void DestroyObject(CellObjectsPool pool) {
+      pool.ReturnObject(this);
+
+      ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", transform.position, Quaternion.identity);
+      ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity);
     }
 
     public void AfterDamageReceived() {

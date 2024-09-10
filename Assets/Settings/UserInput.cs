@@ -4,47 +4,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class UserInput : MonoBehaviour {
-  private static UserInput instance;
-  public static UserInput Instance {
-    get { return instance; }
-  }
-
-  [HideInInspector] public Controls controls;
-
-  private bool attacking;
-
-  private void Awake() {
-    if (instance != null && instance != this) {
-      Destroy(this.gameObject);
-    }
-    else {
-      instance = this;
+namespace Settings {
+  public class UserInput : MonoBehaviour {
+    private static UserInput _instance;
+    public static UserInput instance {
+      get { return _instance; }
     }
 
-    controls = new Controls();
+    [HideInInspector] public Controls controls;
 
-    controls.GamePlay.Attack.performed += AttackPerformed;
-    controls.GamePlay.Attack.canceled += AttackCanceled;
-  }
+    private bool attacking;
 
-  public bool IsAttacking() {
-    return attacking;
-  }
+    private void Awake() {
+      if (_instance != null && _instance != this) {
+        Destroy(this.gameObject);
+      }
+      else {
+        _instance = this;
+      }
 
-  private void AttackPerformed(InputAction.CallbackContext context) {
-    attacking = true;
-  }
+      controls = new Controls();
 
-  private void AttackCanceled(InputAction.CallbackContext context) {
-    attacking = false;
-  }
+      controls.GamePlay.Attack.performed += AttackPerformed;
+      controls.GamePlay.Attack.canceled += AttackCanceled;
+    }
 
-  private void OnEnable() {
-    controls?.Enable();
-  }
+    public bool IsAttacking() {
+      return attacking;
+    }
 
-  private void OnDisable() {
-    controls?.Disable();
+    private void AttackPerformed(InputAction.CallbackContext context) {
+      attacking = true;
+    }
+
+    private void AttackCanceled(InputAction.CallbackContext context) {
+      attacking = false;
+    }
+
+    private void OnEnable() {
+      controls?.Enable();
+    }
+
+    private void OnDisable() {
+      controls?.Disable();
+    }
   }
 }

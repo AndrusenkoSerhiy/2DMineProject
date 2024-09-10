@@ -2,29 +2,29 @@ using System;
 using UnityEngine;
 
 public class UnitHealth {
-  private float currentHealth;
-  private float maxHealth;
-  private bool hasTakenDamage;
+  private float _currentHealth;
+  private readonly float _maxHealth;
+  private bool _hasTakenDamage;
 
-  public float Health => currentHealth;
-  public float MaxHealth => maxHealth;
-  public bool HasTakenDamage { get { return hasTakenDamage; } set { hasTakenDamage = value; } }
+  public float health => _currentHealth;
+  public float maxHealth => _maxHealth;
+  public bool hasTakenDamage { get { return _hasTakenDamage; } set { _hasTakenDamage = value; } }
 
   // Events for health changes
   public event Action<float> OnTakeDamage;
   public event Action<float> OnHeal;
 
   public UnitHealth(float maxHealth) {
-    this.maxHealth = maxHealth;
-    currentHealth = maxHealth;
+    this._maxHealth = maxHealth;
+    _currentHealth = maxHealth;
   }
 
   public void TakeDamage(float damage) {
     if (damage <= 0) return;
 
-    hasTakenDamage = true;
-    currentHealth -= damage;
-    currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    _hasTakenDamage = true;
+    _currentHealth -= damage;
+    _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
 
     OnTakeDamage?.Invoke(damage);
   }
@@ -32,8 +32,8 @@ public class UnitHealth {
   public void Heal(float healAmount) {
     if (healAmount <= 0) return;
 
-    currentHealth += healAmount;
-    currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    _currentHealth += healAmount;
+    _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
 
     OnHeal?.Invoke(healAmount);
   }

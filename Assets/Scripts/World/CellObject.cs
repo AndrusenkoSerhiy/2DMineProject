@@ -3,6 +3,7 @@ using DG.Tweening;
 using System;
 using Scriptables;
 using Pool;
+using Game;
 
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
@@ -27,9 +28,9 @@ namespace World {
       sprite.sprite = data.Sprite;
     }
 
-    public bool HasTakenDamage {
-      get { return unitHealth.HasTakenDamage; }
-      set { unitHealth.HasTakenDamage = value; }
+    public bool hasTakenDamage {
+      get { return unitHealth.hasTakenDamage; }
+      set { unitHealth.hasTakenDamage = value; }
     }
 
     public void Damage(float damage) {
@@ -39,15 +40,15 @@ namespace World {
     }
 
     public float GetHealth() {
-      return unitHealth.Health;
+      return unitHealth.health;
     }
 
     public float GetMaxHealth() {
-      return unitHealth.MaxHealth;
+      return unitHealth.maxHealth;
     }
 
-    public void DestroyObject(CellObjectsPool pool) {
-      pool.ReturnObject(this);
+    public void DestroyObject() {
+      GameManager.instance.cellObjectsPool.ReturnObject(this);
 
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", transform.position, Quaternion.identity);
       ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity);
@@ -102,13 +103,13 @@ namespace World {
     }
 
     private void UpdateDamageOverlay(float damage) {
-      if (unitHealth.Health == unitHealth.MaxHealth) {
+      if (unitHealth.health == unitHealth.maxHealth) {
         return;
       }
       damageOverlayRenderer = GetDamageOverlayRenderer();
 
-      float healthPercentage = unitHealth.Health / unitHealth.MaxHealth;
-      int hpSteps = (int)(unitHealth.MaxHealth / damage);
+      float healthPercentage = unitHealth.health / unitHealth.maxHealth;
+      int hpSteps = (int)(unitHealth.maxHealth / damage);
 
       int overlayIndex;
 

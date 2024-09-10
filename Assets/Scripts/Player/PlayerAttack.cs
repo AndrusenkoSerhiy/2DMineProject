@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using World;
 using Utils;
+using Settings;
+using Game;
 
 namespace Player {
   public class PlayerAttack : MonoBehaviour {
     [SerializeField] private Transform attackTransform;
-
-    [SerializeField] private CellObjectsPool pool;
 
     [SerializeField] private PlayerStats stats;
 
@@ -25,13 +25,13 @@ namespace Player {
     private Renderer currentTargetRenderer;
 
     private void Awake() {
-      AnimationEventManager.OnAttackStarted += HandleAnimationStarted;
-      AnimationEventManager.OnAttackEnded += HandleAnimationEnded;
+      AnimationEventManager.onAttackStarted += HandleAnimationStarted;
+      AnimationEventManager.onAttackEnded += HandleAnimationEnded;
     }
 
     private void OnDestroy() {
-      AnimationEventManager.OnAttackStarted -= HandleAnimationStarted;
-      AnimationEventManager.OnAttackEnded -= HandleAnimationEnded;
+      AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
+      AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
     }
 
     private void Start() {
@@ -42,7 +42,7 @@ namespace Player {
       HighlightTarget();
 
       // Handle attack
-      if (UserInput.Instance.IsAttacking() && currentTarget != null
+      if (UserInput.instance.IsAttacking() && currentTarget != null
         && attackTimeCounter >= stats.TimeBtwAttacks) {
         TriggerAttack();
       }
@@ -118,7 +118,7 @@ namespace Player {
     }
 
     private void Attack() {
-      if (currentTarget == null || currentTarget.HasTakenDamage) {
+      if (currentTarget == null || currentTarget.hasTakenDamage) {
         return;
       }
 
@@ -131,8 +131,7 @@ namespace Player {
 
       float hp = currentTarget.GetHealth();
       if (hp <= 0) {
-        //TODO refactor, remove pool
-        currentTarget.DestroyObject(pool);
+        currentTarget.DestroyObject();
         ClearTarget();
       }
     }
@@ -151,7 +150,7 @@ namespace Player {
 
     private void ReturnAttackablesToDamageable() {
       foreach (IDamageable damaged in iDamageables) {
-        damaged.HasTakenDamage = false;
+        damaged.hasTakenDamage = false;
       }
 
       iDamageables.Clear();

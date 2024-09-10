@@ -1,15 +1,15 @@
 using System;
+using Game;
 using Scriptables;
 using UnityEngine;
 
 namespace World {
   public class ChunkController : MonoBehaviour {
-    [SerializeField] private CellObjectsPool _cellObjectsPool;
     [SerializeField] private ChunkGenerator _chunkGenerator;
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
 
     private void Awake() {
-      _cellObjectsPool.Init();
+      getCellObjectsPool().Init();
       _chunkGenerator.Init();
       InitStartChunk();
     }
@@ -30,7 +30,7 @@ namespace World {
             for (int j = 0; j < startChunk.width; j++) {
               var data = _resourceDataLib.GetData(startChunk.GetCellData(i, j).perlin);
               if (data /* > 0.45f*/) {
-                var cellObject = _cellObjectsPool.GetObject();
+                var cellObject = getCellObjectsPool().GetObject();
                 cellObject.transform.position = coords;
                 cellObject.transform.SetParent(go.transform);
                 cellObject.Init(data);
@@ -44,6 +44,10 @@ namespace World {
           }
         }
       }
+    }
+
+    private CellObjectsPool getCellObjectsPool() {
+      return GameManager.instance.cellObjectsPool;
     }
   }
 }

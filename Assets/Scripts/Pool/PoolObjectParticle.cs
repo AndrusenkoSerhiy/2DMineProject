@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace Pool {
   public class PoolObjectParticle : PoolObjectBase {
-    [SerializeField] private ParticleSystem particleSystem;
+    [SerializeField] private ParticleSystem particleSys;
     private bool animationFinished;
 
     private void Update() {
-      if (particleSystem == null) {
+      if (particleSys == null) {
         return;
       }
-      
-      if (!particleSystem.isPlaying) {
+
+      if (!particleSys.isPlaying) {
         ReturnToPool();
       }
     }

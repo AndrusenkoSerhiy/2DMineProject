@@ -1,17 +1,15 @@
-using Unity.VisualScripting;
-using World;
+namespace Game {
+  public interface IDamageable {
+    public bool hasTakenDamage { get; set; }
 
-public interface IDamageable {
-  public bool HasTakenDamage { get; set; }
+    public void Damage(float damage);
 
-  public void Damage(float damage);
+    public float GetHealth();
 
-  public float GetHealth();
+    public float GetMaxHealth();
 
-  public float GetMaxHealth();
+    public void AfterDamageReceived();
 
-  public void AfterDamageReceived();
-
-  //TODO refactor
-  public void DestroyObject(CellObjectsPool pool);
+    public void DestroyObject();
+  }
 }

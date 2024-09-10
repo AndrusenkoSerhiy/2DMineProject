@@ -2,14 +2,14 @@ using System;
 using UnityEngine;
 
 public class AnimationEventManager : MonoBehaviour {
-  public static Action<AnimationEvent> OnAttackStarted;
-  public static Action<AnimationEvent> OnAttackEnded;
+  public static Action<AnimationEvent> onAttackStarted;
+  public static Action<AnimationEvent> onAttackEnded;
 
   public static void TriggerAttackStarted(AnimationEvent animationEvent) {
-    OnAttackStarted?.Invoke(animationEvent);
+    onAttackStarted?.Invoke(animationEvent);
   }
 
   public static void TriggerAttackEnded(AnimationEvent animationEvent) {
-    OnAttackEnded?.Invoke(animationEvent);
+    onAttackEnded?.Invoke(animationEvent);
   }
 }

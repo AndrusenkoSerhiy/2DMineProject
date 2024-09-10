@@ -4,7 +4,6 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using World.Jobs;
-using Unity.Burst;
 
 namespace World {
   [Serializable]
@@ -15,6 +14,8 @@ namespace World {
     public int width = 100;
     public int height = 50;
     private CellData[,] _cellDatas;
+    private int[,] _cellFillDatas;
+    public int[,] CellFillDatas => _cellFillDatas;
     [SerializeField] private List<CellData> debugList = new();
     private NativeArray<float> noiseMap;
     private NativeArray<float> smoothedNoiseMap;
@@ -24,6 +25,13 @@ namespace World {
       this.x = x;
       this.y = y;
       _cellDatas = new CellData[height, width];
+      _cellFillDatas = new int[height, width];
+      for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+          _cellFillDatas[i, j] = 0;
+        }
+      }
+
       GenerateNoise();
       ApplyCells();
       noiseMap.Dispose();
@@ -60,7 +68,7 @@ namespace World {
       for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
           var perlin = smoothedNoiseMap[i + j * height];
-          _cellDatas[i, j] = new CellData(i, j, perlin);
+          _cellDatas[i, j] = new CellData(i, j, perlin, this);
           debugList.Add(_cellDatas[i, j]);
         }
       }
@@ -68,6 +76,10 @@ namespace World {
 
     public CellData GetCellData(int x, int y) {
       return _cellDatas[x, y];
+    }
+
+    public void SetCellFill(int x, int y, int value = 1) {
+      _cellFillDatas[x, y] = value;
     }
 
     void OnDestroy() {

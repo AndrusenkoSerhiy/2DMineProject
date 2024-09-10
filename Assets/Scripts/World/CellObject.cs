@@ -7,6 +7,7 @@ using Game;
 
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
+    [SerializeField] private ChunkObject _chunkObject;
     [SerializeField] private CellStats cellStats;
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private Transform damageOverlay;
@@ -14,7 +15,7 @@ namespace World {
 
     private ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
-    private CellData _cellData;
+    [SerializeField] private CellData _cellData;
     private UnitHealth unitHealth;
     private Renderer cellRenderer;
     private Tween currentShakeTween;
@@ -22,10 +23,17 @@ namespace World {
     private Vector3 originalScale;
     private int originalSortingOrder;
 
-    public void Init(ResourceData data) {
+    public CellData CellData => _cellData;
+
+    public void Init(CellData cellData,ResourceData data, ChunkObject chunkObject) {
+      _chunkObject = chunkObject;
+      _cellData = cellData;
       resourceData = data;
       unitHealth = new UnitHealth(resourceData.Durability);
-      sprite.sprite = data.Sprite;
+    }
+
+    public void InitSprite() {
+      sprite.sprite = _cellData.HasNeighbours ? resourceData.DarkSprite : resourceData.Sprite;
     }
 
     public bool hasTakenDamage {
@@ -48,8 +56,9 @@ namespace World {
     }
 
     public void DestroyObject() {
+      _chunkObject.TriggerCellDestroyed(this);
       GameManager.instance.cellObjectsPool.ReturnObject(this);
-
+      
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", transform.position, Quaternion.identity);
       GameManager.instance.TaskManager.DelayAsync(
         () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity), 0.25f);

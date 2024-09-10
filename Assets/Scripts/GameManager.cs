@@ -5,7 +5,9 @@ namespace Game {
   public class GameManager : MonoBehaviour {
     private static GameManager _instance;
     [SerializeField] private TaskManager taskManagerRef;
-    [SerializeField] private CellObjectsPool pool;
+    [SerializeField] private ChunkController _chunkController;
+    [SerializeField] private CellObjectsPool _cellObjectsPool;
+    [SerializeField] private ChunkObjectsPool _chunkObjectsPool;
     public static GameManager instance {
       get {
         if (_instance == null) {
@@ -19,8 +21,13 @@ namespace Game {
       }
     }
 
+    public ChunkController ChunkController => _chunkController;
+    
     public CellObjectsPool cellObjectsPool {
-      get { return pool; }
+      get { return _cellObjectsPool; }
+    }  
+    public ChunkObjectsPool chunkObjectsPool {
+      get { return _chunkObjectsPool; }
     }  
     public TaskManager TaskManager {
       get { return taskManagerRef; }

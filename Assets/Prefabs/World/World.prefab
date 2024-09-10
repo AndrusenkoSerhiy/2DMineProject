@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7393089147953793631}
   - component: {fileID: 2335679820130853974}
   - component: {fileID: 5330816680961646805}
+  - component: {fileID: 24980638447051213}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -46,7 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a064f5ac5c4343a7a99341ca32a955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cellObjectsPool: {fileID: 5330816680961646805}
   _chunkGenerator: {fileID: 2335679820130853974}
   _resourceDataLib: {fileID: 11400000, guid: 06ecd9dc1787b834dac6f86b14b470fa, type: 2}
 --- !u!114 &2335679820130853974
@@ -79,3 +79,18 @@ MonoBehaviour:
   cellObjectPrefab: {fileID: 1863431300587650840, guid: 9f91d77e0979c5743a8ab9658b3ea6c4, type: 3}
   initialPoolSize: 100
   maxPoolSize: 300
+--- !u!114 &24980638447051213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7691124544413823526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a2ac8b929a64d1db4c486c29462e0cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chunkObjectPrefab: {fileID: 6108830442496491604, guid: 9daf92178a0deab4ca5308c3fe5750b6, type: 3}
+  initialPoolSize: 10
+  maxPoolSize: 100

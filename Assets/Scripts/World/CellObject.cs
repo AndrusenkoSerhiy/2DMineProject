@@ -7,7 +7,7 @@ using Game;
 
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
-    [SerializeField] private ChunkObject _chunkObject;
+    private ChunkObject _chunkObject;
     [SerializeField] private CellStats cellStats;
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private Transform damageOverlay;

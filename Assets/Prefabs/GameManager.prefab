@@ -110,6 +110,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2335679820130853974, guid: ca04d87b724ac12408041bf83197b8a5, type: 3}
+      propertyPath: SectorsStartRangeX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2335679820130853974, guid: ca04d87b724ac12408041bf83197b8a5, type: 3}
+      propertyPath: SectorsStartRangeY
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7691124544413823526, guid: ca04d87b724ac12408041bf83197b8a5, type: 3}
       propertyPath: m_Name
       value: World

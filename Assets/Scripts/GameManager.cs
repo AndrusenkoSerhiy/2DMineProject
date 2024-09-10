@@ -41,6 +41,7 @@ namespace Game {
         _instance = this;
         DontDestroyOnLoad(this.gameObject);
       }
+      UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
     }
   }
 }

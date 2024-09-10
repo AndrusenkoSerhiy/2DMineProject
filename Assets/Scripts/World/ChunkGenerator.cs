@@ -7,7 +7,6 @@ namespace World{
     public int SectorsStartRangeX = 10;
     public int SectorsStartRangeY = 10;
     private Dictionary<Tuple<int,int>, ChunkData> _chunkObjects;
-    [SerializeField] private List<ChunkData> debugList = new();
 
     public void Init(){
       GenerateChunkDatas();

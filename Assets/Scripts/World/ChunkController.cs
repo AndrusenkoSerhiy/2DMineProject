@@ -2,6 +2,7 @@ using System;
 using Game;
 using Scriptables;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace World {
   public class ChunkController : MonoBehaviour {
@@ -20,7 +21,7 @@ namespace World {
 
     void InitStartChunk() {
       Vector3 coords = Vector3.zero;
-      for (int k = -_chunkGenerator.SectorsStartRangeX; k <= _chunkGenerator.SectorsStartRangeX; k++) {
+      for (int k = 0; k <= _chunkGenerator.SectorsStartRangeX; k++) {
         for (int n = 0; n <= _chunkGenerator.SectorsStartRangeX; n++) {
           var startChunk = _chunkGenerator.GetChunk(k, n);
           if (startChunk == null) continue;

@@ -4,8 +4,8 @@ using World;
 namespace Game {
   public class GameManager : MonoBehaviour {
     private static GameManager _instance;
+    [SerializeField] private TaskManager taskManagerRef;
     [SerializeField] private CellObjectsPool pool;
-
     public static GameManager instance {
       get {
         if (_instance == null) {
@@ -21,6 +21,9 @@ namespace Game {
 
     public CellObjectsPool cellObjectsPool {
       get { return pool; }
+    }  
+    public TaskManager TaskManager {
+      get { return taskManagerRef; }
     }
 
     private void Awake() {

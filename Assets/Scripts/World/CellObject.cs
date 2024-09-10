@@ -51,7 +51,8 @@ namespace World {
       GameManager.instance.cellObjectsPool.ReturnObject(this);
 
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", transform.position, Quaternion.identity);
-      ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity);
+      GameManager.instance.TaskManager.DelayAsync(
+        () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity), 0.25f);
     }
 
     public void AfterDamageReceived() {
@@ -80,7 +81,8 @@ namespace World {
       shakeScale.y *= scaleFactorY;
       sprite.transform.localScale = shakeScale;
 
-      currentShakeTween = sprite.transform.DOShakePosition(shakeDuration, shakeIntensity, vibrato, cellStats.randomness, false, true)
+      currentShakeTween = sprite.transform
+        .DOShakePosition(shakeDuration, shakeIntensity, vibrato, cellStats.randomness, false, true)
         .OnComplete(() => ResetShake());
     }
 
@@ -99,6 +101,7 @@ namespace World {
       if (cellRenderer == null) {
         return sprite.GetComponent<Renderer>();
       }
+
       return cellRenderer;
     }
 
@@ -106,6 +109,7 @@ namespace World {
       if (unitHealth.health == unitHealth.maxHealth) {
         return;
       }
+
       damageOverlayRenderer = GetDamageOverlayRenderer();
 
       float healthPercentage = unitHealth.health / unitHealth.maxHealth;
@@ -140,6 +144,7 @@ namespace World {
       if (damageOverlayRenderer == null) {
         return damageOverlay.GetComponent<SpriteRenderer>();
       }
+
       return damageOverlayRenderer;
     }
   }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using World;
 
@@ -9,7 +7,16 @@ namespace Game {
     [SerializeField] private CellObjectsPool pool;
 
     public static GameManager instance {
-      get { return _instance; }
+      get {
+        if (_instance == null) {
+          _instance = FindObjectOfType<GameManager>();
+
+          if (_instance == null) {
+            Debug.LogError("GameManager instance not found in the scene.");
+          }
+        }
+        return _instance;
+      }
     }
 
     public CellObjectsPool cellObjectsPool {
@@ -22,6 +29,7 @@ namespace Game {
       }
       else {
         _instance = this;
+        DontDestroyOnLoad(this.gameObject);
       }
     }
   }

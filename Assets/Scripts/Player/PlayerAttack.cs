@@ -6,6 +6,7 @@ using World;
 using Utils;
 using Settings;
 using Game;
+using Scriptables.Player;
 
 namespace Player {
   public class PlayerAttack : MonoBehaviour {

@@ -1,5 +1,6 @@
 using System;
 using Pool;
+using Scriptables.Player;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -20,10 +21,10 @@ namespace Player {
     private Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
     [SerializeField] private Animator _animator;
-    
+
     [SerializeField] private Transform Head;
     [SerializeField] private float _flipDeadZone = 1;
-    
+
     private Camera _camera;
     private bool isFlipped = false;
     private float rotationCoef = 1f;
@@ -31,7 +32,7 @@ namespace Player {
 
     [SerializeField] private float _topAngleLimit = 20;
     [SerializeField] private float _bottomAngleLimit = -20;
-    
+
     #region Interface
 
     public Vector2 FrameInput => _frameInput.Move;
@@ -47,7 +48,7 @@ namespace Player {
       _col = GetComponent<CapsuleCollider2D>();
 
       _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
-      
+
       //for lookAt
       _camera = Camera.main;
       isFlipped = false;
@@ -71,14 +72,14 @@ namespace Player {
       float clampedAngle = Mathf.Clamp(targetAngle, _bottomAngleLimit, _topAngleLimit) * Mathf.Sign(transform.localScale.x);
 
       // Apply the clamped angle to the head
-      Head.rotation = Quaternion.Euler(0, 0, clampedAngle+Mathf.Sign(transform.localScale.x)*90);
+      Head.rotation = Quaternion.Euler(0, 0, clampedAngle + Mathf.Sign(transform.localScale.x) * 90);
     }
 
     private void FlipX() {
       Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
       var direction = (mousePosition - (Vector2)Head.position).normalized;
-      
-      if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone){
+
+      if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone) {
         // Flip player
         Vector3 localScale = transform.localScale;
         localScale.x = Mathf.Sign(direction.x);

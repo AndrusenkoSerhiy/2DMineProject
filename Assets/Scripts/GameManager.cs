@@ -39,7 +39,7 @@ namespace Game {
       }
       else {
         _instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
       }
       UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
     }

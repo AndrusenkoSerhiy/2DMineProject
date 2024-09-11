@@ -4,6 +4,7 @@ using System;
 using Scriptables;
 using Pool;
 using Game;
+using Scriptables.World;
 
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
@@ -25,7 +26,7 @@ namespace World {
 
     public CellData CellData => _cellData;
 
-    public void Init(CellData cellData,ResourceData data, ChunkObject chunkObject) {
+    public void Init(CellData cellData, ResourceData data, ChunkObject chunkObject) {
       _chunkObject = chunkObject;
       _cellData = cellData;
       resourceData = data;
@@ -58,7 +59,7 @@ namespace World {
     public void DestroyObject() {
       _chunkObject.TriggerCellDestroyed(this);
       GameManager.instance.cellObjectsPool.ReturnObject(this);
-      
+
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", transform.position, Quaternion.identity);
       GameManager.instance.TaskManager.DelayAsync(
         () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity), 0.25f);
@@ -78,6 +79,8 @@ namespace World {
       cellRenderer = GetCellRenderer();
       originalSortingOrder = cellRenderer.sortingOrder;
       cellRenderer.sortingOrder += 1;
+
+      GetDamageOverlayRenderer().sortingOrder = originalSortingOrder + 2;
 
       float shakeDuration = Mathf.Lerp(cellStats.minShakeDuration, cellStats.maxShakeDuration, 1 - healthPercentage);
       float shakeIntensity = Mathf.Lerp(cellStats.minShakeIntensity, cellStats.maxShakeIntensity, 1 - healthPercentage);
@@ -104,6 +107,7 @@ namespace World {
       sprite.transform.position = originalPosition;
       sprite.transform.localScale = originalScale;
       cellRenderer.sortingOrder = originalSortingOrder;
+      GetDamageOverlayRenderer().sortingOrder = originalSortingOrder + 1;
     }
 
     private Renderer GetCellRenderer() {

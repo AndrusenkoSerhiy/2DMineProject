@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace World {
+namespace Scriptables.World {
   [CreateAssetMenu]
   public class CellStats : ScriptableObject {
     [Header("ATTACK SHAKE")]

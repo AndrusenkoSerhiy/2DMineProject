@@ -2431,6 +2431,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7515020899096269069, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: SectorsStartRangeX
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7515020899096269069, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: SectorsStartRangeY
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8842004981100853932, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

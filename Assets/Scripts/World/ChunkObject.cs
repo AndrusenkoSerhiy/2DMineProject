@@ -1,16 +1,19 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace World {
   public class ChunkObject : MonoBehaviour {
     private ChunkData _chunkData;
-    private CellObject[] _cellObjects;
+    private List<CellObject> _cellObjects = new();
+
+    public ChunkData ChunkData => _chunkData;
 
     public void Init(ChunkData chunkData) {
       _chunkData = chunkData;
     }
 
     CellObject GetCell(int x, int y) {
-      for (var i = 0; i < _cellObjects.Length; i++) {
+      for (var i = 0; i < _cellObjects.Count; i++) {
         if (_cellObjects[i].CellData.x == x &&
             _cellObjects[i].CellData.y == y) {
           return _cellObjects[i];
@@ -21,55 +24,18 @@ namespace World {
     }
 
     public void AddCellObject(CellObject cellObject) {
-      ResizeArray();
-      _cellObjects[_cellObjects.Length - 1] = cellObject;
+      _cellObjects.Add(cellObject);
     }
 
     private void RemoveCellObject(CellObject cellObject) {
-      for (var i = 0; i < _cellObjects.Length; i++) {
-        if (_cellObjects[i].CellData.x == cellObject.CellData.x &&
-            _cellObjects[i].CellData.y == cellObject.CellData.y) {
-          _cellObjects[i] = null;
-          break;
-        }
-      }
-
-      ShrinkArray();
+      _cellObjects.Remove(cellObject);
     }
 
     public void FillCells() {
-      for (var i = 0; i < _cellObjects.Length; i++) {
+      for (var i = 0; i < _cellObjects.Count; i++) {
         _cellObjects[i].InitSprite();
       }
     }
-
-    private void ResizeArray() {
-      var justCreated = _cellObjects == null;
-      var newSize = justCreated ? 1 : _cellObjects.Length + 1;
-      var newArray = new CellObject[newSize];
-
-      if (!justCreated)
-        for (var i = 0; i < _cellObjects.Length; i++) {
-          newArray[i] = _cellObjects[i];
-        }
-
-      _cellObjects = newArray;
-    }
-
-    private void ShrinkArray() {
-      var newSize = _cellObjects.Length - 1;
-      var newArray = new CellObject[newSize];
-      var j = 0;
-      for (var i = 0; i < _cellObjects.Length; i++) {
-        if (_cellObjects[i]) {
-          newArray[j] = _cellObjects[i];
-          j++;
-        }
-      }
-
-      _cellObjects = newArray;
-    }
-
 
     public void TriggerCellDestroyed(CellObject cellObject) {
       RemoveCellObject(cellObject);

@@ -11,12 +11,11 @@ namespace World {
     public Tuple<int, int> id;
     public int x;
     public int y;
-    public int width = 100;
-    public int height = 50;
+    public int width = 50;
+    public int height = 25;
     private CellData[,] _cellDatas;
     private int[,] _cellFillDatas;
     public int[,] CellFillDatas => _cellFillDatas;
-    [SerializeField] private List<CellData> debugList = new();
     private NativeArray<float> noiseMap;
     private NativeArray<float> smoothedNoiseMap;
 
@@ -69,7 +68,6 @@ namespace World {
         for (int j = 0; j < width; j++) {
           var perlin = smoothedNoiseMap[i + j * height];
           _cellDatas[i, j] = new CellData(i, j, perlin, this);
-          debugList.Add(_cellDatas[i, j]);
         }
       }
     }

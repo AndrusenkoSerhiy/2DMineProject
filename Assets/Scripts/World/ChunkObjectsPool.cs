@@ -23,7 +23,7 @@ namespace World {
     private ChunkObject CreateNewObject() {
       ChunkObject newObj = Instantiate(chunkObjectPrefab, transform);
       newObj.gameObject.SetActive(false); // Start inactive
-      return newObj.GetComponent<ChunkObject>();
+      return newObj;
     }
 
     // Method called when an object is taken from the pool

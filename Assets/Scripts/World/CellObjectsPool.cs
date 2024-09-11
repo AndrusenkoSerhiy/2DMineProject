@@ -23,7 +23,7 @@ namespace World{
     private CellObject CreateNewObject(){
       CellObject newObj = Instantiate(cellObjectPrefab,transform);
       newObj.gameObject.SetActive(false); // Start inactive
-      return newObj.GetComponent<CellObject>();
+      return newObj;
     }
 
     // Method called when an object is taken from the pool

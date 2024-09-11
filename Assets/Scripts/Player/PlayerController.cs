@@ -42,6 +42,10 @@ namespace Player {
     #endregion
 
     private float _time;
+    
+    [Tooltip("Period of time to spawn run particle")]
+    [Range(0, .5f)]
+    [SerializeField] private float _dustPeriod = .1f;
 
     private void Awake() {
       _rb = GetComponent<Rigidbody2D>();
@@ -55,10 +59,24 @@ namespace Player {
       rotationCoef = 1f;
     }
 
+    
     private void Update() {
       _time += Time.deltaTime;
       GatherInput();
       LookAtMouse();
+      SpawnRunParticle();
+    }
+
+    private float counter;
+    private void SpawnRunParticle() {
+      counter += Time.deltaTime;
+      //moving particle
+      if (_grounded && Mathf.Abs(_rb.velocity.x) > 1) {
+        if (counter > _dustPeriod) {
+          PlayMovingEffect();
+          counter = 0;
+        }
+      }
     }
 
     private void LookAtMouse() {
@@ -154,6 +172,10 @@ namespace Player {
 
     private void PlayLandingEffect() {
       ObjectPooler.Instance.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
+    }
+    
+    private void PlayMovingEffect() {
+      ObjectPooler.Instance.SpawnFromPool("MovingDustEffect", transform.position, Quaternion.identity);
     }
 
     #endregion

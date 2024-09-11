@@ -48,3 +48,12 @@ MonoBehaviour:
   - tag: LandingEffect
     prefab: {fileID: 6109450353374441362, guid: 85346f9a99616de47bc7c3c567f3da51, type: 3}
     size: 2
+  - tag: CellDestroyEffect
+    prefab: {fileID: 1361706830629698200, guid: c0c8a63d24bb5d849a4e82456c0635f9, type: 3}
+    size: 2
+  - tag: CellDestroyDustEffect
+    prefab: {fileID: 2865693935466722942, guid: e33212a5a9068374198fe9509ab4d01a, type: 3}
+    size: 2
+  - tag: MovingDustEffect
+    prefab: {fileID: 8101237012075620154, guid: 5d46b1e1ff9748e4d9ce1080d36a8fc8, type: 3}
+    size: 20

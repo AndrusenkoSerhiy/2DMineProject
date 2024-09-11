@@ -9,6 +9,10 @@ namespace World {
     [SerializeField] private ChunkGenerator _chunkGenerator;
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
 
+    [Header("START SPAWN PARAMS")] 
+    [SerializeField] private int StartSpawnSectorsX = 1;
+    [SerializeField] private int StartSpawnSectorsY = 1;
+
     private ChunkObject[] _activeChunkObjects;
 
     private void Awake() {
@@ -21,8 +25,8 @@ namespace World {
 
     void InitStartChunk() {
       Vector3 coords = Vector3.zero;
-      for (int k = 0; k <= _chunkGenerator.SectorsStartRangeX; k++) {
-        for (int n = 0; n <= _chunkGenerator.SectorsStartRangeX; n++) {
+      for (int k = 0; k <= StartSpawnSectorsX; k++) {
+        for (int n = 0; n <= StartSpawnSectorsY; n++) {
           var startChunk = _chunkGenerator.GetChunk(k, n);
           if (startChunk == null) continue;
           var chunkObject = getChunkObjectsPool().GetObject();

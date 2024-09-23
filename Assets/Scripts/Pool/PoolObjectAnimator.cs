@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Pool {
   public class PoolObjectAnimator : PoolObjectBase {
     [SerializeField] private Animator animator;
-    private bool animationFinished;
+    [Tooltip("Return parent object to pool")][SerializeField] private bool _returnParent;
 
     private void Update() {
       if (animator != null) {
@@ -14,5 +14,11 @@ namespace Pool {
       }
     }
 
+    public override void ReturnToPool() {
+      if (_returnParent) {
+        gameObject.transform.parent.gameObject.SetActive(false);
+      }
+      else base.ReturnToPool();
+    }
   }
 }

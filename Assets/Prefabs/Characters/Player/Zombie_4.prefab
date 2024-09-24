@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8141082641052085697}
   - component: {fileID: 8562245207658300178}
   m_Layer: 8
-  m_Name: Zombie_1
+  m_Name: Zombie_4
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -94,8 +94,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 1.04}
-  m_Size: {x: 1, y: 2}
+  m_Offset: {x: 0, y: 1.43}
+  m_Size: {x: 1.62, y: 2.97}
   m_Direction: 0
 --- !u!114 &8562245207658300178
 MonoBehaviour:
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currHP: 0
-  _maxHP: 25
+  _maxHP: 20
   _animator: {fileID: 4141543556025107183}
 --- !u!1 &3986283541987958568
 GameObject:
@@ -139,8 +139,8 @@ Transform:
   m_GameObject: {fileID: 3986283541987958568}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.701, z: 0}
-  m_LocalScale: {x: 1.35, y: 1.35, z: 1}
+  m_LocalPosition: {x: 0, y: 1.86, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5316663944912908102}
@@ -186,7 +186,7 @@ SpriteRenderer:
   m_SortingLayerID: 2145118225
   m_SortingLayer: 3
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 188d386a13079c34aa3f4ebf60d79458, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d1d63903853cd224599abcce7a47ce95, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -207,7 +207,7 @@ Animator:
   m_GameObject: {fileID: 3986283541987958568}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1245a8fb6a0054c4ab0b6ce1a5e20256, type: 2}
+  m_Controller: {fileID: 9100000, guid: ef431d65b0852b842b419d72baf7b990, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

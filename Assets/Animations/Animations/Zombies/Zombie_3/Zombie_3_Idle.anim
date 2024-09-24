@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Zombie_1_Idle
+  m_Name: Zombie_3_Idle
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,13 +21,17 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: 8467912496fd70648836ceca217683ac, type: 3}
+      value: {fileID: 21300000, guid: d29baba68622ac24aaecb1fe82e2869f, type: 3}
+    - time: 0.16666667
+      value: {fileID: 21300000, guid: 0a8c0e8fa251ba04c914f72f9fbd4e8a, type: 3}
+    - time: 0.33333334
+      value: {fileID: 21300000, guid: daa7087e5522ae5418ee1d2012556220, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
-  m_SampleRate: 2
+  m_SampleRate: 6
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -44,7 +48,9 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 8467912496fd70648836ceca217683ac, type: 3}
+    - {fileID: 21300000, guid: d29baba68622ac24aaecb1fe82e2869f, type: 3}
+    - {fileID: 21300000, guid: 0a8c0e8fa251ba04c914f72f9fbd4e8a, type: 3}
+    - {fileID: 21300000, guid: daa7087e5522ae5418ee1d2012556220, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

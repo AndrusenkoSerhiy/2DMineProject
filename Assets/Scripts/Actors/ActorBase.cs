@@ -19,11 +19,19 @@ namespace Game.Actors {
     public void Damage(float damage) {
       unitHealth.TakeDamage(damage);
       _currHP -= damage;
+      
       if (_currHP <= 0) {
         PlayDeathAnim();
       }
+      else {
+        PlayTakeDamage();
+      }
     }
 
+    private void PlayTakeDamage() {
+      _animator.SetTrigger("TakeDamage");
+    }
+    
     private void PlayDeathAnim() {
       _animator.SetTrigger("Die");
     }

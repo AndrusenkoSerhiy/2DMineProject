@@ -22,11 +22,11 @@ MonoBehaviour:
     Name: 
     Id: 1
     buffs: []
-  AttackLayer:
+  attackLayer:
     serializedVersion: 2
     m_Bits: 256
-  BlockDamage: 20
-  EntityDamage: 8
-  Range: 2.8
-  AttacksPerMinute: 65
-  StaminaUsage: 5
+  blockDamage: 10
+  entityDamage: 7
+  range: 2.8
+  attacksPerMinute: 50
+  staminaUsage: 7

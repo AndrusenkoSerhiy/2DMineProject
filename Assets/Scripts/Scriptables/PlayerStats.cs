@@ -62,11 +62,11 @@ namespace Scriptables.Player
 
     [Header("ATTACK")]
     public LayerMask AttackLayer;
-
-    public float AttackDamage = 5f;
-
     public float AttackRange = 1.8f;
-
-    public float TimeBtwAttacks = 0.2f;
+    public float BlockDamage = 5f;
+    public float EntityDamage = 3f;
+    public float Range = 1.8f;
+    public float TimeBtwAttacks = 0.4f;
+    public float StaminaUsage = 1f;
   }
 }

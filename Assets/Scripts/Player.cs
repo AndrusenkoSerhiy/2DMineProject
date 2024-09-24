@@ -32,7 +32,7 @@ namespace Interface {
 
     public void OnTriggerEnter2D(Collider2D other) {
       var item = other.GetComponent<GroundItem>();
-      Debug.Log("Picked up " + item);
+      // Debug.Log("Picked up " + item);
       if (item) {
         if (inventory.AddItem(new Item(item.item), 1)) {
           Destroy(other.gameObject);

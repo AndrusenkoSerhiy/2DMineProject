@@ -25,10 +25,6 @@ namespace Interface {
       // public void Start() {
       CreateSlots();
 
-      Debug.Log("CreateSlots");
-      Debug.Log("inventory.GetSlots.Length: " + inventory.GetSlots.Length);
-
-
       for (int i = 0; i < inventory.GetSlots.Length; i++) {
         inventory.GetSlots[i].parent = this;
         inventory.GetSlots[i].onAfterUpdated += OnSlotUpdate;

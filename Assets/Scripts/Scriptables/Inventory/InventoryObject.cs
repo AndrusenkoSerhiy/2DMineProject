@@ -114,9 +114,6 @@ namespace Scriptables.Inventory {
         Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open, FileAccess.Read);
         Inventory newContainer = (Inventory)formatter.Deserialize(stream);
 
-        Debug.Log("savePath: " + savePath); 
-        Debug.Log("GetSlots.Length: " + GetSlots.Length); 
-
         for (int i = 0; i < GetSlots.Length; i++) {
           GetSlots[i].UpdateSlot(newContainer.Slots[i].item, newContainer.Slots[i].amount);
         }

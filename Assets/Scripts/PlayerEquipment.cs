@@ -19,11 +19,10 @@ namespace Equipment {
     private Transform _offhand;
     private Transform _weapon;
 
+    public Transform Weapon { get => _weapon; private set => _weapon = value; }
 
     void Start() {
       _equipment = GetComponent<Interface.Player>().equipment;
-
-      Debug.Log("_equipment.GetSlots.Length:" + _equipment.GetSlots.Length);
 
       for (int i = 0; i < _equipment.GetSlots.Length; i++) {
         _equipment.GetSlots[i].onBeforeUpdated += OnRemoveItem;
@@ -47,7 +46,7 @@ namespace Equipment {
             switch (slot.AllowedItems[0]) {
               case ItemType.Tool:
               case ItemType.Weapon:
-                _weapon = Instantiate(itemObject.CharacterDisplay, weaponTransform).transform;
+                Weapon = Instantiate(itemObject.CharacterDisplay, weaponTransform).transform;
                 break;
             }
           }
@@ -71,7 +70,7 @@ namespace Equipment {
 
               case ItemType.Tool:
               case ItemType.Weapon:
-                Destroy(_weapon.gameObject);
+                Destroy(Weapon.gameObject);
                 break;
             }
           }

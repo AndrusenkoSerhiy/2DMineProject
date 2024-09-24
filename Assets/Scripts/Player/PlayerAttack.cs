@@ -6,6 +6,9 @@ using Utils;
 using Settings;
 using Game;
 using Scriptables.Player;
+using Equipment;
+using Items;
+using Scriptables.Items;
 
 namespace Player {
   public class PlayerAttack : MonoBehaviour {
@@ -19,6 +22,13 @@ namespace Player {
 
     private List<IDamageable> iDamageables = new List<IDamageable>();
 
+    private LayerMask attackLayer;
+    private float blockDamage;
+    private float entityDamage;
+    private float attackRange;
+    private float timeBtwAttacks;
+    //TODO
+    private float staminaUsage;
     private float attackTimeCounter;
 
     private IDamageable currentTarget;
@@ -35,7 +45,51 @@ namespace Player {
     }
 
     private void Start() {
-      attackTimeCounter = stats.TimeBtwAttacks;
+      PrepareAttackParams();
+      attackTimeCounter = timeBtwAttacks;
+    }
+
+    private void PrepareAttackParams() {
+      if (SetAttackParamsFromEquipment()) {
+        return;
+      }
+
+      Debug.LogWarning("Could not set attack parameters from equipment", this);
+
+      attackLayer = stats.AttackLayer;
+      blockDamage = stats.BlockDamage;
+      entityDamage = stats.EntityDamage;
+      attackRange = stats.Range;
+      timeBtwAttacks = stats.TimeBtwAttacks;
+      staminaUsage = stats.StaminaUsage;
+    }
+
+    private bool SetAttackParamsFromEquipment() {
+      PlayerEquipment playerEquipment = GetComponent<PlayerEquipment>();
+      if (playerEquipment == null) {
+        Debug.LogWarning("Could not find Player Equipment", this);
+        return false;
+      }
+
+      if (playerEquipment.Weapon == null) {
+        Debug.LogWarning("Could not find equipped weapon", this);
+        return false;
+      }
+
+      ItemObject weaponStats = playerEquipment.Weapon.GetComponent<GroundItem>().item;
+      if (!(weaponStats is IAttackableItem attackableItem)) {
+        Debug.LogWarning("Equipped item is not attackable", this);
+        return false;
+      }
+
+      attackLayer = attackableItem.AttackLayer;
+      blockDamage = attackableItem.BlockDamage;
+      entityDamage = attackableItem.EntityDamage;
+      attackRange = attackableItem.Range;
+      timeBtwAttacks = attackableItem.TimeBtwAttacks;
+      staminaUsage = attackableItem.StaminaUsage;
+
+      return true;
     }
 
     private void Update() {
@@ -43,7 +97,7 @@ namespace Player {
 
       // Handle attack
       if (UserInput.instance.IsAttacking() /*&& currentTarget != null*/
-        && attackTimeCounter >= stats.TimeBtwAttacks) {
+        && attackTimeCounter >= timeBtwAttacks) {
         TriggerAttack();
       }
 
@@ -56,10 +110,9 @@ namespace Player {
     }
 
     private void HighlightTarget() {
-      float attackRange = stats.AttackRange;
       Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-      Collider2D hit = Physics2D.OverlapPoint(mousePoint, stats.AttackLayer);
+      Collider2D hit = Physics2D.OverlapPoint(mousePoint, attackLayer);
       if (hit == null || !hit.TryGetComponent(out IDamageable iDamageable)) {
         ClearTarget();
         return;
@@ -123,7 +176,7 @@ namespace Player {
         return;
       }
 
-      currentTarget.Damage(stats.AttackDamage);
+      currentTarget.Damage(blockDamage);
       iDamageables.Add(currentTarget);
     }
 
@@ -162,7 +215,6 @@ namespace Player {
     }
 
     private void OnDrawGizmosSelected() {
-      float attackRange = stats.AttackRange;
       Gizmos.DrawWireSphere(attackTransform.position, attackRange);
 
       Gizmos.color = Color.red;

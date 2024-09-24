@@ -54,6 +54,6 @@ MonoBehaviour:
   - tag: CellDestroyDustEffect
     prefab: {fileID: 2865693935466722942, guid: e33212a5a9068374198fe9509ab4d01a, type: 3}
     size: 2
-  - tag: MovingDustEffect
-    prefab: {fileID: 8101237012075620154, guid: 5d46b1e1ff9748e4d9ce1080d36a8fc8, type: 3}
-    size: 20
+  - tag: FootstepEffect
+    prefab: {fileID: 6109450353374441362, guid: 26e736b15c03c2a4dac5772cd48ea881, type: 3}
+    size: 5

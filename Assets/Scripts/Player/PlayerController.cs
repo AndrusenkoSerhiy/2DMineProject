@@ -57,26 +57,17 @@ namespace Player {
       _camera = Camera.main;
       isFlipped = false;
       rotationCoef = 1f;
+      AnimationEventManager.onFootstep += SpawnFootstepEffect;
     }
 
+    private void Destroy() {
+      AnimationEventManager.onFootstep -= SpawnFootstepEffect;
+    }
     
     private void Update() {
       _time += Time.deltaTime;
       GatherInput();
       LookAtMouse();
-      SpawnRunParticle();
-    }
-
-    private float counter;
-    private void SpawnRunParticle() {
-      counter += Time.deltaTime;
-      //moving particle
-      if (_grounded && Mathf.Abs(_rb.velocity.x) > 1) {
-        if (counter > _dustPeriod) {
-          PlayMovingEffect();
-          counter = 0;
-        }
-      }
     }
 
     private void LookAtMouse() {
@@ -173,9 +164,12 @@ namespace Player {
     private void PlayLandingEffect() {
       ObjectPooler.Instance.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
     }
-    
-    private void PlayMovingEffect() {
-      ObjectPooler.Instance.SpawnFromPool("MovingDustEffect", transform.position, Quaternion.identity);
+
+    private void SpawnFootstepEffect() {
+      if (Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x))) {
+        if (_grounded && Mathf.Abs(_rb.velocity.x) > 1)
+          ObjectPooler.Instance.SpawnFromPool("FootstepEffect", transform.position, Quaternion.identity);
+      }
     }
 
     #endregion

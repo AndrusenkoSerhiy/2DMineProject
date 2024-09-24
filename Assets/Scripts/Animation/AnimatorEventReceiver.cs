@@ -1,4 +1,3 @@
-using Animation;
 using UnityEngine;
 
 namespace Animation {
@@ -9,6 +8,10 @@ namespace Animation {
 
     public void TriggerAttackStart(AnimationEvent animationEvent) {
       AnimationEventManager.TriggerAttackStarted(animationEvent);
+    }
+
+    public void Footstep() {
+      AnimationEventManager.StartFootstepEffect();
     }
   }
 }

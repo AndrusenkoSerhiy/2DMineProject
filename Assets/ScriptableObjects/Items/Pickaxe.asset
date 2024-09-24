@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e4485bc801886e4aabde4373b47fa66, type: 3}
+  m_Name: Pickaxe
+  m_EditorClassIdentifier: 
+  Type: 2
+  UiDisplay: {fileID: 21300000, guid: f41e87b0f3fd49145803a568ad15a4c4, type: 3}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
+  Stackable: 0
+  MaxStackSize: 1
+  Description: pickaxe description
+  data:
+    Name: 
+    Id: 0
+    buffs: []
+  AttackLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  BlockDamage: 5
+  EntityDamage: 3
+  Range: 1.8
+  AttacksPerMinute: 65
+  StaminaUsage: 5

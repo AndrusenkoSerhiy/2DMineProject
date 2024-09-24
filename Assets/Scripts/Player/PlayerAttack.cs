@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using World;
 using Utils;
 using Settings;
 using Game;
@@ -43,7 +42,7 @@ namespace Player {
       HighlightTarget();
 
       // Handle attack
-      if (UserInput.instance.IsAttacking() && currentTarget != null
+      if (UserInput.instance.IsAttacking() /*&& currentTarget != null*/
         && attackTimeCounter >= stats.TimeBtwAttacks) {
         TriggerAttack();
       }
@@ -105,7 +104,8 @@ namespace Player {
     }
 
     private void Highlight() {
-      if (currentTargetRenderer == null) {
+      //                                     if current target is already dead
+      if (currentTargetRenderer == null || currentTarget.GetHealth() <= 0) {
         return;
       }
       currentTargetRenderer.material.SetInt("_ShowOutline", 1);

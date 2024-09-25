@@ -22,7 +22,7 @@ namespace Equipment {
     public Transform Weapon { get => _weapon; private set => _weapon = value; }
 
     void Start() {
-      _equipment = GetComponent<Interface.Player>().equipment;
+      _equipment = GetComponent<Interface.PlayerInventory>().equipment;
 
       for (int i = 0; i < _equipment.GetSlots.Length; i++) {
         _equipment.GetSlots[i].onBeforeUpdated += OnRemoveItem;

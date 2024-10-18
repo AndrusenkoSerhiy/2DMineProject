@@ -27,6 +27,6 @@ MonoBehaviour:
     m_Bits: 256
   blockDamage: 10
   entityDamage: 7
-  range: 2.8
-  attacksPerMinute: 50
+  range: 3
+  timeBtwAttacks: 0.4
   staminaUsage: 7

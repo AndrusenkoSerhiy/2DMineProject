@@ -23,7 +23,11 @@ namespace Scriptables.Inventory {
     public int amount;
 
     public ItemObject GetItemObject() {
-      return item.Id >= 0 ? parent.inventory.database.ItemObjects[item.Id] : null;
+      if (parent == null || parent.inventory == null || item.Id < 0) {
+        return null;
+      }
+
+      return parent.inventory.database.ItemObjects[item.Id];
     }
 
     public InventorySlot() => UpdateSlot(new Item(), 0);
@@ -34,10 +38,7 @@ namespace Scriptables.Inventory {
 
     public void AddAmount(int value) => UpdateSlot(item, amount += value);
 
-
     public void UpdateSlot(Item itemValue, int amountValue) {
-      //Debug.Log("UpdateSlot itemValue: " + itemValue);
-      //Debug.Log("UpdateSlot amountValue: " + amountValue);
       onBeforeUpdated?.Invoke(this);
       item = itemValue;
       amount = amountValue;
@@ -45,14 +46,17 @@ namespace Scriptables.Inventory {
     }
 
     public bool CanPlaceInSlot(ItemObject itemObject) {
-      if (AllowedItems.Length <= 0 || itemObject == null || itemObject.data.Id < 0)
+      if (AllowedItems.Length <= 0 || itemObject == null || itemObject.data.Id < 0) {
         return true;
-      for (int i = 0; i < AllowedItems.Length; i++) {
-        if (itemObject.Type == AllowedItems[i])
-          return true;
       }
+
+      for (int i = 0; i < AllowedItems.Length; i++) {
+        if (itemObject.Type == AllowedItems[i]) {
+          return true;
+        }
+      }
+
       return false;
     }
-
   }
 }

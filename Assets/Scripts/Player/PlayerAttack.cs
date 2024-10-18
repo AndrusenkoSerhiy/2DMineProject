@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utils;
 using Settings;
 using Game;
 using Scriptables.Player;
@@ -109,30 +108,60 @@ namespace Player {
       animator.SetTrigger("Attack");
     }
 
+    // private void TriggerAttack() {
+    //   if (currentTarget == null || IsObstructed(attackTransform.position, ((MonoBehaviour)currentTarget).transform.position)) {
+    //     // Do not attack if no valid target or target is blocked
+    //     return;
+    //   }
+
+    //   attackTimeCounter = 0f;
+    //   animator.SetTrigger("Attack");
+    // }
+
+    // private void HighlightTarget() {
+    //   Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+    //   Collider2D hit = Physics2D.OverlapPoint(mousePoint, attackLayer);
+    //   if (hit == null || !hit.TryGetComponent(out IDamageable iDamageable)) {
+    //     ClearTarget();
+    //     return;
+    //   }
+
+    //   if (iDamageable == currentTarget) {
+    //     return;
+    //   }
+
+
+    //   bool collision = Collisions.CheckCircleCollision(attackTransform.position, attackRange, hit);
+    //   if (!collision) {
+    //     ClearTarget();
+    //     return;
+    //   }
+
+    //   ClearTarget();
+
+    //   SetTarget(iDamageable);
+    //   Highlight();
+    // }
+
     private void HighlightTarget() {
+      Vector3 playerPosition = attackTransform.position;
       Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-      Collider2D hit = Physics2D.OverlapPoint(mousePoint, attackLayer);
-      if (hit == null || !hit.TryGetComponent(out IDamageable iDamageable)) {
+      Debug.DrawLine(playerPosition, mousePoint, Color.red);  // Visualize ray
+
+      RaycastHit2D hit = Physics2D.Raycast(playerPosition, mousePoint - playerPosition, attackRange, attackLayer);
+
+      if (hit.collider != null && hit.collider.TryGetComponent(out IDamageable iDamageable)) {
+        if (currentTarget != iDamageable) {
+          ClearTarget();
+          SetTarget(iDamageable);
+          Highlight();
+        }
+      }
+      else {
         ClearTarget();
-        return;
       }
-
-      if (iDamageable == currentTarget) {
-        return;
-      }
-
-
-      bool collision = Collisions.CheckCircleCollision(attackTransform.position, attackRange, hit);
-      if (!collision) {
-        ClearTarget();
-        return;
-      }
-
-      ClearTarget();
-
-      SetTarget(iDamageable);
-      Highlight();
     }
 
     private void SetTarget(IDamageable target) {

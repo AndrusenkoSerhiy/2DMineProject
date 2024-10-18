@@ -5,7 +5,7 @@ using Settings;
 using UnityEngine;
 
 namespace Interface {
-  public class Player : MonoBehaviour {
+  public class PlayerInventory : MonoBehaviour {
     public InventoryObject inventory;
     public GameObject inventoryPrefab;
     // public GameObject equipmentPrefab;

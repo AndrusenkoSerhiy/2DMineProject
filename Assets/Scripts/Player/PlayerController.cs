@@ -167,7 +167,7 @@ namespace Player {
 
     private void SpawnFootstepEffect() {
       if (Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x))) {
-        if (_grounded && Mathf.Abs(_rb.velocity.x) > 1)
+        if (_grounded && Mathf.Abs(_rb.linearVelocity.x) > 1)
           ObjectPooler.Instance.SpawnFromPool("FootstepEffect", transform.position, Quaternion.identity);
       }
     }
@@ -187,7 +187,7 @@ namespace Player {
     private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime;
 
     private void HandleJump() {
-      if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.velocity.y > 0) _endedJumpEarly = true;
+      if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
 
       if (!_jumpToConsume && !HasBufferedJump) return;
 
@@ -262,7 +262,7 @@ namespace Player {
 
     #endregion
 
-    private void ApplyMovement() => _rb.velocity = _frameVelocity;
+    private void ApplyMovement() => _rb.linearVelocity = _frameVelocity;
 
 #if UNITY_EDITOR
     private void OnValidate() {

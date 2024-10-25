@@ -23,6 +23,8 @@ public class UnitHealth {
     if (damage <= 0) return;
 
     _hasTakenDamage = true;
+    //need to check how exactly damage we have, box can have 15 durability and pickaxe 6 damage
+    if(_currentHealth < damage) damage = _currentHealth;
     _currentHealth -= damage;
     _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
 

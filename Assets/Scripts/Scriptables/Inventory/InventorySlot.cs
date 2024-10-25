@@ -32,12 +32,25 @@ namespace Scriptables.Inventory {
 
     public InventorySlot() => UpdateSlot(new Item(), 0);
 
-    public InventorySlot(Item item, int amount) => UpdateSlot(item, amount);
+    public InventorySlot(Item item, int amount) => UpdateSlot(item, amount, 0);
 
     public void RemoveItem() => UpdateSlot(new Item(), 0);
 
-    public void AddAmount(int value) => UpdateSlot(item, amount += value);
+    public int AddAmount(int value, int maxStack = -1) => UpdateSlot(item, amount += value, maxStack);
 
+    //use to add item, and check maxStack
+    public int UpdateSlot(Item itemValue, int amountValue, int maxStack) {
+      onBeforeUpdated?.Invoke(this);
+
+      item = itemValue;
+      amount = Mathf.Min(amountValue, maxStack);
+      
+      onAfterUpdated?.Invoke(this);
+
+      return Mathf.Max(0, amountValue - maxStack);
+    }
+
+    //use for load
     public void UpdateSlot(Item itemValue, int amountValue) {
       onBeforeUpdated?.Invoke(this);
       item = itemValue;

@@ -16,6 +16,8 @@ namespace Interface {
     private InventoryObject _previousInventory;
     public Dictionary<GameObject, InventorySlot> slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
     private bool _enabled = false;
+    [SerializeField] private Camera _uiCamera;
+    [SerializeField] private Canvas _canvas;
 
     public void OnEnable() {
       if (_enabled) {
@@ -107,6 +109,7 @@ namespace Interface {
       GameObject tempItem = null;
       if (slotsOnInterface[obj].item.Id >= 0) {
         tempItem = new GameObject("TempItemBeingDragged");
+        tempItem.layer = 5;
         var rt = tempItem.AddComponent<RectTransform>();
 
         rt.sizeDelta = new Vector2(80, 80);
@@ -137,9 +140,10 @@ namespace Interface {
 
     public void OnDrag(GameObject obj) {
       if (MouseData.tempItemBeingDragged != null) {
-        var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var mousePos = Input.mousePosition;//_uiCamera.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
         MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = mousePos;
+
       }
     }
   }

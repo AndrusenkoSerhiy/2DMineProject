@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b23419512bd349d18debac7d35c1f6fe, type: 3}
   m_Name: StoneData
   m_EditorClassIdentifier: 
-  Durability: 25
+  Durability: 15
   SpriteVariants:
   - {fileID: 21300000, guid: 2e38f49b9417f5040adff08f730e3bef, type: 3}
   - {fileID: 21300000, guid: 2c62f23e776c52f49b79cee08bf59417, type: 3}
   darkSprite: {fileID: 21300000, guid: aa76a16f335ec844c97a250d1fd57409, type: 3}
+  itemData: {fileID: 11400000, guid: e7e17c5f9d44dc4478bae9fa8ecfcefb, type: 2}

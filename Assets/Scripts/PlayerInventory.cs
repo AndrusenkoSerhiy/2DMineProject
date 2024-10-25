@@ -1,4 +1,5 @@
-﻿using Items;
+﻿using Game;
+using Items;
 using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
@@ -28,16 +29,23 @@ namespace Interface {
       if (inventoryPrefab != null) {
         inventoryPrefab.SetActive(false);
       }
+      GameManager.instance.PlayerInventory = this;
     }
 
     public void OnTriggerEnter2D(Collider2D other) {
       var item = other.GetComponent<GroundItem>();
       // Debug.Log("Picked up " + item);
-      if (item) {
+      if (item && !item.IsPicked) {
         if (inventory.AddItem(new Item(item.item), 1)) {
+          item.IsPicked = true;
+          Debug.LogError($"Destroy {other.name}");
           Destroy(other.gameObject);
         }
       }
+    }
+
+    public void AddItemToInventory(ItemObject item, int count){
+        inventory.AddItem(new Item(item), count);
     }
 
     private void Update() {

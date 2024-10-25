@@ -1,3 +1,4 @@
+using Interface;
 using UnityEngine;
 using World;
 
@@ -8,6 +9,7 @@ namespace Game {
     [SerializeField] private ChunkController _chunkController;
     [SerializeField] private CellObjectsPool _cellObjectsPool;
     [SerializeField] private ChunkObjectsPool _chunkObjectsPool;
+    private PlayerInventory _playerInventory;
     public static GameManager instance {
       get {
         if (_instance == null) {
@@ -22,15 +24,20 @@ namespace Game {
     }
 
     public ChunkController ChunkController => _chunkController;
-    
+
     public CellObjectsPool cellObjectsPool {
       get { return _cellObjectsPool; }
-    }  
+    }
     public ChunkObjectsPool chunkObjectsPool {
       get { return _chunkObjectsPool; }
-    }  
+    }
     public TaskManager TaskManager {
       get { return taskManagerRef; }
+    }
+
+    public PlayerInventory PlayerInventory {
+      set { _playerInventory = value; }
+      get { return _playerInventory; }
     }
 
     private void Awake() {

@@ -2,7 +2,9 @@
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Scriptables.Items;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Scriptables.Inventory {
   [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
@@ -16,18 +18,46 @@ namespace Scriptables.Inventory {
     public InventorySlot[] GetSlots => Container.Slots;
 
     public bool AddItem(Item item, int amount) {
-      if (EmptySlotCount <= 0) {
+      InventorySlot slot = FindStackableItemOnInventory(item);//FindItemOnInventory(item);
+      //don't have empty slot or existing item
+      if (EmptySlotCount <= 0 && slot == null) {
         return false;
       }
 
-      InventorySlot slot = FindItemOnInventory(item);
-      //Debug.Log(JsonUtility.ToJson(item, true));
+      //add to new slot
+      int maxStackSize = database.ItemObjects[item.Id].MaxStackSize;
       if (!database.ItemObjects[item.Id].Stackable || slot == null) {
-        GetEmptySlot().UpdateSlot(item, amount);
+        var overFlow = GetEmptySlot().UpdateSlot(item, amount, maxStackSize);
+        //Debug.LogError($"add to free slot {test} | amount {amount}");
+        if (overFlow > 0) {
+          var countRepeat = Mathf.CeilToInt((float)overFlow / maxStackSize);
+
+          //Debug.LogError($"test {test} | {countRepeat}");
+          for (int i = 0; i < countRepeat; i++) {
+            GetEmptySlot().UpdateSlot(item, overFlow, maxStackSize);
+            overFlow -= maxStackSize;
+          }
+
+        }
         return true;
       }
 
-      slot.AddAmount(amount);
+      //add to exist slot
+      var remainingAmount = slot.AddAmount(amount, maxStackSize);
+      //Debug.LogError($"lefted count {remainingAmount}");
+
+      if (remainingAmount > 0) {
+        //Debug.LogError($"lefted count {leftedCount}");
+        var countRepeat = Mathf.CeilToInt((float)remainingAmount / maxStackSize);
+
+        //Debug.LogError($"count repeat {countRepeat}!!!!!!!!!!!!!!!!!!!");
+        for (int i = 0; i < countRepeat; i++) {
+          GetEmptySlot().UpdateSlot(item, remainingAmount, maxStackSize);
+          remainingAmount -= maxStackSize;
+        }
+        return true;
+      }
+
       return true;
     }
 
@@ -46,6 +76,15 @@ namespace Scriptables.Inventory {
     public InventorySlot FindItemOnInventory(Item item) {
       for (int i = 0; i < GetSlots.Length; i++) {
         if (GetSlots[i].item.Id == item.Id) {
+          return GetSlots[i];
+        }
+      }
+      return null;
+    }
+
+    public InventorySlot FindStackableItemOnInventory(Item item) {
+      for (int i = 0; i < GetSlots.Length; i++) {
+        if (GetSlots[i].item.Id == item.Id && GetSlots[i].amount < database.ItemObjects[item.Id].MaxStackSize) {
           return GetSlots[i];
         }
       }

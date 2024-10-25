@@ -31,6 +31,7 @@ namespace World {
       _cellData = cellData;
       resourceData = data;
       unitHealth = new UnitHealth(resourceData.Durability);
+      unitHealth.OnTakeDamage += AddItemToInventory;
     }
 
     public void InitSprite() {
@@ -44,10 +45,17 @@ namespace World {
 
     public void Damage(float damage) {
       unitHealth.TakeDamage(damage);
-
       UpdateDamageOverlay(damage);
     }
 
+    private void AddItemToInventory(float damage) {
+      if (resourceData.ItemData == null) {
+        Debug.LogError($"You need to add itemData in resourceData {resourceData}");
+        return;
+      }
+
+      GameManager.instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage);
+    }
     public float GetHealth() {
       return unitHealth.health;
     }

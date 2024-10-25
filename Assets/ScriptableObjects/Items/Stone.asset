@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e4485bc801886e4aabde4373b47fa66, type: 3}
-  m_Name: Pickaxe
+  m_Name: Stone
   m_EditorClassIdentifier: 
-  Type: 2
-  UiDisplay: {fileID: 21300000, guid: f41e87b0f3fd49145803a568ad15a4c4, type: 3}
-  CharacterDisplay: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
-  Stackable: 0
-  MaxStackSize: 1
-  Description: pickaxe description
+  Type: 0
+  UiDisplay: {fileID: 21300000, guid: 5af73e1e2243a6f4f9016b1f22292d36, type: 3}
+  CharacterDisplay: {fileID: 0}
+  Stackable: 1
+  MaxStackSize: 2
+  Description: Stone resources
   data:
     Name: 
-    Id: 0
+    Id: 2
     buffs: []
   attackLayer:
     serializedVersion: 2
-    m_Bits: 256
-  blockDamage: 6
-  entityDamage: 3
-  range: 1.8
-  timeBtwAttacks: 0.4
-  staminaUsage: 5
+    m_Bits: 0
+  blockDamage: 0
+  entityDamage: 0
+  range: 0
+  timeBtwAttacks: 0
+  staminaUsage: 0

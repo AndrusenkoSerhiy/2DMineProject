@@ -1,4 +1,5 @@
 using Interface;
+using Player;
 using UnityEngine;
 using World;
 
@@ -9,6 +10,7 @@ namespace Game {
     [SerializeField] private ChunkController _chunkController;
     [SerializeField] private CellObjectsPool _cellObjectsPool;
     [SerializeField] private ChunkObjectsPool _chunkObjectsPool;
+    [SerializeField] private PlayerController _playerController;
     private PlayerInventory _playerInventory;
     public static GameManager instance {
       get {
@@ -40,6 +42,10 @@ namespace Game {
       get { return _playerInventory; }
     }
 
+    public PlayerController PlayerController {
+      set { _playerController = value; }
+      get { return _playerController; }
+    }
     private void Awake() {
       if (_instance != null && _instance != this) {
         Destroy(this.gameObject);

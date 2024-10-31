@@ -1,4 +1,5 @@
 using System;
+using Game;
 using Pool;
 using Scriptables.Player;
 using UnityEngine;
@@ -58,6 +59,7 @@ namespace Player {
       isFlipped = false;
       rotationCoef = 1f;
       AnimationEventManager.onFootstep += SpawnFootstepEffect;
+      GameManager.instance.PlayerController = this;
     }
 
     private void Destroy() {

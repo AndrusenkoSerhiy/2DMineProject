@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e4485bc801886e4aabde4373b47fa66, type: 3}
+  m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
   Type: 0
@@ -17,16 +17,9 @@ MonoBehaviour:
   CharacterDisplay: {fileID: 0}
   Stackable: 1
   MaxStackSize: 2
-  Description: Stone resources
+  Description: 
   data:
     Name: 
     Id: 2
     buffs: []
-  attackLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  blockDamage: 0
-  entityDamage: 0
-  range: 0
-  timeBtwAttacks: 0
-  staminaUsage: 0
+  spawnPrefab: {fileID: 3890226224433729309, guid: 9629ad65c25f97048966dd27f06d3261, type: 3}

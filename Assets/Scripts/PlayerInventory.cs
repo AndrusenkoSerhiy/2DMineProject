@@ -3,6 +3,7 @@ using Items;
 using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Interface {
@@ -22,7 +23,7 @@ namespace Interface {
       if (!inventory.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])
         && !equipment.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])) {
         Debug.Log("Adding default item to inventory.");
-        inventory.AddItem(defaultItem, 1);
+        inventory.AddItem(defaultItem, 1, null, null);
       }
 
       //hide the inventory UI at the start
@@ -36,16 +37,16 @@ namespace Interface {
       var item = other.GetComponent<GroundItem>();
       // Debug.Log("Picked up " + item);
       if (item && !item.IsPicked) {
-        if (inventory.AddItem(new Item(item.item), 1)) {
+        if (inventory.AddItem(new Item(item.item), item.Count, null, item)) {
           item.IsPicked = true;
-          Debug.LogError($"Destroy {other.name}");
+          //Debug.LogError($"Destroy {other.name}");
           Destroy(other.gameObject);
         }
       }
     }
 
     public void AddItemToInventory(ItemObject item, int count){
-        inventory.AddItem(new Item(item), count);
+        inventory.AddItem(new Item(item), count, item, null);
     }
 
     private void Update() {

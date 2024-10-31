@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using Game;
+using Items;
 using Scriptables.Items;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,10 +19,18 @@ namespace Scriptables.Inventory {
     private Inventory Container = new Inventory();
     public InventorySlot[] GetSlots => Container.Slots;
 
+
+    //use to pickUp item
     public bool AddItem(Item item, int amount) {
+      return true;
+    }
+
+    //use to get item from mining
+    public bool AddItem(Item item, int amount, ItemObject itemObj, GroundItem groundItem) {
       InventorySlot slot = FindStackableItemOnInventory(item);//FindItemOnInventory(item);
       //don't have empty slot or existing item
       if (EmptySlotCount <= 0 && slot == null) {
+        DropItemToGround(itemObj, groundItem, amount);
         return false;
       }
 
@@ -28,37 +38,55 @@ namespace Scriptables.Inventory {
       int maxStackSize = database.ItemObjects[item.Id].MaxStackSize;
       if (!database.ItemObjects[item.Id].Stackable || slot == null) {
         var overFlow = GetEmptySlot().UpdateSlot(item, amount, maxStackSize);
-        //Debug.LogError($"add to free slot {test} | amount {amount}");
-        if (overFlow > 0) {
-          var countRepeat = Mathf.CeilToInt((float)overFlow / maxStackSize);
-
-          //Debug.LogError($"test {test} | {countRepeat}");
-          for (int i = 0; i < countRepeat; i++) {
-            GetEmptySlot().UpdateSlot(item, overFlow, maxStackSize);
-            overFlow -= maxStackSize;
-          }
-
-        }
-        return true;
+        return HandleOverflow(overFlow, maxStackSize, itemObj, groundItem, item);
       }
 
       //add to exist slot
       var remainingAmount = slot.AddAmount(amount, maxStackSize);
-      //Debug.LogError($"lefted count {remainingAmount}");
+      return HandleOverflow(remainingAmount, maxStackSize,itemObj, groundItem, item);
+    }
 
-      if (remainingAmount > 0) {
+    private void DropItemToGround(ItemObject itemObj, GroundItem groundItem, int amount) {
+      if (itemObj != null) {
+        Debug.LogError($"Need to spawn item on floor! Amount: {amount}");
+        SpawnItem(itemObj, amount);
+      }
+      UpdateCount(groundItem, amount);
+    }
+
+    private bool HandleOverflow(int overflowAmount, int maxStackSize, ItemObject itemObj, GroundItem groundItem, Item item){
+      if (overflowAmount  > 0) {
         //Debug.LogError($"lefted count {leftedCount}");
-        var countRepeat = Mathf.CeilToInt((float)remainingAmount / maxStackSize);
+        var countRepeat = Mathf.CeilToInt((float)overflowAmount  / maxStackSize);
 
         //Debug.LogError($"count repeat {countRepeat}!!!!!!!!!!!!!!!!!!!");
         for (int i = 0; i < countRepeat; i++) {
-          GetEmptySlot().UpdateSlot(item, remainingAmount, maxStackSize);
-          remainingAmount -= maxStackSize;
+          var emptySlot = GetEmptySlot();
+          if (emptySlot != null) {
+            emptySlot.UpdateSlot(item, overflowAmount , maxStackSize);
+            overflowAmount  -= maxStackSize;
+          }
+          else {
+            Debug.LogError($"Also need to spawn item on floor {overflowAmount }");
+            DropItemToGround(itemObj, groundItem, overflowAmount);
+            return false;
+          }
         }
         return true;
       }
-
       return true;
+    }
+    private void SpawnItem(ItemObject item, int amount) {
+      if (item == null)
+        return;
+
+      GameObject newObj = Instantiate(((Resource)item).spawnPrefab, GameManager.instance.PlayerController.transform.position, Quaternion.identity);
+      var groundObj = newObj.GetComponent<GroundItem>();
+      groundObj.Count = amount;
+    }
+    //update count for ground item
+    private void UpdateCount(GroundItem groundItem, int amount) {
+      if (groundItem != null) groundItem.Count = amount;
     }
 
     public int EmptySlotCount {

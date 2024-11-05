@@ -32,7 +32,8 @@ namespace Scriptables.Inventory {
 
     public InventorySlot() => UpdateSlot(new Item(), 0);
 
-    public InventorySlot(Item item, int amount) => UpdateSlot(item, amount, 0);
+    //use for swap items in inventory
+    public InventorySlot(Item item, int amount, int maxStack) => UpdateSlot(item, amount, maxStack);
 
     public void RemoveItem() => UpdateSlot(new Item(), 0);
 

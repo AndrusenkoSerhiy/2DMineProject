@@ -142,9 +142,9 @@ namespace Scriptables.Inventory {
       if (item1 == item2) {
         return;
       }
-
+  
       if (item2.CanPlaceInSlot(item1.GetItemObject()) && item1.CanPlaceInSlot(item2.GetItemObject())) {
-        InventorySlot temp = new InventorySlot(item2.item, item2.amount);
+        InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.amount);
         item2.UpdateSlot(item1.item, item1.amount);
         item1.UpdateSlot(temp.item, temp.amount);
       }

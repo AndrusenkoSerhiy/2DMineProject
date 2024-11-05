@@ -8,6 +8,9 @@ using UnityEngine.EventSystems;
 using System.Linq;
 using Scriptables.Inventory;
 using UnityEngine.InputSystem.LowLevel;
+using Scriptables.Items;
+using Items;
+using Game;
 
 namespace Interface {
   [RequireComponent(typeof(EventTrigger))]
@@ -129,13 +132,23 @@ namespace Interface {
       Destroy(MouseData.tempItemBeingDragged);
 
       if (MouseData.interfaceMouseIsOver == null) {
+        
+        SpawnItem(slotsOnInterface[obj]);
         slotsOnInterface[obj].RemoveItem();
+        Debug.LogError($"need to spawn item on ground");
         return;
       }
       if (MouseData.slotHoveredOver) {
         InventorySlot mouseHoverSlotData = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver];
         inventory.SwapItems(slotsOnInterface[obj], mouseHoverSlotData);
       }
+    }
+
+    private void SpawnItem(InventorySlot slot){
+      //spawn higher in y pos because need TO DO pick up on action not the trigger enter
+      GameObject newObj = Instantiate(((Resource)GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id)).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0,5,0), Quaternion.identity);
+        var groundObj = newObj.GetComponent<GroundItem>();
+        groundObj.Count = slot.amount;
     }
 
     public void OnDrag(GameObject obj) {

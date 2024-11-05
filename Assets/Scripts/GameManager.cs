@@ -1,5 +1,6 @@
 using Interface;
 using Player;
+using Scriptables.Items;
 using UnityEngine;
 using World;
 
@@ -11,6 +12,7 @@ namespace Game {
     [SerializeField] private CellObjectsPool _cellObjectsPool;
     [SerializeField] private ChunkObjectsPool _chunkObjectsPool;
     [SerializeField] private PlayerController _playerController;
+    [SerializeField] private ItemDatabaseObject _database;
     private PlayerInventory _playerInventory;
     public static GameManager instance {
       get {
@@ -45,6 +47,10 @@ namespace Game {
     public PlayerController PlayerController {
       set { _playerController = value; }
       get { return _playerController; }
+    }
+
+    public ItemDatabaseObject ItemDatabaseObject {
+      get { return _database; }
     }
     private void Awake() {
       if (_instance != null && _instance != this) {

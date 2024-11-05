@@ -10,5 +10,9 @@ namespace Scriptables.Items {
         ItemObjects[i].data.Id = i;
       }
     }
+
+    public ItemObject GetByID(int id){
+      return ItemObjects[id];
+    }
   }
 }

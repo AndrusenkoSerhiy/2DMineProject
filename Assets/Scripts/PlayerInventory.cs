@@ -33,17 +33,17 @@ namespace Interface {
       GameManager.instance.PlayerInventory = this;
     }
 
-    public void OnTriggerEnter2D(Collider2D other) {
-      var item = other.GetComponent<GroundItem>();
-      // Debug.Log("Picked up " + item);
-      if (item && !item.IsPicked) {
-        if (inventory.AddItem(new Item(item.item), item.Count, null, item)) {
-          item.IsPicked = true;
-          //Debug.LogError($"Destroy {other.name}");
-          Destroy(other.gameObject);
-        }
-      }
-    }
+    // public void OnTriggerEnter2D(Collider2D other) {
+    //   var item = other.GetComponent<GroundItem>();
+    //   // Debug.Log("Picked up " + item);
+    //   if (item && !item.IsPicked) {
+    //     if (inventory.AddItem(new Item(item.item), item.Count, null, item)) {
+    //       item.IsPicked = true;
+    //       //Debug.LogError($"Destroy {other.name}");
+    //       Destroy(other.gameObject);
+    //     }
+    //   }
+    // }
 
     public void AddItemToInventory(ItemObject item, int count){
         inventory.AddItem(new Item(item), count, item, null);

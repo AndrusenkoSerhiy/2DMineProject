@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 3625460618267473847}
   - component: {fileID: 9064497359182062437}
   - component: {fileID: 8794410963485848602}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,6 +134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _count: 1
+  _interactName: Pickup
   item: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
   IsPicked: 0
 --- !u!70 &8794410963485848602

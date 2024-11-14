@@ -5,11 +5,13 @@ using Scriptables;
 using Pool;
 using Game;
 using Scriptables.World;
+using UnityEngine.U2D;
 
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
     private ChunkObject _chunkObject;
     [SerializeField] private CellStats cellStats;
+    [SerializeField] private SpriteAtlas atlasRef;
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
@@ -35,7 +37,9 @@ namespace World {
     }
 
     public void InitSprite() {
-      sprite.sprite = _cellData.HasNeighbours ? resourceData.DarkSprite : resourceData.Sprite;
+      sprite.sprite = _cellData.HasNeighbours ? 
+        atlasRef.GetSprite(resourceData.DarkSprite.name) :
+        atlasRef.GetSprite(resourceData.Sprite.name);
     }
 
     public bool hasTakenDamage {

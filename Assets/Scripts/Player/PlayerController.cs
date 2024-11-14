@@ -29,7 +29,6 @@ namespace Player {
     private Camera _camera;
     private bool isFlipped = false;
     private float rotationCoef = 1f;
-    private float angleOffset = 80f;
 
     [SerializeField] private float _topAngleLimit = 20;
     [SerializeField] private float _bottomAngleLimit = -20;
@@ -43,10 +42,6 @@ namespace Player {
     #endregion
 
     private float _time;
-    
-    [Tooltip("Period of time to spawn run particle")]
-    [Range(0, .5f)]
-    [SerializeField] private float _dustPeriod = .1f;
 
     private void Awake() {
       _rb = GetComponent<Rigidbody2D>();

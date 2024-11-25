@@ -2,16 +2,16 @@ using System;
 using UnityEngine;
 
 public class AnimationEventManager : MonoBehaviour {
-  public static Action<AnimationEvent> onAttackStarted;
-  public static Action<AnimationEvent> onAttackEnded;
+  public static Action<AnimationEvent, GameObject> onAttackStarted;
+  public static Action<AnimationEvent, GameObject> onAttackEnded;
   public static Action onFootstep;
 
-  public static void TriggerAttackStarted(AnimationEvent animationEvent) {
-    onAttackStarted?.Invoke(animationEvent);
+  public static void TriggerAttackStarted(AnimationEvent animationEvent, GameObject go) {
+    onAttackStarted?.Invoke(animationEvent, go);
   }
 
-  public static void TriggerAttackEnded(AnimationEvent animationEvent) {
-    onAttackEnded?.Invoke(animationEvent);
+  public static void TriggerAttackEnded(AnimationEvent animationEvent, GameObject go) {
+    onAttackEnded?.Invoke(animationEvent, go);
   }
 
   public static void StartFootstepEffect() {

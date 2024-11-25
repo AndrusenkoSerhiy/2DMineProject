@@ -794,6 +794,7 @@ MonoBehaviour:
   _currHP: 0
   _maxHP: 30
   _animator: {fileID: 660024517565497304}
+  _isDead: 0
 --- !u!114 &4951586190832703889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -812,6 +813,7 @@ MonoBehaviour:
   _flipDeadZone: 0.5
   _topAngleLimit: 20
   _bottomAngleLimit: -20
+  _actorPlayer: {fileID: 0}
   _dustPeriod: 0.062
 --- !u!114 &3203884702869887430
 MonoBehaviour:
@@ -939,6 +941,7 @@ MonoBehaviour:
   _interactableMask:
     serializedVersion: 2
     m_Bits: 8
+  _interactionPromtUI: {fileID: 0}
   _numFound: 0
 --- !u!1 &2732549292726789520
 GameObject:

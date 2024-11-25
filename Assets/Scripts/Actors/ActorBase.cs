@@ -4,9 +4,11 @@ namespace Game.Actors {
   public class ActorBase : MonoBehaviour, IDamageable {
     [SerializeField] protected float _currHP;
     [SerializeField] protected float _maxHP;
-    [SerializeField] private Animator _animator;
+    [SerializeField] protected Animator _animator;
+    [SerializeField] private bool _isDead;
     private UnitHealth unitHealth;
 
+    public bool IsDead => _isDead;
     private void Awake() {
       _currHP = _maxHP;
       unitHealth = new UnitHealth(_currHP);
@@ -19,8 +21,9 @@ namespace Game.Actors {
     public void Damage(float damage) {
       unitHealth.TakeDamage(damage);
       _currHP -= damage;
-      
+      Debug.LogError($"Damage {_currHP}");
       if (_currHP <= 0) {
+        _isDead = true;
         PlayDeathAnim();
       }
       else {
@@ -33,6 +36,8 @@ namespace Game.Actors {
     }
     
     private void PlayDeathAnim() {
+      Debug.LogError($"PlayDeathAnim");
+      _animator.SetLayerWeight(1, 0);
       _animator.SetTrigger("Die");
     }
 

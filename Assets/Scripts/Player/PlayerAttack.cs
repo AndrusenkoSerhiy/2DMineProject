@@ -252,13 +252,17 @@ namespace Player {
 
     #region Animation Triggers
 
-    private void HandleAnimationStarted(AnimationEvent animationEvent) {
+    private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
+      if(go != gameObject)
+        return;
       StartCoroutine(DamageWhileSlashIsActive());
       // Debug.Log("Attack started");
       currentTarget?.AfterDamageReceived();
     }
 
-    private void HandleAnimationEnded(AnimationEvent animationEvent) {
+    private void HandleAnimationEnded(AnimationEvent animationEvent, GameObject go) {
+      if(go != gameObject)
+        return;
       ShouldBeDamagingToFalse();
       // Debug.Log("Attack ended");
       DestroyTarget();

@@ -17,7 +17,7 @@ namespace Items {
     public string InteractionPrompt => $"{_interactName} {item.name}";
 
     public bool Interact(Interactor interactor) {
-      Debug.LogError("Interact");
+      //Debug.LogError("Interact");
       if (!IsPicked) {
         if (GameManager.instance.PlayerInventory.inventory.AddItem(new Item(item), Count, null, this)) {
           IsPicked = true;

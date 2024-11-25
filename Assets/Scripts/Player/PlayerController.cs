@@ -1,5 +1,6 @@
 using System;
 using Game;
+using Game.Actors;
 using Pool;
 using Scriptables.Player;
 using UnityEngine;
@@ -33,6 +34,7 @@ namespace Player {
 
     [SerializeField] private float _topAngleLimit = 20;
     [SerializeField] private float _bottomAngleLimit = -20;
+    [SerializeField] private ActorPlayer _actorPlayer;
 
     #region Interface
 
@@ -43,7 +45,7 @@ namespace Player {
     #endregion
 
     private float _time;
-    
+
     [Tooltip("Period of time to spawn run particle")]
     [Range(0, .5f)]
     [SerializeField] private float _dustPeriod = .1f;
@@ -65,9 +67,12 @@ namespace Player {
     private void Destroy() {
       AnimationEventManager.onFootstep -= SpawnFootstepEffect;
     }
-    
+
     private void Update() {
       _time += Time.deltaTime;
+      if (_actorPlayer.IsDead)
+        return;
+        
       GatherInput();
       LookAtMouse();
     }

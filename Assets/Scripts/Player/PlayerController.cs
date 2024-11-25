@@ -30,7 +30,6 @@ namespace Player {
     private Camera _camera;
     private bool isFlipped = false;
     private float rotationCoef = 1f;
-    private float angleOffset = 80f;
 
     [SerializeField] private float _topAngleLimit = 20;
     [SerializeField] private float _bottomAngleLimit = -20;

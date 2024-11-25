@@ -17,7 +17,7 @@ namespace Game {
     public static GameManager instance {
       get {
         if (_instance == null) {
-          _instance = FindObjectOfType<GameManager>();
+          _instance = FindAnyObjectByType<GameManager>();
 
           if (_instance == null) {
             Debug.LogError("GameManager instance not found in the scene.");

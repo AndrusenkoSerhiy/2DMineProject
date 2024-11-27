@@ -14,41 +14,34 @@ public class NPCMovement : MonoBehaviour {
     [SerializeField] private ActorEnemy _actor;
     public float sphereRadius = 1f;
     public float maxDistance = 1f;
+    private Vector3 localScale;
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
+        localScale = transform.localScale;
     }
 
-    private void Update() {
-        // if(Input.GetKeyDown(KeyCode.PageUp)){
-        //     Jump();
-        // }
-
+    private void FixedUpdate() {
         MoveTowardsTarget();
 
         // Check for obstacles in front of the NPC
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(1,1,0), transform.right, 1, groundLayer);
-        
-        Debug.DrawRay(transform.position + new Vector3(1,1,0), transform.right, Color.red, .5f);
-        
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(1, 1, 0), transform.right, 1, groundLayer);
 
         if (hit.collider != null && !CheckUP()) {//&& hit.collider != boxCollider2D
             //Debug.LogError($"hit {gameObject.name}");
             Jump();
         }
-        Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.up, Color.red, 1f);
     }
 
-    private bool CheckUP(){
+    private bool CheckUP() {
         // Define the starting position (origin) and direction
-        Vector3 origin = transform.position + new Vector3(0,3.3f,0);
+        Vector3 origin = transform.position + new Vector3(0, 3.3f, 0);
         Vector3 direction = transform.up;
 
         // Store hit information
         RaycastHit2D hit = Physics2D.CircleCast(origin, sphereRadius, direction, maxDistance, groundLayer);
-        if (hit.collider != null)
-        {
+        if (hit.collider != null) {
             // If we hit something, log its name
             Debug.Log($"npc {gameObject.name} | Hit: {hit.collider.name}");
 
@@ -59,32 +52,41 @@ public class NPCMovement : MonoBehaviour {
         return false;
     }
 
-    void OnDrawGizmos()
-    {
+    void OnDrawGizmos() {
         // Optional: Visualize the sphere at the origin and along the direction
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position + new Vector3(0,3.3f,0), sphereRadius);
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0, 3.3f, 0), sphereRadius);
 
-         Vector3 endPoint = transform.position + new Vector3(0,3.3f,0) + transform.up * maxDistance;
-         Gizmos.DrawWireSphere(endPoint, sphereRadius);
+        Vector3 endPoint = transform.position + new Vector3(0, 3.3f, 0) + transform.up * maxDistance;
+        Gizmos.DrawWireSphere(endPoint, sphereRadius);
     }
 
     private void MoveTowardsTarget() {
         // Calculate direction and move towards target
-        if(target == null || _actor != null && _actor.IsDead){
+        if (target == null || _actor != null && _actor.IsDead) {
             return;
         }
-        if (Vector2.Distance(transform.position, target.transform.position) <= stopingDistance/*|| !IsGrounded()*/){
+        if (Vector2.Distance(transform.position, target.transform.position) <= stopingDistance) {
             rb.linearVelocity = new Vector2(0, 0);
             _actor?.TriggerAttack();
             return;
         }
-        
+
         Vector2 direction = (target.position - transform.position).normalized;
+        FlipX(direction.x);
         rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocity.y);
     }
 
+    private void FlipX(float direction) {
+        localScale.x = Mathf.Sign(-direction);
+        transform.localScale = localScale;
+    }
+
     private void Jump() {
+        if (target == null || _actor != null && _actor.IsDead) {
+            return;
+        }
+
         if (IsGrounded()) {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }

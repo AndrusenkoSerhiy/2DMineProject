@@ -146,7 +146,7 @@ namespace Player {
 
     private void HighlightTarget() {
       Vector3 playerPosition = attackTransform.position;
-      Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+      Vector3 mousePoint = Camera.main.ScreenToWorldPoint(UserInput.instance.GetMousePosition());//Input.mousePosition
 
       Debug.DrawLine(playerPosition, mousePoint, Color.red);  // Visualize ray
 

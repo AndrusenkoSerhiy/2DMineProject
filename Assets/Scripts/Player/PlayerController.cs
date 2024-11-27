@@ -3,7 +3,9 @@ using Game;
 using Game.Actors;
 using Pool;
 using Scriptables.Player;
+using Settings;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 namespace Player {
@@ -19,7 +21,7 @@ namespace Player {
     [SerializeField] private PlayerStats _stats;
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
-    private FrameInput _frameInput;
+    //private FrameInput _frameInput;
     private Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
     [SerializeField] private Animator _animator;
@@ -37,7 +39,7 @@ namespace Player {
 
     #region Interface
 
-    public Vector2 FrameInput => _frameInput.Move;
+    //public Vector2 FrameInput => _frameInput.Move;
     public event Action<bool, float> GroundedChanged;
     public event Action Jumped;
 
@@ -48,6 +50,8 @@ namespace Player {
     [Tooltip("Period of time to spawn run particle")]
     [Range(0, .5f)]
     [SerializeField] private float _dustPeriod = .1f;
+
+    private Vector3 localScale;
 
     private void Awake() {
       _rb = GetComponent<Rigidbody2D>();
@@ -61,10 +65,18 @@ namespace Player {
       rotationCoef = 1f;
       AnimationEventManager.onFootstep += SpawnFootstepEffect;
       GameManager.instance.PlayerController = this;
+      localScale = transform.localScale;
+    }
+
+    private void Start(){
+      UserInput.instance.controls.GamePlay.Jump.started += HandleJump;
+      //UserInput.instance.controls.GamePlay.Jump.performed += JumpPerformed;
     }
 
     private void Destroy() {
       AnimationEventManager.onFootstep -= SpawnFootstepEffect;
+      UserInput.instance.controls.GamePlay.Jump.started -= HandleJump;
+      //UserInput.instance.controls.GamePlay.Jump.performed -= JumpPerformed;
     }
 
     private void Update() {
@@ -77,7 +89,7 @@ namespace Player {
     }
 
     private void LookAtMouse() {
-      var dir = ((Vector2)_camera.ScreenToWorldPoint(Input.mousePosition) - (Vector2)Head.position);
+      var dir = ((Vector2)_camera.ScreenToWorldPoint(UserInput.instance.GetMousePosition()) - (Vector2)Head.position);//Input.mousePosition
       FlipX();
       dir.x *= Mathf.Sign(transform.localScale.x);
       // Calculate the target angle based on the direction
@@ -91,12 +103,11 @@ namespace Player {
     }
 
     private void FlipX() {
-      Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+      Vector2 mousePosition = _camera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());//(Input.mousePosition);
       var direction = (mousePosition - (Vector2)Head.position).normalized;
 
       if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone) {
         // Flip player
-        Vector3 localScale = transform.localScale;
         localScale.x = Mathf.Sign(direction.x);
         transform.localScale = localScale;
 
@@ -106,27 +117,29 @@ namespace Player {
     }
 
     private void GatherInput() {
-      _frameInput = new FrameInput {
-        JumpDown = Input.GetButtonDown("Jump"),
-        JumpHeld = Input.GetButton("Jump"),
-        Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
-      };
+      // _frameInput = new FrameInput {
+      //   JumpDown = UserInput.instance.IsJumping(),//Input.GetButtonDown("Jump"),//
+      //   JumpHeld = UserInput.instance.IsJumping(),//Input.GetButton("Jump"),
+      //   Move = UserInput.instance.controls.GamePlay.Movement.ReadValue<Vector2>()//new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+      // };
+      //Debug.LogError($"{_frameInput.JumpDown} | {_frameInput.JumpHeld} || {UserInput.instance.IsJumping()} ");
+      // if (_stats.SnapInput) {
+      //   var userMovement = UserInput.instance.controls.GamePlay.Movement;
+      //   _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < _stats.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.x);
+      //   _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < _stats.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.y);
+      // }
 
-      if (_stats.SnapInput) {
-        _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < _stats.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.x);
-        _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < _stats.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.y);
-      }
-
-      if (_frameInput.JumpDown) {
-        _jumpToConsume = true;
-        _timeJumpWasPressed = _time;
-      }
+      //TODO
+      // if (_frameInput.JumpDown) {
+      //   _jumpToConsume = true;
+      //   _timeJumpWasPressed = _time;
+      // }
     }
 
     private void FixedUpdate() {
       CheckCollisions();
 
-      HandleJump();
+      //HandleJump();
       HandleDirection();
       HandleGravity();
 
@@ -192,14 +205,15 @@ namespace Player {
     private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + _stats.JumpBuffer;
     private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime;
 
-    private void HandleJump() {
-      if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
+    private void HandleJump(InputAction.CallbackContext context) {
+      // if (!_endedJumpEarly && !_grounded /*&& !_frameInput.JumpHeld*/ && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
 
-      if (!_jumpToConsume && !HasBufferedJump) return;
+      // if (!_jumpToConsume && !HasBufferedJump) return;
 
-      if (_grounded || CanUseCoyote) ExecuteJump();
+       if (_grounded || CanUseCoyote) ExecuteJump();
 
-      _jumpToConsume = false;
+      // _jumpToConsume = false;
+      //ExecuteJump();
     }
 
     private void ExecuteJump() {
@@ -218,12 +232,12 @@ namespace Player {
     #region Horizontal
 
     private void HandleDirection() {
-      if (_frameInput.Move.x == 0) {
+      if (UserInput.instance.GetMovement().x == 0){//(_frameInput.Move.x == 0) {
         var deceleration = _grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
         _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
       }
       else {
-        _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _frameInput.Move.x * GetMaxSpeed(), _stats.Acceleration * Time.fixedDeltaTime);
+        _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, UserInput.instance.GetMovement().x * GetMaxSpeed(), _stats.Acceleration * Time.fixedDeltaTime);
       }
 
       if (_frameVelocity.x == 0) {
@@ -277,16 +291,16 @@ namespace Player {
 #endif
   }
 
-  public struct FrameInput {
-    public bool JumpDown;
-    public bool JumpHeld;
-    public Vector2 Move;
-  }
+  // public struct FrameInput {
+  //   public bool JumpDown;
+  //   public bool JumpHeld;
+  //   public Vector2 Move;
+  // }
 
   public interface IPlayerController {
     public event Action<bool, float> GroundedChanged;
 
     public event Action Jumped;
-    public Vector2 FrameInput { get; }
+    //public Vector2 FrameInput { get; }
   }
 }

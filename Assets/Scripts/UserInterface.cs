@@ -11,6 +11,7 @@ using UnityEngine.InputSystem.LowLevel;
 using Scriptables.Items;
 using Items;
 using Game;
+using Settings;
 
 namespace Interface {
   [RequireComponent(typeof(EventTrigger))]
@@ -153,7 +154,7 @@ namespace Interface {
 
     public void OnDrag(GameObject obj) {
       if (MouseData.tempItemBeingDragged != null) {
-        var mousePos = Input.mousePosition;//_uiCamera.ScreenToWorldPoint(Input.mousePosition);
+        var mousePos = UserInput.instance.GetMousePosition();//_uiCamera.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
         MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = mousePos;
 

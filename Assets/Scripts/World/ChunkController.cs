@@ -62,7 +62,7 @@ namespace World {
           var data = _resourceDataLib.GetData(cellData.perlin);
           cell.Init(cellData,data,chunkObject);
           cell.InitSprite();
-          _activeCellObjects.Add(new Tuple<int, int>(i,j),cell);
+          chunkObject.AddCellObject(cell);
         }
       }
     }

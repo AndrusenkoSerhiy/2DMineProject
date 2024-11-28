@@ -10,6 +10,7 @@ namespace World {
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
 
     private Dictionary<Tuple<int,int>, ChunkObject> _activeChunkObjects = new();
+    private Dictionary<Tuple<int,int>, CellObject> _activeCellObjects = new();
 
     private void Awake() {
       getCellObjectsPool().Init();
@@ -19,7 +20,6 @@ namespace World {
     }
 
     void SpawnChunk(int x, int y) {
-      Debug.LogError("SpawnChunk");
       var startChunk = _chunkGenerator.GetChunk(x, y);
       if (startChunk == null) return;
       var chunkObject = getChunkObjectsPool().GetObject();
@@ -62,9 +62,9 @@ namespace World {
           var data = _resourceDataLib.GetData(cellData.perlin);
           cell.Init(cellData,data,chunkObject);
           cell.InitSprite();
+          _activeCellObjects.Add(new Tuple<int, int>(i,j),cell);
         }
       }
-      Debug.LogError("COunt : "+count);
     }
 
     void InitStartChunk() {

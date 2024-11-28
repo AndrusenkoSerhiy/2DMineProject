@@ -1,5 +1,6 @@
 using Interface;
 using Player;
+using Scriptables;
 using Scriptables.Items;
 using UnityEngine;
 using World;
@@ -8,6 +9,7 @@ namespace Game {
   public class GameManager : MonoBehaviour {
     private static GameManager _instance;
     [SerializeField] private TaskManager taskManagerRef;
+    [SerializeField] private GameConfig gameConfigRef;
     [SerializeField] private ChunkController _chunkController;
     [SerializeField] private CellObjectsPool _cellObjectsPool;
     [SerializeField] private ChunkObjectsPool _chunkObjectsPool;
@@ -28,6 +30,7 @@ namespace Game {
     }
 
     public ChunkController ChunkController => _chunkController;
+    public GameConfig GameConfig => gameConfigRef;
 
     public CellObjectsPool cellObjectsPool {
       get { return _cellObjectsPool; }

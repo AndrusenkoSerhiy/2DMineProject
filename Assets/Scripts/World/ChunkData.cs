@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
+using Game;
 using Unity.Collections;
 using Unity.Jobs;
-using UnityEngine;
 using World.Jobs;
 
 namespace World {
@@ -11,13 +10,14 @@ namespace World {
     public Tuple<int, int> id;
     public int x;
     public int y;
-    public int width = 50;
-    public int height = 25;
     private CellData[,] _cellDatas;
     private int[,] _cellFillDatas;
     public int[,] CellFillDatas => _cellFillDatas;
     private NativeArray<float> noiseMap;
     private NativeArray<float> smoothedNoiseMap;
+    
+    public int width => GameManager.instance.GameConfig.ChunkSizeX;
+    public int height => GameManager.instance.GameConfig.ChunkSizeY;
 
     public ChunkData(Tuple<int, int> id, int x, int y) {
       this.id = id;
@@ -42,7 +42,8 @@ namespace World {
       float randomSeed = UnityEngine.Random.Range(0f, 10000f);
       PerlinNoiseParallelJob perlinJob = new PerlinNoiseParallelJob {
         width = width,
-        scale = 25f,
+        height = height,
+        scale = GameManager.instance.GameConfig.PerlinScale,
         seed = randomSeed,
         noiseMap = noiseMap
       };

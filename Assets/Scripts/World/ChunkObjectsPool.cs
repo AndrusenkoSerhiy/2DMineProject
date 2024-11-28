@@ -22,6 +22,7 @@ namespace World {
 
     private ChunkObject CreateNewObject() {
       ChunkObject newObj = Instantiate(chunkObjectPrefab, transform);
+      newObj.transform.position = Vector3.zero;
       newObj.gameObject.SetActive(false); // Start inactive
       return newObj;
     }

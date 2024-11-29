@@ -1,6 +1,5 @@
 using UnityEngine;
 using DG.Tweening;
-using System;
 using Scriptables;
 using Pool;
 using Game;
@@ -69,12 +68,13 @@ namespace World {
     }
 
     public void DestroyObject() {
+      var pos = transform.position;
       _chunkObject.TriggerCellDestroyed(this);
       GameManager.instance.cellObjectsPool.ReturnObject(this);
 
-      ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", transform.position, Quaternion.identity);
+      ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
       GameManager.instance.TaskManager.DelayAsync(
-        () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity), 0.25f);
+        () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
     }
 
     public void AfterDamageReceived() {

@@ -12,7 +12,7 @@ namespace World.Jobs {
 
     public void Execute(int index) {
       int x = index % width;
-      int y = index / width;
+      int y = index / height;
       // Get the average of the current cell and its 8 neighbors
       float sum = 0;
       int count = 0;

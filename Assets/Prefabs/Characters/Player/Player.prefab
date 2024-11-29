@@ -753,6 +753,7 @@ GameObject:
   - component: {fileID: 7677545041897933634}
   - component: {fileID: 1626194104983258937}
   - component: {fileID: 7565728723598869201}
+  - component: {fileID: 4285968199683070401}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -794,7 +795,6 @@ MonoBehaviour:
   _currHP: 0
   _maxHP: 30
   _animator: {fileID: 660024517565497304}
-  _isDead: 0
 --- !u!114 &4951586190832703889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,8 +813,7 @@ MonoBehaviour:
   _flipDeadZone: 0.5
   _topAngleLimit: 20
   _bottomAngleLimit: -20
-  _actorPlayer: {fileID: 7303212890507108493}
-  _dustPeriod: 0.062
+  _playerCoords: {fileID: 4285968199683070401}
 --- !u!114 &3203884702869887430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,6 +942,21 @@ MonoBehaviour:
     m_Bits: 8
   _interactionPromtUI: {fileID: 0}
   _numFound: 0
+--- !u!114 &4285968199683070401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2428154648203464867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa396a6dbcf446a4f90b86dde3f1a4e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  x: 0
+  y: 0
+  step: 1
 --- !u!1 &2732549292726789520
 GameObject:
   m_ObjectHideFlags: 0

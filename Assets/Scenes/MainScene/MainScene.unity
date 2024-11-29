@@ -2301,7 +2301,7 @@ Transform:
   m_GameObject: {fileID: 1036104625}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 65, y: 4.000001, z: -10}
+  m_LocalPosition: {x: 0, y: 4.000001, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4478,7 +4478,7 @@ Transform:
   m_GameObject: {fileID: 1770018253}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 65, y: 4.000001, z: -10}
+  m_LocalPosition: {x: 0, y: 4.000001, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5344,7 +5344,7 @@ PrefabInstance:
       objectReference: {fileID: 605272757}
     - target: {fileID: 4355495910406124574, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 65
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4355495910406124574, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5762,28 +5762,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
-      propertyPath: _database
-      value: 
-      objectReference: {fileID: 11400000, guid: b81f813bb56bb4942a967fdd3bd03ac0, type: 2}
-    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: _playerController
       value: 
       objectReference: {fileID: 1420871294}
-    - target: {fileID: 2494126528441698173, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4001951038154339777, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_Name
       value: GameManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515020899096269069, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
-      propertyPath: InitializeSectorsX
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515020899096269069, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
-      propertyPath: InitializeSectorsY
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8842004981100853932, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_LocalPosition.x

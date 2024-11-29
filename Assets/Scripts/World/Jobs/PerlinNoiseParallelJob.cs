@@ -7,6 +7,7 @@ namespace World.Jobs{
   [BurstCompile]
   public struct PerlinNoiseParallelJob : IJobParallelFor{
     public int width;
+    public int height;
     public float scale;
     public float seed;
     public NativeArray<float> noiseMap;
@@ -14,10 +15,10 @@ namespace World.Jobs{
     public void Execute(int index)
     {
       int x = index % width;
-      int y = index / width;
-
+      int y = index / height;
       float xCoord = (float)x / width * scale + seed;
-      float yCoord = (float)y / width * scale + seed;
+      float yCoord = (float)y / height * scale + seed;
+      
       float sample = Mathf.PerlinNoise(xCoord, yCoord);
       noiseMap[index] = sample;
     }

@@ -9,33 +9,15 @@ namespace World {
     [SerializeField] private ChunkGenerator _chunkGenerator;
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
 
-    [Header("START SPAWN PARAMS")] [SerializeField]
-    private int StartSpawnSectorsX = 1;
-
-    [SerializeField] private int StartSpawnSectorsY = 1;
-
-    private List<ChunkObject> _activeChunkObjects = new();
-    private float stepX = 1.32f;
-    private float stepY = 1.3f;
+    private Dictionary<Tuple<int,int>, ChunkObject> _activeChunkObjects = new();
+    private Dictionary<Tuple<int,int>, CellObject> _activeCellObjects = new();
 
     private void Awake() {
       getCellObjectsPool().Init();
       getChunkObjectsPool().Init();
       _chunkGenerator.Init();
       InitStartChunk();
-      InitCellFill();
     }
-    /*private void Update() {
-      if (Input.GetKeyDown(KeyCode.F1)) {
-        SpawnChunk(5,5);
-        for (int i = 0; i < _activeChunkObjects.Count; i++) {
-          if (_activeChunkObjects[i].ChunkData.x == 5 && _activeChunkObjects[i].ChunkData.y == 5) {
-            _activeChunkObjects[i].FillCells();
-            break;
-          }
-        }
-      }
-    }*/
 
     void SpawnChunk(int x, int y) {
       var startChunk = _chunkGenerator.GetChunk(x, y);
@@ -43,47 +25,50 @@ namespace World {
       var chunkObject = getChunkObjectsPool().GetObject();
       chunkObject.Init(startChunk);
       chunkObject.name = x + " " + y;
-      AddChunkObject(chunkObject);
-      var coords = Vector2.zero;
-      coords.x = x * (startChunk.width * stepX);
-      coords.y = y * -(startChunk.height * stepY);
       for (int i = 0; i < startChunk.height; i++) {
         for (int j = 0; j < startChunk.width; j++) {
           var cellData = startChunk.GetCellData(i, j);
           var data = _resourceDataLib.GetData(cellData.perlin);
           if (data) {
-            var cellObject = getCellObjectsPool().GetObject();
-            cellObject.transform.position = coords;
-            cellObject.transform.SetParent(chunkObject.transform);
-            cellObject.Init(cellData, data, chunkObject);
             startChunk.SetCellFill(i, j);
-            chunkObject.AddCellObject(cellObject);
           }
-
-          coords.x += stepX;
         }
+      }
 
-        coords.x = x * (startChunk.width * stepX);
-        coords.y -= stepY;
+      _activeChunkObjects[new Tuple<int, int>(x, y)] = chunkObject;
+      SpawnNearbyCells();
+    }
+
+    void SpawnNearbyCells() {
+      var chunkObject = _activeChunkObjects[new Tuple<int, int>(0, 0)];
+      var playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords;
+      var cols = GameManager.instance.GameConfig.ChunkSizeX;
+      var rows = GameManager.instance.GameConfig.ChunkSizeY;
+      var visionOffsetX = GameManager.instance.GameConfig.PlayerAreaWidth/2;
+      var visionOffsetY = GameManager.instance.GameConfig.PlayerAreaHeight/2;
+      int min_x = Mathf.Clamp(playerCoords.Item1 -visionOffsetX,0,cols-1);
+      int max_x = Mathf.Clamp(playerCoords.Item1 + visionOffsetX,0,cols-1);
+      int min_y = Mathf.Clamp(playerCoords.Item2 - visionOffsetY,0,rows-1);
+      int max_y = Mathf.Clamp(playerCoords.Item2 + visionOffsetY,0,rows-1);
+      var count = 0;
+      for (int i = min_x; i < max_x; i++) {
+        for (int j = min_y; j < max_y; j++) {
+          count++;
+          if (chunkObject.ChunkData.CellFillDatas[i, j] == 0) continue;
+          var pos = CoordsTransformer.GridToWorld(i, j);
+          var cell = getCellObjectsPool().Get(pos);
+          if (!cell) continue;
+          var cellData = chunkObject.ChunkData.GetCellData(i, j);
+          var data = _resourceDataLib.GetData(cellData.perlin);
+          cell.Init(cellData,data,chunkObject);
+          cell.InitSprite();
+          chunkObject.AddCellObject(cell);
+        }
       }
     }
 
     void InitStartChunk() {
-      for (int k = 0; k <= StartSpawnSectorsX; k++) {
-        for (int n = 0; n <= StartSpawnSectorsY; n++) {
-          SpawnChunk(k, n);
-        }
-      }
-    }
-
-    void InitCellFill() {
-      for (int i = 0; i < _activeChunkObjects.Count; i++) {
-        _activeChunkObjects[i].FillCells();
-      }
-    }
-
-    private void AddChunkObject(ChunkObject chunkObject) {
-      _activeChunkObjects.Add(chunkObject);
+      SpawnChunk(0, 0);
     }
 
     private CellObjectsPool getCellObjectsPool() {

@@ -84,6 +84,7 @@ namespace World {
           }
 
           var pos = CoordsTransformer.GridToWorld(i, j);
+          var cell = getCellObjectsPool().Get(pos);
           if (!cell) {
             continue;
           }

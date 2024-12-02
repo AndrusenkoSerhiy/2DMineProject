@@ -19,7 +19,7 @@ namespace World {
       getCellObjectsPool().Init();
       _chunkGenerator.Init();
       InitStartChunk();
-      GenerateTexture();
+      //GenerateTexture();
     }
 
     void SpawnChunk(int x, int y) {
@@ -84,7 +84,6 @@ namespace World {
           }
 
           var pos = CoordsTransformer.GridToWorld(i, j);
-          var cell = getCellObjectsPool().Get(pos);
           if (!cell) {
             continue;
           }

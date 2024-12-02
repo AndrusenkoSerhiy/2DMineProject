@@ -1,82 +1,158 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
 using Game;
 using Scriptables;
 using UnityEngine;
+using Utils;
 
 namespace World {
   public class ChunkController : MonoBehaviour {
     [SerializeField] private ChunkGenerator _chunkGenerator;
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
+    public ResourceDataLibrary ResourceDataLibrary => _resourceDataLib;
 
-    private Dictionary<Tuple<int,int>, ChunkObject> _activeChunkObjects = new();
-    private Dictionary<Tuple<int,int>, CellObject> _activeCellObjects = new();
+    private Dictionary<Coords, CellObject> _activeCellObjects = new();
+    private ChunkData chunkData;
+    private bool isInited = false;
 
     private void Awake() {
       getCellObjectsPool().Init();
-      getChunkObjectsPool().Init();
       _chunkGenerator.Init();
       InitStartChunk();
+      GenerateTexture();
     }
 
     void SpawnChunk(int x, int y) {
       var startChunk = _chunkGenerator.GetChunk(x, y);
       if (startChunk == null) return;
-      var chunkObject = getChunkObjectsPool().GetObject();
-      chunkObject.Init(startChunk);
-      chunkObject.name = x + " " + y;
-      for (int i = 0; i < startChunk.height; i++) {
-        for (int j = 0; j < startChunk.width; j++) {
-          var cellData = startChunk.GetCellData(i, j);
-          var data = _resourceDataLib.GetData(cellData.perlin);
-          if (data) {
-            startChunk.SetCellFill(i, j);
-          }
-        }
-      }
-
-      _activeChunkObjects[new Tuple<int, int>(x, y)] = chunkObject;
       SpawnNearbyCells();
     }
 
-    void SpawnNearbyCells() {
-      var chunkObject = _activeChunkObjects[new Tuple<int, int>(0, 0)];
-      var playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords;
-      var cols = GameManager.instance.GameConfig.ChunkSizeX;
-      var rows = GameManager.instance.GameConfig.ChunkSizeY;
-      var visionOffsetX = GameManager.instance.GameConfig.PlayerAreaWidth/2;
-      var visionOffsetY = GameManager.instance.GameConfig.PlayerAreaHeight/2;
-      int min_x = Mathf.Clamp(playerCoords.Item1 -visionOffsetX,0,cols-1);
-      int max_x = Mathf.Clamp(playerCoords.Item1 + visionOffsetX,0,cols-1);
-      int min_y = Mathf.Clamp(playerCoords.Item2 - visionOffsetY,0,rows-1);
-      int max_y = Mathf.Clamp(playerCoords.Item2 + visionOffsetY,0,rows-1);
-      var count = 0;
-      for (int i = min_x; i < max_x; i++) {
-        for (int j = min_y; j < max_y; j++) {
-          count++;
-          if (chunkObject.ChunkData.CellFillDatas[i, j] == 0) continue;
-          var pos = CoordsTransformer.GridToWorld(i, j);
-          var cell = getCellObjectsPool().Get(pos);
-          if (!cell) continue;
-          var cellData = chunkObject.ChunkData.GetCellData(i, j);
-          var data = _resourceDataLib.GetData(cellData.perlin);
-          cell.Init(cellData,data,chunkObject);
-          cell.InitSprite();
-          chunkObject.AddCellObject(cell);
+
+    #region TextureMap
+
+    private
+      void GenerateTexture() {
+      var width = GameManager.instance.GameConfig.ChunkSizeX;
+      var height = GameManager.instance.GameConfig.ChunkSizeY;
+      Texture2D texture = new Texture2D(width, height, TextureFormat.RGB24, false);
+      for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+          // Check the Perlin noise value
+          Color color = chunkData.CellFillDatas[i, j] == 1 ? Color.black : Color.white;
+
+          // Set the pixel color at (j, i)
+          texture.SetPixel(j, i, color);
         }
+      }
+
+      // Apply all SetPixel changes to the texture
+      texture.Apply();
+
+      byte[] pngData = texture.EncodeToPNG();
+      if (pngData != null) {
+        // Write the PNG file to the specified path
+        File.WriteAllBytes("Assets/GeneratedTexture.png", pngData);
+        Debug.Log("Texture saved");
+      }
+      else {
+        Debug.LogError("Failed to encode texture to PNG.");
       }
     }
 
+    #endregion
+
+    void SpawnNearbyCells() {
+      var playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords();
+      var cols = GameManager.instance.GameConfig.ChunkSizeX;
+      var rows = GameManager.instance.GameConfig.ChunkSizeY;
+      var visionOffsetX = GameManager.instance.GameConfig.PlayerAreaWidth / 2;
+      var visionOffsetY = GameManager.instance.GameConfig.PlayerAreaHeight / 2;
+      var min_x = Mathf.Clamp(playerCoords.X - visionOffsetX, 0, cols - 1);
+      var max_x = Mathf.Clamp(playerCoords.X + visionOffsetX, 0, cols - 1);
+      var min_y = Mathf.Clamp(playerCoords.Y - visionOffsetY, 0, rows - 1);
+      var max_y = Mathf.Clamp(playerCoords.Y + visionOffsetY, 0, rows - 1);
+      var keys = _activeCellObjects.Keys;
+      for (var i = min_x; i < max_x; i++) {
+        for (var j = min_y; j < max_y; j++) {
+          if (_activeCellObjects.ContainsKey(new Coords(i, j))) {
+            continue;
+          }
+
+          if (chunkData.CellFillDatas[i, j] == 0) {
+            continue;
+          }
+
+          var pos = CoordsTransformer.GridToWorld(i, j);
+          var cell = getCellObjectsPool().Get(pos);
+          if (!cell) {
+            continue;
+          }
+
+          var cellData = chunkData.GetCellData(i, j);
+          var data = _resourceDataLib.GetData(cellData.perlin);
+          cell.Init(cellData, data);
+          cell.InitSprite();
+          _activeCellObjects[new Coords(i, j)] = cell;
+        }
+      }
+
+      isInited = true;
+    }
+
+
+    private List<Coords> clearList = new();
+
+    public void CheckArea() {
+      if (!isInited) return;
+      var playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords();
+      var visionOffsetX = GameManager.instance.GameConfig.PlayerAreaWidth / 2;
+      var visionOffsetY = GameManager.instance.GameConfig.PlayerAreaHeight / 2;
+      foreach (var coord in _activeCellObjects.Keys) {
+        if (Mathf.Abs(playerCoords.X - coord.X) > visionOffsetX ||
+            Mathf.Abs(playerCoords.Y - coord.Y) > visionOffsetY) {
+          getCellObjectsPool().ReturnObject(_activeCellObjects[coord]);
+          clearList.Add(coord);
+        }
+      }
+
+      for (int i = 0; i < clearList.Count; i++) {
+        _activeCellObjects.Remove(clearList[i]);
+      }
+
+      clearList.Clear();
+      SpawnNearbyCells();
+    }
+
+    public void TriggerCellDestroyed(CellObject cellObject) {
+      cellObject.CellData.Destroy();
+      var x = cellObject.CellData.x;
+      var y = cellObject.CellData.y;
+      var cellUp = GetCell(x - 1, y);
+      var cellDown = GetCell(x + 1, y);
+      var cellLeft = GetCell(x, y - 1);
+      var cellRight = GetCell(x, y + 1);
+
+      if (cellUp) cellUp.InitSprite();
+      if (cellDown) cellDown.InitSprite();
+      if (cellLeft) cellLeft.InitSprite();
+      if (cellRight) cellRight.InitSprite();
+    }
+
+    CellObject GetCell(int x, int y) {
+      var id = new Coords(x, y);
+      CellObject result = null;
+      _activeCellObjects.TryGetValue(id, out result);
+      return result;
+    }
+
     void InitStartChunk() {
+      chunkData = _chunkGenerator.GetChunk(0, 0);
       SpawnChunk(0, 0);
     }
 
     private CellObjectsPool getCellObjectsPool() {
       return GameManager.instance.cellObjectsPool;
-    }
-
-    private ChunkObjectsPool getChunkObjectsPool() {
-      return GameManager.instance.chunkObjectsPool;
     }
   }
 }

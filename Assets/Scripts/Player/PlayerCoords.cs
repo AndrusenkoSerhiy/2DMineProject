@@ -1,30 +1,36 @@
+using System;
+using Game;
 using UnityEngine;
+using Utils;
 using World;
 
 namespace Player {
   public class PlayerCoords : MonoBehaviour {
-    public int x;
-    public int y;
-
-    public float step = 1f;
+    public Coords Coords;
 
     private Vector3 prevPos;
 
-    public (int, int) GetCoords => SetCoords();
+    public Coords GetCoords() {
+      if (Coords.X == -1 || Coords.Y == -1) {
+        SetCoords();
+      }
+
+      return Coords;
+    }
 
     // Update is called once per frame
     void Update() {
-      if (Vector3.Distance(transform.position, prevPos) >= step) {
+      if (Vector3.Distance(transform.position, prevPos) >= GameManager.instance.GameConfig.CheckAreaStep) {
         SetCoords();
         prevPos = transform.position;
       }
     }
 
-    (int, int) SetCoords() {
+    void SetCoords() {
       var coords = CoordsTransformer.WorldToGrid(transform.position);
-      x = coords.col;
-      y = coords.row;
-      return coords;
+      Coords.X = coords.X;
+      Coords.Y = coords.Y;
+      GameManager.instance.ChunkController.CheckArea();
     }
   }
 }

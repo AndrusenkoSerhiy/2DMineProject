@@ -1,5 +1,6 @@
 using Game;
 using UnityEngine;
+using Utils;
 
 namespace World {
   public static class CoordsTransformer {
@@ -11,7 +12,7 @@ namespace World {
     }
 
     // Convert from world position (Vector3) to grid coordinates (col, row)
-    public static (int col, int row) WorldToGrid(Vector3 position) {
+    public static Coords WorldToGrid(Vector3 position) {
       // Shift position back to grid coordinates
       var col = Mathf.RoundToInt(position.x / GameManager.instance.GameConfig.CellSizeX) +
                 GameManager.instance.GameConfig.OriginCol;
@@ -19,7 +20,7 @@ namespace World {
       var row = Mathf.RoundToInt(position.y / (-GameManager.instance.GameConfig.CellSizeY)) +
                 GameManager.instance.GameConfig.OriginRow;
       row = Mathf.Clamp(row, 0, GameManager.instance.GameConfig.ChunkSizeY - 1);
-      return (col, row);
+      return new Coords(col, row);
     }
   }
 }

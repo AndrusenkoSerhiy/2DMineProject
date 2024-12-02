@@ -2,12 +2,13 @@ using System;
 using Game;
 using Unity.Collections;
 using Unity.Jobs;
+using Utils;
 using World.Jobs;
 
 namespace World {
   [Serializable]
   public class ChunkData {
-    public Tuple<int, int> id;
+    public Coords id;
     public int x;
     public int y;
     private CellData[,] _cellDatas;
@@ -15,18 +16,18 @@ namespace World {
     public int[,] CellFillDatas => _cellFillDatas;
     private NativeArray<float> noiseMap;
     private NativeArray<float> smoothedNoiseMap;
-    
+
     public int width => GameManager.instance.GameConfig.ChunkSizeX;
     public int height => GameManager.instance.GameConfig.ChunkSizeY;
 
-    public ChunkData(Tuple<int, int> id, int x, int y) {
+    public ChunkData(Coords id, int x, int y) {
       this.id = id;
       this.x = x;
       this.y = y;
-      _cellDatas = new CellData[height, width];
-      _cellFillDatas = new int[height, width];
-      for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+      _cellDatas = new CellData[width, height];
+      _cellFillDatas = new int[width, height];
+      for (var i = 0; i < width; i++) {
+        for (var j = 0; j < height; j++) {
           _cellFillDatas[i, j] = 0;
         }
       }
@@ -39,8 +40,8 @@ namespace World {
 
     void GenerateNoise() {
       noiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
-      float randomSeed = UnityEngine.Random.Range(0f, 10000f);
-      PerlinNoiseParallelJob perlinJob = new PerlinNoiseParallelJob {
+      var randomSeed = UnityEngine.Random.Range(0f, 10000f);
+      var perlinJob = new PerlinNoiseParallelJob {
         width = width,
         height = height,
         scale = GameManager.instance.GameConfig.PerlinScale,
@@ -48,37 +49,41 @@ namespace World {
         noiseMap = noiseMap
       };
 
-      JobHandle perlinHandle = perlinJob.Schedule(width * height, 64);
+      var perlinHandle = perlinJob.Schedule(width * height, 64);
       perlinHandle.Complete();
 
       smoothedNoiseMap = new NativeArray<float>(width * height, Allocator.Persistent);
 
-      CellularAutomataSmoothingJob caSmoothingJob = new CellularAutomataSmoothingJob {
+      var caSmoothingJob = new CellularAutomataSmoothingJob {
         width = width,
         height = height,
         noiseMap = noiseMap,
         smoothedNoiseMap = smoothedNoiseMap
       };
 
-      JobHandle caHandle = caSmoothingJob.Schedule(width * height, 64, perlinHandle);
+      var caHandle = caSmoothingJob.Schedule(width * height, 64, perlinHandle);
       caHandle.Complete();
     }
 
     void ApplyCells() {
-      for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-          var perlin = smoothedNoiseMap[i + j * height];
+      for (var i = 0; i < width; i++) {
+        for (var j = 0; j < height; j++) {
+          var perlin = smoothedNoiseMap[i + j * width];
           _cellDatas[i, j] = new CellData(i, j, perlin, this);
+          var data = GameManager.instance.ChunkController.ResourceDataLibrary.GetData(perlin);
+          if (data) {
+            SetCellFill(i, j);
+          }
         }
       }
     }
 
-    public CellData GetCellData(int x, int y) {
-      return _cellDatas[x, y];
+    public CellData GetCellData(int xCoord, int yCoord) {
+      return _cellDatas[xCoord, yCoord];
     }
 
-    public void SetCellFill(int x, int y, int value = 1) {
-      _cellFillDatas[x, y] = value;
+    public void SetCellFill(int xCoord, int yCoord, int value = 1) {
+      _cellFillDatas[xCoord, yCoord] = value;
     }
 
     void OnDestroy() {

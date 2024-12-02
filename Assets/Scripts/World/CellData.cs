@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace World {
   [Serializable]
@@ -34,6 +33,7 @@ namespace World {
 
     public void Destroy() {
       _chunk.SetCellFill(x, y, 0);
+      perlin = -1f;
     }
   }
 }

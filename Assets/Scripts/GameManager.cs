@@ -12,7 +12,6 @@ namespace Game {
     [SerializeField] private GameConfig gameConfigRef;
     [SerializeField] private ChunkController _chunkController;
     [SerializeField] private CellObjectsPool _cellObjectsPool;
-    [SerializeField] private ChunkObjectsPool _chunkObjectsPool;
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private ItemDatabaseObject _database;
     private PlayerInventory _playerInventory;
@@ -35,9 +34,7 @@ namespace Game {
     public CellObjectsPool cellObjectsPool {
       get { return _cellObjectsPool; }
     }
-    public ChunkObjectsPool chunkObjectsPool {
-      get { return _chunkObjectsPool; }
-    }
+
     public TaskManager TaskManager {
       get { return taskManagerRef; }
     }

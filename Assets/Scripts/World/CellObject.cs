@@ -8,7 +8,7 @@ using UnityEngine.U2D;
 
 namespace World {
   public class CellObject : MonoBehaviour, IDamageable {
-    private ChunkObject _chunkObject;
+    public bool IsActive = false;
     [SerializeField] private CellStats cellStats;
     [SerializeField] private SpriteAtlas atlasRef;
     [SerializeField] private SpriteRenderer sprite;
@@ -27,8 +27,7 @@ namespace World {
 
     public CellData CellData => _cellData;
 
-    public void Init(CellData cellData, ResourceData data, ChunkObject chunkObject) {
-      _chunkObject = chunkObject;
+    public void Init(CellData cellData, ResourceData data) {
       _cellData = cellData;
       resourceData = data;
       unitHealth = new UnitHealth(resourceData.Durability);
@@ -69,7 +68,8 @@ namespace World {
 
     public void DestroyObject() {
       var pos = transform.position;
-      _chunkObject.TriggerCellDestroyed(this);
+      currentShakeTween.Kill();
+      GameManager.instance.ChunkController.TriggerCellDestroyed(this);
       GameManager.instance.cellObjectsPool.ReturnObject(this);
 
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);

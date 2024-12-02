@@ -12,3 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d467019ed37ee4b986beeef3c656a1, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
+  chunkSizeX: 1000
+  chunkSizeY: 1000
+  originCol: 500
+  originRow: 0
+  cellSizeX: 1.32
+  cellSizeY: 1.3
+  perlinScale: 35
+  playerAreaWidth: 80
+  playerAreaHeight: 80
+  checkAreaStep: 1

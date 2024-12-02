@@ -795,6 +795,7 @@ MonoBehaviour:
   _currHP: 0
   _maxHP: 30
   _animator: {fileID: 660024517565497304}
+  _isDead: 0
 --- !u!114 &4951586190832703889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -954,9 +955,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa396a6dbcf446a4f90b86dde3f1a4e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 0
-  y: 0
-  step: 1
+  Coords:
+    X: -1
+    Y: -1
 --- !u!1 &2732549292726789520
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,8 +31,7 @@ namespace World {
 
     #region TextureMap
 
-    private
-      void GenerateTexture() {
+    private void GenerateTexture() {
       var width = GameManager.instance.GameConfig.ChunkSizeX;
       var height = GameManager.instance.GameConfig.ChunkSizeY;
       Texture2D texture = new Texture2D(width, height, TextureFormat.RGB24, false);

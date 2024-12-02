@@ -122,6 +122,11 @@ namespace World {
       GetDamageOverlayRenderer().sortingOrder = originalSortingOrder + 1;
     }
 
+    public void ResetAll() {
+      ResetShake();
+      damageOverlay.gameObject.SetActive(false);
+    }
+
     private Renderer GetCellRenderer() {
       if (cellRenderer == null) {
         return sprite.GetComponent<Renderer>();

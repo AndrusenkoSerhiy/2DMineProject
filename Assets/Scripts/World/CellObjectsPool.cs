@@ -43,6 +43,7 @@ namespace World {
     // Method called when an object is taken from the pool
     private void OnTakeFromPool(CellObject obj, Vector3 pos) {
       obj.IsActive = true;
+      obj.ResetAll();
       obj.transform.position = pos;
     }
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Scriptables.Player
+namespace Scriptables
 {
   [CreateAssetMenu]
   public class PlayerStats : ScriptableObject

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Scriptables.Player;
+using Scriptables;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -15,6 +15,7 @@ namespace Settings {
     }
 
     public event EventHandler OnGameDeviceChanged;
+    public event EventHandler OnUIClick;
 
     [HideInInspector] public Controls controls;
 
@@ -42,9 +43,22 @@ namespace Settings {
 
       controls.GamePlay.Attack.performed += AttackPerformed;
       controls.GamePlay.Attack.canceled += AttackCanceled;
+      SubscribeToClick();
       InputSystem.onActionChange += InputActionChangeCallback;
     }
-
+    private void SubscribeToClick() {
+      controls.UI.Click.performed += UIClickPerformed;
+    }
+    
+    private void UnsubscribeToClick() {
+      controls.UI.Click.performed -= UIClickPerformed;
+    }
+    
+    private void UIClickPerformed(InputAction.CallbackContext context) {
+      //Debug.LogError("CLick");
+      OnUIClick?.Invoke(this, EventArgs.Empty);
+    }
+    
     private void InputActionChangeCallback(object arg1, InputActionChange inputActionChange) {
       if (inputActionChange == InputActionChange.ActionPerformed && arg1 is InputAction) {//
         InputAction inputAction = arg1 as InputAction;
@@ -107,6 +121,24 @@ namespace Settings {
       attacking = false;
     }
 
+    public void EnableUIControls(bool val) {
+      if (val) {
+        controls.UI.Enable();
+      }
+      else {
+        controls.UI.Disable();
+      }
+    }
+    
+    public void EnableGamePlayControls(bool val) {
+      if (val) {
+        controls.GamePlay.Enable();
+      }
+      else {
+        controls.GamePlay.Disable();
+      }
+    }
+
     private void OnEnable() {
       controls?.Enable();
     }
@@ -114,6 +146,7 @@ namespace Settings {
     private void OnDisable() {
       controls?.Disable();
       InputSystem.onActionChange -= InputActionChangeCallback;
+      UnsubscribeToClick();
     }
   }
 }

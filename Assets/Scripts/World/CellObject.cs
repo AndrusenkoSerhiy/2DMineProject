@@ -2,8 +2,6 @@ using UnityEngine;
 using DG.Tweening;
 using Scriptables;
 using Pool;
-using Game;
-using Scriptables.World;
 using UnityEngine.U2D;
 
 namespace World {
@@ -15,7 +13,7 @@ namespace World {
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
 
-    private ResourceData resourceData;
+    public ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
     [SerializeField] private CellData _cellData;
     private UnitHealth unitHealth;
@@ -68,10 +66,9 @@ namespace World {
 
     public void DestroyObject() {
       var pos = transform.position;
-      currentShakeTween.Kill();
+      ResetShake();
       GameManager.instance.ChunkController.TriggerCellDestroyed(this);
       GameManager.instance.cellObjectsPool.ReturnObject(this);
-
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
       GameManager.instance.TaskManager.DelayAsync(
         () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
@@ -116,6 +113,7 @@ namespace World {
       }
 
       currentShakeTween.Kill();
+      currentShakeTween = null;
       sprite.transform.position = originalPosition;
       sprite.transform.localScale = originalScale;
       cellRenderer.sortingOrder = originalSortingOrder;

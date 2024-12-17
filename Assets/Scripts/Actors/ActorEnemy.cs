@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Animation;
 using UnityEngine;
 
-namespace Game.Actors {
+namespace Actors {
   public class ActorEnemy : ActorBase {
     [SerializeField] private int _damage = 3;
     public bool shouldBeDamaging { get; private set; } = false;

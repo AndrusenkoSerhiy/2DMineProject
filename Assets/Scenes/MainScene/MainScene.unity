@@ -717,7 +717,7 @@ Transform:
   m_GameObject: {fileID: 315269511}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 64.9526, y: 0.78, z: -0.020400451}
+  m_LocalPosition: {x: 0.6, y: 0.78, z: -0.020400451}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -909,7 +909,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 34.41}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &427207347
@@ -1551,8 +1551,16 @@ PrefabInstance:
       value: SuperPickaxe
       objectReference: {fileID: 0}
     - target: {fileID: 3890226224433729309, guid: 7119352d529e2f24b89e23a6ca2f6f27, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890226224433729309, guid: 7119352d529e2f24b89e23a6ca2f6f27, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064497359182062437, guid: 7119352d529e2f24b89e23a6ca2f6f27, type: 3}
+      propertyPath: _interactName
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

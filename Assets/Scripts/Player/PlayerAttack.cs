@@ -1,12 +1,11 @@
 // using Animation;
 using System.Collections;
 using System.Collections.Generic;
+using Animation;
 using UnityEngine;
 using Settings;
-using Game;
-using Scriptables.Player;
-using Equipment;
 using Items;
+using Scriptables;
 using Scriptables.Items;
 
 namespace Player {

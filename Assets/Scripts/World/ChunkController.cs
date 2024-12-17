@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
-using Game;
 using Scriptables;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -98,7 +98,23 @@ namespace World {
 
       isInited = true;
     }
+    
+    //player place this cell
+    public void SpawnCell(Coords coords, ResourceData resourceData) {
+      //if cell already exist don't spawn another
+      if (GetCell(coords.X, coords.Y))
+        return;
+      
+      var pos = CoordsTransformer.GridToWorld(coords.X, coords.Y);
+      var cell = getCellObjectsPool().Get(pos);
+      if (!cell) 
+        return;
 
+      var cellData = chunkData.GetCellData(coords.X, coords.Y);
+      cell.Init(cellData, resourceData);
+      cell.InitSprite();
+      _activeCellObjects[new Coords(coords.X, coords.Y)] = cell;
+    }
 
     private List<Coords> clearList = new();
 
@@ -123,8 +139,13 @@ namespace World {
       SpawnNearbyCells();
     }
 
+    private void RemoveCellFromActives(Coords coords) {
+      _activeCellObjects.Remove(coords);
+    }
+
     public void TriggerCellDestroyed(CellObject cellObject) {
       cellObject.CellData.Destroy();
+      RemoveCellFromActives(new Coords(cellObject.CellData.x,cellObject.CellData.y));
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
       var cellUp = GetCell(x - 1, y);
@@ -138,14 +159,14 @@ namespace World {
       if (cellRight) cellRight.InitSprite();
     }
 
-    CellObject GetCell(int x, int y) {
+    public CellObject GetCell(int x, int y) {
       var id = new Coords(x, y);
       CellObject result = null;
       _activeCellObjects.TryGetValue(id, out result);
       return result;
     }
 
-    void InitStartChunk() {
+    private void InitStartChunk() {
       chunkData = _chunkGenerator.GetChunk(0, 0);
       SpawnChunk(0, 0);
     }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Actors {
+namespace Actors {
   public class ActorBase : MonoBehaviour, IDamageable {
     [SerializeField] protected float _currHP;
     [SerializeField] protected float _maxHP;

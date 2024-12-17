@@ -1,7 +1,7 @@
 using System;
-using Game;
+using Animation;
 using Pool;
-using Scriptables.Player;
+using Scriptables;
 using UnityEngine;
 using UnityEngine.Serialization;
 

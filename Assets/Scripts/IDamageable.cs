@@ -1,15 +1,13 @@
-namespace Game {
-  public interface IDamageable {
-    public bool hasTakenDamage { get; set; }
+public interface IDamageable {
+  public bool hasTakenDamage { get; set; }
 
-    public void Damage(float damage);
+  public void Damage(float damage);
 
-    public float GetHealth();
+  public float GetHealth();
 
-    public float GetMaxHealth();
+  public float GetMaxHealth();
 
-    public void AfterDamageReceived();
+  public void AfterDamageReceived();
 
-    public void DestroyObject();
-  }
+  public void DestroyObject();
 }

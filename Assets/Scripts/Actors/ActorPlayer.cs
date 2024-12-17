@@ -1,4 +1,4 @@
-namespace Game.Actors {
+namespace Actors {
   public class ActorPlayer : ActorBase {
     
   }

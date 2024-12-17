@@ -1,4 +1,4 @@
-﻿using Game;
+﻿using Interaction;
 using Scriptables.Items;
 using UnityEngine;
 

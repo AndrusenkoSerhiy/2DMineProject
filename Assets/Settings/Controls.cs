@@ -53,6 +53,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Build"",
+                    ""type"": ""Button"",
+                    ""id"": ""56b46491-c04e-41d0-a6ba-ed1a0cfda5b6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -165,32 +174,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""UIInventory"",
-            ""id"": ""5a5478f6-81c3-4095-b6e3-083a832fd8b7"",
-            ""actions"": [
-                {
-                    ""name"": ""Inventory"",
-                    ""type"": ""Button"",
-                    ""id"": ""88320ca2-5be2-40c4-a193-a41045cb797c"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
+                },
                 {
                     ""name"": """",
-                    ""id"": ""e11cb28c-1943-41b6-af2b-43172adda367"",
-                    ""path"": ""<Keyboard>/i"",
+                    ""id"": ""68c439e7-9d93-4394-b318-a15857e3baf5"",
+                    ""path"": ""<Keyboard>/b"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""Inventory"",
+                    ""groups"": """",
+                    ""action"": ""Build"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -774,9 +766,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_GamePlay_Attack = m_GamePlay.FindAction("Attack", throwIfNotFound: true);
         m_GamePlay_Movement = m_GamePlay.FindAction("Movement", throwIfNotFound: true);
         m_GamePlay_Jump = m_GamePlay.FindAction("Jump", throwIfNotFound: true);
-        // UIInventory
-        m_UIInventory = asset.FindActionMap("UIInventory", throwIfNotFound: true);
-        m_UIInventory_Inventory = m_UIInventory.FindAction("Inventory", throwIfNotFound: true);
+        m_GamePlay_Build = m_GamePlay.FindAction("Build", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -795,7 +785,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     ~@Controls()
     {
         UnityEngine.Debug.Assert(!m_GamePlay.enabled, "This will cause a leak and performance issues, Controls.GamePlay.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_UIInventory.enabled, "This will cause a leak and performance issues, Controls.UIInventory.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, Controls.UI.Disable() has not been called.");
     }
 
@@ -861,6 +850,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_GamePlay_Attack;
     private readonly InputAction m_GamePlay_Movement;
     private readonly InputAction m_GamePlay_Jump;
+    private readonly InputAction m_GamePlay_Build;
     public struct GamePlayActions
     {
         private @Controls m_Wrapper;
@@ -868,6 +858,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Attack => m_Wrapper.m_GamePlay_Attack;
         public InputAction @Movement => m_Wrapper.m_GamePlay_Movement;
         public InputAction @Jump => m_Wrapper.m_GamePlay_Jump;
+        public InputAction @Build => m_Wrapper.m_GamePlay_Build;
         public InputActionMap Get() { return m_Wrapper.m_GamePlay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -886,6 +877,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Build.started += instance.OnBuild;
+            @Build.performed += instance.OnBuild;
+            @Build.canceled += instance.OnBuild;
         }
 
         private void UnregisterCallbacks(IGamePlayActions instance)
@@ -899,6 +893,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Build.started -= instance.OnBuild;
+            @Build.performed -= instance.OnBuild;
+            @Build.canceled -= instance.OnBuild;
         }
 
         public void RemoveCallbacks(IGamePlayActions instance)
@@ -916,52 +913,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         }
     }
     public GamePlayActions @GamePlay => new GamePlayActions(this);
-
-    // UIInventory
-    private readonly InputActionMap m_UIInventory;
-    private List<IUIInventoryActions> m_UIInventoryActionsCallbackInterfaces = new List<IUIInventoryActions>();
-    private readonly InputAction m_UIInventory_Inventory;
-    public struct UIInventoryActions
-    {
-        private @Controls m_Wrapper;
-        public UIInventoryActions(@Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Inventory => m_Wrapper.m_UIInventory_Inventory;
-        public InputActionMap Get() { return m_Wrapper.m_UIInventory; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(UIInventoryActions set) { return set.Get(); }
-        public void AddCallbacks(IUIInventoryActions instance)
-        {
-            if (instance == null || m_Wrapper.m_UIInventoryActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_UIInventoryActionsCallbackInterfaces.Add(instance);
-            @Inventory.started += instance.OnInventory;
-            @Inventory.performed += instance.OnInventory;
-            @Inventory.canceled += instance.OnInventory;
-        }
-
-        private void UnregisterCallbacks(IUIInventoryActions instance)
-        {
-            @Inventory.started -= instance.OnInventory;
-            @Inventory.performed -= instance.OnInventory;
-            @Inventory.canceled -= instance.OnInventory;
-        }
-
-        public void RemoveCallbacks(IUIInventoryActions instance)
-        {
-            if (m_Wrapper.m_UIInventoryActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        public void SetCallbacks(IUIInventoryActions instance)
-        {
-            foreach (var item in m_Wrapper.m_UIInventoryActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_UIInventoryActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    public UIInventoryActions @UIInventory => new UIInventoryActions(this);
 
     // UI
     private readonly InputActionMap m_UI;
@@ -1111,10 +1062,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnAttack(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-    }
-    public interface IUIInventoryActions
-    {
-        void OnInventory(InputAction.CallbackContext context);
+        void OnBuild(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

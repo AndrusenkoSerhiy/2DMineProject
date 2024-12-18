@@ -14,7 +14,8 @@ public class PlaceCell : MonoBehaviour {
   [SerializeField] private Color _blockColor;
   private Color _currPreviewColor;
   private void Start() {
-    UserInput.instance.OnUIClick += UIInput_OnUIClick;
+    //UserInput.instance.OnUIClick += UIInput_OnUIClick;
+    UserInput.instance.OnBuildClick += Input_OnBuildClick;
   }
 
   private void StartPreview() {
@@ -48,21 +49,17 @@ public class PlaceCell : MonoBehaviour {
   //enable building mode
   private void SetEnabled(bool value) {
     _isPreviewing = value;
-    UserInput.instance.EnableGamePlayControls(!value);
+    //UserInput.instance.EnableGamePlayControls(!value);
+    //TODO need to block only attack 
     UserInput.instance.EnableUIControls(value);
-    Debug.LogError($"ui controls {value}");
 
     if (value) StartPreview();
     else CancelPreview();
   }
   
   private void Update() {
-    if (Input.GetKeyDown(KeyCode.PageUp)) {
-      SetEnabled(true);
-    }
-
-    if (Input.GetKeyDown(KeyCode.PageDown)) {
-      SetEnabled(false);
+    if (UserInput.instance.controls.UI.Click.WasPressedThisFrame()) {
+      UIInput_OnUIClick();
     }
     
     if (_isPreviewing && _previewInstance != null)
@@ -93,7 +90,7 @@ public class PlaceCell : MonoBehaviour {
     }
   }
 
-  private void UIInput_OnUIClick(object sender, EventArgs e) {
+  private void UIInput_OnUIClick() {
     if (!_isPreviewing || !GetPreviewColor()) {
       return; 
     }
@@ -101,12 +98,17 @@ public class PlaceCell : MonoBehaviour {
     PlaceCellOnScene();
   }
 
+  private void Input_OnBuildClick(object sender, EventArgs e) {
+    SetEnabled(!_isPreviewing);
+  }
+
   private void PlaceCellOnScene() {
+    //Debug.LogError("Place cell");
     var coords = CoordsTransformer.WorldToGrid(Camera.main.ScreenToWorldPoint(UserInput.instance.GetMousePosition()));
     GameManager.instance.ChunkController.SpawnCell(coords,_resourceData);
   }
 
   private void OnDestroy() {
-    UserInput.instance.OnUIClick -= UIInput_OnUIClick;
+    //UserInput.instance.OnUIClick -= UIInput_OnUIClick;
   }
 }

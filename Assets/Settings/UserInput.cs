@@ -15,16 +15,16 @@ namespace Settings {
     }
 
     public event EventHandler OnGameDeviceChanged;
-    public event EventHandler OnUIClick;
+    public event EventHandler OnBuildClick;
 
     [HideInInspector] public Controls controls;
 
     private bool attacking;
-    private bool jump;
-    private bool jumpIsPressed;
     [SerializeField] private PlayerStats _stats;
     [SerializeField] private VirtualMouseUI _virtualMouse;
-
+    [SerializeField] private bool _isBuildMode;
+    public bool IsBuildMode => _isBuildMode;
+    
     public enum GameDevice{
        KeyboardAndMouse = 0,
        Gamepad =1,
@@ -43,21 +43,22 @@ namespace Settings {
 
       controls.GamePlay.Attack.performed += AttackPerformed;
       controls.GamePlay.Attack.canceled += AttackCanceled;
-      SubscribeToClick();
+      SubscribeBuildClick();
       InputSystem.onActionChange += InputActionChangeCallback;
     }
-    private void SubscribeToClick() {
-      controls.UI.Click.performed += UIClickPerformed;
+    
+    private void SubscribeBuildClick() {
+      controls.GamePlay.Build.performed += BuildClickPerformed;
     }
     
-    private void UnsubscribeToClick() {
-      controls.UI.Click.performed -= UIClickPerformed;
+    private void UnsubscribeBuidClick() {
+      controls.GamePlay.Build.performed -= BuildClickPerformed;
+    }
+    private void BuildClickPerformed(InputAction.CallbackContext context) {
+      _isBuildMode = !_isBuildMode;
+      OnBuildClick?.Invoke(this, EventArgs.Empty);
     }
     
-    private void UIClickPerformed(InputAction.CallbackContext context) {
-      //Debug.LogError("CLick");
-      OnUIClick?.Invoke(this, EventArgs.Empty);
-    }
     
     private void InputActionChangeCallback(object arg1, InputActionChange inputActionChange) {
       if (inputActionChange == InputActionChange.ActionPerformed && arg1 is InputAction) {//
@@ -105,9 +106,8 @@ namespace Settings {
       //Debug.LogError($"movement {movement}");
       return movement;
     }
-    public bool IsJumping() {
-      return jump;
-    }
+
+    #region Attack
 
     public bool IsAttacking() {
       return attacking;
@@ -121,6 +121,9 @@ namespace Settings {
       attacking = false;
     }
 
+    #endregion
+
+    #region Controls
     public void EnableUIControls(bool val) {
       if (val) {
         controls.UI.Enable();
@@ -138,6 +141,8 @@ namespace Settings {
         controls.GamePlay.Disable();
       }
     }
+    #endregion
+    
 
     private void OnEnable() {
       controls?.Enable();
@@ -146,7 +151,8 @@ namespace Settings {
     private void OnDisable() {
       controls?.Disable();
       InputSystem.onActionChange -= InputActionChangeCallback;
-      UnsubscribeToClick();
+      //UnsubscribeUIClick();
+      UnsubscribeBuidClick();
     }
   }
 }

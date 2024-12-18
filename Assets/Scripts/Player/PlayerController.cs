@@ -2,7 +2,9 @@ using System;
 using Animation;
 using Pool;
 using Scriptables;
+using Settings;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 namespace Player {
@@ -102,9 +104,9 @@ namespace Player {
 
     private void GatherInput() {
       _frameInput = new FrameInput {
-        JumpDown = Input.GetButtonDown("Jump"),
-        JumpHeld = Input.GetButton("Jump"),
-        Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+        JumpDown = UserInput.instance.controls.GamePlay.Jump.WasPerformedThisFrame(),//Input.GetButtonDown("Jump"),
+        JumpHeld = UserInput.instance.controls.GamePlay.Jump.IsPressed(),//Input.GetButton("Jump"),
+        Move = UserInput.instance.GetMovement()//new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
       };
 
       if (_stats.SnapInput) {

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: DirtData
   m_EditorClassIdentifier: 
   Durability: 10
-  SpriteVariants:
-  - {fileID: 21300000, guid: 32812d77e0383d049a4f3d0f06a2a31b, type: 3}
-  darkSprite: {fileID: 21300000, guid: 89f72d35e6dcf7e4db47adb5f63e67fd, type: 3}
+  sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+  itemData: {fileID: 0}
+  mapColor: {r: 0.2924528, g: 0.28309196, b: 0.10898005, a: 0}

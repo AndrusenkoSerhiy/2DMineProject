@@ -19,7 +19,6 @@ namespace World {
       getCellObjectsPool().Init();
       _chunkGenerator.Init();
       InitStartChunk();
-      //GenerateTexture();
     }
 
     void SpawnChunk(int x, int y) {
@@ -30,7 +29,7 @@ namespace World {
 
 
     #region TextureMap
-
+    [ContextMenu("Create TextureMap In Assets(PLAYMODE ONLY)")]
     private void GenerateTexture() {
       var width = GameManager.instance.GameConfig.ChunkSizeX;
       var height = GameManager.instance.GameConfig.ChunkSizeY;
@@ -38,7 +37,7 @@ namespace World {
       for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
           // Check the Perlin noise value
-          Color color = chunkData.CellFillDatas[i, j] == 1 ? Color.black : Color.white;
+          Color color = GameManager.instance.ChunkController.ResourceDataLibrary.GetColor(chunkData.GetCellData(i, j).perlin);
 
           // Set the pixel color at (j, i)
           texture.SetPixel(j, i, color);

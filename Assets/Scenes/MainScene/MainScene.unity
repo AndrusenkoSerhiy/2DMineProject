@@ -707,7 +707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &315269512
 Transform:
   m_ObjectHideFlags: 0
@@ -4948,6 +4948,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
   _virtualMouse: {fileID: 1267113462}
+  _isBuildMode: 0
 --- !u!1 &1906431516
 GameObject:
   m_ObjectHideFlags: 0

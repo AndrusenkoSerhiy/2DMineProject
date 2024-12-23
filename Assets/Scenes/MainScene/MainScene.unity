@@ -5834,21 +5834,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
-      propertyPath: _material
-      value: 
-      objectReference: {fileID: 2100000, guid: 003170a808acc4340847be3396c78e77, type: 2}
-    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: _playerController
       value: 
       objectReference: {fileID: 1420871294}
-    - target: {fileID: 3593832721513594949, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
-      propertyPath: m_SortingOrder
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 3593832721513594949, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 003170a808acc4340847be3396c78e77, type: 2}
     - target: {fileID: 4001951038154339777, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_Name
       value: GameManager

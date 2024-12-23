@@ -1,4 +1,5 @@
-﻿using Scriptables.Inventory;
+﻿using System;
+using Scriptables.Inventory;
 using Scriptables.Items;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ public class PlayerEquipment : MonoBehaviour {
   private Transform _helmet;
   private Transform _offhand;
   private Transform _weapon;
-
+  public event Action OnEquippedWeapon;
   public Transform Weapon { get => _weapon; private set => _weapon = value; }
 
   void Start() {
@@ -46,6 +47,7 @@ public class PlayerEquipment : MonoBehaviour {
             case ItemType.Tool:
             case ItemType.Weapon:
               Weapon = Instantiate(itemObject.CharacterDisplay, weaponTransform).transform;
+              OnEquippedWeapon?.Invoke();
               break;
           }
         }

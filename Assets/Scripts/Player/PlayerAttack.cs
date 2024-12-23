@@ -7,6 +7,7 @@ using Settings;
 using Items;
 using Scriptables;
 using Scriptables.Items;
+using Tools;
 
 namespace Player {
   public class PlayerAttack : MonoBehaviour {
@@ -31,20 +32,32 @@ namespace Player {
 
     private IDamageable currentTarget;
     private Renderer currentTargetRenderer;
-
+    [SerializeField] private bool _useToolAnimation = false;
+    private PlayerEquipment playerEquipment;
     private void Awake() {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
+      playerEquipment = GetComponent<PlayerEquipment>();
+      playerEquipment.OnEquippedWeapon += UpdateAttackParam;
     }
 
     private void OnDestroy() {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
       AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
+      playerEquipment.OnEquippedWeapon -= UpdateAttackParam;
     }
 
     private void Start() {
       PrepareAttackParams();
       attackTimeCounter = timeBtwAttacks;
+    }
+
+    private void UpdateAttackParam() {
+      Debug.LogError("UpdateAttackParam");
+      SetAttackParamsFromEquipment();
+      //try to activate tool
+      ToolBase tool = playerEquipment.Weapon.GetComponent<ToolBase>();
+      tool?.Activate();
     }
 
     private void PrepareAttackParams() {
@@ -63,7 +76,6 @@ namespace Player {
     }
 
     private bool SetAttackParamsFromEquipment() {
-      PlayerEquipment playerEquipment = GetComponent<PlayerEquipment>();
       if (playerEquipment == null) {
         Debug.LogWarning("Could not find Player Equipment", this);
         return false;
@@ -79,7 +91,8 @@ namespace Player {
         Debug.LogWarning("Equipped item is not attackable", this);
         return false;
       }
-
+      Debug.LogError("SetAttackParamsFromEquipment");
+      _useToolAnimation = attackableItem.UseSelfAnim;
       attackLayer = attackableItem.AttackLayer;
       blockDamage = attackableItem.BlockDamage;
       entityDamage = attackableItem.EntityDamage;
@@ -93,6 +106,9 @@ namespace Player {
     private void Update() {
       HighlightTarget();
 
+      if (_useToolAnimation)
+        return;
+      
       // Handle attack
       if (UserInput.instance.IsAttacking() /*&& currentTarget != null*/
         && attackTimeCounter >= timeBtwAttacks) {
@@ -109,42 +125,6 @@ namespace Player {
       attackTimeCounter = 0f;
       animator.SetTrigger("Attack");
     }
-
-    // private void TriggerAttack() {
-    //   if (currentTarget == null || IsObstructed(attackTransform.position, ((MonoBehaviour)currentTarget).transform.position)) {
-    //     // Do not attack if no valid target or target is blocked
-    //     return;
-    //   }
-
-    //   attackTimeCounter = 0f;
-    //   animator.SetTrigger("Attack");
-    // }
-
-    // private void HighlightTarget() {
-    //   Vector3 mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-    //   Collider2D hit = Physics2D.OverlapPoint(mousePoint, attackLayer);
-    //   if (hit == null || !hit.TryGetComponent(out IDamageable iDamageable)) {
-    //     ClearTarget();
-    //     return;
-    //   }
-
-    //   if (iDamageable == currentTarget) {
-    //     return;
-    //   }
-
-
-    //   bool collision = Collisions.CheckCircleCollision(attackTransform.position, attackRange, hit);
-    //   if (!collision) {
-    //     ClearTarget();
-    //     return;
-    //   }
-
-    //   ClearTarget();
-
-    //   SetTarget(iDamageable);
-    //   Highlight();
-    // }
 
     private void HighlightTarget() {
       Vector3 playerPosition = attackTransform.position;

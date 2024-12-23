@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 namespace Settings {
   public class UserInput : MonoBehaviour {
@@ -14,6 +10,8 @@ namespace Settings {
       get { return _instance; }
     }
 
+    public event EventHandler OnAttackPerformed;
+    public event EventHandler OnAttackCanceled;
     public event EventHandler OnGameDeviceChanged;
     public event EventHandler OnBuildClick;
 
@@ -27,13 +25,13 @@ namespace Settings {
     
     public enum GameDevice{
        KeyboardAndMouse = 0,
-       Gamepad =1,
+       Gamepad = 1,
     }
 
     private GameDevice _activeGameDevice;
     private void Awake() {
       if (_instance != null && _instance != this) {
-        Destroy(this.gameObject);
+        Destroy(gameObject);
       }
       else {
         _instance = this;
@@ -46,7 +44,12 @@ namespace Settings {
       SubscribeBuildClick();
       InputSystem.onActionChange += InputActionChangeCallback;
     }
-    
+
+    private void Update() {
+      EnableUIControls(false);
+      //Debug.LogError($"gamePlay {controls.GamePlay.enabled} | UI {controls.UI.enabled}");
+    }
+
     private void SubscribeBuildClick() {
       controls.GamePlay.Build.performed += BuildClickPerformed;
     }
@@ -115,22 +118,24 @@ namespace Settings {
 
     private void AttackPerformed(InputAction.CallbackContext context) {
       attacking = true;
+      OnAttackPerformed?.Invoke(this, EventArgs.Empty);
     }
 
     private void AttackCanceled(InputAction.CallbackContext context) {
       attacking = false;
+      OnAttackCanceled?.Invoke(this, EventArgs.Empty);
     }
 
     #endregion
 
     #region Controls
     public void EnableUIControls(bool val) {
-      if (val) {
+      /*if (val) {
         controls.UI.Enable();
       }
       else {
         controls.UI.Disable();
-      }
+      }*/
     }
     
     public void EnableGamePlayControls(bool val) {

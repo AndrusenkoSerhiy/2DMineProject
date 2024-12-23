@@ -3,13 +3,16 @@ using UnityEngine;
 namespace Scriptables.Items {
   [CreateAssetMenu(menuName = "Inventory System/Items/Tool", fileName = "New Tool")]
   public class Tool : ItemObject, IAttackableItem {
-    public LayerMask attackLayer;
-    public float blockDamage = 5f;
-    public float entityDamage = 3f;
-    public float range = 1.8f;
-    public float timeBtwAttacks = 0.4f;
-    public float staminaUsage = 5f;
+    [SerializeField] private bool useSelfAnim = false;
+    [SerializeField] private LayerMask attackLayer;
+    [SerializeField] private float blockDamage = 5f;
+    [SerializeField] private float entityDamage = 3f;
+    [SerializeField] private float range = 1.8f;
+    [SerializeField] private float timeBtwAttacks = 0.4f;
+    [SerializeField] private float staminaUsage = 5f;
 
+    [Tooltip("When you need to use tool animation for attacking")]
+    public bool UseSelfAnim => useSelfAnim;
     public LayerMask AttackLayer => attackLayer;
     public float BlockDamage => blockDamage;
     public float EntityDamage => entityDamage;

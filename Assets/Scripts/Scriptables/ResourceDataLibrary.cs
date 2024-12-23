@@ -21,5 +21,15 @@ namespace Scriptables {
 
       return null;
     }
+
+    public Color GetColor(float perlinValue) {
+      for (int i = 0; i < Resources.Length; i++) {
+        if (Resources[i].PerlinRange.x > perlinValue) continue;
+        if (Resources[i].PerlinRange.y < perlinValue) continue;
+        return Resources[i].Data.Color;
+      }
+
+      return Color.white;
+    }
   }
 }

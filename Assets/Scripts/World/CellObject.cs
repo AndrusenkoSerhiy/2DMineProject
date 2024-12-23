@@ -33,9 +33,7 @@ namespace World {
     }
 
     public void InitSprite() {
-      sprite.sprite = _cellData.HasNeighbours ? 
-        atlasRef.GetSprite(resourceData.DarkSprite.name) :
-        atlasRef.GetSprite(resourceData.Sprite.name);
+      sprite.sprite = atlasRef.GetSprite(resourceData.Sprite.name);
     }
 
     public bool hasTakenDamage {

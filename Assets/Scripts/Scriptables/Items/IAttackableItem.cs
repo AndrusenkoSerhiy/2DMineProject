@@ -9,5 +9,6 @@ namespace Scriptables.Items {
     public float Range { get; }
     public float TimeBtwAttacks { get; }
     public float StaminaUsage { get; }
+    public int AnimationAttackID { get; }
   }
 }

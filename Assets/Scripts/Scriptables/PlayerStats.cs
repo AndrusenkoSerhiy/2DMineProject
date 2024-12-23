@@ -68,5 +68,6 @@ namespace Scriptables
     public float Range = 1.8f;
     public float TimeBtwAttacks = 0.4f;
     public float StaminaUsage = 1f;
+    public int AttackID;
   }
 }

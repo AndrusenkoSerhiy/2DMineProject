@@ -28,6 +28,7 @@ namespace Player {
     private float timeBtwAttacks;
     //TODO
     private float staminaUsage;
+    private int attackID;
     private float attackTimeCounter;
 
     private IDamageable currentTarget;
@@ -40,7 +41,8 @@ namespace Player {
       playerEquipment = GetComponent<PlayerEquipment>();
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
     }
-
+    public IDamageable CurrentTarget => currentTarget;
+    public float BlockDamage => blockDamage;
     private void OnDestroy() {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
       AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
@@ -73,6 +75,7 @@ namespace Player {
       attackRange = stats.Range;
       timeBtwAttacks = stats.TimeBtwAttacks;
       staminaUsage = stats.StaminaUsage;
+      attackID = stats.AttackID;
     }
 
     private bool SetAttackParamsFromEquipment() {
@@ -99,15 +102,15 @@ namespace Player {
       attackRange = attackableItem.Range;
       timeBtwAttacks = attackableItem.TimeBtwAttacks;
       staminaUsage = attackableItem.StaminaUsage;
-
+      attackID = attackableItem.AnimationAttackID;
       return true;
     }
 
     private void Update() {
       HighlightTarget();
 
-      if (_useToolAnimation)
-        return;
+      /*if (_useToolAnimation)
+        return;*/
       
       // Handle attack
       if (UserInput.instance.IsAttacking() /*&& currentTarget != null*/
@@ -124,6 +127,7 @@ namespace Player {
       
       attackTimeCounter = 0f;
       animator.SetTrigger("Attack");
+      animator.SetInteger("WeaponID", attackID);
     }
 
     private void HighlightTarget() {
@@ -134,7 +138,7 @@ namespace Player {
       Debug.DrawLine(playerPosition, mousePoint, Color.red);  // Visualize ray
 
       RaycastHit2D hit = Physics2D.Raycast(playerPosition, mousePoint - playerPosition, attackRange, attackLayer);
-
+      //Debug.LogError($"{hit.collider.gameObject.name}");
       if (hit.collider != null && hit.collider.TryGetComponent(out IDamageable iDamageable)) {
         if (currentTarget != iDamageable) {
           ClearTarget();

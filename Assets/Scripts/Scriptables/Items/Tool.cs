@@ -10,6 +10,7 @@ namespace Scriptables.Items {
     [SerializeField] private float range = 1.8f;
     [SerializeField] private float timeBtwAttacks = 0.4f;
     [SerializeField] private float staminaUsage = 5f;
+    [SerializeField] private int animationattackID = 0;
 
     [Tooltip("When you need to use tool animation for attacking")]
     public bool UseSelfAnim => useSelfAnim;
@@ -19,6 +20,7 @@ namespace Scriptables.Items {
     public float Range => range;
     public float TimeBtwAttacks => timeBtwAttacks;
     public float StaminaUsage => staminaUsage;
+    public int AnimationAttackID => animationattackID;
 
     public void Awake() {
       Type = ItemType.Tool;

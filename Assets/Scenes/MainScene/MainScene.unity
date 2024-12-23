@@ -707,7 +707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &315269512
 Transform:
   m_ObjectHideFlags: 0
@@ -721,6 +721,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 941364255}
   - {fileID: 775163646}
   - {fileID: 5995392829957249335}
   - {fileID: 405451976}
@@ -1857,6 +1858,68 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: -3
   m_TargetDisplay: 0
+--- !u!1001 &941364254
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 315269512}
+    m_Modifications:
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.7076619
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.70655125
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -270.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890226224433729309, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+      propertyPath: m_Name
+      value: Drill
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+--- !u!4 &941364255 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3625460618267473847, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+  m_PrefabInstance: {fileID: 941364254}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &951311933
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5771,9 +5834,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: _material
+      value: 
+      objectReference: {fileID: 2100000, guid: 003170a808acc4340847be3396c78e77, type: 2}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: _playerController
       value: 
       objectReference: {fileID: 1420871294}
+    - target: {fileID: 3593832721513594949, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3593832721513594949, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 003170a808acc4340847be3396c78e77, type: 2}
     - target: {fileID: 4001951038154339777, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_Name
       value: GameManager

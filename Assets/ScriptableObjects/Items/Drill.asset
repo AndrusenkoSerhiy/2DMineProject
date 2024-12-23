@@ -20,14 +20,15 @@ MonoBehaviour:
   Description: drill description
   data:
     Name: Drill
-    Id: 3
+    Id: 4
     buffs: []
   useSelfAnim: 1
   attackLayer:
     serializedVersion: 2
     m_Bits: 256
-  blockDamage: 10
+  blockDamage: 12
   entityDamage: 3
-  range: 1
+  range: 1.8
   timeBtwAttacks: 0.4
   staminaUsage: 0
+  animationattackID: 1

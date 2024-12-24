@@ -831,6 +831,7 @@ MonoBehaviour:
   attackTransform: {fileID: 5909884442351797668}
   stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
   animator: {fileID: 660024517565497304}
+  _useToolAnimation: 0
 --- !u!114 &2143130106914139634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -846,6 +847,7 @@ MonoBehaviour:
   offhandWristTransform: {fileID: 3193418100009615299}
   offhandHandTransform: {fileID: 22766846785428844}
   weaponTransform: {fileID: 39923705835017211}
+  toolTransform: {fileID: 3815161883808866517}
 --- !u!114 &3735709328253405601
 MonoBehaviour:
   m_ObjectHideFlags: 0

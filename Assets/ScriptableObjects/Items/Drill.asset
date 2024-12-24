@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: Drill
   m_EditorClassIdentifier: 
   Type: 2
-  UiDisplay: {fileID: 21300000, guid: 51af7db31eac37843b8d5ab24aa4aba9, type: 3}
+  UiDisplay: {fileID: 21300000, guid: 1a936767b00f7e0409025a6e8a5e8b8e, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
   Stackable: 0
   MaxStackSize: 1
+  SpawnPosition: {x: 0.4, y: -0.29, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: -90}
   Description: drill description
   data:
     Name: Drill

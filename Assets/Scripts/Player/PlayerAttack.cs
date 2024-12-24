@@ -55,7 +55,7 @@ namespace Player {
     }
 
     private void UpdateAttackParam() {
-      Debug.LogError("UpdateAttackParam");
+      //Debug.LogError("UpdateAttackParam");
       SetAttackParamsFromEquipment();
       //try to activate tool
       ToolBase tool = playerEquipment.Weapon.GetComponent<ToolBase>();
@@ -94,7 +94,7 @@ namespace Player {
         Debug.LogWarning("Equipped item is not attackable", this);
         return false;
       }
-      Debug.LogError("SetAttackParamsFromEquipment");
+      //Debug.LogError("SetAttackParamsFromEquipment");
       _useToolAnimation = attackableItem.UseSelfAnim;
       attackLayer = attackableItem.AttackLayer;
       blockDamage = attackableItem.BlockDamage;

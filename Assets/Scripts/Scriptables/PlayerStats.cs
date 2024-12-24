@@ -25,6 +25,9 @@ namespace Scriptables
     
     [Tooltip("The top horizontal back movement speed")]
     public float MaxBackSpeed = 7;
+    
+    [Tooltip("The top horizontal sprint speed")]
+    public float SprintSpeed = 20;
 
     [Tooltip("The player's capacity to gain horizontal speed")]
     public float Acceleration = 120;

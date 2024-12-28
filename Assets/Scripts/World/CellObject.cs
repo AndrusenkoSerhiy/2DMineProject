@@ -33,7 +33,10 @@ namespace World {
     }
 
     public void InitSprite() {
-      sprite.sprite = atlasRef.GetSprite(resourceData.Sprite.name);
+      var neighbourIndex = _cellData.NeighboursIndex;
+      var targetSprite = resourceData.Sprite(neighbourIndex);
+      sprite.sprite = atlasRef.GetSprite(targetSprite.name);
+      sprite.sortingOrder = resourceData.SortingOrder;
     }
 
     public bool hasTakenDamage {

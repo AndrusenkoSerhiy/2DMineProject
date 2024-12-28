@@ -7,7 +7,7 @@ namespace World {
     public int y;
     public float perlin;
     private ChunkData _chunk;
-    public bool HasNeighbours => hasNeighbours();
+    public int NeighboursIndex => neighboursIndex();
 
     public CellData(int x, int y, float perlin, ChunkData chunk) {
       this.x = x;
@@ -16,19 +16,128 @@ namespace World {
       _chunk = chunk;
     }
 
-    private bool hasNeighbours() {
-      if (x == 0 || x == _chunk.height - 1) return false;
-      if (y == 0 || y == _chunk.width - 1) return false;
+    private int neighboursIndex() {
+      //allNeighbours
+      if (_chunk.GetCellFill(x, y - 1) == 1 &&
+          _chunk.GetCellFill(x, y + 1) == 1 &&
+          _chunk.GetCellFill(x - 1, y) == 1 &&
+          _chunk.GetCellFill(x + 1, y) == 1) {
+        return 0;
+      }
+      
+      //up free
+      if (_chunk.GetCellFill(x, y - 1) == 0 &&
+          _chunk.GetCellFill(x, y + 1) == 1 &&
+          _chunk.GetCellFill(x - 1, y) == 1 &&
+          _chunk.GetCellFill(x + 1, y) == 1) {
+        return 1;
+      }
+      
+      //left free
+      if (_chunk.GetCellFill(x, y - 1) == 1 &&
+          _chunk.GetCellFill(x, y + 1) == 1 &&
+          _chunk.GetCellFill(x - 1, y) == 0 &&
+          _chunk.GetCellFill(x + 1, y) == 1) {
+        return 2;
+      }
+      
+      //right free
+      if (_chunk.GetCellFill(x, y - 1) == 1 &&
+          _chunk.GetCellFill(x, y + 1) == 1 &&
+          _chunk.GetCellFill(x - 1, y) == 1 &&
+          _chunk.GetCellFill(x + 1, y) == 0) {
+        return 3;
+      }
 
-      if (_chunk.CellFillDatas[x - 1, y] != 1)
-        return false;
-      if (_chunk.CellFillDatas[x, y - 1] != 1)
-        return false;
-      if (_chunk.CellFillDatas[x + 1, y] != 1)
-        return false;
-      if (_chunk.CellFillDatas[x, y + 1] != 1)
-        return false;
-      return true;
+      //bottom free
+      if (_chunk.GetCellFill(x, y - 1) == 1 &&
+          _chunk.GetCellFill(x, y + 1) == 0 &&
+          _chunk.GetCellFill(x - 1, y) == 1 &&
+          _chunk.GetCellFill(x + 1, y) == 1) {
+        return 4;
+      }
+      
+      //left up free
+      if (_chunk.GetCellFill(x, y - 1) == 0 &&
+          _chunk.GetCellFill(x, y + 1) == 1 &&
+          _chunk.GetCellFill(x - 1, y) == 0 &&
+          _chunk.GetCellFill(x + 1, y) == 1) {
+        return 5;
+      }
+      
+      //right up free
+      if (_chunk.GetCellFill(x, y - 1) == 0 &&
+          _chunk.GetCellFill(x, y + 1) == 1 &&
+          _chunk.GetCellFill(x - 1, y) == 1 &&
+          _chunk.GetCellFill(x + 1, y) == 0) {
+        return 6;
+      }
+      
+      //left bottom free
+      if (_chunk.GetCellFill(x, y - 1) == 1 &&
+          _chunk.GetCellFill(x, y + 1) == 0 &&
+          _chunk.GetCellFill(x - 1, y) == 0 &&
+          _chunk.GetCellFill(x + 1, y) == 1) {
+        return 7;
+      }
+      
+      //right bottom free
+      if (_chunk.GetCellFill(x, y - 1) == 1 &&
+          _chunk.GetCellFill(x, y + 1) == 0 &&
+          _chunk.GetCellFill(x - 1, y) == 1 &&
+          _chunk.GetCellFill(x + 1, y) == 0) {
+        return 8;
+      }
+      
+      //left right free
+      if (_chunk.GetCellFill(x, y - 1) == 1 &&
+          _chunk.GetCellFill(x, y + 1) == 1 &&
+          _chunk.GetCellFill(x - 1, y) == 0 &&
+          _chunk.GetCellFill(x + 1, y) == 0) {
+        return 9;
+      }
+      
+      //up bottom free
+      if (_chunk.GetCellFill(x, y - 1) == 0 &&
+          _chunk.GetCellFill(x, y + 1) == 0 &&
+          _chunk.GetCellFill(x - 1, y) == 1 &&
+          _chunk.GetCellFill(x + 1, y) == 1) {
+        return 10;
+      }
+      
+      //bottom free
+      if (_chunk.GetCellFill(x, y - 1) == 0 &&
+          _chunk.GetCellFill(x, y + 1) == 1 &&
+          _chunk.GetCellFill(x - 1, y) == 0 &&
+          _chunk.GetCellFill(x + 1, y) == 0) {
+        return 11;
+      }
+      
+      //right free
+      if (_chunk.GetCellFill(x, y - 1) == 0 &&
+          _chunk.GetCellFill(x, y + 1) == 0 &&
+          _chunk.GetCellFill(x - 1, y) == 0 &&
+          _chunk.GetCellFill(x + 1, y) == 1) {
+        return 12;
+      }
+      
+      //left free
+      if (_chunk.GetCellFill(x, y - 1) == 0 &&
+          _chunk.GetCellFill(x, y + 1) == 0 &&
+          _chunk.GetCellFill(x - 1, y) == 1 &&
+          _chunk.GetCellFill(x + 1, y) == 0) {
+        return 13;
+      }
+      
+      //upfree
+      if (_chunk.GetCellFill(x, y - 1) == 1 &&
+          _chunk.GetCellFill(x, y + 1) == 0 &&
+          _chunk.GetCellFill(x - 1, y) == 0 &&
+          _chunk.GetCellFill(x + 1, y) == 0) {
+        return 0;
+      }
+      
+      return 15;
     }
 
     public void Destroy() {

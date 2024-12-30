@@ -1,4 +1,5 @@
-﻿using Scriptables.Inventory;
+﻿using System;
+using Scriptables.Inventory;
 using Scriptables.Items;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class PlayerEquipment : MonoBehaviour {
   [SerializeField] private Transform offhandWristTransform;
   [SerializeField] private Transform offhandHandTransform;
   [SerializeField] private Transform weaponTransform;
+  [SerializeField] private Transform toolTransform;
 
   private Transform _pants;
   private Transform _gloves;
@@ -17,7 +19,7 @@ public class PlayerEquipment : MonoBehaviour {
   private Transform _helmet;
   private Transform _offhand;
   private Transform _weapon;
-
+  public event Action OnEquippedWeapon;
   public Transform Weapon { get => _weapon; private set => _weapon = value; }
 
   void Start() {
@@ -44,8 +46,16 @@ public class PlayerEquipment : MonoBehaviour {
         if (itemObject.CharacterDisplay != null) {
           switch (slot.AllowedItems[0]) {
             case ItemType.Tool:
+              Weapon = Instantiate(itemObject.CharacterDisplay, toolTransform).transform;
+              Weapon.localPosition = itemObject.SpawnPosition;
+              Weapon.localEulerAngles = itemObject.SpawnRotation;
+              OnEquippedWeapon?.Invoke();
+              break;
+            
             case ItemType.Weapon:
               Weapon = Instantiate(itemObject.CharacterDisplay, weaponTransform).transform;
+              
+              OnEquippedWeapon?.Invoke();
               break;
           }
         }

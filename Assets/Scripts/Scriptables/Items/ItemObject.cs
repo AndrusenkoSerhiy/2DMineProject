@@ -8,6 +8,8 @@ namespace Scriptables.Items {
     public GameObject CharacterDisplay;
     public bool Stackable;
     public int MaxStackSize = 10;
+    public Vector3 SpawnPosition;
+    public Vector3 SpawnRotation;
     [TextArea(15, 20)] public string Description;
     public Item data = new Item();
 

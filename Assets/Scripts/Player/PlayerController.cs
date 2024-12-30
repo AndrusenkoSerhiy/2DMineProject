@@ -1,5 +1,6 @@
 using System;
 using Animation;
+using DefaultNamespace;
 using Pool;
 using Scriptables;
 using Settings;
@@ -37,6 +38,10 @@ namespace Player {
 
     [SerializeField] private PlayerCoords _playerCoords;
     public PlayerCoords PlayerCoords => _playerCoords;
+    
+      
+    [SerializeField] private Stamina _stamina;
+    public Stamina Stamina => _stamina;
 
     #region Interface
 
@@ -62,8 +67,16 @@ namespace Player {
       GameManager.instance.PlayerController = this;
     }
 
-    private void Destroy() {
+    
+
+    private void OnDestroy() {
       AnimationEventManager.onFootstep -= SpawnFootstepEffect;
+    }
+
+    
+    //move forward or backward
+    public float GetMoveForward() {
+      return Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x)) ? 1 : -1;
     }
 
     private void Update() {
@@ -241,7 +254,7 @@ namespace Player {
 
     private float GetMaxSpeed() {
       return (Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x)))
-        ? _stats.MaxSpeed
+        ? _stamina.IsSprinting ? _stats.SprintSpeed : _stats.MaxSpeed
         : _stats.MaxBackSpeed;
     }
 

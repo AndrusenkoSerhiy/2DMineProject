@@ -15,6 +15,7 @@ namespace Scriptables {
 
     public Sprite Sprite(int index) => tileDatas[index].Sprite;
     public int SortingOrder(int index) => sortingOrder + tileDatas[index].OffsetSorting;
+    public int SortingOrder() => sortingOrder;
 
     public Vector3 PosOffset(int index) => tileDatas[index].OffsetPosition;
     public Vector3 ColOffset(int index) => tileDatas[index].OffsetCollider;

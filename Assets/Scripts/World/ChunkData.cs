@@ -1,4 +1,5 @@
 using System;
+using Scriptables;
 using Unity.Collections;
 using Unity.Jobs;
 using Utils;
@@ -84,10 +85,13 @@ namespace World {
     public void SetCellFill(int xCoord, int yCoord, int value = 1) {
       _cellFillDatas[xCoord, yCoord] = value;
     }
-    
-    public int GetCellFill(int x, int y) {
+
+    public int GetCellFill(int x, int y, float perlin) {
       if (x < 0 || x > width || y < 0 || y > height) return 0;
-      return _cellFillDatas[x, y];
+      var targetRes = GameManager.instance.ChunkController.ResourceDataLibrary.GetData(perlin);
+      var curRes = GameManager.instance.ChunkController.ResourceDataLibrary.GetData(_cellDatas[x, y].perlin);
+      var sameResource = targetRes != null && curRes != null && targetRes.SortingOrder() == curRes.SortingOrder();
+      return sameResource ? _cellFillDatas[x, y] : 0;
     }
 
     void OnDestroy() {

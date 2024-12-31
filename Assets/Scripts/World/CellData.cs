@@ -136,7 +136,7 @@ namespace World {
           _chunk.GetCellFill(x, y + 1,perlin) == 0 &&
           _chunk.GetCellFill(x - 1, y,perlin) == 0 &&
           _chunk.GetCellFill(x + 1, y,perlin) == 0) {
-        return 0;
+        return 14;
       }
       
       return 15;

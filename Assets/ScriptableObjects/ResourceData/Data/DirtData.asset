@@ -13,22 +13,71 @@ MonoBehaviour:
   m_Name: DirtData
   m_EditorClassIdentifier: 
   Durability: 10
-  sprites:
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
-  - {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+  tileDatas:
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: c71decd9b3554164d9caf16238984dbb, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
   sortingOrder: 0
   itemData: {fileID: 0}
   mapColor: {r: 0.2924528, g: 0.28309196, b: 0.10898005, a: 0}

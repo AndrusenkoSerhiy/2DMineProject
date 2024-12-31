@@ -36,7 +36,8 @@ namespace World {
       var neighbourIndex = _cellData.NeighboursIndex;
       var targetSprite = resourceData.Sprite(neighbourIndex);
       sprite.sprite = atlasRef.GetSprite(targetSprite.name);
-      sprite.sortingOrder = resourceData.SortingOrder;
+      sprite.sortingOrder = resourceData.SortingOrder(neighbourIndex);
+      sprite.transform.localPosition = resourceData.PosOffset(neighbourIndex);
     }
 
     public bool hasTakenDamage {
@@ -76,7 +77,7 @@ namespace World {
     }
 
     public void AfterDamageReceived() {
-      Shake();
+      //Shake();
     }
 
     private void Shake() {

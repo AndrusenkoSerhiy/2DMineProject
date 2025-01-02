@@ -17,9 +17,15 @@ MonoBehaviour:
   CharacterDisplay: {fileID: 0}
   Stackable: 1
   MaxStackSize: 20000
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
   Description: 
   data:
     Name: 
     Id: 2
     buffs: []
   spawnPrefab: {fileID: 3890226224433729309, guid: 9629ad65c25f97048966dd27f06d3261, type: 3}
+  bonusResources:
+  - item: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
+    chance: 0.214
+    rndCount: {x: 1, y: 3}

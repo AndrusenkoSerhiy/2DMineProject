@@ -43,6 +43,24 @@ public class PlayerInventory : MonoBehaviour {
 
   public void AddItemToInventory(ItemObject item, int count){
     inventory.AddItem(new Item(item), count, item, null);
+    AddAdditionalItem(item);
+  }
+  
+  //get bonus resource when we are mining
+  private void AddAdditionalItem(ItemObject item) {
+    var resource = item as Resource;
+    if (resource == null) 
+      return;
+    
+    var list = resource.GetBonusResources;
+    for (int i = 0; i < list.Count; i++) {
+      if (Random.value > list[i].chance)
+        return;
+      
+      var count = Random.Range((int)list[i].rndCount.x, (int)list[i].rndCount.y);
+      //Debug.LogError($"spawn {list[i].item.name} | count {count} ");
+      inventory.AddItem(new Item(list[i].item), count, list[i].item, null); 
+    }
   }
 
   private void Update() {

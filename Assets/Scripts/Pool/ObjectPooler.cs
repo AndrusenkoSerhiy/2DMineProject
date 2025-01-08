@@ -42,7 +42,29 @@ namespace Pool {
         return null;
       }
 
-      GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+      Queue<GameObject> objectPool = poolDictionary[tag];
+      GameObject objectToSpawn = null;
+
+      // Find the first inactive object in the pool
+      for (int i = 0; i < objectPool.Count; i++) {
+        GameObject obj = objectPool.Dequeue();
+
+        if (!obj.activeInHierarchy) {
+          objectToSpawn = obj;
+          break;
+        }
+
+        objectPool.Enqueue(obj); // Requeue the object if it's active
+      }
+
+      // If no inactive object is found, instantiate a new one
+      if (objectToSpawn == null) {
+        Pool poolConfig = pools.Find(p => p.tag == tag);
+
+        if (poolConfig != null) {
+          objectToSpawn = Instantiate(poolConfig.prefab, transform);
+        }
+      }
 
       objectToSpawn.SetActive(true);
       objectToSpawn.transform.position = position;
@@ -51,10 +73,6 @@ namespace Pool {
       poolDictionary[tag].Enqueue(objectToSpawn);
 
       return objectToSpawn;
-    }
-
-    public void ReturnToPool() {
-      
     }
   }
 }

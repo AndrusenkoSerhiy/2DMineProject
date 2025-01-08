@@ -180,7 +180,6 @@ namespace Player {
           var pos = CoordsTransformer.WorldToGrid(hitCollider.gameObject.transform.position);
           
           var test = GameManager.instance.ChunkController.GetCell(pos.X, pos.Y);
-          Debug.LogError($"Collision detected with: {hitCollider.name}");
           additionalTargets.Add(test);
         }
       }
@@ -211,13 +210,8 @@ namespace Player {
     }
 
     private void Attack() {
-      /*if (currentTarget == null || currentTarget.hasTakenDamage) {
-        return;
-      }*/
-      Debug.LogError("Attack");
       SetTargetsByCollider();
       //need to attack in radius
-      //currentTarget.Damage(blockDamage);
       foreach (var target in additionalTargets) {
         if (target == null || target.hasTakenDamage) continue;
         target.Damage(blockDamage);

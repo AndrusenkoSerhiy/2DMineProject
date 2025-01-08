@@ -34,7 +34,6 @@ namespace Tools {
     }
 
     private void SitOnRobot() {
-      Debug.LogError("SitOnRobot");
       _playerController.EnableController(false);
       _playerController.EnableCollider(false);
       _playerAttack.enabled = false;
@@ -44,7 +43,6 @@ namespace Tools {
     }
 
     private void ExitFromRobot() {
-      Debug.LogError("ExitFromRobot");
       SetPlayerPosition(null, _exitTransforms[0].position);
       _miningRobotController.EnableController(false);
       _playerController.EnableCollider(true);

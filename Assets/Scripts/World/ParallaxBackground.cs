@@ -14,7 +14,7 @@ namespace World {
 
 
     private void Start() {
-      cameraTransform = Camera.main.transform;
+      cameraTransform = GameManager.instance.MainCamera.transform;
       lastCameraPosition = cameraTransform.position;
       Sprite sprite = GetComponent<SpriteRenderer>().sprite;
       Texture2D texture = sprite.texture;

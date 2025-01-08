@@ -21,5 +21,12 @@ namespace Interaction
       _isDisplayed = false;
       _promt.gameObject.SetActive(false);
     }
+
+    public void UpdatePromt(string str) {
+      if (str.Equals(_promt.text))
+        return;
+      
+      _promt.text = str;
+    }
   }
 }

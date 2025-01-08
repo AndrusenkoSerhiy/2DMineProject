@@ -262,6 +262,22 @@ namespace Player {
       _animator.SetFloat("VelocityX", value);
     }
 
+    public void EnableController(bool state) {
+      enabled = state;
+      _rb.simulated = state;
+    }
+
+    public void SetParent(Transform tr) {
+      transform.parent = tr;
+    }
+    public void SetPosition(Vector3 pos) {
+      transform.localPosition = pos;
+    }
+
+    public void EnableCollider(bool state) {
+      _col.enabled = state;
+    }
+
     #endregion
 
     #region Gravity

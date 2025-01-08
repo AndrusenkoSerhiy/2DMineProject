@@ -24,6 +24,8 @@ namespace Interaction
           if(!_interactionPromtUI.IsDisplayed) _interactionPromtUI.ShowPromt(_interactable.InteractionPrompt);
 
           if(Keyboard.current.eKey.wasPressedThisFrame) _interactable.Interact(this);
+          
+          _interactionPromtUI.UpdatePromt(_interactable.InteractionPrompt);
         }
       }else{
         _interactable = null;

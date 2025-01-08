@@ -1,6 +1,4 @@
 using System;
-using Items;
-using Player;
 using Settings;
 using UnityEngine;
 

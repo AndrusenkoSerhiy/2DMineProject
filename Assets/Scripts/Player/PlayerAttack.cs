@@ -33,13 +33,13 @@ namespace Player {
 
     private IDamageable currentTarget;
     private Renderer currentTargetRenderer;
-    [SerializeField] private bool _useToolAnimation = false;
     private PlayerEquipment playerEquipment;
     private void Awake() {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
       playerEquipment = GetComponent<PlayerEquipment>();
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
+      GameManager.instance.PlayerAttack = this;
     }
     public IDamageable CurrentTarget => currentTarget;
     public float BlockDamage => blockDamage;
@@ -95,7 +95,6 @@ namespace Player {
         return false;
       }
       //Debug.LogError("SetAttackParamsFromEquipment");
-      _useToolAnimation = attackableItem.UseSelfAnim;
       attackLayer = attackableItem.AttackLayer;
       blockDamage = attackableItem.BlockDamage;
       entityDamage = attackableItem.EntityDamage;
@@ -108,9 +107,6 @@ namespace Player {
 
     private void Update() {
       HighlightTarget();
-
-      /*if (_useToolAnimation)
-        return;*/
       
       // Handle attack
       if (UserInput.instance.IsAttacking() /*&& currentTarget != null*/

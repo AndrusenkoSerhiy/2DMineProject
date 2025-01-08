@@ -14,7 +14,6 @@ public class PlaceCell : MonoBehaviour {
   [SerializeField] private Color _blockColor;
   private Color _currPreviewColor;
   private void Start() {
-    //UserInput.instance.OnUIClick += UIInput_OnUIClick;
     UserInput.instance.OnBuildClick += Input_OnBuildClick;
   }
 
@@ -67,7 +66,7 @@ public class PlaceCell : MonoBehaviour {
       // Update the position of the preview to follow the mouse position
       Vector3 mousePosition = UserInput.instance.GetMousePosition();
       mousePosition.z = 0f; 
-      Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+      Vector3 worldPosition = GetMousePosition();
 
       var grid = CoordsTransformer.WorldToGrid(worldPosition);
       var world = CoordsTransformer.GridToWorld(grid.X, grid.Y);
@@ -103,12 +102,11 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void PlaceCellOnScene() {
-    //Debug.LogError("Place cell");
-    var coords = CoordsTransformer.WorldToGrid(Camera.main.ScreenToWorldPoint(UserInput.instance.GetMousePosition()));
+    var coords = CoordsTransformer.WorldToGrid(GetMousePosition());
     GameManager.instance.ChunkController.SpawnCell(coords,_resourceData);
   }
 
-  private void OnDestroy() {
-    //UserInput.instance.OnUIClick -= UIInput_OnUIClick;
+  private Vector3 GetMousePosition() {
+    return GameManager.instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
   }
 }

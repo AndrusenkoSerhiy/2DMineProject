@@ -756,6 +756,7 @@ GameObject:
   - component: {fileID: 4285968199683070401}
   - component: {fileID: 6074475013724374629}
   - component: {fileID: 6251728841341945271}
+  - component: {fileID: 7810780520715568834}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -814,10 +815,11 @@ MonoBehaviour:
   _animator: {fileID: 660024517565497304}
   Head: {fileID: 1976719180885785715}
   _flipDeadZone: 0.5
+  _playerCoords: {fileID: 4285968199683070401}
+  _ladderMovement: {fileID: 7810780520715568834}
+  _stamina: {fileID: 6251728841341945271}
   _topAngleLimit: 20
   _bottomAngleLimit: -20
-  _playerCoords: {fileID: 4285968199683070401}
-  _stamina: {fileID: 6251728841341945271}
 --- !u!114 &3203884702869887430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -833,7 +835,6 @@ MonoBehaviour:
   attackTransform: {fileID: 5909884442351797668}
   stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
   animator: {fileID: 660024517565497304}
-  _useToolAnimation: 0
 --- !u!114 &2143130106914139634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -999,6 +1000,23 @@ MonoBehaviour:
   staminaRecovery: 30
   minStamina: 10
   isSprinting: 0
+--- !u!114 &7810780520715568834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2428154648203464867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f392883895774196a3ec583adc571f43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  climbSpeed: 7
+  isOnLadder: 0
+  isClimbing: 0
+  rb: {fileID: 7677545041897933634}
+  ladderObject: {fileID: 0}
 --- !u!1 &2732549292726789520
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,7 @@ public abstract class UserInterface : MonoBehaviour {
   private bool _enabled = false;
   [SerializeField] private Camera _uiCamera;
   [SerializeField] private Canvas _canvas;
+  [SerializeField] private Transform _tempDragParent;
 
   public void OnEnable() {
     if (_enabled) {
@@ -101,7 +102,6 @@ public abstract class UserInterface : MonoBehaviour {
   }
 
   public void OnDragStart(GameObject obj) {
-    Debug.Log("OnDragStart");
     MouseData.tempItemBeingDragged = CreateTempItem(obj);
   }
 
@@ -114,7 +114,7 @@ public abstract class UserInterface : MonoBehaviour {
 
       rt.sizeDelta = new Vector2(80, 80);
 
-      tempItem.transform.SetParent(transform.parent.parent);
+      tempItem.transform.SetParent(_tempDragParent);//transform.parent.parent
       var img = tempItem.AddComponent<Image>();
       img.sprite = slotsOnInterface[obj].GetItemObject().UiDisplay;
       img.raycastTarget = false;
@@ -129,7 +129,6 @@ public abstract class UserInterface : MonoBehaviour {
     Destroy(MouseData.tempItemBeingDragged);
 
     if (MouseData.interfaceMouseIsOver == null) {
-        
       SpawnItem(slotsOnInterface[obj]);
       slotsOnInterface[obj].RemoveItem();
       Debug.Log($"need to spawn item on ground");

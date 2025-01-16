@@ -8,11 +8,13 @@ public class PlayerInventory : MonoBehaviour {
   public GameObject inventoryPrefab;
   // public GameObject equipmentPrefab;
   public InventoryObject equipment;
+  public InventoryObject quickSlots;
   private int defaultItemId = 0;
 
   private void Start() {
     inventory.Load();
     equipment.Load();
+    quickSlots.Load();
 
     // TODO Add default item to inventory if it's not already there
     Item defaultItem = new Item(inventory.database.ItemObjects[defaultItemId]);
@@ -74,7 +76,9 @@ public class PlayerInventory : MonoBehaviour {
   public void OnApplicationQuit() {
     inventory.Save();
     equipment.Save();
+    quickSlots.Save();
     inventory.Clear();
     equipment.Clear();
+    quickSlots.Clear();
   }
 }

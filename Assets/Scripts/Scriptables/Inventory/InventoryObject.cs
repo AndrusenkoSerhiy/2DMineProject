@@ -3,9 +3,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Items;
 using Scriptables.Items;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Scriptables.Inventory {
   [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]

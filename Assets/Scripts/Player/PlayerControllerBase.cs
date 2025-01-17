@@ -36,6 +36,8 @@ namespace Player {
     private float _frameLeftGrounded = float.MinValue;
     private bool _grounded;
     private float _time;
+    //lock player when ui window is open
+    [SerializeField] protected bool _lockPlayer;
     
     public bool Grounded => _grounded;
 
@@ -47,6 +49,10 @@ namespace Player {
 
     #endregion
 
+    public void SetLockPlayer(bool state) {
+      _lockPlayer = state;
+    }
+    
     protected virtual void Awake() {
       _rb = GetComponent<Rigidbody2D>();
       _col = GetComponent<CapsuleCollider2D>();
@@ -71,7 +77,7 @@ namespace Player {
       return Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x)) ? 1 : -1;
     }
 
-    private void Update() {
+    protected virtual void Update() {
       _time += Time.deltaTime;
       GatherInput();
       LookAtMouse();

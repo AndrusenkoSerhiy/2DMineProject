@@ -1,15 +1,18 @@
-﻿using Scriptables.Inventory;
+﻿using Windows;
+using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
 using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour {
   public InventoryObject inventory;
-  public GameObject inventoryPrefab;
+  //public GameObject inventoryPrefab;
   // public GameObject equipmentPrefab;
   public InventoryObject equipment;
   public InventoryObject quickSlots;
   private int defaultItemId = 0;
+  private WindowsController windowsController;
+  private PlayerInventoryWindow inventoryWindow;
 
   private void Start() {
     inventory.Load();
@@ -25,9 +28,12 @@ public class PlayerInventory : MonoBehaviour {
     }
 
     //hide the inventory UI at the start
-    if (inventoryPrefab != null) {
+    /*if (inventoryPrefab != null) {
       inventoryPrefab.SetActive(false);
-    }
+    }*/
+    windowsController = GameManager.instance.WindowsController;
+    inventoryWindow = windowsController.GetWindow<PlayerInventoryWindow>();
+    inventoryWindow.Hide();
     GameManager.instance.PlayerInventory = this;
   }
 
@@ -66,10 +72,11 @@ public class PlayerInventory : MonoBehaviour {
   }
 
   private void Update() {
-    //show/hide inventory
-    if (UserInput.instance.controls.UI.Inventory.triggered && inventoryPrefab != null) {
-      UserInput.instance.EnableUIControls(!inventoryPrefab.activeSelf);
-      inventoryPrefab.SetActive(!inventoryPrefab.activeSelf);
+    if (UserInput.instance.controls.UI.Inventory.triggered /*&& inventoryPrefab != null*/) {
+      UserInput.instance.EnableUIControls(!inventoryWindow.IsShow);
+      if (inventoryWindow.IsShow)
+        inventoryWindow.Hide();
+      else inventoryWindow.Show();
     }
   }
 

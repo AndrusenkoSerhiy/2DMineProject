@@ -1,3 +1,4 @@
+using Settings;
 using UnityEngine;
 
 namespace Player {
@@ -12,6 +13,9 @@ namespace Player {
     }
     
     protected override void LookAtMouse() {
+      if (_lockPlayer) {
+        return;
+      }
       base.LookAtMouse();
       
       var dir = ((Vector2)_camera.ScreenToWorldPoint(Input.mousePosition) - (Vector2)Head.position);
@@ -25,6 +29,13 @@ namespace Player {
 
       // Apply the clamped angle to the head
       Head.rotation = Quaternion.Euler(0, 0, clampedAngle + Mathf.Sign(transform.localScale.x) * 90);
+    }
+
+    protected override void Update() {
+      base.Update();
+      /*if (Input.GetKeyDown(KeyCode.O)) {
+        LockPlayer(!_lockPlayer); 
+      }*/
     }
   }
 }

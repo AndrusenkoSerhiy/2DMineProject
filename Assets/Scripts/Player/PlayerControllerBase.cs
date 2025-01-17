@@ -1,6 +1,7 @@
 using System;
 using Animation;
 using DefaultNamespace;
+using Movement;
 using Pool;
 using Scriptables;
 using Settings;
@@ -24,15 +25,21 @@ namespace Player {
     protected float rotationCoef = 1f;
 
     [SerializeField] private PlayerCoords _playerCoords;
+    
+    [SerializeField] protected LadderMovement _ladderMovement;
     public PlayerCoords PlayerCoords => _playerCoords;
-
+    public Vector2 FrameVelocity => _frameVelocity;
 
     [SerializeField] private Stamina _stamina;
     public Stamina Stamina => _stamina;
-
+    public PlayerStats Stats => _stats;
     private float _frameLeftGrounded = float.MinValue;
     private bool _grounded;
     private float _time;
+    //lock player when ui window is open
+    [SerializeField] protected bool _lockPlayer;
+    
+    public bool Grounded => _grounded;
 
     #region Interface
 
@@ -42,6 +49,10 @@ namespace Player {
 
     #endregion
 
+    public void SetLockPlayer(bool state) {
+      _lockPlayer = state;
+    }
+    
     protected virtual void Awake() {
       _rb = GetComponent<Rigidbody2D>();
       _col = GetComponent<CapsuleCollider2D>();
@@ -66,7 +77,7 @@ namespace Player {
       return Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x)) ? 1 : -1;
     }
 
-    private void Update() {
+    protected virtual void Update() {
       _time += Time.deltaTime;
       GatherInput();
       LookAtMouse();
@@ -95,8 +106,7 @@ namespace Player {
       _frameInput = new FrameInput {
         JumpDown = UserInput.instance.controls.GamePlay.Jump.WasPerformedThisFrame(), //Input.GetButtonDown("Jump"),
         JumpHeld = UserInput.instance.controls.GamePlay.Jump.IsPressed(), //Input.GetButton("Jump"),
-        Move = UserInput.instance
-          .GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+        Move = UserInput.instance.GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
       };
 
       if (_stats.SnapInput) {
@@ -130,8 +140,9 @@ namespace Player {
       Physics2D.queriesStartInColliders = false;
 
       // Ground and Ceiling
-      bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down,
+      RaycastHit2D hit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down,
         _stats.GrounderDistance, ~_stats.PlayerLayer);
+      bool groundHit = hit.collider != null && !hit.collider.isTrigger;
       bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up,
         _stats.GrounderDistance, ~_stats.PlayerLayer);
 
@@ -213,7 +224,7 @@ namespace Player {
         _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
       }
       else {
-        _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _frameInput.Move.x * GetMaxSpeed(),
+        _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x,_frameInput.Move.x * GetMaxSpeed(),
           _stats.Acceleration * Time.fixedDeltaTime);
       }
 
@@ -276,7 +287,9 @@ namespace Player {
 
     #endregion
 
-    private void ApplyMovement() => _rb.linearVelocity = _frameVelocity;
+    private void ApplyMovement() {
+      if(!_ladderMovement.IsClimbing) _rb.linearVelocity = _frameVelocity;
+    }
 
 #if UNITY_EDITOR
     private void OnValidate() {

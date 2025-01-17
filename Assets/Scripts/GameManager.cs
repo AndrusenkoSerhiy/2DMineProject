@@ -1,3 +1,4 @@
+using Windows;
 using Player;
 using Scriptables;
 using Scriptables.Items;
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour {
   [SerializeField] private ItemDatabaseObject _database;
   
   [SerializeField] private Camera _mainCamera;
+  [SerializeField] private WindowsController _windowsController;
   private PlayerInventory _playerInventory;
   public static GameManager instance {
     get {
@@ -65,6 +67,10 @@ public class GameManager : MonoBehaviour {
 
   public ItemDatabaseObject ItemDatabaseObject {
     get { return _database; }
+  }
+
+  public WindowsController WindowsController {
+    get { return _windowsController; }
   }
   private void Awake() {
     if (_instance != null && _instance != this) {

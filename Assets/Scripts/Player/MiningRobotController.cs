@@ -9,7 +9,15 @@ namespace Player {
       GameManager.instance.MiningRobotController = this;
       EnableController(false);
     }
-    
+
+    protected override void LookAtMouse() {
+      if (_lockPlayer) {
+        return;
+      }
+
+      base.LookAtMouse();
+    }
+
     protected override void FlipX() {
       Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
       var direction = (mousePosition - (Vector2)Head.position).normalized;

@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour {
   
   [SerializeField] private Camera _mainCamera;
   [SerializeField] private WindowsController _windowsController;
-  private PlayerInventory _playerInventory;
+  [SerializeField] private PlayerInventory _playerInventory;
   public static GameManager instance {
     get {
       if (_instance == null) {

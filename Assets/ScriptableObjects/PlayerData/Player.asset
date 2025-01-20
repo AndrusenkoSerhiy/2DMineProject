@@ -20,12 +20,13 @@ MonoBehaviour:
   HorizontalDeadZoneThreshold: 0.1
   MaxSpeed: 14
   MaxBackSpeed: 12
+  SprintSpeed: 20
   Acceleration: 60
   GroundDeceleration: 60
   AirDeceleration: 3
   GroundingForce: -10
   GrounderDistance: 0.05
-  JumpPower: 24
+  JumpPower: 30
   MaxFallSpeed: 50
   FallAcceleration: 65
   JumpEndEarlyGravityModifier: 7
@@ -34,6 +35,10 @@ MonoBehaviour:
   AttackLayer:
     serializedVersion: 2
     m_Bits: 256
-  AttackDamage: 5
   AttackRange: 1.8
+  BlockDamage: 5
+  EntityDamage: 3
+  Range: 1.8
   TimeBtwAttacks: 0.4
+  StaminaUsage: 1
+  AttackID: 0

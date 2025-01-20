@@ -186,6 +186,7 @@ GameObject:
   - component: {fileID: 1627830261398664196}
   - component: {fileID: 1863431300587650840}
   - component: {fileID: -5308872911570051922}
+  - component: {fileID: 1364767425171203378}
   m_Layer: 8
   m_Name: CellObject
   m_TagString: Untagged
@@ -281,3 +282,16 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3.44, y: 3.44}
   m_EdgeRadius: 0
+--- !u!114 &1364767425171203378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6712673092602809747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c879bab99d34208a596192aec908fa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRendererRef: {fileID: 8072278485348937990}

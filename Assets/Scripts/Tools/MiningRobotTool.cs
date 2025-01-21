@@ -43,6 +43,7 @@ namespace Tools {
       _playerController.EnableCollider(false);
       _playerAttack.enabled = false;
       _miningRobotController.EnableController(true);
+      _miningRobotController.EnableAttackCollider(true);
       
       SetPlayerPosition(_playerTransform, Vector3.zero);
     }
@@ -53,6 +54,8 @@ namespace Tools {
       _playerController.EnableCollider(true);
       _playerController.EnableController(true);
       _playerAttack.enabled = true;
+      _miningRobotController.EnableAttackCollider(true);
+      _miningRobotController.ClearHighlights();
     }
 
     private void SetPlayerPosition(Transform tr, Vector3 pos) {

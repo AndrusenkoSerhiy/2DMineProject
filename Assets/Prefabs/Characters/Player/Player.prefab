@@ -851,8 +851,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offhandWristTransform: {fileID: 3193418100009615299}
   offhandHandTransform: {fileID: 22766846785428844}
-  weaponTransform: {fileID: 39923705835017211}
-  toolTransform: {fileID: 3815161883808866517}
+  leftHandTransform: {fileID: 39923705835017211}
+  rightHandTransform: {fileID: 22766846785428844}
+  bodyTransform: {fileID: 3815161883808866517}
 --- !u!114 &3735709328253405601
 MonoBehaviour:
   m_ObjectHideFlags: 0

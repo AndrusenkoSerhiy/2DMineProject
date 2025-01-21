@@ -24,5 +24,13 @@ namespace Player {
         _highlights.Remove(highlight);
       }
     }
+
+    public void ClearHighlights() {
+      foreach (var highlight in _highlights) {
+        highlight.spriteRendererRef.material.SetFloat("_Thickness", 0);
+      }
+      
+      _highlights.Clear();
+    }
   }
 }

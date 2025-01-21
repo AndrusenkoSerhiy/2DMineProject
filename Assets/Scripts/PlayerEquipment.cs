@@ -2,15 +2,18 @@
 using Scriptables.Inventory;
 using Scriptables.Items;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerEquipment : MonoBehaviour {
   private InventoryObject _equipment;
 
-  [Header("Equip Transforms")]
-  [SerializeField] private Transform offhandWristTransform;
+  [Header("Equip Transforms")] [SerializeField]
+  private Transform offhandWristTransform;
+
   [SerializeField] private Transform offhandHandTransform;
-  [SerializeField] private Transform weaponTransform;
-  [SerializeField] private Transform toolTransform;
+  [SerializeField] private Transform leftHandTransform;
+  [SerializeField] private Transform rightHandTransform;
+  [SerializeField] private Transform bodyTransform;
 
   private Transform _pants;
   private Transform _gloves;
@@ -20,7 +23,11 @@ public class PlayerEquipment : MonoBehaviour {
   private Transform _offhand;
   private Transform _weapon;
   public event Action OnEquippedWeapon;
-  public Transform Weapon { get => _weapon; private set => _weapon = value; }
+
+  public Transform Weapon {
+    get => _weapon;
+    private set => _weapon = value;
+  }
 
   void Start() {
     _equipment = GetComponent<PlayerInventory>().equipment;
@@ -42,29 +49,51 @@ public class PlayerEquipment : MonoBehaviour {
       return;
     switch (slot.parent.inventory.type) {
       case InterfaceType.Equipment:
-
-        if (itemObject.CharacterDisplay != null) {
+        Weapon = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
+        Weapon.localPosition = itemObject.SpawnPosition;
+        Weapon.localEulerAngles = itemObject.SpawnRotation;
+        OnEquippedWeapon?.Invoke();
+        /*if (itemObject.CharacterDisplay != null) {
           switch (slot.AllowedItems[0]) {
             case ItemType.Tool:
-              Weapon = Instantiate(itemObject.CharacterDisplay, toolTransform).transform;
+              Weapon = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
               Weapon.localPosition = itemObject.SpawnPosition;
               Weapon.localEulerAngles = itemObject.SpawnRotation;
               OnEquippedWeapon?.Invoke();
               break;
-            
+
             case ItemType.Weapon:
-              Weapon = Instantiate(itemObject.CharacterDisplay, weaponTransform).transform;
-              
+              Weapon = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
+
               OnEquippedWeapon?.Invoke();
               break;
           }
-        }
+        }*/
 
         break;
     }
   }
 
-  private void OnRemoveItem(InventorySlot slot) {
+  private Transform GetParent(ItemObject item) {
+    Transform tr = null;
+    switch (item.ParentType) {
+      case ParentType.Body:
+        tr = bodyTransform;
+        break;
+      
+      case ParentType.LeftHand:
+        tr = leftHandTransform;
+        break;
+      
+      case ParentType.RightHand:
+        tr = rightHandTransform;
+        break;
+    }
+
+    return tr;
+  }
+
+private void OnRemoveItem(InventorySlot slot) {
     if (slot.GetItemObject() == null) {
       return;
     }

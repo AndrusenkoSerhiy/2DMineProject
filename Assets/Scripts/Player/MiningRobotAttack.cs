@@ -10,6 +10,7 @@ using World;
 namespace Player {
   public class MiningRobotAttack : MonoBehaviour {
     [SerializeField] private Transform attackTransform;
+    [SerializeField] private BoxCollider2D attackCollider;
     [SerializeField] private PlayerStats stats;
     [SerializeField] private Animator animator;
 
@@ -38,6 +39,7 @@ namespace Player {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
       playerEquipment = GetComponent<PlayerEquipment>();
+      attackCollider.enabled = false;
     }
 
     private void OnDestroy() {
@@ -184,6 +186,14 @@ namespace Player {
 
     private void ShouldBeDamagingToFalse() {
       shouldBeDamaging = false;
+    }
+
+    public void EnableAttackCollider(bool state) {
+      attackCollider.enabled = state;
+    }
+
+    public void ClearHighlights() {
+      objectHighlighter.ClearHighlights();
     }
 
     #region Animation Triggers

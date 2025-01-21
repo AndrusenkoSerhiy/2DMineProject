@@ -7,11 +7,11 @@ namespace Player {
     private List<ObjectHighlight> _highlights = new();
 
     public List<ObjectHighlight> Highlights => _highlights;
+
     public void OnTriggerEnter2D(Collider2D other) {
       var highlight = other.GetComponent<ObjectHighlight>();
       if (highlight && !_highlights.Contains(highlight)) {
-        highlight.spriteRendererRef.sortingOrder++;
-        highlight.spriteRendererRef.material.SetFloat("_Thickness", 1f);
+        highlight.spriteRendererRef.material.SetFloat("_Thickness", 0.5f);
         _highlights.Add(highlight);
       }
     }
@@ -19,8 +19,6 @@ namespace Player {
     public void OnTriggerExit2D(Collider2D other) {
       var highlight = other.GetComponent<ObjectHighlight>();
       if (highlight && _highlights.Contains(highlight)) {
-        highlight.spriteRendererRef.material.SetFloat("_Thickness", 0);
-        highlight.spriteRendererRef.sortingOrder--;
         _highlights.Remove(highlight);
       }
     }

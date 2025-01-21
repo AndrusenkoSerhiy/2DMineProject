@@ -10,7 +10,7 @@ namespace Player {
       var highlight = other.GetComponent<ObjectHighlight>();
       if (highlight && !_highlights.Contains(highlight)) {
         highlight.spriteRendererRef.sortingOrder++;
-        highlight.spriteRendererRef.material.SetFloat("_Thickness", 0.3f);
+        highlight.spriteRendererRef.material.SetFloat("_Thickness", 1f);
         _highlights.Add(highlight);
       }
     }

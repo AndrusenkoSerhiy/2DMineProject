@@ -26,11 +26,16 @@ namespace Tools {
       _isPlayerInside = !_isPlayerInside;
       if (_isPlayerInside) {
         SitOnRobot();
+        ResetPlayerAnim();
       }
       else {
         ExitFromRobot();        
       }
       return true;
+    }
+
+    private void ResetPlayerAnim() {
+      _playerController.ResetAnimatorMovement();
     }
 
     private void SitOnRobot() {

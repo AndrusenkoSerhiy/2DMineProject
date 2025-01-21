@@ -203,6 +203,11 @@ namespace Player {
       _jumpToConsume = false;
     }
 
+    public void ResetAnimatorMovement() {
+      _animator.SetFloat("VelocityX", 0f);
+      _animator.SetFloat("VelocityY", 0f);
+    }
+
     private void ExecuteJump() {
       _animator.SetBool("JumpDown", false);
       _animator.SetTrigger("Jump");

@@ -173,14 +173,14 @@ namespace Player {
       if (currentTargetRenderer == null || currentTarget.GetHealth() <= 0) {
         return;
       }
-      currentTargetRenderer.material.SetInt("_ShowOutline", 1);
+      currentTargetRenderer.material.SetFloat("_Thickness", 1);//_ShowOutline
     }
 
     private void ResetHighlight() {
       if (currentTargetRenderer == null) {
         return;
       }
-      currentTargetRenderer.material.SetInt("_ShowOutline", 0);
+      currentTargetRenderer.material.SetFloat("_Thickness", 0);
     }
 
     private void Attack() {

@@ -6,6 +6,7 @@ namespace Player {
   public class ObjectHighlighter : MonoBehaviour {
     private List<ObjectHighlight> _highlights = new();
 
+    public List<ObjectHighlight> Highlights => _highlights;
     public void OnTriggerEnter2D(Collider2D other) {
       var highlight = other.GetComponent<ObjectHighlight>();
       if (highlight && !_highlights.Contains(highlight)) {

@@ -122,6 +122,7 @@ namespace Player {
 
       // Set the new position of the child collider
       Vector3 newPosition = parentPosition + direction * clampedDistance;
+      newPosition.z = 0f;
       _colliderTR.position = newPosition;
     }
 

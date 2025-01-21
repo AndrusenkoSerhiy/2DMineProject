@@ -2958,6 +2958,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1495299007 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 685068843818948794, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
+  m_PrefabInstance: {fileID: 4033118360987968720}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11ed2da3aae746e5bafe1bd7720edcd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1536201271
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3294,6 +3305,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0ca3740a6c15bf4d8e32e916714be05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1620547670 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7810780520715568834, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
+  m_PrefabInstance: {fileID: 2021669374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f392883895774196a3ec583adc571f43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1620547671 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6251728841341945271, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
+  m_PrefabInstance: {fileID: 2021669374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af42f2ee84a74a76aec5b0a83426c0e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1620939806
@@ -5009,6 +5042,10 @@ PrefabInstance:
       propertyPath: _windowsController
       value: 
       objectReference: {fileID: 93994740}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: _miningRobotController
+      value: 
+      objectReference: {fileID: 1495299007}
     - target: {fileID: 4001951038154339777, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -5066,21 +5103,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 685068843818948794, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
+      propertyPath: _stamina
+      value: 
+      objectReference: {fileID: 1620547671}
+    - target: {fileID: 685068843818948794, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
+      propertyPath: _ladderMovement
+      value: 
+      objectReference: {fileID: 1620547670}
     - target: {fileID: 8299954890877120637, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
       propertyPath: m_Name
       value: MiningRobot
       objectReference: {fileID: 0}
     - target: {fileID: 8299954890877120637, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8784970698859031047, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.82
+      value: -6.61
       objectReference: {fileID: 0}
     - target: {fileID: 8784970698859031047, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.91
+      value: 4.3
       objectReference: {fileID: 0}
     - target: {fileID: 8784970698859031047, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
       propertyPath: m_LocalPosition.z

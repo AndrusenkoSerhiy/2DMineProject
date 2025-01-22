@@ -19,6 +19,7 @@ namespace Player {
     public void OnTriggerExit2D(Collider2D other) {
       var highlight = other.GetComponent<ObjectHighlight>();
       if (highlight && _highlights.Contains(highlight)) {
+        highlight.spriteRendererRef.material.SetFloat("_Thickness", 0f);
         _highlights.Remove(highlight);
       }
     }

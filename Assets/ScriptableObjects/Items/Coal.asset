@@ -10,22 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
-  m_Name: Stone
+  m_Name: Coal
   m_EditorClassIdentifier: 
   Type: 2
-  UiDisplay: {fileID: 21300000, guid: 5af73e1e2243a6f4f9016b1f22292d36, type: 3}
+  UiDisplay: {fileID: 6937817954938267909, guid: c9979c7a27e4af94b9964514e0bc3891, type: 3}
   CharacterDisplay: {fileID: 0}
   Stackable: 1
-  MaxStackSize: 20000
+  MaxStackSize: 10000
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   Description: 
   data:
-    Name: Stone
-    Id: 2
+    Name: Coal
+    Id: 5
     buffs: []
-  spawnPrefab: {fileID: 3890226224433729309, guid: 9629ad65c25f97048966dd27f06d3261, type: 3}
-  bonusResources:
-  - item: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
-    chance: 0.214
-    rndCount: {x: 1, y: 3}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 30dfd7e1f61768a46a755515684c18e5, type: 3}
+  bonusResources: []

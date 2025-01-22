@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 4021dff7bc92841499a0c4b511346eb8
+guid: 4ad1c72602821824c89a35ffac91a6f3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1464349397397168768
-    second: stone-11_0
+      213: 1152500351952364545
+    second: iron_10_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -24,7 +24,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 1
+  isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -53,7 +53,7 @@ TextureImporter:
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 0
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: stone-11_0
+      name: iron_10_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 344
-        height: 344
+        x: 44
+        y: 1
+        width: 346
+        height: 435
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0826aeab40a625410800000000000000
-      internalID: 1464349397397168768
+      spriteID: 10422a1c6f08eff00800000000000000
+      internalID: 1152500351952364545
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      stone-11_0: 1464349397397168768
+      iron_10_0: 1152500351952364545
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

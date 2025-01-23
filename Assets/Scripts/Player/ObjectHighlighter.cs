@@ -11,6 +11,10 @@ namespace Player {
 
     public List<ObjectHighlight> Highlights => highlights;
 
+    public void SetMaxHighlights(int highlightCount) {
+      maxHighlights = highlightCount;
+    }
+
     public void OnTriggerEnter2D(Collider2D other) {
       var highlight = other.GetComponent<ObjectHighlight>();
 

@@ -10,5 +10,6 @@ namespace Scriptables.Items {
     public float StaminaUsage { get; }
     public int AnimationAttackID { get; }
     public Vector2 ColliderSize { get; }
+    public int MaxTargets { get; }
   }
 }

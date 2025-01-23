@@ -12,6 +12,7 @@ namespace Scriptables.Items {
     [SerializeField] private float staminaUsage = 5f;
     [SerializeField] private int animationattackID = 0;
     [SerializeField] private Vector2 colliderSize = new Vector2(1f, 1f);
+    [SerializeField] private int maxTargets = 1;
 
     [Tooltip("When you need to use tool animation for attacking")]
     public bool UseSelfAnim => useSelfAnim;
@@ -23,6 +24,7 @@ namespace Scriptables.Items {
     public float StaminaUsage => staminaUsage;
     public int AnimationAttackID => animationattackID;
     public Vector2 ColliderSize => colliderSize;
+    public int MaxTargets => maxTargets;
 
     public void Awake() {
       Type = ItemType.Tool;

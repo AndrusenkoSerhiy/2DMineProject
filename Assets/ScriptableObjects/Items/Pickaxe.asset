@@ -31,8 +31,9 @@ MonoBehaviour:
     m_Bits: 256
   blockDamage: 6
   entityDamage: 3
-  range: 1.8
+  range: 2.2
   timeBtwAttacks: 0.4
   staminaUsage: 5
   animationattackID: 0
   colliderSize: {x: 0.5, y: 0.5}
+  maxTargets: 1

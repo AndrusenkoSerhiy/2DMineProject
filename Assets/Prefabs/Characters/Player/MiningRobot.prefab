@@ -471,6 +471,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1762f0d55e407bd4689c3cf8eb92d766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHighlights: 6
+  highlights: []
+  possibleHighlights: []
 --- !u!1 &4267357733827273720
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,14 +954,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f4f77b646d4893824608d4d5d52a1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackTransform: {fileID: 3828744221353937795}
-  attackCollider: {fileID: 3696037249139049978}
   stats: {fileID: 11400000, guid: 2fc30522ece77a7449f377ea62d4e89c, type: 2}
   animator: {fileID: 1494922837502640945}
+  objectHighlighter: {fileID: 8874037024133986058}
+  attackCollider: {fileID: 3696037249139049978}
+  attackTransform: {fileID: 3828744221353937795}
   colliderTR: {fileID: 8693525456019494876}
   minDistance: 2
   maxDistance: 8
-  objectHighlighter: {fileID: 8874037024133986058}
+  playerEquipment: {fileID: 0}
 --- !u!114 &7553158782713885977
 MonoBehaviour:
   m_ObjectHideFlags: 0

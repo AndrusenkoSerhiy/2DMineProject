@@ -9,5 +9,7 @@ namespace Scriptables.Items {
     public float TimeBtwAttacks { get; }
     public float StaminaUsage { get; }
     public int AnimationAttackID { get; }
+    public Vector2 ColliderSize { get; }
+    public int MaxTargets { get; }
   }
 }

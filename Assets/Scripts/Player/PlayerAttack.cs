@@ -1,68 +1,20 @@
-// using Animation;
-using System.Collections;
-using System.Collections.Generic;
-using Animation;
-using UnityEngine;
-using Settings;
 using Items;
-using Scriptables;
 using Scriptables.Items;
 using Tools;
+using UnityEngine;
 
 namespace Player {
-  public class PlayerAttack : MonoBehaviour {
-    [SerializeField] private Transform attackTransform;
-
-    [SerializeField] private PlayerStats stats;
-
-    [SerializeField] private Animator animator;
-
-    public bool shouldBeDamaging { get; private set; } = false;
-
-    private List<IDamageable> iDamageables = new List<IDamageable>();
-
-    private LayerMask attackLayer;
-    private float blockDamage;
-    private float entityDamage;
-    private float attackRange;
-    private float timeBtwAttacks;
-    //TODO
-    private float staminaUsage;
-    private int attackID;
-    private float attackTimeCounter;
-
-    private IDamageable currentTarget;
-    private Renderer currentTargetRenderer;
-    private PlayerEquipment playerEquipment;
-    private void Awake() {
-      AnimationEventManager.onAttackStarted += HandleAnimationStarted;
-      AnimationEventManager.onAttackEnded += HandleAnimationEnded;
-      playerEquipment = GetComponent<PlayerEquipment>();
+  public class PlayerAttack : BaseAttack {
+    [SerializeField] protected PlayerEquipment playerEquipment;
+    protected override void Awake() {
+      base.Awake();
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
       GameManager.instance.PlayerAttack = this;
+      playerEquipment = GetComponent<PlayerEquipment>();
     }
-    public IDamageable CurrentTarget => currentTarget;
-    public float BlockDamage => blockDamage;
-    private void OnDestroy() {
-      AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
-      AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
-      playerEquipment.OnEquippedWeapon -= UpdateAttackParam;
-    }
-
-    private void Start() {
-      PrepareAttackParams();
-      attackTimeCounter = timeBtwAttacks;
-    }
-
-    private void UpdateAttackParam() {
-      //Debug.LogError("UpdateAttackParam");
-      SetAttackParamsFromEquipment();
-      //try to activate tool
-      ToolBase tool = playerEquipment.Weapon.GetComponent<ToolBase>();
-      tool?.Activate();
-    }
-
-    private void PrepareAttackParams() {
+    
+    //get param from equipped tool
+    protected override void PrepareAttackParams() {
       if (SetAttackParamsFromEquipment()) {
         return;
       }
@@ -78,7 +30,16 @@ namespace Player {
       attackID = stats.AttackID;
     }
 
-    private bool SetAttackParamsFromEquipment() {
+    private void UpdateAttackParam() {
+      SetAttackParamsFromEquipment();
+      //try to activate tool
+      var tool = playerEquipment.Weapon.GetComponent<ToolBase>();
+      tool?.Activate();
+      UpdateParams(.5f, attackRange, colliderSize.x, colliderSize.y);
+      objectHighlighter.SetMaxHighlights(maxTargets);
+    }
+    
+    protected bool SetAttackParamsFromEquipment() {
       if (playerEquipment == null) {
         Debug.LogWarning("Could not find Player Equipment", this);
         return false;
@@ -102,155 +63,13 @@ namespace Player {
       timeBtwAttacks = attackableItem.TimeBtwAttacks;
       staminaUsage = attackableItem.StaminaUsage;
       attackID = attackableItem.AnimationAttackID;
+      colliderSize = attackableItem.ColliderSize;
+      maxTargets = attackableItem.MaxTargets;
       return true;
     }
-
-    private void Update() {
-      HighlightTarget();
-      
-      // Handle attack
-      if (UserInput.instance.IsAttacking() /*&& currentTarget != null*/
-        && attackTimeCounter >= timeBtwAttacks) {
-        TriggerAttack();
-      }
-
-      attackTimeCounter += Time.deltaTime;
+    
+    protected override void OnDestroy() {
+      playerEquipment.OnEquippedWeapon -= UpdateAttackParam;
     }
-
-    private void TriggerAttack() {
-      if(UserInput.instance.IsBuildMode)
-        return;
-      
-      attackTimeCounter = 0f;
-      animator.SetTrigger("Attack");
-      animator.SetInteger("WeaponID", attackID);
-    }
-
-    private void HighlightTarget() {
-      Vector3 playerPosition = attackTransform.position;
-      //todo кешировать камеру
-      Vector3 mousePoint = Camera.main.ScreenToWorldPoint(UserInput.instance.GetMousePosition());//Input.mousePosition
-
-      Debug.DrawLine(playerPosition, mousePoint, Color.red);  // Visualize ray
-
-      RaycastHit2D hit = Physics2D.Raycast(playerPosition, mousePoint - playerPosition, attackRange, attackLayer);
-      //Debug.LogError($"{hit.collider.gameObject.name}");
-      if (hit.collider != null && hit.collider.TryGetComponent(out IDamageable iDamageable)) {
-        if (currentTarget != iDamageable) {
-          ClearTarget();
-          SetTarget(iDamageable);
-          Highlight();
-        }
-      }
-      else {
-        ClearTarget();
-      }
-    }
-
-    private void SetTarget(IDamageable target) {
-      currentTarget = target;
-      if (currentTarget is MonoBehaviour mb) {
-        currentTargetRenderer = mb.GetComponentInChildren<Renderer>();
-      }
-    }
-
-    private void RemoveTarget() {
-      currentTarget = null;
-      currentTargetRenderer = null;
-    }
-
-    private void ClearTarget() {
-      if (currentTarget == null) {
-        return;
-      }
-
-      ResetHighlight();
-      RemoveTarget();
-    }
-
-    private void Highlight() {
-      //                                     if current target is already dead
-      if (currentTargetRenderer == null || currentTarget.GetHealth() <= 0) {
-        return;
-      }
-      currentTargetRenderer.material.SetFloat("_Thickness", 1);//_ShowOutline
-    }
-
-    private void ResetHighlight() {
-      if (currentTargetRenderer == null) {
-        return;
-      }
-      currentTargetRenderer.material.SetFloat("_Thickness", 0);
-    }
-
-    private void Attack() {
-      if (currentTarget == null || currentTarget.hasTakenDamage) {
-        return;
-      }
-
-      currentTarget.Damage(blockDamage);
-      iDamageables.Add(currentTarget);
-    }
-
-    private void DestroyTarget() {
-      if (currentTarget == null) return;
-
-      float hp = currentTarget.GetHealth();
-      if (hp <= 0) {
-        currentTarget.DestroyObject();
-        ClearTarget();
-      }
-    }
-
-    public IEnumerator DamageWhileSlashIsActive() {
-      shouldBeDamaging = true;
-
-      while (shouldBeDamaging) {
-        Attack();
-
-        yield return null;
-      }
-
-      ReturnAttackablesToDamageable();
-    }
-
-    private void ReturnAttackablesToDamageable() {
-      foreach (IDamageable damaged in iDamageables) {
-        damaged.hasTakenDamage = false;
-      }
-
-      iDamageables.Clear();
-    }
-
-    public void ShouldBeDamagingToFalse() {
-      shouldBeDamaging = false;
-    }
-
-    private void OnDrawGizmosSelected() {
-      Gizmos.DrawWireSphere(attackTransform.position, attackRange);
-
-      Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(attackTransform.position, attackRange);
-    }
-
-    #region Animation Triggers
-
-    private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
-      if(go != gameObject)
-        return;
-      StartCoroutine(DamageWhileSlashIsActive());
-      // Debug.Log("Attack started");
-      currentTarget?.AfterDamageReceived();
-    }
-
-    private void HandleAnimationEnded(AnimationEvent animationEvent, GameObject go) {
-      if(go != gameObject)
-        return;
-      ShouldBeDamagingToFalse();
-      // Debug.Log("Attack ended");
-      DestroyTarget();
-    }
-
-    #endregion
   }
 }

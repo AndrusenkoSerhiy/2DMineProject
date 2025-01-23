@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using Player;
 using Scriptables;
 using Pool;
 using UnityEngine.U2D;
@@ -10,6 +11,7 @@ namespace World {
     [SerializeField] private CellStats cellStats;
     [SerializeField] private SpriteAtlas atlasRef;
     [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private ObjectHighlight highlight;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
 
@@ -74,6 +76,7 @@ namespace World {
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
       GameManager.instance.TaskManager.DelayAsync(
         () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
+      highlight.ClearHighlight();
     }
 
     public void AfterDamageReceived() {

@@ -37,6 +37,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""QuickSlots"",
+                    ""type"": ""Button"",
+                    ""id"": ""1070c565-1328-4a44-b176-4689fd9c53e0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Movement"",
                     ""type"": ""Value"",
                     ""id"": ""70e5e753-8a28-4814-9c03-9753dc5984f0"",
@@ -93,6 +102,116 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b155d25c-0392-479c-9929-87bf7a3ee984"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""da39912f-b946-4165-8169-8ad5f62e979e"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5d7597d4-550b-46e2-932a-35f6a79e21b1"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""252e5710-0cf3-452c-a5c4-d79ee3ad9a01"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0a6a0e5d-2470-44b5-94e7-d33d7ad633f5"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0073cee5-54d9-4648-9d32-24ec9bd97f36"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2667a96c-bd59-43e1-b9d3-9652bc8f18d0"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf6483bc-d683-4707-98b2-2585c9c2af68"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""95431f39-7acb-40a7-bf83-2b1b72fbfbab"",
+                    ""path"": ""<Keyboard>/9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""QuickSlots"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dd136b88-95b3-4301-a48f-664e781c880d"",
+                    ""path"": ""<Keyboard>/0"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSlots"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -307,15 +426,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""type"": ""PassThrough"",
                     ""id"": ""82cfa4d1-f1c8-4275-977c-c24aa6991609"",
                     ""expectedControlType"": ""Quaternion"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""QuickSlots"",
-                    ""type"": ""Button"",
-                    ""id"": ""7908c620-d1ff-40df-94a9-156ed89826a2"",
-                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -761,39 +871,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""TrackedDeviceOrientation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""cbf91739-14bc-47d2-a52e-229ece7a005f"",
-                    ""path"": ""<Keyboard>/1"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""QuickSlots"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""90fc18a9-0cb5-4b33-af3e-f84362d42608"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""QuickSlots"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""532f12b6-ebed-44b5-812b-ca327929ad26"",
-                    ""path"": ""<Keyboard>/3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""QuickSlots"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -826,6 +903,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         // GamePlay
         m_GamePlay = asset.FindActionMap("GamePlay", throwIfNotFound: true);
         m_GamePlay_Attack = m_GamePlay.FindAction("Attack", throwIfNotFound: true);
+        m_GamePlay_QuickSlots = m_GamePlay.FindAction("QuickSlots", throwIfNotFound: true);
         m_GamePlay_Movement = m_GamePlay.FindAction("Movement", throwIfNotFound: true);
         m_GamePlay_Jump = m_GamePlay.FindAction("Jump", throwIfNotFound: true);
         m_GamePlay_Build = m_GamePlay.FindAction("Build", throwIfNotFound: true);
@@ -843,7 +921,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
-        m_UI_QuickSlots = m_UI.FindAction("QuickSlots", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -912,6 +989,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_GamePlay;
     private List<IGamePlayActions> m_GamePlayActionsCallbackInterfaces = new List<IGamePlayActions>();
     private readonly InputAction m_GamePlay_Attack;
+    private readonly InputAction m_GamePlay_QuickSlots;
     private readonly InputAction m_GamePlay_Movement;
     private readonly InputAction m_GamePlay_Jump;
     private readonly InputAction m_GamePlay_Build;
@@ -921,6 +999,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         private @Controls m_Wrapper;
         public GamePlayActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Attack => m_Wrapper.m_GamePlay_Attack;
+        public InputAction @QuickSlots => m_Wrapper.m_GamePlay_QuickSlots;
         public InputAction @Movement => m_Wrapper.m_GamePlay_Movement;
         public InputAction @Jump => m_Wrapper.m_GamePlay_Jump;
         public InputAction @Build => m_Wrapper.m_GamePlay_Build;
@@ -937,6 +1016,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
+            @QuickSlots.started += instance.OnQuickSlots;
+            @QuickSlots.performed += instance.OnQuickSlots;
+            @QuickSlots.canceled += instance.OnQuickSlots;
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
@@ -956,6 +1038,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
+            @QuickSlots.started -= instance.OnQuickSlots;
+            @QuickSlots.performed -= instance.OnQuickSlots;
+            @QuickSlots.canceled -= instance.OnQuickSlots;
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
@@ -1000,7 +1085,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_RightClick;
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
-    private readonly InputAction m_UI_QuickSlots;
     public struct UIActions
     {
         private @Controls m_Wrapper;
@@ -1016,7 +1100,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
-        public InputAction @QuickSlots => m_Wrapper.m_UI_QuickSlots;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1059,9 +1142,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @TrackedDeviceOrientation.started += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled += instance.OnTrackedDeviceOrientation;
-            @QuickSlots.started += instance.OnQuickSlots;
-            @QuickSlots.performed += instance.OnQuickSlots;
-            @QuickSlots.canceled += instance.OnQuickSlots;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1099,9 +1179,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @TrackedDeviceOrientation.started -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled -= instance.OnTrackedDeviceOrientation;
-            @QuickSlots.started -= instance.OnQuickSlots;
-            @QuickSlots.performed -= instance.OnQuickSlots;
-            @QuickSlots.canceled -= instance.OnQuickSlots;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1140,6 +1217,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     public interface IGamePlayActions
     {
         void OnAttack(InputAction.CallbackContext context);
+        void OnQuickSlots(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnBuild(InputAction.CallbackContext context);
@@ -1158,6 +1236,5 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
-        void OnQuickSlots(InputAction.CallbackContext context);
     }
 }

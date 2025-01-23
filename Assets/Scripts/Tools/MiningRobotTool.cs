@@ -26,6 +26,7 @@ namespace Tools {
       _isPlayerInside = !_isPlayerInside;
       if (_isPlayerInside) {
         SitOnRobot();
+        ResetPlayerAnim();
       }
       else {
         ExitFromRobot();        
@@ -33,11 +34,16 @@ namespace Tools {
       return true;
     }
 
+    private void ResetPlayerAnim() {
+      _playerController.ResetAnimatorMovement();
+    }
+
     private void SitOnRobot() {
       _playerController.EnableController(false);
       _playerController.EnableCollider(false);
       _playerAttack.enabled = false;
       _miningRobotController.EnableController(true);
+      _miningRobotController.EnableAttackCollider(true);
       
       SetPlayerPosition(_playerTransform, Vector3.zero);
     }
@@ -48,6 +54,8 @@ namespace Tools {
       _playerController.EnableCollider(true);
       _playerController.EnableController(true);
       _playerAttack.enabled = true;
+      _miningRobotController.EnableAttackCollider(true);
+      _miningRobotController.ClearHighlights();
     }
 
     private void SetPlayerPosition(Transform tr, Vector3 pos) {

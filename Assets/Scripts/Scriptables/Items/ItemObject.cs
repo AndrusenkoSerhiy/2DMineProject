@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Scriptables.Items {
   public abstract class ItemObject : ScriptableObject {
     public ItemType Type;
+    public ParentType ParentType;
     public Sprite UiDisplay;
     public GameObject CharacterDisplay;
     public bool Stackable;

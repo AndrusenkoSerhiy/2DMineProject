@@ -8,15 +8,13 @@ using Items;
 using Scriptables;
 using Scriptables.Items;
 using Tools;
+using World;
 
 namespace Player {
-  public class PlayerAttack : MonoBehaviour {
-    [SerializeField] private Transform attackTransform;
-
+  public class PlayerAttack : AttackCollider {
     [SerializeField] private PlayerStats stats;
-
     [SerializeField] private Animator animator;
-
+    [SerializeField] private ObjectHighlighter objectHighlighter;
     public bool shouldBeDamaging { get; private set; } = false;
 
     private List<IDamageable> iDamageables = new List<IDamageable>();
@@ -30,8 +28,10 @@ namespace Player {
     private float staminaUsage;
     private int attackID;
     private float attackTimeCounter;
-
-    private IDamageable currentTarget;
+    private Vector2 colliderSize;
+    //private IDamageable currentTarget;
+    private List<IDamageable> targets = new();
+    
     private Renderer currentTargetRenderer;
     private PlayerEquipment playerEquipment;
     private void Awake() {
@@ -41,7 +41,7 @@ namespace Player {
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
       GameManager.instance.PlayerAttack = this;
     }
-    public IDamageable CurrentTarget => currentTarget;
+    //public IDamageable CurrentTarget => currentTarget;
     public float BlockDamage => blockDamage;
     private void OnDestroy() {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
@@ -60,6 +60,7 @@ namespace Player {
       //try to activate tool
       ToolBase tool = playerEquipment.Weapon.GetComponent<ToolBase>();
       tool?.Activate();
+      UpdateParams(.5f, attackRange, colliderSize.x, colliderSize.y);
     }
 
     private void PrepareAttackParams() {
@@ -102,15 +103,19 @@ namespace Player {
       timeBtwAttacks = attackableItem.TimeBtwAttacks;
       staminaUsage = attackableItem.StaminaUsage;
       attackID = attackableItem.AnimationAttackID;
+      colliderSize = attackableItem.ColliderSize;
       return true;
     }
 
-    private void Update() {
-      HighlightTarget();
-      
-      // Handle attack
+    protected override void Update() {
+      base.Update();
+      //HighlightTarget();
+      HandleAttack();
+    }
+
+    private void HandleAttack() {
       if (UserInput.instance.IsAttacking() /*&& currentTarget != null*/
-        && attackTimeCounter >= timeBtwAttacks) {
+          && attackTimeCounter >= timeBtwAttacks) {
         TriggerAttack();
       }
 
@@ -126,111 +131,57 @@ namespace Player {
       animator.SetInteger("WeaponID", attackID);
     }
 
-    private void HighlightTarget() {
-      Vector3 playerPosition = attackTransform.position;
-      //todo кешировать камеру
-      Vector3 mousePoint = Camera.main.ScreenToWorldPoint(UserInput.instance.GetMousePosition());//Input.mousePosition
-
-      Debug.DrawLine(playerPosition, mousePoint, Color.red);  // Visualize ray
-
-      RaycastHit2D hit = Physics2D.Raycast(playerPosition, mousePoint - playerPosition, attackRange, attackLayer);
-      //Debug.LogError($"{hit.collider.gameObject.name}");
-      if (hit.collider != null && hit.collider.TryGetComponent(out IDamageable iDamageable)) {
-        if (currentTarget != iDamageable) {
-          ClearTarget();
-          SetTarget(iDamageable);
-          Highlight();
-        }
-      }
-      else {
-        ClearTarget();
-      }
-    }
-
-    private void SetTarget(IDamageable target) {
-      currentTarget = target;
-      if (currentTarget is MonoBehaviour mb) {
-        currentTargetRenderer = mb.GetComponentInChildren<Renderer>();
-      }
-    }
-
-    private void RemoveTarget() {
-      currentTarget = null;
-      currentTargetRenderer = null;
-    }
-
     private void ClearTarget() {
-      if (currentTarget == null) {
-        return;
-      }
-
-      ResetHighlight();
-      RemoveTarget();
+      targets.Clear();
     }
-
-    private void Highlight() {
-      //                                     if current target is already dead
-      if (currentTargetRenderer == null || currentTarget.GetHealth() <= 0) {
-        return;
-      }
-      currentTargetRenderer.material.SetFloat("_Thickness", 1);//_ShowOutline
-    }
-
-    private void ResetHighlight() {
-      if (currentTargetRenderer == null) {
-        return;
-      }
-      currentTargetRenderer.material.SetFloat("_Thickness", 0);
-    }
-
+    
     private void Attack() {
-      if (currentTarget == null || currentTarget.hasTakenDamage) {
-        return;
-      }
-
-      currentTarget.Damage(blockDamage);
-      iDamageables.Add(currentTarget);
-    }
-
-    private void DestroyTarget() {
-      if (currentTarget == null) return;
-
-      float hp = currentTarget.GetHealth();
-      if (hp <= 0) {
-        currentTarget.DestroyObject();
-        ClearTarget();
-      }
-    }
-
-    public IEnumerator DamageWhileSlashIsActive() {
       shouldBeDamaging = true;
-
-      while (shouldBeDamaging) {
-        Attack();
-
-        yield return null;
+      SetTargetsFromHighlight();
+      foreach (var target in targets) {
+        if (target == null || target.hasTakenDamage) continue;
+        target.Damage(blockDamage);
+        iDamageables.Add(target);
       }
 
-      ReturnAttackablesToDamageable();
+      ReturnAttackableToDamageable();
     }
-
-    private void ReturnAttackablesToDamageable() {
+    
+    private void ReturnAttackableToDamageable() {
       foreach (IDamageable damaged in iDamageables) {
         damaged.hasTakenDamage = false;
       }
 
       iDamageables.Clear();
     }
+    
+    private void SetTargetsFromHighlight() {
+      foreach (var elem in objectHighlighter.Highlights) {
+        var pos = CoordsTransformer.WorldToGrid(elem.transform.position);
+        var test = GameManager.instance.ChunkController.GetCell(pos.X, pos.Y);
+        if (test != null) targets.Add(test);
+      }
+    }
 
-    public void ShouldBeDamagingToFalse() {
+    private void DestroyTarget() {
+      foreach (var t in targets) {
+        if (t == null) continue;
+        var getHp = t.GetHealth();
+        if (getHp <= 0) {
+          t.DestroyObject();
+        }
+      }
+
+      ClearTarget();
+    }
+
+    private void ShouldBeDamagingToFalse() {
       shouldBeDamaging = false;
     }
 
     private void OnDrawGizmosSelected() {
       Gizmos.DrawWireSphere(attackTransform.position, attackRange);
-
       Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(attackTransform.position, attackRange);
     }
 
     #region Animation Triggers
@@ -238,9 +189,11 @@ namespace Player {
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
       if(go != gameObject)
         return;
-      StartCoroutine(DamageWhileSlashIsActive());
+      Attack();
       // Debug.Log("Attack started");
-      currentTarget?.AfterDamageReceived();
+      for (int i = 0; i < targets.Count; i++) {
+        targets[i]?.AfterDamageReceived();
+      }
     }
 
     private void HandleAnimationEnded(AnimationEvent animationEvent, GameObject go) {

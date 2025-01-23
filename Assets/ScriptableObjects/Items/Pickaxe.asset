@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   Type: 2
+  ParentType: 1
   UiDisplay: {fileID: 21300000, guid: f41e87b0f3fd49145803a568ad15a4c4, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
   Stackable: 0
   MaxStackSize: 1
-  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnPosition: {x: -0.566, y: 1.566, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   Description: pickaxe description
   data:
@@ -34,3 +35,4 @@ MonoBehaviour:
   timeBtwAttacks: 0.4
   staminaUsage: 5
   animationattackID: 0
+  colliderSize: {x: 0.5, y: 0.5}

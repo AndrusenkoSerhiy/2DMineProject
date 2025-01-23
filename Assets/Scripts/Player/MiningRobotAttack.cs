@@ -8,15 +8,10 @@ using UnityEngine;
 using World;
 
 namespace Player {
-  public class MiningRobotAttack : MonoBehaviour {
-    [SerializeField] private Transform attackTransform;
-    [SerializeField] private BoxCollider2D attackCollider;
+  public class MiningRobotAttack : AttackCollider {
     [SerializeField] private PlayerStats stats;
     [SerializeField] private Animator animator;
-
-    [SerializeField] private Transform colliderTR;
-    [SerializeField] private float minDistance = 2f;
-    [SerializeField] private float maxDistance = 5f;
+    
     public bool shouldBeDamaging { get; private set; } = false;
 
     private List<IDamageable> iDamageables = new();
@@ -96,8 +91,8 @@ namespace Player {
       return true;
     }
 
-    private void Update() {
-      UpdateColliderPos();
+    protected override void Update() {
+      base.Update();
       HandleAttack();
     }
 
@@ -109,22 +104,6 @@ namespace Player {
       }
 
       attackTimeCounter += Time.deltaTime;
-    }
-
-    private void UpdateColliderPos() {
-      var mousePos = GetMousePosition();
-      // Calculate direction and distance from parent
-      var parentPosition = transform.position;
-      var direction = (mousePos - parentPosition).normalized;
-      var distance = Vector3.Distance(parentPosition, mousePos);
-
-      // Clamp the distance between minDistance and maxDistance
-      var clampedDistance = Mathf.Clamp(distance, minDistance, maxDistance);
-
-      // Set the new position of the child collider
-      var newPosition = parentPosition + direction * clampedDistance;
-      newPosition.z = 0f;
-      colliderTR.position = newPosition;
     }
 
     private Vector3 GetMousePosition() {

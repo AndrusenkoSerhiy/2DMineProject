@@ -9,6 +9,7 @@ namespace Player {
     protected override void Awake() {
       base.Awake();
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
+      playerEquipment.OnUnequippedWeapon += SetParamsFromPlayerStats;
       GameManager.instance.PlayerAttack = this;
       playerEquipment = GetComponent<PlayerEquipment>();
     }
@@ -20,7 +21,10 @@ namespace Player {
       }
 
       Debug.LogWarning("Could not set attack parameters from equipment", this);
+      SetParamsFromPlayerStats();
+    }
 
+    private void SetParamsFromPlayerStats() {
       attackLayer = stats.AttackLayer;
       blockDamage = stats.BlockDamage;
       entityDamage = stats.EntityDamage;
@@ -39,7 +43,7 @@ namespace Player {
       objectHighlighter.SetMaxHighlights(maxTargets);
     }
     
-    protected bool SetAttackParamsFromEquipment() {
+    private bool SetAttackParamsFromEquipment() {
       if (playerEquipment == null) {
         Debug.LogWarning("Could not find Player Equipment", this);
         return false;
@@ -69,7 +73,9 @@ namespace Player {
     }
     
     protected override void OnDestroy() {
+      base.OnDestroy();
       playerEquipment.OnEquippedWeapon -= UpdateAttackParam;
+      playerEquipment.OnUnequippedWeapon -= SetParamsFromPlayerStats;
     }
   }
 }

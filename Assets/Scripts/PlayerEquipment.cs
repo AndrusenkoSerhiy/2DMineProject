@@ -23,6 +23,7 @@ public class PlayerEquipment : MonoBehaviour {
   private Transform _offhand;
   private Transform _weapon;
   public event Action OnEquippedWeapon;
+  public event Action OnUnequippedWeapon;
 
   public Transform Weapon {
     get => _weapon;
@@ -97,7 +98,7 @@ private void OnRemoveItem(InventorySlot slot) {
     if (slot.GetItemObject() == null) {
       return;
     }
-
+    
     switch (slot.parent.inventory.type) {
       case InterfaceType.Equipment:
         if (slot.GetItemObject().CharacterDisplay != null) {
@@ -109,6 +110,7 @@ private void OnRemoveItem(InventorySlot slot) {
             case ItemType.Tool:
             case ItemType.Weapon:
               Destroy(Weapon.gameObject);
+              OnUnequippedWeapon?.Invoke();
               break;
           }
         }

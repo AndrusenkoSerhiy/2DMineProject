@@ -17,11 +17,14 @@ MonoBehaviour:
   CharacterDisplay: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
   Stackable: 0
   MaxStackSize: 1
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
   Description: pickaxe description
   data:
-    Name: 
+    Name: Pickaxe
     Id: 0
     buffs: []
+  useSelfAnim: 0
   attackLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -30,3 +33,4 @@ MonoBehaviour:
   range: 1.8
   timeBtwAttacks: 0.4
   staminaUsage: 5
+  animationattackID: 0

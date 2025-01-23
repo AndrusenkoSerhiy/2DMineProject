@@ -17,11 +17,14 @@ MonoBehaviour:
   CharacterDisplay: {fileID: 3890226224433729309, guid: 7119352d529e2f24b89e23a6ca2f6f27, type: 3}
   Stackable: 0
   MaxStackSize: 1
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
   Description: super pickaxe description
   data:
-    Name: 
+    Name: SuperPickaxe
     Id: 1
     buffs: []
+  useSelfAnim: 0
   attackLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -30,3 +33,4 @@ MonoBehaviour:
   range: 3
   timeBtwAttacks: 0.4
   staminaUsage: 7
+  animationattackID: 0

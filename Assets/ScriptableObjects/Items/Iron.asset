@@ -17,9 +17,12 @@ MonoBehaviour:
   CharacterDisplay: {fileID: 0}
   Stackable: 1
   MaxStackSize: 10000
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
   Description: 
   data:
-    Name: 
+    Name: Iron
     Id: 3
     buffs: []
   spawnPrefab: {fileID: 3890226224433729309, guid: 30dfd7e1f61768a46a755515684c18e5, type: 3}
+  bonusResources: []

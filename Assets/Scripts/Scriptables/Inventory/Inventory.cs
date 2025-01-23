@@ -5,6 +5,7 @@ using Scriptables.Items;
 namespace Scriptables.Inventory {
   [Serializable]
   public class Inventory {
+    //TODO
     public InventorySlot[] Slots = new InventorySlot[24];
 
     public void Clear() {

@@ -5,6 +5,7 @@ using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -15,17 +16,12 @@ public abstract class UserInterface : MonoBehaviour {
   public InventoryObject inventory;
   private InventoryObject _previousInventory;
   public Dictionary<GameObject, InventorySlot> slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
-  private bool _enabled = false;
+  // private bool _enabled = false;
   [SerializeField] private Camera _uiCamera;
   [SerializeField] private Canvas _canvas;
   [SerializeField] private Transform _tempDragParent;
 
-  public void OnEnable() {
-    if (_enabled) {
-      return;
-    }
-    _enabled = true;
-    // public void Start() {
+  private void Awake() {
     CreateSlots();
 
     for (int i = 0; i < inventory.GetSlots.Length; i++) {
@@ -34,12 +30,16 @@ public abstract class UserInterface : MonoBehaviour {
     }
     AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
     AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
+  }
 
+  public void OnEnable() {
     // Update the entire UI when enabling the interface (e.g., after loading inventory)
+    UpdateSlotDisplayObject();
     UpdateInventoryUI();
   }
 
   public abstract void CreateSlots();
+  public abstract void UpdateSlotDisplayObject();
 
   public void UpdateInventoryLinks() {
     int i = 0;
@@ -50,15 +50,17 @@ public abstract class UserInterface : MonoBehaviour {
   }
 
   public void OnSlotUpdate(InventorySlot slot) {
+    var image = slot.slotDisplay.transform.GetChild(0).GetComponent<Image>();
+    var text = slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
     if (slot.item.Id <= -1) {
-      slot.slotDisplay.transform.GetChild(0).GetComponent<Image>().sprite = null;
-      slot.slotDisplay.transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, 0);
-      slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>().text = string.Empty;
+      image.sprite = null;
+      image.color = new Color(1, 1, 1, 0);
+      text.text = string.Empty;
     }
     else {
-      slot.slotDisplay.transform.GetChild(0).GetComponent<Image>().sprite = slot.GetItemObject().UiDisplay;
-      slot.slotDisplay.transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, 1);
-      slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>().text = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
+      image.sprite = slot.GetItemObject().UiDisplay;
+      image.color = new Color(1, 1, 1, 1);
+      text.text = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
     }
   }
 
@@ -140,9 +142,9 @@ public abstract class UserInterface : MonoBehaviour {
     }
   }
 
-  private void SpawnItem(InventorySlot slot){
+  private void SpawnItem(InventorySlot slot) {
     //spawn higher in y pos because need TO DO pick up on action not the trigger enter
-    GameObject newObj = Instantiate(((Resource)GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id)).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0,5,0), Quaternion.identity);
+    GameObject newObj = Instantiate(((Resource)GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id)).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0, 5, 0), Quaternion.identity);
     var groundObj = newObj.GetComponent<GroundItem>();
     groundObj.Count = slot.amount;
   }

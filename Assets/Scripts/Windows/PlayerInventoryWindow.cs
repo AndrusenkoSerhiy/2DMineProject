@@ -7,8 +7,9 @@ namespace Windows {
   public class PlayerInventoryWindow : WindowBase {
     private PlayerController _playerController;
 
-    private void Start() {
+    protected override void Start() {
       _playerController = GameManager.instance.PlayerController;
+      base.Start();
     }
 
     public override void Show() {
@@ -20,7 +21,7 @@ namespace Windows {
       base.Hide();
       LockPlayer(false);
     }
-    
+
     private void LockPlayer(bool state) {
       _playerController.SetLockPlayer(state);
       UserInput.instance.EnableGamePlayControls(!state);

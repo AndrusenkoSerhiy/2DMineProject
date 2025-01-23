@@ -18,6 +18,9 @@ namespace World {
     private void Awake() {
       getCellObjectsPool().Init();
       _chunkGenerator.Init();
+    }
+
+    private void Start() {
       InitStartChunk();
     }
 

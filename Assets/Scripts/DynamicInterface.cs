@@ -10,21 +10,29 @@ public class DynamicInterface : UserInterface {
   public int X_SPACE_BETWEEN_ITEM;
   public int NUMBER_OF_COLUMN;
   public int Y_SPACE_BETWEEN_ITEMS;
+  private List<GameObject> inventoryPrefabs = new List<GameObject>();
 
   public override void CreateSlots() {
-    // base.CreateSlots();
-    //slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
+    Debug.Log("CreateSlots() on " + gameObject.transform.parent.parent.name);
     for (int i = 0; i < inventory.GetSlots.Length; i++) {
       var obj = Instantiate(inventoryPrefab, Vector3.zero, Quaternion.identity, transform);
       obj.GetComponent<RectTransform>().localPosition = GetPosition(i);
+      inventoryPrefabs.Add(obj);
 
       AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
       AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
       AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(obj); });
       AddEvent(obj, EventTriggerType.EndDrag, delegate { OnDragEnd(obj); });
       AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
-      inventory.GetSlots[i].slotDisplay = obj;
+
       slotsOnInterface.Add(obj, inventory.GetSlots[i]);
+    }
+  }
+
+  public override void UpdateSlotDisplayObject() {
+    Debug.Log("UpdateSlotDisplayObject() on " + gameObject.transform.parent.parent.name);
+    for (int i = 0; i < inventory.GetSlots.Length; i++) {
+      inventory.GetSlots[i].slotDisplay = inventoryPrefabs[i];
     }
   }
 

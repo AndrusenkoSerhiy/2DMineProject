@@ -32,7 +32,7 @@ public class PlayerInventory : MonoBehaviour {
     }*/
     windowsController = GameManager.instance.WindowsController;
     inventoryWindow = windowsController.GetWindow<PlayerInventoryWindow>();
-    inventoryWindow.Hide();
+    //inventoryWindow.Hide();
     GameManager.instance.PlayerInventory = this;
   }
 

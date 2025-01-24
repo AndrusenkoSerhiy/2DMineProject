@@ -1,8 +1,9 @@
 ﻿using System;
 using Scriptables.Items;
 using UnityEngine;
+using UnityEngine.AI;
 
-namespace Scriptables.Inventory {
+namespace Inventory {
   [Serializable]
   public class InventorySlot {
     public ItemType[] AllowedItems = new ItemType[0];
@@ -17,6 +18,8 @@ namespace Scriptables.Inventory {
     public Action<InventorySlot> onAfterUpdated;
     [NonSerialized]
     public Action<InventorySlot> onBeforeUpdated;
+    [NonSerialized]
+    public Action<int> onAmountUpdate;
 
     public Item item;
     public int amount;
@@ -36,16 +39,39 @@ namespace Scriptables.Inventory {
 
     public void RemoveItem() => UpdateSlot(new Item(), 0);
 
-    public int AddAmount(int value, int maxStack = -1) => UpdateSlot(item, amount += value, maxStack);
+    public int AddAmount(int value, int maxStack = -1) => UpdateSlot(item, amount + value, maxStack);
 
     //use to add item, and check maxStack
+    // public int UpdateSlot(Item itemValue, int amountValue, int maxStack) {
+    //   onBeforeUpdated?.Invoke(this);
+
+    //   Debug.Log("old amount " + amount);
+    //   Debug.Log("new amount " + amountValue);
+
+    //   var oldAmount = amount;
+    //   item = itemValue;
+    //   amount = Mathf.Min(amountValue, maxStack);
+
+    //   onAfterUpdated?.Invoke(this);
+    //   onAmountUpdate?.Invoke(amount - oldAmount);
+
+    //   return Mathf.Max(0, amountValue - maxStack);
+    // }
+
     public int UpdateSlot(Item itemValue, int amountValue, int maxStack) {
       onBeforeUpdated?.Invoke(this);
 
+      Debug.Log("UpdateSlot(Item itemValue, int amountValue, int maxStack) old amount " + amount);
+      Debug.Log("UpdateSlot(Item itemValue, int amountValue, int maxStack) new amount " + amountValue);
+
+      var oldAmount = amount;
+      var newAmount = Mathf.Min(amountValue, maxStack); // Calculate the new amount
+
       item = itemValue;
-      amount = Mathf.Min(amountValue, maxStack);
-      
+      amount = newAmount; // Update the slot's amount after calculation
+
       onAfterUpdated?.Invoke(this);
+      onAmountUpdate?.Invoke(newAmount - oldAmount);
 
       return Mathf.Max(0, amountValue - maxStack);
     }
@@ -53,8 +79,10 @@ namespace Scriptables.Inventory {
     //use for load
     public void UpdateSlot(Item itemValue, int amountValue) {
       onBeforeUpdated?.Invoke(this);
+
       item = itemValue;
       amount = amountValue;
+
       onAfterUpdated?.Invoke(this);
     }
 

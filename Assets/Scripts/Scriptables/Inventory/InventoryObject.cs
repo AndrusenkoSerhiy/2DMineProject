@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using Inventory;
 using Items;
 using Scriptables.Items;
 using UnityEngine;
@@ -13,17 +15,13 @@ namespace Scriptables.Inventory {
     public InterfaceType type;
     //public int MAX_ITEMS;
     [SerializeField]
-    private Inventory Container = new Inventory();
+    private InventoryContainer Container = new InventoryContainer();
     public InventorySlot[] GetSlots => Container.Slots;
-
-
-    //use to pickUp item
-    public bool AddItem(Item item, int amount) {
-      return true;
-    }
+    private Dictionary<int, int> resourcesTotal = new Dictionary<int, int>();
 
     //use to get item from mining
     public bool AddItem(Item item, int amount, ItemObject itemObj, GroundItem groundItem) {
+      Debug.Log("AddItem amount " + amount);
       InventorySlot slot = FindStackableItemOnInventory(item);//FindItemOnInventory(item);
       //don't have empty slot or existing item
       if (EmptySlotCount <= 0 && slot == null) {
@@ -35,12 +33,14 @@ namespace Scriptables.Inventory {
       int maxStackSize = database.ItemObjects[item.Id].MaxStackSize;
       if (!database.ItemObjects[item.Id].Stackable || slot == null) {
         var overFlow = GetEmptySlot().UpdateSlot(item, amount, maxStackSize);
+        Debug.Log("AddItem overFlow " + overFlow);
         return HandleOverflow(overFlow, maxStackSize, itemObj, groundItem, item);
       }
 
       //add to exist slot
       var remainingAmount = slot.AddAmount(amount, maxStackSize);
-      return HandleOverflow(remainingAmount, maxStackSize,itemObj, groundItem, item);
+      Debug.Log("AddItem remainingAmount " + remainingAmount);
+      return HandleOverflow(remainingAmount, maxStackSize, itemObj, groundItem, item);
     }
 
     private void DropItemToGround(ItemObject itemObj, GroundItem groundItem, int amount) {
@@ -51,20 +51,20 @@ namespace Scriptables.Inventory {
       UpdateCount(groundItem, amount);
     }
 
-    private bool HandleOverflow(int overflowAmount, int maxStackSize, ItemObject itemObj, GroundItem groundItem, Item item){
-      if (overflowAmount  > 0) {
+    private bool HandleOverflow(int overflowAmount, int maxStackSize, ItemObject itemObj, GroundItem groundItem, Item item) {
+      if (overflowAmount > 0) {
         //Debug.LogError($"lefted count {leftedCount}");
-        var countRepeat = Mathf.CeilToInt((float)overflowAmount  / maxStackSize);
+        var countRepeat = Mathf.CeilToInt((float)overflowAmount / maxStackSize);
 
         //Debug.LogError($"count repeat {countRepeat}!!!!!!!!!!!!!!!!!!!");
         for (int i = 0; i < countRepeat; i++) {
           var emptySlot = GetEmptySlot();
           if (emptySlot != null) {
-            emptySlot.UpdateSlot(item, overflowAmount , maxStackSize);
-            overflowAmount  -= maxStackSize;
+            emptySlot.UpdateSlot(item, overflowAmount, maxStackSize);
+            overflowAmount -= maxStackSize;
           }
           else {
-            Debug.LogError($"Also need to spawn item on floor {overflowAmount }");
+            Debug.LogError($"Also need to spawn item on floor {overflowAmount}");
             DropItemToGround(itemObj, groundItem, overflowAmount);
             return false;
           }
@@ -139,7 +139,7 @@ namespace Scriptables.Inventory {
       if (item1 == item2) {
         return;
       }
-  
+
       if (item2.CanPlaceInSlot(item1.GetItemObject()) && item1.CanPlaceInSlot(item2.GetItemObject())) {
         InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.amount);
         item2.UpdateSlot(item1.item, item1.amount);
@@ -176,7 +176,7 @@ namespace Scriptables.Inventory {
 
         IFormatter formatter = new BinaryFormatter();
         Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open, FileAccess.Read);
-        Inventory newContainer = (Inventory)formatter.Deserialize(stream);
+        InventoryContainer newContainer = (InventoryContainer)formatter.Deserialize(stream);
 
         for (int i = 0; i < GetSlots.Length; i++) {
           GetSlots[i].UpdateSlot(newContainer.Slots[i].item, newContainer.Slots[i].amount);
@@ -188,6 +188,30 @@ namespace Scriptables.Inventory {
     [ContextMenu("Clear")]
     public void Clear() {
       Container.Clear();
+      resourcesTotal.Clear();
+    }
+
+    [ContextMenu("Clear and Save", false, 0)]
+    public void ClearAndSave() {
+      Clear();
+      Save();
+    }
+
+    private void UpdateResourceTotal(int resourceId, int amount) {
+      if (resourcesTotal.ContainsKey(resourceId)) {
+        resourcesTotal[resourceId] += amount;
+
+        if (resourcesTotal[resourceId] <= 0) {
+          resourcesTotal.Remove(resourceId);
+        }
+      }
+      else if (amount > 0) {
+        resourcesTotal[resourceId] = amount;
+      }
+    }
+
+    public int GetResourceTotalAmount(int resourceId) {
+      return resourcesTotal.ContainsKey(resourceId) ? resourcesTotal[resourceId] : 0;
     }
   }
 }

@@ -1,3 +1,4 @@
+using Inventory;
 using Items;
 using Scriptables.Items;
 using Tools;
@@ -12,7 +13,7 @@ namespace Player {
       GameManager.instance.PlayerAttack = this;
       playerEquipment = GetComponent<PlayerEquipment>();
     }
-    
+
     //get param from equipped tool
     protected override void PrepareAttackParams() {
       if (SetAttackParamsFromEquipment()) {
@@ -38,7 +39,7 @@ namespace Player {
       UpdateParams(.5f, attackRange, colliderSize.x, colliderSize.y);
       objectHighlighter.SetMaxHighlights(maxTargets);
     }
-    
+
     protected bool SetAttackParamsFromEquipment() {
       if (playerEquipment == null) {
         Debug.LogWarning("Could not find Player Equipment", this);
@@ -67,7 +68,7 @@ namespace Player {
       maxTargets = attackableItem.MaxTargets;
       return true;
     }
-    
+
     protected override void OnDestroy() {
       playerEquipment.OnEquippedWeapon -= UpdateAttackParam;
     }

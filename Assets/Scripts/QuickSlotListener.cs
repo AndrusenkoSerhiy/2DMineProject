@@ -1,3 +1,4 @@
+using Inventory;
 using Settings;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,6 +22,6 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private void Update() {
-      
+
   }
 }

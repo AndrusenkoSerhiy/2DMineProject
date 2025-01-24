@@ -2,9 +2,9 @@
 using System.Linq;
 using Scriptables.Items;
 
-namespace Scriptables.Inventory {
+namespace Inventory {
   [Serializable]
-  public class Inventory {
+  public class InventoryContainer {
     //TODO
     public InventorySlot[] Slots = new InventorySlot[24];
 

@@ -4,6 +4,7 @@ using Scriptables;
 using Scriptables.Items;
 using UnityEngine;
 using World;
+using Inventory;
 
 public class GameManager : MonoBehaviour {
   private static GameManager _instance;
@@ -16,7 +17,7 @@ public class GameManager : MonoBehaviour {
 
   [SerializeField] private PlayerAttack _playerAttack;
   [SerializeField] private ItemDatabaseObject _database;
-  
+
   [SerializeField] private Camera _mainCamera;
   [SerializeField] private WindowsController _windowsController;
   [SerializeField] private PlayerInventory _playerInventory;
@@ -59,7 +60,7 @@ public class GameManager : MonoBehaviour {
     set { _playerAttack = value; }
     get { return _playerAttack; }
   }
-  
+
   public MiningRobotController MiningRobotController {
     set { _miningRobotController = value; }
     get { return _miningRobotController; }

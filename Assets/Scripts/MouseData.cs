@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Inventory;
+using UnityEngine;
 
 public static class MouseData {
   public static UserInterface interfaceMouseIsOver;

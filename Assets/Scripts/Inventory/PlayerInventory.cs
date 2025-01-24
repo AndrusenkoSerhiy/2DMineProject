@@ -21,10 +21,6 @@ namespace Inventory {
     private PlayerInventoryWindow inventoryWindow;
     private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
 
-    private void Awake() {
-      GameManager.instance.PlayerInventory = this;
-    }
-
     private void Start() {
       CheckSlotsUpdate(inventory, true);
       CheckSlotsUpdate(equipment);

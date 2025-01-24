@@ -46,13 +46,5 @@ namespace Player {
       miningRobotAttack.enabled = state;
       enabled = state;
     }
-
-    public void EnableAttackCollider(bool state) {
-      miningRobotAttack.EnableAttackCollider(state);
-    }
-
-    public void ClearHighlights() {
-      miningRobotAttack.ClearHighlights();
-    }
   }
 }

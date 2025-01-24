@@ -41,6 +41,7 @@ namespace Player {
     protected virtual void Start() {
       attackTimeCounter = timeBtwAttacks;
       PrepareAttackParams();
+      originalSize = attackCollider.size;
     }
 
     public void LockHighlight(bool state) {

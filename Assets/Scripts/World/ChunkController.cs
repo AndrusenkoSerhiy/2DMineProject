@@ -174,7 +174,7 @@ namespace World {
     }
 
     private CellObjectsPool getCellObjectsPool() {
-      return GameManager.instance.cellObjectsPool;
+      return GameManager.instance.CellObjectsPool;
     }
   }
 }

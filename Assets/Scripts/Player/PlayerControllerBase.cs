@@ -52,6 +52,10 @@ namespace Player {
     public void SetLockPlayer(bool state) {
       _lockPlayer = state;
     }
+
+    public virtual void SetLockHighlight(bool state) {
+      
+    }
     
     protected virtual void Awake() {
       _rb = GetComponent<Rigidbody2D>();
@@ -198,7 +202,7 @@ namespace Player {
 
       if (!_jumpToConsume && !HasBufferedJump) return;
 
-      if (_grounded || CanUseCoyote) ExecuteJump();
+      if (_grounded || CanUseCoyote || _ladderMovement.IsClimbing) ExecuteJump();
 
       _jumpToConsume = false;
     }
@@ -209,6 +213,7 @@ namespace Player {
     }
 
     private void ExecuteJump() {
+      _ladderMovement.SetClimbing(false);
       _animator.SetBool("JumpDown", false);
       _animator.SetTrigger("Jump");
       _endedJumpEarly = false;

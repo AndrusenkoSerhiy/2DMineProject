@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Player {
   public class MiningRobotController : PlayerControllerBase, IPlayerController{
-    [SerializeField] private MiningRobotAttack _miningRobotAttack;
+    [SerializeField] private MiningRobotAttack miningRobotAttack;
 
     protected override void Awake() {
       base.Awake();
@@ -16,6 +16,10 @@ namespace Player {
       }
 
       base.LookAtMouse();
+    }
+
+    public override void SetLockHighlight(bool state) {
+      miningRobotAttack.LockHighlight(state);
     }
 
     protected override void FlipX() {
@@ -39,16 +43,16 @@ namespace Player {
     }
 
     public override void EnableController(bool state) {
-      _miningRobotAttack.enabled = state;
+      miningRobotAttack.enabled = state;
       enabled = state;
     }
 
     public void EnableAttackCollider(bool state) {
-      _miningRobotAttack.EnableAttackCollider(state);
+      miningRobotAttack.EnableAttackCollider(state);
     }
 
     public void ClearHighlights() {
-      _miningRobotAttack.ClearHighlights();
+      miningRobotAttack.ClearHighlights();
     }
   }
 }

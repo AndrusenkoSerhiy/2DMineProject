@@ -75,7 +75,7 @@ namespace Scriptables.Inventory {
       if (item == null)
         return;
 
-      GameObject newObj = Instantiate(((Resource)item).spawnPrefab, GameManager.instance.PlayerController.transform.position, Quaternion.identity);
+      GameObject newObj = Instantiate(item.spawnPrefab, GameManager.instance.PlayerController.transform.position, Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = amount;
     }

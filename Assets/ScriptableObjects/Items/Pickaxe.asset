@@ -25,13 +25,14 @@ MonoBehaviour:
     Name: Pickaxe
     Id: 0
     buffs: []
+  spawnPrefab: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
   useSelfAnim: 0
   attackLayer:
     serializedVersion: 2
     m_Bits: 256
   blockDamage: 6
   entityDamage: 3
-  range: 2.2
+  range: 3
   timeBtwAttacks: 0.4
   staminaUsage: 5
   animationattackID: 0

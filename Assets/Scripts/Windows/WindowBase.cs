@@ -1,23 +1,44 @@
+using Player;
+using Settings;
 using UnityEngine;
 
 namespace Windows {
   public class WindowBase : MonoBehaviour {
-    [SerializeField] private bool _isShow;
-
-    protected virtual void Start() => Hide();
+    [SerializeField] private bool isShow;
+    public bool IsShow => isShow;
     public delegate void ShowWindow(WindowBase window);
     public event ShowWindow OnShow;
+    
+    protected virtual void Start() {
+      Hide();
+    }
 
-    public bool IsShow => _isShow;
+    private PlayerControllerBase GetCurrPlayerController() {
+      return GameManager.instance.CurrPlayerController;
+    }
+    
     public virtual void Show() {
-      _isShow = true;
+      isShow = true;
       gameObject.SetActive(true);
-      OnShow.Invoke(this);
+      OnShow?.Invoke(this);
+      LockPlayer(true);
+      LockHighlight(true);
     }
 
     public virtual void Hide() {
-      _isShow = false;
+      isShow = false;
       gameObject.SetActive(false);
+      LockPlayer(false);
+      LockHighlight(false);
+    }
+    
+    private void LockPlayer(bool state) {
+      GetCurrPlayerController().SetLockPlayer(state);
+      UserInput.instance.EnableGamePlayControls(!state);
+    }
+
+    private void LockHighlight(bool state) {
+      GetCurrPlayerController().SetLockHighlight(state);
     }
   }
 }

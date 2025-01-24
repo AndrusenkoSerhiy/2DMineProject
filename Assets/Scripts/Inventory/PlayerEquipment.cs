@@ -2,6 +2,7 @@
 using Scriptables.Inventory;
 using Scriptables.Items;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Inventory {
   public class PlayerEquipment : MonoBehaviour {
@@ -24,6 +25,7 @@ namespace Inventory {
     private Transform _offhand;
     private Transform _weapon;
     public event Action OnEquippedWeapon;
+    public event Action OnUnequippedWeapon;
 
     public Transform Weapon {
       get => _weapon;
@@ -31,7 +33,6 @@ namespace Inventory {
     }
 
     void Start() {
-      // _equipment = GetComponent<PlayerInventory>().equipment;
       _equipment = GameManager.instance.PlayerInventory.equipment;
 
       for (int i = 0; i < _equipment.GetSlots.Length; i++) {
@@ -54,6 +55,7 @@ namespace Inventory {
           Weapon = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
           Weapon.localPosition = itemObject.SpawnPosition;
           Weapon.localEulerAngles = itemObject.SpawnRotation;
+          Weapon.gameObject.layer = LayerMask.NameToLayer("Character");
           OnEquippedWeapon?.Invoke();
           /*if (itemObject.CharacterDisplay != null) {
             switch (slot.AllowedItems[0]) {
@@ -111,6 +113,7 @@ namespace Inventory {
               case ItemType.Tool:
               case ItemType.Weapon:
                 Destroy(Weapon.gameObject);
+                OnUnequippedWeapon?.Invoke();
                 break;
             }
           }

@@ -25,13 +25,14 @@ MonoBehaviour:
     Name: Drill
     Id: 4
     buffs: []
+  spawnPrefab: {fileID: 3890226224433729309, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
   useSelfAnim: 1
   attackLayer:
     serializedVersion: 2
     m_Bits: 256
   blockDamage: 12
   entityDamage: 3
-  range: 2
+  range: 3
   timeBtwAttacks: 0.4
   staminaUsage: 0
   animationattackID: 1

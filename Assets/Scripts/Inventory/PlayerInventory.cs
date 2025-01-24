@@ -21,9 +21,11 @@ namespace Inventory {
     private PlayerInventoryWindow inventoryWindow;
     private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
 
-    private void Start() {
+    private void Awake() {
       GameManager.instance.PlayerInventory = this;
+    }
 
+    private void Start() {
       CheckSlotsUpdate(inventory, true);
       CheckSlotsUpdate(equipment);
       CheckSlotsUpdate(quickSlots);
@@ -53,7 +55,6 @@ namespace Inventory {
     }
 
     private void SlotAmountUpdateHandler(int resourceId, int amountDelta) {
-      Debug.Log("SlotAmountUpdateHandler " + amountDelta);
       UpdateResourceTotal(resourceId, amountDelta);
     }
 
@@ -71,7 +72,6 @@ namespace Inventory {
     }
 
     public int GetResourceTotalAmount(int resourceId) {
-      Debug.Log("GetResourceTotalAmount " + resourceId);
       return resourcesTotal.ContainsKey(resourceId) ? resourcesTotal[resourceId] : 0;
     }
 
@@ -164,7 +164,7 @@ namespace Inventory {
 
     public void SpawnItem(InventorySlot slot) {
       //spawn higher in y pos because need TO DO pick up on action not the trigger enter
-      GameObject newObj = Instantiate(((Resource)GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id)).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0, 5, 0), Quaternion.identity);
+      GameObject newObj = Instantiate(GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = slot.amount;
     }

@@ -12,8 +12,24 @@ namespace Movement {
     [SerializeField] private LadderObject ladderObject;
     private PlayerController playerController;
     private Vector2 movement;
+    //use when jump from ladder
+    [SerializeField] private bool canClimbAgain = true;
     public bool IsClimbing => isClimbing;
 
+    public void SetClimbing(bool state) {
+      if (state.Equals(isClimbing))
+        return;
+        
+      isClimbing = state;
+      canClimbAgain = false;
+      Invoke("ChangeValue", 1f);
+    }
+
+    private void ChangeValue() {
+      canClimbAgain = true;
+      if(isOnLadder) isClimbing = true;
+    }
+    
     private void Start() {
       playerController = GameManager.instance.PlayerController;
       //playerController.GroundedChanged += ChangeGround;
@@ -24,7 +40,7 @@ namespace Movement {
     }*/
 
     private void FixedUpdate() {
-      if (!ladderObject)
+      if (!ladderObject || !canClimbAgain)
         return;
 
       if (isOnLadder) {
@@ -69,7 +85,8 @@ namespace Movement {
     private void OnTriggerExit2D(Collider2D collision) {
       if (!collision.CompareTag("Ladder"))
         return;
-
+      //rb.AddForce( new Vector2(playerController.transform.localScale.x, 0) * 50, ForceMode2D.Impulse);
+      //rb.linearVelocity = new Vector2(5f, rb.linearVelocity.y);
       ExitFromLadder();
       ladderObject = null;
     }

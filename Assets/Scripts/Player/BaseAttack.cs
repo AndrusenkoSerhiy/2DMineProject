@@ -12,7 +12,6 @@ namespace Player {
     [SerializeField] protected ObjectHighlighter objectHighlighter;
     [SerializeField] protected BoxCollider2D attackCollider;
     [SerializeField] protected Transform attackTransform;
-    [SerializeField] private Transform colliderTR;
     [SerializeField] private float minDistance = 2f;
     [SerializeField] private float maxDistance = 5f;
     
@@ -27,8 +26,10 @@ namespace Player {
     protected int maxTargets;
     protected Vector2 colliderSize;
     
-    [SerializeField] protected List<IDamageable> targets = new();
+    private List<IDamageable> targets = new();
     private List<IDamageable> iDamageables = new();
+    [SerializeField] private bool isHighlightLock;
+    private Vector2 originalSize;
     
     public bool shouldBeDamaging { get; private set; } = false;
     
@@ -42,9 +43,24 @@ namespace Player {
       PrepareAttackParams();
     }
 
+    public void LockHighlight(bool state) {
+      isHighlightLock = state;
+      if (state) {
+        attackCollider.transform.localPosition = new Vector3(0, 1, 0);
+        originalSize = attackCollider.size;
+        attackCollider.size = new Vector2(.2f, .2f);
+      }
+      else {
+        attackCollider.size = originalSize;
+      }
+    }
+
     protected virtual void PrepareAttackParams() { }
     
     protected virtual void Update() {
+      if(isHighlightLock)
+        return;
+      
       UpdateColliderPos();
       HandleAttack();
     }
@@ -78,7 +94,7 @@ namespace Player {
       // Set the new position of the child collider
       var newPosition = parentPosition + direction * clampedDistance;
       newPosition.z = 0f;
-      colliderTR.position = newPosition;
+      attackCollider.transform.position = newPosition;
     }
 
     protected void UpdateParams(float minDist, float maxDist, float sizeX, float sizeY) {

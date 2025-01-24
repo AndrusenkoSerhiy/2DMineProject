@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Inventory;
@@ -17,7 +16,6 @@ namespace Scriptables.Inventory {
     [SerializeField]
     private InventoryContainer Container = new InventoryContainer();
     public InventorySlot[] GetSlots => Container.Slots;
-    private Dictionary<int, int> resourcesTotal = new Dictionary<int, int>();
 
     //use to get item from mining
     public bool AddItem(Item item, int amount, ItemObject itemObj, GroundItem groundItem) {
@@ -125,7 +123,6 @@ namespace Scriptables.Inventory {
       return false;
     }
 
-
     public InventorySlot GetEmptySlot() {
       for (int i = 0; i < GetSlots.Length; i++) {
         if (GetSlots[i].item.Id <= -1) {
@@ -142,8 +139,8 @@ namespace Scriptables.Inventory {
 
       if (item2.CanPlaceInSlot(item1.GetItemObject()) && item1.CanPlaceInSlot(item2.GetItemObject())) {
         InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.amount);
-        item2.UpdateSlot(item1.item, item1.amount);
-        item1.UpdateSlot(temp.item, temp.amount);
+        item2.UpdateSlot(item1.item, item1.amount, false);
+        item1.UpdateSlot(temp.item, temp.amount, false);
       }
     }
 
@@ -188,30 +185,12 @@ namespace Scriptables.Inventory {
     [ContextMenu("Clear")]
     public void Clear() {
       Container.Clear();
-      resourcesTotal.Clear();
     }
 
     [ContextMenu("Clear and Save", false, 0)]
     public void ClearAndSave() {
       Clear();
       Save();
-    }
-
-    private void UpdateResourceTotal(int resourceId, int amount) {
-      if (resourcesTotal.ContainsKey(resourceId)) {
-        resourcesTotal[resourceId] += amount;
-
-        if (resourcesTotal[resourceId] <= 0) {
-          resourcesTotal.Remove(resourceId);
-        }
-      }
-      else if (amount > 0) {
-        resourcesTotal[resourceId] = amount;
-      }
-    }
-
-    public int GetResourceTotalAmount(int resourceId) {
-      return resourcesTotal.ContainsKey(resourceId) ? resourcesTotal[resourceId] : 0;
     }
   }
 }

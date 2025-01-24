@@ -20,17 +20,22 @@ namespace Craft {
 
     [SerializeField]
     private Button recipesListItemPrefab;
+    private List<Recipe> previousRecipes;
     private List<Recipe> availableRecipes = new List<Recipe>();
     private List<Button> recipesListButtons = new List<Button>();
     private RecipeListItem selectedRecipeListItem;
 
-    private void Awake() {
-      LoadAvailableRecipes();
+    // private void Awake() {
+    //   Debug.Log("CraftManager Awake");
+    //   LoadAvailableRecipes();
 
-      BuildRecipeList();
-    }
+    //   BuildRecipeList();
+    // }
 
     private void OnEnable() {
+      LoadAvailableRecipes();
+      BuildRecipeList();
+
       AddEvents();
     }
 
@@ -44,6 +49,12 @@ namespace Craft {
     }
 
     private void BuildRecipeList() {
+      if (availableRecipes == previousRecipes) {
+        return;
+      }
+
+      previousRecipes = availableRecipes;
+
       var count = 0;
       foreach (Recipe recipe in availableRecipes) {
         var listItem = Instantiate<Button>(recipesListItemPrefab, recipesListContainerPrefab.transform);

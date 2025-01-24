@@ -11,11 +11,12 @@ namespace Craft {
     [SerializeField] private TextMeshProUGUI countText;
 
     public void SetRow(CraftingMaterial craftingMaterial) {
+      var totalAmount = GameManager.instance.PlayerInventory.GetResourceTotalAmount(craftingMaterial.Material.data.Id);
+
       resourceName.text = craftingMaterial.Material.data.Name;
       resourceIcon.sprite = craftingMaterial.Material.UiDisplay;
       resourceIcon.color = new Color(255, 255, 255, 255);
-      //TODO: "22/$Amount"
-      countText.text = craftingMaterial.Amount.ToString("n0");
+      countText.text = GetAmountString(totalAmount, craftingMaterial.Amount);
     }
 
     public void ClearRow() {
@@ -23,6 +24,10 @@ namespace Craft {
       resourceIcon.sprite = null;
       resourceIcon.color = new Color(255, 255, 255, 0);
       countText.text = "";
+    }
+
+    private string GetAmountString(int totalAmount, int amount) {
+      return $"{totalAmount}/{amount}";
     }
   }
 }

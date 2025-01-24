@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using Items;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 namespace Inventory {
   public class PlayerInventory : MonoBehaviour {
@@ -18,8 +19,15 @@ namespace Inventory {
     private int defaultItemId = 0;
     private WindowsController windowsController;
     private PlayerInventoryWindow inventoryWindow;
+    private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
 
     private void Start() {
+      GameManager.instance.PlayerInventory = this;
+
+      CheckSlotsUpdate(inventory, true);
+      CheckSlotsUpdate(equipment);
+      CheckSlotsUpdate(quickSlots);
+
       inventory.Load();
       equipment.Load();
       quickSlots.Load();
@@ -33,22 +41,38 @@ namespace Inventory {
 
       windowsController = GameManager.instance.WindowsController;
       inventoryWindow = windowsController.GetWindow<PlayerInventoryWindow>();
-      GameManager.instance.PlayerInventory = this;
-
-      CheckSlotsUpdate(inventory);
-      CheckSlotsUpdate(equipment);
-      CheckSlotsUpdate(quickSlots);
     }
 
-    private void CheckSlotsUpdate(InventoryObject inventory) {
+    private void CheckSlotsUpdate(InventoryObject inventory, bool checkAmount = false) {
       for (int i = 0; i < inventory.GetSlots.Length; i++) {
         inventory.GetSlots[i].onAfterUpdated += SlotUpdateHandler;
-        inventory.GetSlots[i].onAmountUpdate += SlotAmountUpdateHandler;
+        if (checkAmount) {
+          inventory.GetSlots[i].onAmountUpdate += SlotAmountUpdateHandler;
+        }
       }
     }
 
-    private void SlotAmountUpdateHandler(int amountDelta) {
+    private void SlotAmountUpdateHandler(int resourceId, int amountDelta) {
       Debug.Log("SlotAmountUpdateHandler " + amountDelta);
+      UpdateResourceTotal(resourceId, amountDelta);
+    }
+
+    private void UpdateResourceTotal(int resourceId, int amount) {
+      if (resourcesTotal.ContainsKey(resourceId)) {
+        resourcesTotal[resourceId] += amount;
+
+        if (resourcesTotal[resourceId] <= 0) {
+          resourcesTotal.Remove(resourceId);
+        }
+      }
+      else if (amount > 0) {
+        resourcesTotal[resourceId] = amount;
+      }
+    }
+
+    public int GetResourceTotalAmount(int resourceId) {
+      Debug.Log("GetResourceTotalAmount " + resourceId);
+      return resourcesTotal.ContainsKey(resourceId) ? resourcesTotal[resourceId] : 0;
     }
 
     public void AddSlotEvents(GameObject obj, Dictionary<GameObject, InventorySlot> slotsOnInterface, Transform parent) {

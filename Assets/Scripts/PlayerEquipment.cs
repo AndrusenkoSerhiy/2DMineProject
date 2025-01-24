@@ -53,6 +53,7 @@ public class PlayerEquipment : MonoBehaviour {
         Weapon = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
         Weapon.localPosition = itemObject.SpawnPosition;
         Weapon.localEulerAngles = itemObject.SpawnRotation;
+        Weapon.gameObject.layer = LayerMask.NameToLayer("Character");
         OnEquippedWeapon?.Invoke();
         /*if (itemObject.CharacterDisplay != null) {
           switch (slot.AllowedItems[0]) {

@@ -13,17 +13,19 @@ MonoBehaviour:
   m_Name: SuperPickaxe
   m_EditorClassIdentifier: 
   Type: 2
+  ParentType: 1
   UiDisplay: {fileID: 21300000, guid: 51af7db31eac37843b8d5ab24aa4aba9, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 7119352d529e2f24b89e23a6ca2f6f27, type: 3}
   Stackable: 0
   MaxStackSize: 1
-  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnPosition: {x: -1.21, y: 3.47, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   Description: super pickaxe description
   data:
     Name: HeavyPickaxe
     Id: 1
     buffs: []
+  spawnPrefab: {fileID: 3890226224433729309, guid: 7119352d529e2f24b89e23a6ca2f6f27, type: 3}
   useSelfAnim: 0
   attackLayer:
     serializedVersion: 2
@@ -34,3 +36,5 @@ MonoBehaviour:
   timeBtwAttacks: 0.4
   staminaUsage: 7
   animationattackID: 0
+  colliderSize: {x: 1, y: 1}
+  maxTargets: 1

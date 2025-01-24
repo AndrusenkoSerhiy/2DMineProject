@@ -4,61 +4,58 @@ using UnityEngine;
 
 namespace Tools {
   public class DrillTool : ToolBase {
-    private IDamageable currentTarget;
-    [SerializeField] private Animator _animator;
-    [SerializeField] private CapsuleCollider2D _collider;
-    private bool _isActive;
-    private Vector3 _defaultRotation;
+    private static readonly int IsActive = Animator.StringToHash("isActive");
+    
+    [SerializeField] private Animator animator;
+    private bool isActive;
+    private Vector3 defaultRotation;
 
     private void Awake() {
-      _animator.enabled = false;
-      _collider.enabled = false;
+      animator.enabled = false;
     }
 
     private void Start() {
-      _defaultRotation = transform.localEulerAngles;
+      defaultRotation = transform.localEulerAngles;
     }
 
     public override void Activate() {
       base.Activate();
-      _animator.enabled = true;
+      animator.enabled = true;
       UserInput.instance.OnAttackPerformed += StartDrilling;
       UserInput.instance.OnAttackCanceled += StopDrilling;
     }
 
     private void StartDrilling(object sender, EventArgs e) {
-      //InvokeRepeating("Attack", 1, 1);
       StartAnimation();
-      _isActive = true;
+      isActive = true;
     }
 
     private void StopDrilling(object sender, EventArgs e) {
-      //CancelInvoke("Attack");
       StopAnimation();
-      _isActive = false;
+      isActive = false;
       
-      transform.localEulerAngles = _defaultRotation;
+      transform.localEulerAngles = defaultRotation;
     }
 
     private void StartAnimation() {
-      _animator.SetBool("isActive", true);
+      animator.SetBool(IsActive, true);
     }
 
     private void StopAnimation() {
-      _animator.SetBool("isActive", false);
+      animator.SetBool(IsActive, false);
     }
 
     private void Update() {
-      if (!_isActive)
+      if (!isActive)
         return;
       
       LookAt();
     }
 
     private void LookAt() {
-      Vector3 mousePosition = Camera.main.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+      var mousePosition = GameManager.instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
       
-      Vector3 direction = GameManager.instance.PlayerController.transform.localScale.x * (mousePosition - transform.position);
+      var direction = GameManager.instance.PlayerController.transform.localScale.x * (mousePosition - transform.position);
       
       float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 

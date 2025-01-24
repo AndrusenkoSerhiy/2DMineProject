@@ -144,7 +144,7 @@ public abstract class UserInterface : MonoBehaviour {
 
   private void SpawnItem(InventorySlot slot) {
     //spawn higher in y pos because need TO DO pick up on action not the trigger enter
-    GameObject newObj = Instantiate(((Resource)GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id)).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0, 5, 0), Quaternion.identity);
+    GameObject newObj = Instantiate(GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
     var groundObj = newObj.GetComponent<GroundItem>();
     groundObj.Count = slot.amount;
   }

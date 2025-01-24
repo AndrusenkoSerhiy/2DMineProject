@@ -57,13 +57,5 @@ namespace Player {
     private void EnableHighlight(ObjectHighlight highlight, float thickness = .5f) {
       highlight.spriteRendererRef.material.SetFloat(Thickness, thickness);
     }
-
-    public void ClearHighlights() {
-      foreach (var highlight in highlights) {
-        highlight.spriteRendererRef.material.SetFloat(Thickness, 0);
-      }
-      
-      highlights.Clear();
-    }
   }
 }

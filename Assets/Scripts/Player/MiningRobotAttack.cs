@@ -1,8 +1,10 @@
+using UnityEngine;
+
 namespace Player {
   public class MiningRobotAttack : BaseAttack {
     protected override void Awake() {
       base.Awake();
-      EnableAttackCollider(false);
+      LockHighlight(true);
     }
     
     //get param from robot stats
@@ -14,14 +16,6 @@ namespace Player {
       timeBtwAttacks = stats.TimeBtwAttacks;
       staminaUsage = stats.StaminaUsage;
       attackID = stats.AttackID;
-    }
-
-    public void EnableAttackCollider(bool state) {
-      attackCollider.enabled = state;
-    }
-
-    public void ClearHighlights() {
-      objectHighlighter.ClearHighlights();
     }
   }
 }

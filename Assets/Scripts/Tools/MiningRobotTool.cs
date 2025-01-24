@@ -41,7 +41,7 @@ namespace Tools {
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
       miningRobotController.EnableController(true);
-      miningRobotController.EnableAttackCollider(true);
+      miningRobotController.SetLockHighlight(false);
       
       SetPlayerPosition(playerTransform, Vector3.zero);
       GameManager.instance.CurrPlayerController = miningRobotController;
@@ -53,8 +53,7 @@ namespace Tools {
       playerController.EnableCollider(true);
       playerController.EnableController(true);
       playerController.SetLockHighlight(false);
-      miningRobotController.EnableAttackCollider(true);
-      miningRobotController.ClearHighlights();
+      miningRobotController.SetLockHighlight(true);
       GameManager.instance.CurrPlayerController = playerController;
     }
 

@@ -5,26 +5,24 @@ using UnityEngine;
 
 namespace Tools {
   public class MiningRobotTool : MonoBehaviour, IInteractable {
-    [SerializeField] private string _interactEnterName;
-    [SerializeField] private string _interactExitName;
-    [SerializeField] private Transform _playerTransform;
-    [SerializeField] private List<Transform> _exitTransforms;
-    private bool _isPlayerInside;
+    [SerializeField] private string interactEnterName;
+    [SerializeField] private string interactExitName;
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private List<Transform> exitTransforms;
+    private bool isPlayerInside;
     
-    private PlayerController _playerController;
-    private PlayerAttack _playerAttack;
-    private MiningRobotController _miningRobotController;
+    private PlayerController playerController;
+    private MiningRobotController miningRobotController;
 
     private void Start() {
-      _playerController = GameManager.instance.PlayerController;
-      _miningRobotController = GameManager.instance.MiningRobotController;
-      _playerAttack = GameManager.instance.PlayerAttack;
+      playerController = GameManager.instance.PlayerController;
+      miningRobotController = GameManager.instance.MiningRobotController;
     }
-    public string InteractionPrompt => _isPlayerInside ? $"{_interactExitName}" : $"{_interactEnterName}";
+    public string InteractionPrompt => isPlayerInside ? $"{interactExitName}" : $"{interactEnterName}";
 
     public bool Interact(Interactor interactor) {
-      _isPlayerInside = !_isPlayerInside;
-      if (_isPlayerInside) {
+      isPlayerInside = !isPlayerInside;
+      if (isPlayerInside) {
         SitOnRobot();
         ResetPlayerAnim();
       }
@@ -35,32 +33,34 @@ namespace Tools {
     }
 
     private void ResetPlayerAnim() {
-      _playerController.ResetAnimatorMovement();
+      playerController.ResetAnimatorMovement();
     }
 
     private void SitOnRobot() {
-      _playerController.EnableController(false);
-      _playerController.EnableCollider(false);
-      _playerAttack.enabled = false;
-      _miningRobotController.EnableController(true);
-      _miningRobotController.EnableAttackCollider(true);
+      playerController.EnableController(false);
+      playerController.EnableCollider(false);
+      playerController.SetLockHighlight(true);
+      miningRobotController.EnableController(true);
+      miningRobotController.EnableAttackCollider(true);
       
-      SetPlayerPosition(_playerTransform, Vector3.zero);
+      SetPlayerPosition(playerTransform, Vector3.zero);
+      GameManager.instance.CurrPlayerController = miningRobotController;
     }
 
     private void ExitFromRobot() {
-      SetPlayerPosition(null, _exitTransforms[0].position);
-      _miningRobotController.EnableController(false);
-      _playerController.EnableCollider(true);
-      _playerController.EnableController(true);
-      _playerAttack.enabled = true;
-      _miningRobotController.EnableAttackCollider(true);
-      _miningRobotController.ClearHighlights();
+      SetPlayerPosition(null, exitTransforms[0].position);
+      miningRobotController.EnableController(false);
+      playerController.EnableCollider(true);
+      playerController.EnableController(true);
+      playerController.SetLockHighlight(false);
+      miningRobotController.EnableAttackCollider(true);
+      miningRobotController.ClearHighlights();
+      GameManager.instance.CurrPlayerController = playerController;
     }
 
     private void SetPlayerPosition(Transform tr, Vector3 pos) {
-      _playerController.SetParent(tr);
-      _playerController.SetPosition(pos);
+      playerController.SetParent(tr);
+      playerController.SetPosition(pos);
     }
   }
 }

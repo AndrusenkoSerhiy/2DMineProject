@@ -10,7 +10,6 @@ namespace Player {
       base.Awake();
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
       playerEquipment.OnUnequippedWeapon += SetParamsFromPlayerStats;
-      GameManager.instance.PlayerAttack = this;
       playerEquipment = GetComponent<PlayerEquipment>();
     }
     

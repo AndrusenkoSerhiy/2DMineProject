@@ -1,30 +1,7 @@
-using System;
-using Player;
-using Settings;
-using UnityEngine;
 
 namespace Windows {
+  //TODO need delete this class if doesn't have any additional logic and just use WindowBase
   public class PlayerInventoryWindow : WindowBase {
-    private PlayerController _playerController;
-
-    protected override void Start() {
-      _playerController = GameManager.instance.PlayerController;
-      base.Start();
-    }
-
-    public override void Show() {
-      base.Show();
-      LockPlayer(true);
-    }
-
-    public override void Hide() {
-      base.Hide();
-      LockPlayer(false);
-    }
-
-    private void LockPlayer(bool state) {
-      _playerController.SetLockPlayer(state);
-      UserInput.instance.EnableGamePlayControls(!state);
-    }
+    
   }
 }

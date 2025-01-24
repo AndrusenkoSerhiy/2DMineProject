@@ -52,6 +52,10 @@ namespace Player {
     public void SetLockPlayer(bool state) {
       _lockPlayer = state;
     }
+
+    public virtual void SetLockHighlight(bool state) {
+      
+    }
     
     protected virtual void Awake() {
       _rb = GetComponent<Rigidbody2D>();

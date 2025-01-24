@@ -9,17 +9,17 @@ public class GameManager : MonoBehaviour {
   private static GameManager _instance;
   [SerializeField] private TaskManager taskManagerRef;
   [SerializeField] private GameConfig gameConfigRef;
-  [SerializeField] private ChunkController _chunkController;
-  [SerializeField] private CellObjectsPool _cellObjectsPool;
-  [SerializeField] private PlayerController _playerController;
-  [SerializeField] private MiningRobotController _miningRobotController;
-
-  [SerializeField] private PlayerAttack _playerAttack;
-  [SerializeField] private ItemDatabaseObject _database;
+  [SerializeField] private ChunkController chunkController;
+  [SerializeField] private CellObjectsPool cellObjectsPool;
+  [SerializeField] private PlayerController playerController;
+  [SerializeField] private MiningRobotController miningRobotController;
   
-  [SerializeField] private Camera _mainCamera;
-  [SerializeField] private WindowsController _windowsController;
-  [SerializeField] private PlayerInventory _playerInventory;
+  [SerializeField] private ItemDatabaseObject database;
+  
+  [SerializeField] private Camera mainCamera;
+  [SerializeField] private WindowsController windowsController;
+  [SerializeField] private PlayerInventory playerInventory;
+  [SerializeField] private PlayerControllerBase currPlayerController;
   public static GameManager instance {
     get {
       if (_instance == null) {
@@ -33,48 +33,41 @@ public class GameManager : MonoBehaviour {
     }
   }
 
-  public ChunkController ChunkController => _chunkController;
+  public ChunkController ChunkController => chunkController;
   public GameConfig GameConfig => gameConfigRef;
 
-  public CellObjectsPool cellObjectsPool {
-    get { return _cellObjectsPool; }
-  }
+  public CellObjectsPool CellObjectsPool => cellObjectsPool;
 
-  public TaskManager TaskManager {
-    get { return taskManagerRef; }
-  }
+  public TaskManager TaskManager => taskManagerRef;
 
   public PlayerInventory PlayerInventory {
-    set { _playerInventory = value; }
-    get { return _playerInventory; }
+    set { playerInventory = value; }
+    get { return playerInventory; }
   }
 
-  public Camera MainCamera => _mainCamera;
+  public Camera MainCamera => mainCamera;
   public PlayerController PlayerController {
-    set { _playerController = value; }
-    get { return _playerController; }
-  }
-
-  public PlayerAttack PlayerAttack {
-    set { _playerAttack = value; }
-    get { return _playerAttack; }
+    set { playerController = value; }
+    get { return playerController; }
   }
   
   public MiningRobotController MiningRobotController {
-    set { _miningRobotController = value; }
-    get { return _miningRobotController; }
+    set { miningRobotController = value; }
+    get { return miningRobotController; }
   }
 
-  public ItemDatabaseObject ItemDatabaseObject {
-    get { return _database; }
+  public ItemDatabaseObject ItemDatabaseObject => database;
+
+  public PlayerControllerBase CurrPlayerController {
+    set { currPlayerController = value;}
+    get { return currPlayerController; }
   }
 
-  public WindowsController WindowsController {
-    get { return _windowsController; }
-  }
+  public WindowsController WindowsController => windowsController; 
+  
   private void Awake() {
     if (_instance != null && _instance != this) {
-      Destroy(this.gameObject);
+      Destroy(gameObject);
     }
     else {
       _instance = this;

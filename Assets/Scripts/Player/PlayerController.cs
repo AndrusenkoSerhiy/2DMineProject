@@ -1,15 +1,20 @@
-using Settings;
 using UnityEngine;
 
 namespace Player {
   [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
   public class PlayerController : PlayerControllerBase, IPlayerController {
-    [SerializeField] private float _topAngleLimit = 20;
-    [SerializeField] private float _bottomAngleLimit = -20;
+    [SerializeField] private float topAngleLimit = 20;
+    [SerializeField] private float bottomAngleLimit = -20;
+    [SerializeField] private PlayerAttack playerAttack;
 
     protected override void Awake() {
       base.Awake();
       GameManager.instance.PlayerController = this;
+      GameManager.instance.CurrPlayerController = this;
+    }
+    
+    public override void SetLockHighlight(bool state) {
+      playerAttack.LockHighlight(state);
     }
     
     protected override void LookAtMouse() {
@@ -24,18 +29,11 @@ namespace Player {
       float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
       // Clamp the target angle within the specified limits
-      float clampedAngle = Mathf.Clamp(targetAngle, _bottomAngleLimit, _topAngleLimit) *
+      float clampedAngle = Mathf.Clamp(targetAngle, bottomAngleLimit, topAngleLimit) *
                            Mathf.Sign(transform.localScale.x);
 
       // Apply the clamped angle to the head
       Head.rotation = Quaternion.Euler(0, 0, clampedAngle + Mathf.Sign(transform.localScale.x) * 90);
-    }
-
-    protected override void Update() {
-      base.Update();
-      /*if (Input.GetKeyDown(KeyCode.O)) {
-        LockPlayer(!_lockPlayer); 
-      }*/
     }
   }
 }

@@ -72,7 +72,7 @@ namespace World {
       var pos = transform.position;
       ResetShake();
       GameManager.instance.ChunkController.TriggerCellDestroyed(this);
-      GameManager.instance.cellObjectsPool.ReturnObject(this);
+      GameManager.instance.CellObjectsPool.ReturnObject(this);
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
       GameManager.instance.TaskManager.DelayAsync(
         () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);

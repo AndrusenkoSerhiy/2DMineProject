@@ -5,11 +5,18 @@ using UnityEngine;
 namespace Scriptables.POI {
   [Serializable]
   public class POIData : ScriptableObject {
-    [Header("POI Spawn Data")] 
-    public int maxCount;
-    [Header("POI Cells Data")]
-    public int sizeX;
+    [Header("POI Spawn Data")] public int maxCount;
+    [Header("POI Cells Data")] public int sizeX;
     public int sizeY;
-    public List<POICell> cells = new();
+    private POICell[,] cells;
+    public POICell[,] Cells => cells;
+
+    public void CreateCells() {
+      cells = new POICell[sizeX, sizeY];
+    }
+
+    public void SetCell(POICell cell) {
+      cells[cell.localX, cell.localY] = cell;
+    }
   }
 }

@@ -171,6 +171,20 @@ namespace World {
     private void InitStartChunk() {
       chunkData = _chunkGenerator.GetChunk(0, 0);
       SpawnChunk(0, 0);
+      GeneratePOI(chunkData);
+    }
+
+    private void GeneratePOI(ChunkData chunkData) {
+      //Get all empty points
+      var emptyCells = new List<CellData>();
+      for (int i = 0; i < chunkData.width; i++) {
+        for (int j = 0; j < chunkData.width; j++) {
+          if (chunkData.CellFillDatas[i, j] == 0) {
+            emptyCells.Add(chunkData.GetCellData(i, j));
+          }
+        }
+      }
+      //Get POI variants
     }
 
     private CellObjectsPool getCellObjectsPool() {

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbab9229c67e44c18457d8e5b3fb2834, type: 3}
-  m_Name: POIDataLibrary
+  m_Script: {fileID: 11500000, guid: 5466b49e87ce4fc08fc9fc192aa099ba, type: 3}
+  m_Name: SmallWood
   m_EditorClassIdentifier: 
-  RadiusBetweenPoints: 50
-  POIDataList:
-  - {fileID: 11400000, guid: 34740b7cfe2fffb4db402a9541a95789, type: 2}
+  maxCount: 100
+  sizeX: 1
+  sizeY: 1

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Scriptables;
+using Scriptables.POI;
 using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
@@ -10,6 +11,9 @@ namespace World {
     [SerializeField] private ChunkGenerator _chunkGenerator;
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
     public ResourceDataLibrary ResourceDataLibrary => _resourceDataLib;
+    
+    [SerializeField] private POIDataLibrary _poiDataLibrary;
+    public POIDataLibrary POIDataLibrary => _poiDataLibrary;
 
     private Dictionary<Coords, CellObject> _activeCellObjects = new();
     private ChunkData chunkData;

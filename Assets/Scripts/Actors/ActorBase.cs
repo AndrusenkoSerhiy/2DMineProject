@@ -1,3 +1,4 @@
+using Scriptables;
 using UnityEngine;
 
 namespace Actors {
@@ -7,11 +8,13 @@ namespace Actors {
     [SerializeField] protected Animator _animator;
     [SerializeField] private bool _isDead;
     private UnitHealth unitHealth;
+    private AnimatorParameters animParam;
 
     public bool IsDead => _isDead;
     private void Awake() {
       _currHP = _maxHP;
       unitHealth = new UnitHealth(_currHP);
+      animParam = GameManager.instance.AnimatorParameters;
     }
 
     public bool hasTakenDamage {
@@ -32,13 +35,13 @@ namespace Actors {
     }
 
     private void PlayTakeDamage() {
-      _animator.SetTrigger("TakeDamage");
+      _animator.SetTrigger(animParam.TakeDamage);
     }
     
     private void PlayDeathAnim() {
       Debug.LogError($"PlayDeathAnim");
       _animator.SetLayerWeight(1, 0);
-      _animator.SetTrigger("Die");
+      _animator.SetTrigger(animParam.Die);
     }
 
     public float GetHealth() {

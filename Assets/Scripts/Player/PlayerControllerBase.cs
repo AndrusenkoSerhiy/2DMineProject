@@ -21,7 +21,7 @@ namespace Player {
     [SerializeField] protected float _flipDeadZone = 1;
 
     protected Camera _camera;
-    protected bool isFlipped = false;
+    protected bool isFlipped;
     protected float rotationCoef = 1f;
 
     [SerializeField] private PlayerCoords _playerCoords;
@@ -34,12 +34,20 @@ namespace Player {
     public Stamina Stamina => _stamina;
     public PlayerStats Stats => _stats;
     private float _frameLeftGrounded = float.MinValue;
-    private bool _grounded;
-    private float _time;
+    private bool grounded;
+    private float time;
     //lock player when ui window is open
-    [SerializeField] protected bool _lockPlayer;
+    protected bool lockPlayer;
+    private bool startFalling;
     
-    public bool Grounded => _grounded;
+    public bool Grounded => grounded;
+    
+    private bool _jumpToConsume;
+    private bool _bufferedJumpUsable;
+    private bool _endedJumpEarly;
+    private bool _coyoteUsable;
+    private float _timeJumpWasPressed;
+    private AnimatorParameters animParam;
 
     #region Interface
 
@@ -50,7 +58,7 @@ namespace Player {
     #endregion
 
     public void SetLockPlayer(bool state) {
-      _lockPlayer = state;
+      lockPlayer = state;
     }
 
     public virtual void SetLockHighlight(bool state) {
@@ -68,6 +76,7 @@ namespace Player {
       isFlipped = false;
       rotationCoef = 1f;
       AnimationEventManager.onFootstep += SpawnFootstepEffect;
+      animParam = GameManager.instance.AnimatorParameters;
     }
 
 
@@ -82,7 +91,7 @@ namespace Player {
     }
 
     protected virtual void Update() {
-      _time += Time.deltaTime;
+      time += Time.deltaTime;
       GatherInput();
       LookAtMouse();
     }
@@ -124,7 +133,7 @@ namespace Player {
 
       if (_frameInput.JumpDown) {
         _jumpToConsume = true;
-        _timeJumpWasPressed = _time;
+        _timeJumpWasPressed = time;
       }
     }
 
@@ -154,8 +163,9 @@ namespace Player {
       if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
 
       // Landed on the Ground
-      if (!_grounded && groundHit) {
-        _grounded = true;
+      if (!grounded && groundHit) {
+        grounded = true;
+        startFalling = false;
         _coyoteUsable = true;
         _bufferedJumpUsable = true;
         _endedJumpEarly = false;
@@ -163,9 +173,9 @@ namespace Player {
         PlayLandingEffect();
       }
       // Left the Ground
-      else if (_grounded && !groundHit) {
-        _grounded = false;
-        _frameLeftGrounded = _time;
+      else if (grounded && !groundHit) {
+        grounded = false;
+        _frameLeftGrounded = time;
         GroundedChanged?.Invoke(false, 0);
       }
 
@@ -178,7 +188,7 @@ namespace Player {
 
     private void SpawnFootstepEffect() {
       if (Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x))) {
-        if (_grounded && Mathf.Abs(_rb.linearVelocity.x) > 1)
+        if (grounded && Mathf.Abs(_rb.linearVelocity.x) > 1)
           ObjectPooler.Instance.SpawnFromPool("FootstepEffect", transform.position, Quaternion.identity);
       }
     }
@@ -188,34 +198,30 @@ namespace Player {
 
     #region Jumping
 
-    private bool _jumpToConsume;
-    private bool _bufferedJumpUsable;
-    private bool _endedJumpEarly;
-    private bool _coyoteUsable;
-    private float _timeJumpWasPressed;
-
-    private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + _stats.JumpBuffer;
-    private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime;
+    private bool HasBufferedJump => _bufferedJumpUsable && time < _timeJumpWasPressed + _stats.JumpBuffer;
+    private bool CanUseCoyote => _coyoteUsable && !grounded && time < _frameLeftGrounded + _stats.CoyoteTime;
 
     private void HandleJump() {
-      if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
+      if (!_endedJumpEarly && !grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
 
       if (!_jumpToConsume && !HasBufferedJump) return;
 
-      if (_grounded || CanUseCoyote || _ladderMovement.IsClimbing) ExecuteJump();
+      if (grounded || CanUseCoyote || _ladderMovement.IsClimbing) ExecuteJump();
 
       _jumpToConsume = false;
     }
 
     public void ResetAnimatorMovement() {
-      _animator.SetFloat("VelocityX", 0f);
-      _animator.SetFloat("VelocityY", 0f);
+      Debug.LogError($"ResetAnimatorMovement");
+      _animator.SetFloat(animParam.VelocityXHash, 0f);
+      _animator.SetFloat(animParam.VelocityYHash, 0f);
     }
 
     private void ExecuteJump() {
+      Debug.LogError($"ExecuteJump");
       _ladderMovement.SetClimbing(false);
-      _animator.SetBool("JumpDown", false);
-      _animator.SetTrigger("Jump");
+      _animator.SetBool(animParam.FallHash, false);
+      _animator.SetTrigger(animParam.JumpHash);
       _endedJumpEarly = false;
       _timeJumpWasPressed = 0;
       _bufferedJumpUsable = false;
@@ -230,7 +236,7 @@ namespace Player {
 
     private void HandleDirection() {
       if (_frameInput.Move.x == 0) {
-        var deceleration = _grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
+        var deceleration = grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
         _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
       }
       else {
@@ -239,12 +245,12 @@ namespace Player {
       }
 
       if (_frameVelocity.x == 0) {
-        SetAnimVelocity(0);
+        SetAnimVelocityX(0);
         return;
       }
 
       var direction = Mathf.Sign(_frameVelocity.x);
-      SetAnimVelocity(direction);
+      SetAnimVelocityX(direction);
     }
 
     protected virtual float GetMaxSpeed() {
@@ -253,8 +259,8 @@ namespace Player {
         : _stats.MaxBackSpeed;
     }
 
-    private void SetAnimVelocity(float value) {
-      _animator.SetFloat("VelocityX", value);
+    private void SetAnimVelocityX(float value) {
+      _animator.SetFloat(animParam.VelocityXHash, value);
     }
 
     public virtual void EnableController(bool state) {
@@ -279,7 +285,7 @@ namespace Player {
     #region Gravity
 
     private void HandleGravity() {
-      if (_grounded && _frameVelocity.y <= 0f) {
+      if (grounded && _frameVelocity.y <= 0f) {
         _frameVelocity.y = _stats.GroundingForce;
       }
       else {
@@ -287,12 +293,17 @@ namespace Player {
         if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
         _frameVelocity.y =
           Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
-
-        //start falling down
-        if (_frameVelocity.y < 0) {
-          _animator.SetBool("JumpDown", true);
-        }
+        SetFall();
       }
+    }
+    
+    //start falling down set animator param
+    private void SetFall() {
+      if (!(_frameVelocity.y < 0) || startFalling) 
+        return;
+      startFalling = true;
+      Debug.LogError("start falling down");
+      _animator.SetBool(animParam.FallHash, true);
     }
 
     #endregion

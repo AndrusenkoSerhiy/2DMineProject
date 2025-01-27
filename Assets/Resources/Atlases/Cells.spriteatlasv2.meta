@@ -9,8 +9,8 @@ SpriteAtlasImporter:
     maxTextureSize: 2048
     textureCompression: 0
     filterMode: 0
-    generateMipMaps: 1
-    readable: 1
+    generateMipMaps: 0
+    readable: 0
     crunchedCompression: 0
     sRGB: 1
   platformSettings:
@@ -29,12 +29,12 @@ SpriteAtlasImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   packingSettings:
     serializedVersion: 2
-    padding: 8
+    padding: 4
     blockOffset: 1
     allowAlphaSplitting: 0
-    enableRotation: 0
-    enableTightPacking: 0
-    enableAlphaDilation: 0
+    enableRotation: 1
+    enableTightPacking: 1
+    enableAlphaDilation: 1
   secondaryTextureSettings: {}
   variantMultiplier: 1
   bindAsDefault: 1

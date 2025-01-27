@@ -33,6 +33,7 @@ namespace Craft {
     // }
 
     private void OnEnable() {
+      Debug.Log("CraftManager OnEnable");
       LoadAvailableRecipes();
       BuildRecipeList();
 
@@ -50,6 +51,7 @@ namespace Craft {
 
     private void BuildRecipeList() {
       if (availableRecipes == previousRecipes) {
+        Debug.Log("CraftManager BuildRecipeList without rebuild");
         return;
       }
 

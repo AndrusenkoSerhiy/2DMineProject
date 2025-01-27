@@ -18,7 +18,7 @@ namespace Player {
     }
     
     protected override void LookAtMouse() {
-      if (_lockPlayer) {
+      if (lockPlayer) {
         return;
       }
       base.LookAtMouse();

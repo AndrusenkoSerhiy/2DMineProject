@@ -845,7 +845,7 @@ GameObject:
   - component: {fileID: 7810780520715568834}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -900,13 +900,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
+  _frameVelocity: {x: 0, y: 0}
   _animator: {fileID: 660024517565497304}
   Head: {fileID: 1976719180885785715}
   _flipDeadZone: 0.5
   _playerCoords: {fileID: 4285968199683070401}
   _ladderMovement: {fileID: 7810780520715568834}
   _stamina: {fileID: 6251728841341945271}
-  _lockPlayer: 0
+  grounded: 0
+  startFalling: 0
   topAngleLimit: 20
   bottomAngleLimit: -20
   playerAttack: {fileID: 3203884702869887430}
@@ -1099,7 +1101,8 @@ MonoBehaviour:
   isClimbing: 0
   rb: {fileID: 7677545041897933634}
   ladderObject: {fileID: 0}
-  canClimbAgain: 1
+  movement: {x: 0, y: 0}
+  stayOnLadderAfterJump: 0
 --- !u!1 &2732549292726789520
 GameObject:
   m_ObjectHideFlags: 0

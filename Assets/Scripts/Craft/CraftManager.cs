@@ -267,11 +267,11 @@ namespace Craft {
 
     #region Inventory slots update
     private void SlotsUpdateEvents() {
-      GameManager.instance.PlayerInventory.onResourcesTotalUpdate += SlotAmountUpdateHandler;
+      playerInventory.onResourcesTotalUpdate += SlotAmountUpdateHandler;
     }
 
     private void RemoveSlotsUpdateEvents() {
-      GameManager.instance.PlayerInventory.onResourcesTotalUpdate -= SlotAmountUpdateHandler;
+      playerInventory.onResourcesTotalUpdate -= SlotAmountUpdateHandler;
     }
 
     private void SlotAmountUpdateHandler(int resourceId) {

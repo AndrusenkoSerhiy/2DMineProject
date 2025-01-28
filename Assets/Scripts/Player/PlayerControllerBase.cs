@@ -13,7 +13,7 @@ namespace Player {
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
     private FrameInput _frameInput;
-    protected Vector2 _frameVelocity;
+    [SerializeField]protected Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
     [SerializeField] private Animator _animator;
 
@@ -27,6 +27,7 @@ namespace Player {
     [SerializeField] private PlayerCoords _playerCoords;
     
     [SerializeField] protected LadderMovement _ladderMovement;
+    public LadderMovement LadderMovement => _ladderMovement;
     public PlayerCoords PlayerCoords => _playerCoords;
     public Vector2 FrameVelocity => _frameVelocity;
 
@@ -34,11 +35,11 @@ namespace Player {
     public Stamina Stamina => _stamina;
     public PlayerStats Stats => _stats;
     private float _frameLeftGrounded = float.MinValue;
-    private bool grounded;
+    [SerializeField]private bool grounded;
     private float time;
     //lock player when ui window is open
     protected bool lockPlayer;
-    private bool startFalling;
+    [SerializeField]private bool startFalling;
     
     public bool Grounded => grounded;
     
@@ -56,7 +57,7 @@ namespace Player {
     public event Action Jumped;
 
     #endregion
-
+    
     public void SetLockPlayer(bool state) {
       lockPlayer = state;
     }
@@ -212,14 +213,15 @@ namespace Player {
     }
 
     public void ResetAnimatorMovement() {
-      Debug.LogError($"ResetAnimatorMovement");
       _animator.SetFloat(animParam.VelocityXHash, 0f);
       _animator.SetFloat(animParam.VelocityYHash, 0f);
     }
 
     private void ExecuteJump() {
-      Debug.LogError($"ExecuteJump");
-      _ladderMovement.SetClimbing(false);
+      //Debug.LogError($"ExecuteJump");
+      startFalling = false;
+      _ladderMovement.SetClimbing(false, "jump");
+      //Debug.LogError("start fall false");
       _animator.SetBool(animParam.FallHash, false);
       _animator.SetTrigger(animParam.JumpHash);
       _endedJumpEarly = false;
@@ -236,7 +238,8 @@ namespace Player {
 
     private void HandleDirection() {
       if (_frameInput.Move.x == 0) {
-        var deceleration = grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
+        //if we are on the ladder need to calculate deceleration like on ground
+        var deceleration = grounded || _ladderMovement.IsOnLadder ? _stats.GroundDeceleration : _stats.AirDeceleration;
         _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
       }
       else {
@@ -299,10 +302,13 @@ namespace Player {
     
     //start falling down set animator param
     private void SetFall() {
-      if (!(_frameVelocity.y < 0) || startFalling) 
+      if (!(_frameVelocity.y < 0 /*&& !_ladderMovement.IsOnLadder*/) || startFalling /*|| _ladderMovement.IsOnLadder*/) 
         return;
+
+      if (_ladderMovement.IsOnLadder) {
+        _ladderMovement.SetClimbing(true, "fall");
+      }
       startFalling = true;
-      Debug.LogError("start falling down");
       _animator.SetBool(animParam.FallHash, true);
     }
 

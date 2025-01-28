@@ -10,6 +10,7 @@ using UnityEngine.Events;
 using Items;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
+using System;
 
 namespace Inventory {
   public class PlayerInventory : MonoBehaviour {
@@ -20,6 +21,9 @@ namespace Inventory {
     private WindowsController windowsController;
     private PlayerInventoryWindow inventoryWindow;
     private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
+    [NonSerialized]
+    public Action<int> onResourcesTotalUpdate;
+    public Dictionary<int, int> ResourcesTotal => resourcesTotal;
 
     private void Start() {
       CheckSlotsUpdate(inventory, true);
@@ -65,6 +69,10 @@ namespace Inventory {
       else if (amount > 0) {
         resourcesTotal[resourceId] = amount;
       }
+
+      onResourcesTotalUpdate?.Invoke(resourceId);
+
+      Debug.Log("PlayerInventory UpdateResourceTotal amount " + amount);
     }
 
     public int GetResourceTotalAmount(int resourceId) {
@@ -107,10 +115,10 @@ namespace Inventory {
 
       var list = resource.GetBonusResources;
       for (int i = 0; i < list.Count; i++) {
-        if (Random.value > list[i].chance)
+        if (UnityEngine.Random.value > list[i].chance)
           return;
 
-        var count = Random.Range((int)list[i].rndCount.x, (int)list[i].rndCount.y);
+        var count = UnityEngine.Random.Range((int)list[i].rndCount.x, (int)list[i].rndCount.y);
         //Debug.LogError($"spawn {list[i].item.name} | count {count} ");
         inventory.AddItem(new Item(list[i].item), count, list[i].item, null);
       }

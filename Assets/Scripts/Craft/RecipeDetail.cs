@@ -15,6 +15,7 @@ namespace Craft {
     [SerializeField] private GameObject listContainer;
     [SerializeField] private List<GameObject> rows;
     private Recipe currentRecipe;
+    private int[] recipeIngredientsIds;
 
     public void SetRecipeDetails(Recipe recipe) {
       currentRecipe = recipe;
@@ -27,16 +28,20 @@ namespace Craft {
       var img = currentRecipe.detailImg != null ? currentRecipe.detailImg : currentRecipe.Result.UiDisplay;
 
       title.text = currentRecipe.RecipeName;
-      this.icon.sprite = img;
-      this.craftTime.text = Helper.SecondsToTimeString(currentRecipe.CraftingTime);
+      icon.sprite = img;
+      craftTime.text = Helper.SecondsToTimeString(currentRecipe.CraftingTime);
     }
 
-    private void PrintList() {
+    public void PrintList() {
       var rowIndex = 0;
+      recipeIngredientsIds = new int[currentRecipe.RequiredMaterials.Count];
+
       foreach (var resource in currentRecipe.RequiredMaterials) {
         var row = rows[rowIndex++];
         var recipeDetailRow = row.GetComponent<RecipeDetailRow>();
         recipeDetailRow.SetRow(resource);
+
+        recipeIngredientsIds[rowIndex - 1] = resource.Material.data.Id;
       }
 
       while (rowIndex + 1 < rows.Count) {
@@ -45,5 +50,7 @@ namespace Craft {
         recipeDetailRow.ClearRow();
       }
     }
+
+    public int[] GetRecipeIngredientsIds() => recipeIngredientsIds;
   }
 }

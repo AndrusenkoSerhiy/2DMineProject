@@ -51,7 +51,12 @@ namespace Inventory {
       amount = newAmount; // Update the slot's amount after calculation
 
       onAfterUpdated?.Invoke(this);
-      onAmountUpdate?.Invoke(itemId, newAmount - oldAmount);
+
+      var amountDelta = newAmount - oldAmount;
+
+      if (amountDelta != 0) {
+        onAmountUpdate?.Invoke(itemId, amountDelta);
+      }
 
       return Mathf.Max(0, amountValue - maxStack);
     }
@@ -67,8 +72,10 @@ namespace Inventory {
 
       onAfterUpdated?.Invoke(this);
 
-      if (triggerAmountEvent) {
-        onAmountUpdate?.Invoke(itemId, amount - oldAmount);
+      var amountDelta = amount - oldAmount;
+
+      if (triggerAmountEvent && amountDelta != 0) {
+        onAmountUpdate?.Invoke(itemId, amountDelta);
       }
     }
 

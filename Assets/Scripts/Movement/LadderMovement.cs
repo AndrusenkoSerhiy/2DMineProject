@@ -11,42 +11,53 @@ namespace Movement {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LadderObject ladderObject;
     private PlayerController playerController;
-    private Vector2 movement;
-    //use when jump from ladder
-    [SerializeField] private bool canClimbAgain = true;
+    [SerializeField]private Vector2 movement;
     public bool IsClimbing => isClimbing;
+    public bool IsOnLadder => isOnLadder;
+    [SerializeField] private bool stayOnLadderAfterJump;
 
-    public void SetClimbing(bool state) {
-      if (state.Equals(isClimbing))
-        return;
-        
-      isClimbing = state;
-      canClimbAgain = false;
-      Invoke("ChangeValue", 1f);
+    public void SetClimbing(bool state, string id) {
+      if(!state) SetIsClimbing(false);
+      if (GetVerticalMovement() > 0) {
+        stayOnLadderAfterJump = true;
+      }
+      //якщо після стрибка ми починаємо падати, але маємо залишитись на драбині
+      if (id.Equals("fall") && stayOnLadderAfterJump){//(state && stayOnLadderAfterJump) {
+        stayOnLadderAfterJump = false;
+        SetIsClimbing(true);
+      }
     }
 
     private void ChangeValue() {
-      canClimbAgain = true;
-      if(isOnLadder) isClimbing = true;
+      //canClimbAgain = true;
+      if (isOnLadder) {
+        SetIsClimbing(true);
+        stayOnLadderAfterJump = false;
+      }
     }
     
     private void Start() {
       playerController = GameManager.instance.PlayerController;
-      //playerController.GroundedChanged += ChangeGround;
+      playerController.GroundedChanged += ChangeGround;
     }
 
-    /*private void ChangeGround(bool state, float velocity) {
-      //if (state) ExitFromLadder();
-    }*/
+    private void ChangeGround(bool state, float velocity) {
+      if (state) ChangeValue();
+    }
 
     private void FixedUpdate() {
-      if (!ladderObject || !canClimbAgain)
+      //
+      if (stayOnLadderAfterJump) {
+        SetIsClimbing(false);
+        return;
+      }
+      if (!ladderObject)
         return;
 
       if (isOnLadder) {
         movement = UserInput.instance.GetMovement();
         if (movement.magnitude > 0) {
-          isClimbing = true;
+          SetIsClimbing(true);
           rb.linearVelocity = new Vector2(movement.x * climbSpeed, movement.y * climbSpeed);
 
           //if we near to the top of ladder then block moving higher
@@ -58,14 +69,19 @@ namespace Movement {
         }
         else if (isClimbing) {
           // Stop movement while on the ladder if there's no input
+          //Debug.LogError("stop movement");
           rb.linearVelocity = new Vector2(0, 0f);
         }
-
-        //if we are moving on ground through ladder
-        if (playerController.Grounded && movement.y == 0) {
+        //if we are moving on ground through ladder set the same speed
+        if (playerController.Grounded && movement.x > 0) {
+          //Debug.LogError("move horizontally");
           rb.linearVelocity = new Vector2(playerController.FrameVelocity.x, playerController.Stats.GroundingForce);
         }
       }
+    }
+
+    public float GetVerticalMovement() {
+      return movement.y;
     }
 
     //how far we from the top on ladder
@@ -74,26 +90,27 @@ namespace Movement {
              scale * ladderObject.GetDelta();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision) {
-      if (!collision.CompareTag("Ladder"))
-        return;
-
-      ladderObject = collision.GetComponent<LadderObject>();
-      isOnLadder = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D collision) {
-      if (!collision.CompareTag("Ladder"))
-        return;
-      //rb.AddForce( new Vector2(playerController.transform.localScale.x, 0) * 50, ForceMode2D.Impulse);
-      //rb.linearVelocity = new Vector2(5f, rb.linearVelocity.y);
-      ExitFromLadder();
-      ladderObject = null;
+    public void SetLadder(LadderObject ladder) {
+      ladderObject = ladder;
+      if (ladderObject != null) {
+        isOnLadder = true;
+      }
+      else {
+        ExitFromLadder();
+      }
     }
 
     private void ExitFromLadder() {
       isOnLadder = false;
-      isClimbing = false;
+      SetIsClimbing(false);
+    }
+
+    private void SetIsClimbing(bool state) {
+      isClimbing = state;
+    }
+
+    private void OnDestroy() {
+      playerController.GroundedChanged -= ChangeGround;
     }
   }
 }

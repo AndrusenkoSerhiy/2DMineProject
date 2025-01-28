@@ -8,7 +8,7 @@ namespace Actors {
     [SerializeField] protected Animator _animator;
     [SerializeField] private bool _isDead;
     private UnitHealth unitHealth;
-    private AnimatorParameters animParam;
+    protected AnimatorParameters animParam;
 
     public bool IsDead => _isDead;
     private void Awake() {

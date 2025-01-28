@@ -10,12 +10,10 @@ namespace Actors {
     public bool shouldBeDamaging { get; private set; } = false;
     private List<IDamageable> iDamageables = new List<IDamageable>();
     private IDamageable currentTarget;
-    private AnimatorParameters animParam;
 
     private void Awake() {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
-      animParam = GameManager.instance.AnimatorParameters;
     }
 
     private void OnDestroy() {

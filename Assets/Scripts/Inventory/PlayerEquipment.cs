@@ -46,12 +46,10 @@ namespace Inventory {
       if (itemObject == null)
         return;
       
-      //Debug.LogError($"OnEquipItem {slot.GetItemObject()}");  
       switch (slot.parent.inventory.type) {
         case InterfaceType.QuickSlots://InterfaceType.Equipment
           switch (slot.GetItemObject().Type) {
             case ItemType.Tool:
-              Debug.LogError("Instantiate");
               itemInHand = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
               itemInHand.localPosition = itemObject.SpawnPosition;
               itemInHand.localEulerAngles = itemObject.SpawnRotation;
@@ -97,7 +95,6 @@ namespace Inventory {
                 break;
 
               case ItemType.Tool:
-                Debug.LogError("remove item tool");
                 Destroy(itemInHand.gameObject);
                 OnUnequippedWeapon?.Invoke();
                 break;

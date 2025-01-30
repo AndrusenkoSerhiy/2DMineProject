@@ -13,14 +13,18 @@ public class QuickSlotListener : MonoBehaviour {
     UserInput.instance.controls.GamePlay.QuickSlots.performed += ChooseSlot;
     slots = _staticInterface.inventory.GetSlots;
     selectedSlot = null;
-    
+    GameManager.instance.PlayerInventory.OnQuickSlotLoaded += UpdateQuickSlotsAfterLoad;
+  }
+
+  private void UpdateQuickSlotsAfterLoad() {
     quickSlots = GameManager.instance.PlayerInventory.quickSlots;
     // Manually instantiate equipped items after loading the equipment
     for (int i = 0; i < quickSlots.GetSlots.Length; i++) {
-      if (quickSlots.GetSlots[i].IsSelected /*&& quickSlots.GetSlots[i].GetItemObject() != null*/) {
+      if (quickSlots.GetSlots[i].IsSelected) {
         SelectSlot(i);
       }
     }
+    GameManager.instance.PlayerInventory.OnQuickSlotLoaded -= UpdateQuickSlotsAfterLoad;
   }
 
   private void ChooseSlot(InputAction.CallbackContext obj) {
@@ -39,14 +43,13 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private void SelectSlot(int index) {
-    Debug.LogError($"selected slot {index}");
     if (selectedSlot == slots[index]) {
       GameManager.instance.PlayerEquipment.OnRemoveItem(selectedSlot);
       selectedSlot.Unselect();
       selectedSlot = null;
     }
     else {
-      if (selectedSlot != null) {
+      if (selectedSlot != null && selectedSlot.item.Id >= 0) {
         GameManager.instance.PlayerEquipment.OnRemoveItem(selectedSlot);
         selectedSlot.Unselect();
       }

@@ -39,7 +39,6 @@ namespace Inventory {
       if (parent == null || parent.inventory == null || item.Id < 0) {
         return null;
       }
-
       return parent.inventory.database.ItemObjects[item.Id];
     }
 
@@ -94,7 +93,6 @@ namespace Inventory {
     //use when swap items
     public void UpdateSlotAfterSwap(Item itemValue, int amountValue, bool isSelected, bool triggerAmountEvent = true) {
       onBeforeUpdated?.Invoke(this);
-      Debug.LogError($"isSelected: {isSelected}");
       var itemId = itemValue.Id != -1 ? itemValue.Id : (item?.Id ?? -1);
       var oldAmount = amount;
       item = itemValue;

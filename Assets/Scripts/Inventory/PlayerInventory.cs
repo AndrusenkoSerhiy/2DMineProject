@@ -4,7 +4,6 @@ using Scriptables.Items;
 using Settings;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using Items;
@@ -23,6 +22,8 @@ namespace Inventory {
     private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
     [NonSerialized]
     public Action<int> onResourcesTotalUpdate;
+
+    public Action OnQuickSlotLoaded;
     public Dictionary<int, int> ResourcesTotal => resourcesTotal;
 
     private void Start() {
@@ -33,6 +34,7 @@ namespace Inventory {
       inventory.Load();
       //equipment.Load();
       quickSlots.Load();
+      OnQuickSlotLoaded?.Invoke();
 
       Item defaultItem = new Item(inventory.database.ItemObjects[defaultItemId]);
       if (!inventory.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])

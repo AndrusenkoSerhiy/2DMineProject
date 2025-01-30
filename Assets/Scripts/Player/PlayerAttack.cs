@@ -37,7 +37,7 @@ namespace Player {
     private void UpdateAttackParam() {
       SetAttackParamsFromEquipment();
       //try to activate tool
-      var tool = playerEquipment.Weapon.GetComponent<ToolBase>();
+      var tool = playerEquipment.ItemInHand.GetComponent<ToolBase>();
       tool?.Activate();
       UpdateParams(.5f, attackRange, colliderSize.x, colliderSize.y);
       objectHighlighter.SetMaxHighlights(maxTargets);
@@ -49,12 +49,12 @@ namespace Player {
         return false;
       }
 
-      if (playerEquipment.Weapon == null) {
+      if (playerEquipment.ItemInHand == null) {
         Debug.LogWarning("Could not find equipped weapon", this);
         return false;
       }
 
-      ItemObject weaponStats = playerEquipment.Weapon.GetComponent<GroundItem>().item;
+      ItemObject weaponStats = playerEquipment.ItemInHand.GetComponent<GroundItem>().item;
       if (!(weaponStats is IAttackableItem attackableItem)) {
         Debug.LogWarning("Equipped item is not attackable", this);
         return false;

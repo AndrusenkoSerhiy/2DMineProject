@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour {
   [SerializeField] private PlayerInventory playerInventory;
   [SerializeField] private PlayerControllerBase currPlayerController;
   [SerializeField] private AnimatorParameters animatorParameters;
+  [SerializeField] private PlayerEquipment playerEquipment;
   public static GameManager instance {
     get {
       if (_instance == null) {
@@ -64,6 +65,8 @@ public class GameManager : MonoBehaviour {
     set { currPlayerController = value; }
     get { return currPlayerController; }
   }
+  
+  public PlayerEquipment PlayerEquipment => playerEquipment;
 
   public WindowsController WindowsController => windowsController;
 

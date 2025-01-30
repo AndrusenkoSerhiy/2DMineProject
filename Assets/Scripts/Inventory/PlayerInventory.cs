@@ -15,7 +15,7 @@ using System;
 namespace Inventory {
   public class PlayerInventory : MonoBehaviour {
     public InventoryObject inventory;
-    public InventoryObject equipment;
+    //public InventoryObject equipment;
     public InventoryObject quickSlots;
     private int defaultItemId = 0;
     private WindowsController windowsController;
@@ -27,16 +27,16 @@ namespace Inventory {
 
     private void Start() {
       CheckSlotsUpdate(inventory, true);
-      CheckSlotsUpdate(equipment);
+      //CheckSlotsUpdate(equipment);
       CheckSlotsUpdate(quickSlots);
 
       inventory.Load();
-      equipment.Load();
+      //equipment.Load();
       quickSlots.Load();
 
       Item defaultItem = new Item(inventory.database.ItemObjects[defaultItemId]);
       if (!inventory.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])
-          && !equipment.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])) {
+          /*&& !equipment.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])*/) {
         Debug.Log("Adding default item to inventory.");
         inventory.AddItem(defaultItem, 1, null, null);
       }
@@ -88,8 +88,8 @@ namespace Inventory {
     }
 
     public void SlotUpdateHandler(InventorySlot slot) {
-      var image = slot.slotDisplay.transform.GetChild(0).GetComponent<Image>();
-      var text = slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
+      var image = slot.Background;//slot.slotDisplay.transform.GetChild(1).GetComponent<Image>();
+      var text = slot.Text;//slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
       if (slot.item.Id <= -1) {
         image.sprite = null;
         image.color = new Color(1, 1, 1, 0);
@@ -135,10 +135,10 @@ namespace Inventory {
 
     public void OnApplicationQuit() {
       inventory.Save();
-      equipment.Save();
+      //equipment.Save();
       quickSlots.Save();
       inventory.Clear();
-      equipment.Clear();
+      //equipment.Clear();
       quickSlots.Clear();
     }
 
@@ -211,7 +211,6 @@ namespace Inventory {
       if (MouseData.interfaceMouseIsOver == null) {
         SpawnItem(slotsOnInterface[obj]);
         slotsOnInterface[obj].RemoveItem();
-        Debug.Log($"need to spawn item on ground");
         return;
       }
       if (MouseData.slotHoveredOver) {

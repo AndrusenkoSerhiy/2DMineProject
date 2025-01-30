@@ -16,4 +16,6 @@ MonoBehaviour:
   Title: Workbench
   Description: Workbench desc
   OutputSlotsAmount: 5
-  RecipesListItemPrefab: {fileID: 5695066529618530067, guid: 3eadabc3b212f604e975aa2ec4402149, type: 3}
+  recipes:
+  - {fileID: 11400000, guid: c0485cbe71c0c3d4f8feb3310413b304, type: 2}
+  - {fileID: 11400000, guid: d6f6dfbe05db8a84690f901a44d4b532, type: 2}

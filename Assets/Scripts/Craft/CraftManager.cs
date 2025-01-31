@@ -21,9 +21,13 @@ namespace Craft {
     [SerializeField] private Color buttonsActiveColor;
     [SerializeField] private Color buttonsDisabledColor;
 
+    [SerializeField] private GameObject inputItemsContainer;
+    [SerializeField] private GameObject inputItemPrefab;
+
+    private PlayerInventory playerInventory;
     private RecipesManager recipesManager;
     private CraftActions craftActions;
-    private PlayerInventory playerInventory;
+    private InputItems inputItems;
 
     private void Init() {
       if (playerInventory != null) {
@@ -34,7 +38,8 @@ namespace Craft {
       playerInventory = GameManager.instance.PlayerInventory;
       recipesManager = new RecipesManager(station.recipes, recipesListItemPrefab, recipesListContainerPrefab);
       craftActions = new CraftActions(countInput, craftButton, incrementButton, decrementButton,
-        maxCountButton, buttonsActiveColor, buttonsDisabledColor);
+        maxCountButton, buttonsActiveColor, buttonsDisabledColor, station.OutputSlotsAmount);
+      inputItems = new InputItems(inputItemsContainer, inputItemPrefab, station.OutputSlotsAmount);
     }
 
     private void OnEnable() {
@@ -49,14 +54,21 @@ namespace Craft {
 
       SlotsUpdateEvents();
       craftActions.AddCraftActionsEvents();
+      craftActions.onCraftRequested += OnCraftRequestedHandler;
     }
 
     private void OnDisable() {
+      craftActions.onCraftRequested -= OnCraftRequestedHandler;
       craftActions.RemoveCraftActionsEvents();
       RemoveSlotsUpdateEvents();
 
       recipesManager.RemoveEvents();
       recipesManager.onSelected -= OnRecipeSelectedHandler;
+    }
+
+    private void OnCraftRequestedHandler(int count) {
+      Debug.Log("CraftManager OnCraftRequestedHandler: " + count);
+      inputItems.SetRecipe(count, recipesManager.Recipe);
     }
 
     private void OnRecipeSelectedHandler(Recipe recipe) {

@@ -89,9 +89,9 @@ namespace Inventory {
         onAmountUpdate?.Invoke(itemId, amountDelta);
       }
     }
-    
+
     //use when swap items
-    public void UpdateSlotAfterSwap(Item itemValue, int amountValue, bool isSelected, bool triggerAmountEvent = true) {
+    public void UpdateSlotAfterSwap(Item itemValue, int amountValue, bool isSelected) {
       onBeforeUpdated?.Invoke(this);
       var itemId = itemValue.Id != -1 ? itemValue.Id : (item?.Id ?? -1);
       var oldAmount = amount;
@@ -100,12 +100,7 @@ namespace Inventory {
 
       onAfterUpdated?.Invoke(this);
 
-      var amountDelta = amount - oldAmount;
-
-      if (triggerAmountEvent && amountDelta != 0) {
-        onAmountUpdate?.Invoke(itemId, amountDelta);
-      }
-      if(isSelected) Select();
+      if (isSelected) Select();
       else Unselect();
     }
 
@@ -127,25 +122,30 @@ namespace Inventory {
       GetOutline().SetActive(true);
       IsSelected = true;
     }
-    
+
     public void Unselect() {
       GetOutline().SetActive(false);
       IsSelected = false;
     }
 
     private GameObject GetOutline() {
-      if(outline == null) outline = slotDisplay.transform.GetChild(0).gameObject;
+      if (outline == null) outline = slotDisplay.transform.GetChild(0).gameObject;
       return outline;
     }
 
     private Image GetBackground() {
-      if(background == null) background = slotDisplay.transform.GetChild(1).GetComponent<Image>();
+      if (background == null) background = slotDisplay.transform.GetChild(1).GetComponent<Image>();
       return background;
     }
 
     private TextMeshProUGUI GetText() {
-      if(text == null) text = slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
+      if (text == null) text = slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
       return text;
+    }
+
+    public void ResetBackgroundAndText() {
+      background = null;
+      text = null;
     }
   }
 }

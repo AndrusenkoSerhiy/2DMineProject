@@ -9,18 +9,20 @@ namespace Inventory {
     public InventoryObject inventory;
     // private InventoryObject _previousInventory;
     public Dictionary<GameObject, InventorySlot> slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
-    [SerializeField] private Camera _uiCamera;
-    [SerializeField] private Canvas _canvas;
-    [SerializeField] protected Transform _tempDragParent;
-    protected PlayerInventory _playerInventory;
+    // private Camera uiCamera;
+    // private Canvas canvas;
+    protected PlayerInventory playerInventory;
+    [SerializeField] protected Transform tempDragParent;
 
     private void Awake() {
-      _playerInventory = GameManager.instance.PlayerInventory;
+      playerInventory = GameManager.instance.PlayerInventory;
+      // uiCamera = GameManager.instance.UiCamera;
+      // canvas = GameManager.instance.OverlayCanvas;
 
       CreateSlots();
 
-      _playerInventory.AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { _playerInventory.OnEnterInterface(gameObject); });
-      _playerInventory.AddEvent(gameObject, EventTriggerType.PointerExit, delegate { _playerInventory.OnExitInterface(gameObject); });
+      playerInventory.AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { playerInventory.OnEnterInterface(gameObject); });
+      playerInventory.AddEvent(gameObject, EventTriggerType.PointerExit, delegate { playerInventory.OnExitInterface(gameObject); });
     }
 
     public abstract void CreateSlots();
@@ -34,7 +36,8 @@ namespace Inventory {
 
     public void UpdateInventoryUI() {
       foreach (var slot in inventory.GetSlots) {
-        _playerInventory.SlotUpdateHandler(slot); // Ensure each slot reflects the correct UI state
+        slot.ResetBackgroundAndText();
+        playerInventory.SlotUpdateHandler(slot); // Ensure each slot reflects the correct UI state
       }
     }
   }

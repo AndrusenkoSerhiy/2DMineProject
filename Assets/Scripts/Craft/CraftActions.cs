@@ -17,12 +17,16 @@ namespace Craft {
     private readonly Color buttonsDisabledColor;
     private Recipe recipe;
 
+    public Action<int> onCraftRequested;
+
     private int minCount = 1;
     private int maxCount = -1;
     private int currentCount = 1;
+    private int outputSlotsAmount;
+    private int slotsInUse = 0;
 
     public CraftActions(TMP_InputField countInput, Button craftButton, Button incrementButton,
-      Button decrementButton, Button maxCountButton, Color buttonsActiveColor, Color buttonsDisabledColor) {
+      Button decrementButton, Button maxCountButton, Color buttonsActiveColor, Color buttonsDisabledColor, int outputSlotsAmount) {
       this.countInput = countInput;
       this.craftButton = craftButton;
       this.incrementButton = incrementButton;
@@ -30,6 +34,7 @@ namespace Craft {
       this.maxCountButton = maxCountButton;
       this.buttonsActiveColor = buttonsActiveColor;
       this.buttonsDisabledColor = buttonsDisabledColor;
+      this.outputSlotsAmount = outputSlotsAmount;
       playerInventory = GameManager.instance.PlayerInventory;
     }
 
@@ -101,6 +106,7 @@ namespace Craft {
 
     private void OnCraftClickHandler() {
       Debug.Log("CraftActions Craft Clicked");
+      onCraftRequested?.Invoke(currentCount);
     }
 
     private void OnIncrementClickHandler() {
@@ -131,10 +137,18 @@ namespace Craft {
     }
 
     private void CalculateMaxCount() {
+      var maxSlotsCapacity = (outputSlotsAmount - slotsInUse) * recipe.Result.MaxStackSize;
+      Debug.Log("CalculateMaxCount maxSlotsCapacity " + maxSlotsCapacity);
+
       foreach (var resource in recipe.RequiredMaterials) {
         var amount = playerInventory.GetResourceTotalAmount(resource.Material.data.Id);
         var max = amount / resource.Amount;
+        Debug.Log("CalculateMaxCount max " + max);
+
+        max = Math.Min(max, maxSlotsCapacity);
+
         maxCount = maxCount != -1 ? Math.Min(maxCount, max) : max;
+        Debug.Log("CalculateMaxCount maxCount " + maxCount);
       }
     }
 

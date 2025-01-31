@@ -12,6 +12,7 @@ namespace Craft {
     private List<Button> recipesListButtons = new List<Button>();
     private RecipeListItem selectedRecipeListItem;
     public Action<Recipe> onSelected { get; set; }
+    public Recipe Recipe { get; private set; }
 
     public RecipesManager(List<Recipe> recipes, Button recipesListItemPrefab, GameObject recipesListContainerPrefab) {
       this.recipes = recipes;
@@ -50,6 +51,7 @@ namespace Craft {
       selectedRecipeListItem = recipeListItem;
       recipeListItem.SetActiveStyles();
 
+      Recipe = selectedRecipeListItem.Recipe;
       onSelected?.Invoke(selectedRecipeListItem.Recipe);
     }
 

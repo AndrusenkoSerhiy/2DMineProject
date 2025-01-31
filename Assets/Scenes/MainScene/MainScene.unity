@@ -4234,18 +4234,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5801279584603716344, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
-      propertyPath: _canvas
-      value: 
-      objectReference: {fileID: 1794132082}
-    - target: {fileID: 5801279584603716344, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
-      propertyPath: _uiCamera
-      value: 
-      objectReference: {fileID: 986196261}
-    - target: {fileID: 5801279584603716344, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
-      propertyPath: _tempDragParent
-      value: 
-      objectReference: {fileID: 1794132083}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4324,26 +4312,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerInventory
       objectReference: {fileID: 0}
-    - target: {fileID: 3095985336834525135, guid: c2d1f58d2ca03a44a89ddf49ee547f64, type: 3}
-      propertyPath: _canvas
-      value: 
-      objectReference: {fileID: 1794132082}
-    - target: {fileID: 3095985336834525135, guid: c2d1f58d2ca03a44a89ddf49ee547f64, type: 3}
-      propertyPath: _uiCamera
-      value: 
-      objectReference: {fileID: 986196261}
-    - target: {fileID: 3404758183893198175, guid: c2d1f58d2ca03a44a89ddf49ee547f64, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4172097084748454369, guid: c2d1f58d2ca03a44a89ddf49ee547f64, type: 3}
-      propertyPath: _canvas
-      value: 
-      objectReference: {fileID: 1794132082}
-    - target: {fileID: 4172097084748454369, guid: c2d1f58d2ca03a44a89ddf49ee547f64, type: 3}
-      propertyPath: _uiCamera
-      value: 
-      objectReference: {fileID: 986196261}
     - target: {fileID: 8513554729516146635, guid: c2d1f58d2ca03a44a89ddf49ee547f64, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

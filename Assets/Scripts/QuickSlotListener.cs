@@ -9,11 +9,14 @@ public class QuickSlotListener : MonoBehaviour {
   [SerializeField] private InventorySlot[] slots;
   [SerializeField] private InventorySlot selectedSlot;
   private InventoryObject quickSlots;
-  private void Start() {
-    UserInput.instance.controls.GamePlay.QuickSlots.performed += ChooseSlot;
+
+  private void Awake() {
     slots = _staticInterface.inventory.GetSlots;
     selectedSlot = null;
     GameManager.instance.PlayerInventory.OnQuickSlotLoaded += UpdateQuickSlotsAfterLoad;
+  }
+  private void Start() {
+    UserInput.instance.controls.GamePlay.QuickSlots.performed += ChooseSlot;
   }
 
   private void UpdateQuickSlotsAfterLoad() {

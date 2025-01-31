@@ -10,5 +10,6 @@ namespace Scriptables.Items {
     Boots,
     Shield,
     Gloves,
+    BuildingBlock,
   }
 }

@@ -1,3 +1,4 @@
+using Inventory;
 using UnityEngine;
 
 namespace Scriptables.Items {
@@ -29,7 +30,7 @@ namespace Scriptables.Items {
       Type = ItemType.Tool;
     }
 
-    public override void Use() {
+    public override void Use(InventorySlot slot) {
       //Debug.LogError("equip tool!!!!!");
       //GameManager.instance.PlayerEquipment.OnEquipItem();
     }

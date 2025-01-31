@@ -24,6 +24,7 @@ public class QuickSlotListener : MonoBehaviour {
     // Manually instantiate equipped items after loading the equipment
     for (int i = 0; i < quickSlots.GetSlots.Length; i++) {
       if (quickSlots.GetSlots[i].IsSelected) {
+        GameManager.instance.ItemDatabaseObject.GetByID(quickSlots.GetSlots[i].item.Id).Use(quickSlots.GetSlots[i]);
         SelectSlot(i);
       }
     }
@@ -39,7 +40,7 @@ public class QuickSlotListener : MonoBehaviour {
     var slot = slots[index];
     if (slot.item != null && slot.item.Id >= 0) {
       //Debug.LogError($"select slot {index} item {slot.amount} {slot.item.Name}");
-      GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).Use();
+      GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).Use(slot);
       SelectSlot(index);
     }
     //else Debug.LogError($"slot {index} is empty");
@@ -53,6 +54,7 @@ public class QuickSlotListener : MonoBehaviour {
     }
     else {
       if (selectedSlot != null && selectedSlot.item.Id >= 0) {
+        GameManager.instance.ItemDatabaseObject.GetByID(selectedSlot.item.Id).Use(selectedSlot);
         GameManager.instance.PlayerEquipment.OnRemoveItem(selectedSlot);
         selectedSlot.Unselect();
       }

@@ -67,9 +67,6 @@ namespace Player {
     }
     
     private void TriggerAttack() {
-      if (UserInput.instance.IsBuildMode)
-        return;
-      
       attackTimeCounter = 0f;
       animator.SetTrigger("Attack");
       animator.SetInteger("WeaponID", attackID);

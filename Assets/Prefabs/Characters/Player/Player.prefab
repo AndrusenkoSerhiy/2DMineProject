@@ -950,6 +950,7 @@ MonoBehaviour:
   leftHandTransform: {fileID: 39923705835017211}
   rightHandTransform: {fileID: 22766846785428844}
   bodyTransform: {fileID: 3815161883808866517}
+  itemInHand: {fileID: 0}
 --- !u!50 &7677545041897933634
 Rigidbody2D:
   serializedVersion: 5
@@ -1060,7 +1061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc48ebbf8ed943dcaf032ae2bd24f871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourceData: {fileID: 11400000, guid: 0e1d357d10e34094fb8f72fa3e5fc3a0, type: 2}
+  _resourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}
   _prefab: {fileID: 6712673092602809747, guid: 42f1e9b80fa326d4e94f422d9891b6d5, type: 3}
   _isPreviewing: 0
   _previewColor: {r: 0.07564971, g: 0.14852437, b: 0.9433962, a: 0.8}

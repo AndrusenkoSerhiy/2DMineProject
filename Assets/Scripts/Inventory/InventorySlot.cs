@@ -50,7 +50,7 @@ namespace Inventory {
     public void RemoveItem() => UpdateSlot(new Item(), 0);
 
     public int AddAmount(int value, int maxStack = -1) => UpdateSlot(item, amount + value, maxStack);
-
+    
     public int UpdateSlot(Item itemValue, int amountValue, int maxStack, bool selected = false) {
       onBeforeUpdated?.Invoke(this);
 

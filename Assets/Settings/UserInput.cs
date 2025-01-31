@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,23 +7,18 @@ using UnityEngine.InputSystem;
 namespace Settings {
   public class UserInput : MonoBehaviour {
     private static UserInput _instance;
-    public static UserInput instance {
-      get { return _instance; }
-    }
+    public static UserInput instance => _instance;
 
     public event EventHandler OnAttackPerformed;
     public event EventHandler OnAttackCanceled;
     public event EventHandler OnGameDeviceChanged;
-    public event EventHandler OnBuildClick;
 
     [HideInInspector] public Controls controls;
 
     private bool attacking;
     [SerializeField] private PlayerStats _stats;
     [SerializeField] private VirtualMouseUI _virtualMouse;
-    [SerializeField] private bool _isBuildMode;
-    public bool IsBuildMode => _isBuildMode;
-    
+    private Dictionary<string, List<string>> blockedActions = new Dictionary<string, List<string>>();
     public enum GameDevice{
        KeyboardAndMouse = 0,
        Gamepad = 1,
@@ -41,27 +37,32 @@ namespace Settings {
 
       controls.GamePlay.Attack.performed += AttackPerformed;
       controls.GamePlay.Attack.canceled += AttackCanceled;
-      SubscribeBuildClick();
       InputSystem.onActionChange += InputActionChangeCallback;
     }
+    
+    public void BlockAction(string actionName, string reason) {
+      if (!blockedActions.ContainsKey(actionName)) {
+        blockedActions[actionName] = new List<string>();
+      }
 
-    private void Update() {
-      EnableUIControls(false);
-      //Debug.LogError($"gamePlay {controls.GamePlay.enabled} | UI {controls.UI.enabled}");
-    }
-
-    private void SubscribeBuildClick() {
-      controls.GamePlay.Build.performed += BuildClickPerformed;
+      if (!blockedActions[actionName].Contains(reason)) {
+        blockedActions[actionName].Add(reason);
+        var action = controls.FindAction(actionName);
+        action.Disable();
+      }
     }
     
-    private void UnsubscribeBuidClick() {
-      controls.GamePlay.Build.performed -= BuildClickPerformed;
-    }
-    private void BuildClickPerformed(InputAction.CallbackContext context) {
-      _isBuildMode = !_isBuildMode;
-      OnBuildClick?.Invoke(this, EventArgs.Empty);
-    }
+    public void UnblockAction(string actionName, string reason) {
+      if (!blockedActions.ContainsKey(actionName)) return;
     
+      blockedActions[actionName].Remove(reason);
+
+      if (blockedActions[actionName].Count == 0) {
+        blockedActions.Remove(actionName);
+        var action = controls.FindAction(actionName);
+        action.Enable();
+      }
+    }
     
     private void InputActionChangeCallback(object arg1, InputActionChange inputActionChange) {
       if (inputActionChange == InputActionChange.ActionPerformed && arg1 is InputAction) {//
@@ -84,7 +85,6 @@ namespace Settings {
     }
 
     private void ChangeActiveGameDevice(GameDevice activeGameDevice){
-      
       _activeGameDevice = activeGameDevice;
       //Debug.LogError($"activeGameDevice {activeGameDevice}");
       UnityEngine.Cursor.visible = _activeGameDevice == GameDevice.KeyboardAndMouse;
@@ -140,10 +140,21 @@ namespace Settings {
     
     public void EnableGamePlayControls(bool val) {
       if (val) {
-        controls.GamePlay.Enable();
+        //controls.GamePlay.Enable();
+        EnableAllExceptBlocked();
       }
       else {
         controls.GamePlay.Disable();
+      }
+    }
+    
+    void EnableAllExceptBlocked() {
+      var gameplayMap = controls.GamePlay.Get();
+    
+      foreach (var action in gameplayMap) {
+        if (!blockedActions.ContainsKey(action.name)) {
+          action.Enable();
+        }
       }
     }
     #endregion
@@ -156,8 +167,6 @@ namespace Settings {
     private void OnDisable() {
       controls?.Disable();
       InputSystem.onActionChange -= InputActionChangeCallback;
-      //UnsubscribeUIClick();
-      UnsubscribeBuidClick();
     }
   }
 }

@@ -1,5 +1,7 @@
+using Inventory;
+
 namespace QuickSlots {
   public interface IUsableItem {
-    void Use();
+    void Use(InventorySlot slot);
   }
 }

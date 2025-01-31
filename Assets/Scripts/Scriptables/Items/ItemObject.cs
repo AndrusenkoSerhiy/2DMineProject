@@ -1,3 +1,4 @@
+using Inventory;
 using QuickSlots;
 using UnityEngine;
 
@@ -20,7 +21,7 @@ namespace Scriptables.Items {
       return newItem;
     }
 
-    public virtual void Use() {
+    public virtual void Use(InventorySlot slot) {
       
     }
   }

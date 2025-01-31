@@ -15,9 +15,5 @@ namespace Scriptables.Items {
       [Range(0, 1)] public float chance;
       public Vector2 rndCount;
     }
-
-    public void Awake() {
-      Type = ItemType.Tool;
-    }
   }
 }

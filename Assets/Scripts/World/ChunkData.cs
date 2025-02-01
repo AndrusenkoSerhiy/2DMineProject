@@ -99,6 +99,11 @@ namespace World {
       return sameResource ? _cellFillDatas[x, y] : 0;
     }
 
+    public int GetCellFill(int x, int y) {
+      if (x < 0 || x > width || y < 0 || y > height) return 0;
+      return _cellFillDatas[x, y];
+    }
+
     void OnDestroy() {
       // Dispose of NativeArrays when done
       if (noiseMap.IsCreated) noiseMap.Dispose();

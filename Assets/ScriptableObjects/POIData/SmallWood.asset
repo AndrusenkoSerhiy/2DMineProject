@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5466b49e87ce4fc08fc9fc192aa099ba, type: 3}
   m_Name: SmallWood
   m_EditorClassIdentifier: 
-  maxCount: 100
-  sizeX: 1
-  sizeY: 1
+  minCount: 100
+  radius: 100
+  cells:
+  - localX: 0
+    localY: 0
+    resourceData: {fileID: 11400000, guid: 9eab1bfaf412bdf46bbf50b7aa5d5e17, type: 2}

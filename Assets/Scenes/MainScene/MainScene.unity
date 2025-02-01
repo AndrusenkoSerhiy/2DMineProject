@@ -4333,6 +4333,10 @@ PrefabInstance:
       propertyPath: windowsController
       value: 
       objectReference: {fileID: 93994740}
+    - target: {fileID: 3366775737651789572, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: _poiDataLibrary
+      value: 
+      objectReference: {fileID: 11400000, guid: b0f808aa30ca032498acd34ae24b583b, type: 2}
     - target: {fileID: 4001951038154339777, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_Name
       value: GameManager

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Scriptables;
 using Scriptables.POI;
 using Unity.VisualScripting;
@@ -11,7 +12,7 @@ namespace World {
     [SerializeField] private ChunkGenerator _chunkGenerator;
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
     public ResourceDataLibrary ResourceDataLibrary => _resourceDataLib;
-    
+
     [SerializeField] private POIDataLibrary _poiDataLibrary;
     public POIDataLibrary POIDataLibrary => _poiDataLibrary;
 
@@ -36,18 +37,20 @@ namespace World {
 
 
     #region TextureMap
+
     [ContextMenu("Create TextureMap In Assets(PLAYMODE ONLY)")]
     private void GenerateTexture() {
       var width = GameManager.instance.GameConfig.ChunkSizeX;
       var height = GameManager.instance.GameConfig.ChunkSizeY;
-      Texture2D texture = new Texture2D(width, height, TextureFormat.RGB24, false);
+      var texture = new Texture2D(width, height, TextureFormat.RGB24, false);
       for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
           // Check the Perlin noise value
-          Color color = GameManager.instance.ChunkController.ResourceDataLibrary.GetColor(chunkData.GetCellData(i, j).perlin);
+          var color =
+            GameManager.instance.ChunkController.ResourceDataLibrary.GetColor(chunkData.GetCellData(i, j).perlin);
 
           // Set the pixel color at (j, i)
-          texture.SetPixel(j, i, color);
+          texture.SetPixel(width - 1 - i, height - 1 - j, color);
         }
       }
 
@@ -104,16 +107,16 @@ namespace World {
 
       isInited = true;
     }
-    
+
     //player place this cell
     public void SpawnCell(Coords coords, ResourceData resourceData) {
       //if cell already exist don't spawn another
       if (GetCell(coords.X, coords.Y))
         return;
-      
+
       var pos = CoordsTransformer.GridToWorld(coords.X, coords.Y);
       var cell = getCellObjectsPool().Get(pos);
-      if (!cell) 
+      if (!cell)
         return;
 
       var cellData = chunkData.GetCellData(coords.X, coords.Y);
@@ -151,7 +154,7 @@ namespace World {
 
     public void TriggerCellDestroyed(CellObject cellObject) {
       cellObject.CellData.Destroy();
-      RemoveCellFromActives(new Coords(cellObject.CellData.x,cellObject.CellData.y));
+      RemoveCellFromActives(new Coords(cellObject.CellData.x, cellObject.CellData.y));
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
       var cellUp = GetCell(x - 1, y);
@@ -174,22 +177,47 @@ namespace World {
 
     private void InitStartChunk() {
       chunkData = _chunkGenerator.GetChunk(0, 0);
-      SpawnChunk(0, 0);
       GeneratePOI(chunkData);
+      SpawnChunk(0, 0);
     }
 
     private void GeneratePOI(ChunkData chunkData) {
+      Debug.Log("Generating POI");
       //Get all empty points
       var emptyCells = new List<CellData>();
       for (int i = 0; i < chunkData.width; i++) {
         for (int j = 0; j < chunkData.width; j++) {
           if (chunkData.CellFillDatas[i, j] == 0) {
+            var data = chunkData.GetCellData(i, j);
+            if (data.x == 0 || data.y == 0 || data.x == chunkData.width - 1 || data.y == chunkData.height - 1) continue;
+            var cellData = chunkData.GetCellData(i, j);
+            if (!cellData.HasStandPoint) continue;
             emptyCells.Add(chunkData.GetCellData(i, j));
           }
         }
       }
+
+      Debug.Log("All points : " + emptyCells.Count);
       //Get POI variants
+      for (int i = 0; i < _poiDataLibrary.POIDataList.Count; i++) {
+        for (int j = 0; j < _poiDataLibrary.POIDataList[i].minCount; j++) {
+          var randIndex = Random.Range(0, emptyCells.Count);
+          var startCell = emptyCells[randIndex];
+          for (int k = 0; k < _poiDataLibrary.POIDataList[i].Cells.Count; k++) {
+            var targetData = _poiDataLibrary.POIDataList[i].Cells[i];
+            if (targetData == null) continue;
+            var cell = chunkData.GetCellData(startCell.x + targetData.localX, startCell.y + targetData.localY);
+            var dataObject = ResourceDataLibrary.GetDataObject(targetData.resourceData);
+            if (dataObject == null) continue;
+            cell.perlin = (dataObject.PerlinRange.x + dataObject.PerlinRange.y) / 2;
+            chunkData.SetCellFill(cell.x, cell.y);
+            emptyCells.Remove(cell);
+            if (emptyCells.Count == 0) return;
+          }
+        }
+      }
     }
+
 
     private CellObjectsPool getCellObjectsPool() {
       return GameManager.instance.CellObjectsPool;

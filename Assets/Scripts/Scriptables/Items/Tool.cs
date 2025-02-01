@@ -1,3 +1,4 @@
+using Inventory;
 using UnityEngine;
 
 namespace Scriptables.Items {
@@ -15,7 +16,6 @@ namespace Scriptables.Items {
     [SerializeField] private int maxTargets = 1;
 
     [Tooltip("When you need to use tool animation for attacking")]
-    public bool UseSelfAnim => useSelfAnim;
     public LayerMask AttackLayer => attackLayer;
     public float BlockDamage => blockDamage;
     public float EntityDamage => entityDamage;
@@ -28,6 +28,11 @@ namespace Scriptables.Items {
 
     public void Awake() {
       Type = ItemType.Tool;
+    }
+
+    public override void Use(InventorySlot slot) {
+      //Debug.LogError("equip tool!!!!!");
+      //GameManager.instance.PlayerEquipment.OnEquipItem();
     }
   }
 }

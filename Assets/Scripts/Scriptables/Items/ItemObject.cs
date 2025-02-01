@@ -1,8 +1,9 @@
-using System.Collections.Generic;
+using Inventory;
+using QuickSlots;
 using UnityEngine;
 
 namespace Scriptables.Items {
-  public abstract class ItemObject : ScriptableObject {
+  public abstract class ItemObject : ScriptableObject, IUsableItem {
     public ItemType Type;
     public ParentType ParentType;
     public Sprite UiDisplay;
@@ -18,6 +19,10 @@ namespace Scriptables.Items {
     public Item CreateItem() {
       Item newItem = new Item(this);
       return newItem;
+    }
+
+    public virtual void Use(InventorySlot slot) {
+      
     }
   }
 }

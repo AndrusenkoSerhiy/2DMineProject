@@ -2,11 +2,11 @@
 using Scriptables.Inventory;
 using Scriptables.Items;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Inventory {
   public class PlayerEquipment : MonoBehaviour {
-    private InventoryObject _equipment;
+    //private InventoryObject _equipment;
+    private InventoryObject quickSlots;
 
     [Header("Equip Transforms")]
     [SerializeField]
@@ -23,56 +23,40 @@ namespace Inventory {
     private Transform _chest;
     private Transform _helmet;
     private Transform _offhand;
-    private Transform _weapon;
+    [SerializeField] private Transform itemInHand;
     public event Action OnEquippedWeapon;
     public event Action OnUnequippedWeapon;
 
-    public Transform Weapon {
-      get => _weapon;
-      private set => _weapon = value;
+    public Transform ItemInHand {
+      get => itemInHand;
+      private set => itemInHand = value;
     }
 
-    void Start() {
-      _equipment = GameManager.instance.PlayerInventory.equipment;
-
-      for (int i = 0; i < _equipment.GetSlots.Length; i++) {
-        _equipment.GetSlots[i].onBeforeUpdated += OnRemoveItem;
-        _equipment.GetSlots[i].onAfterUpdated += OnEquipItem;
-      }
-
-      // Manually instantiate equipped items after loading the equipment
-      for (int i = 0; i < _equipment.GetSlots.Length; i++) {
-        OnEquipItem(_equipment.GetSlots[i]);
-      }
+    private void Start() {
+      quickSlots = GameManager.instance.PlayerInventory.quickSlots;
+      /*for (int i = 0; i < quickSlots.GetSlots.Length; i++) {
+        if (quickSlots.GetSlots[i].IsSelected) {
+          OnEquipItem(quickSlots.GetSlots[i]);
+        }
+      }*/
     }
 
-    private void OnEquipItem(InventorySlot slot) {
+    public void OnEquipItem(InventorySlot slot) {
       var itemObject = slot.GetItemObject();
       if (itemObject == null)
         return;
+      
       switch (slot.parent.inventory.type) {
-        case InterfaceType.Equipment:
-          Weapon = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
-          Weapon.localPosition = itemObject.SpawnPosition;
-          Weapon.localEulerAngles = itemObject.SpawnRotation;
-          Weapon.gameObject.layer = LayerMask.NameToLayer("Character");
-          OnEquippedWeapon?.Invoke();
-          /*if (itemObject.CharacterDisplay != null) {
-            switch (slot.AllowedItems[0]) {
-              case ItemType.Tool:
-                Weapon = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
-                Weapon.localPosition = itemObject.SpawnPosition;
-                Weapon.localEulerAngles = itemObject.SpawnRotation;
-                OnEquippedWeapon?.Invoke();
-                break;
-
-              case ItemType.Weapon:
-                Weapon = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
-
-                OnEquippedWeapon?.Invoke();
-                break;
-            }
-          }*/
+        case InterfaceType.QuickSlots://InterfaceType.Equipment
+          switch (slot.GetItemObject().Type) {
+            case ItemType.Tool:
+              itemInHand = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
+              itemInHand.localPosition = itemObject.SpawnPosition;
+              itemInHand.localEulerAngles = itemObject.SpawnRotation;
+              itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
+              OnEquippedWeapon?.Invoke();
+              break;
+          }
 
           break;
       }
@@ -97,23 +81,26 @@ namespace Inventory {
       return tr;
     }
 
-    private void OnRemoveItem(InventorySlot slot) {
+    public void OnRemoveItem(InventorySlot slot) {
       if (slot.GetItemObject() == null) {
         return;
       }
-
+      
       switch (slot.parent.inventory.type) {
-        case InterfaceType.Equipment:
+        case InterfaceType.QuickSlots://InterfaceType.Equipment
           if (slot.GetItemObject().CharacterDisplay != null) {
-            switch (slot.AllowedItems[0]) {
+            switch (slot.GetItemObject().Type) {
               case ItemType.Shield:
                 Destroy(_offhand.gameObject);
                 break;
 
               case ItemType.Tool:
-              case ItemType.Weapon:
-                Destroy(Weapon.gameObject);
+                Destroy(itemInHand.gameObject);
                 OnUnequippedWeapon?.Invoke();
+                break;
+              case ItemType.Weapon:
+                //Destroy(Weapon.gameObject);
+                //OnUnequippedWeapon?.Invoke();
                 break;
             }
           }

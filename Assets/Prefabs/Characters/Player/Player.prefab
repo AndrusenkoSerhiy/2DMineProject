@@ -845,7 +845,7 @@ GameObject:
   - component: {fileID: 7810780520715568834}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -900,13 +900,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
+  _frameVelocity: {x: 0, y: 0}
   _animator: {fileID: 660024517565497304}
   Head: {fileID: 1976719180885785715}
   _flipDeadZone: 0.5
   _playerCoords: {fileID: 4285968199683070401}
   _ladderMovement: {fileID: 7810780520715568834}
   _stamina: {fileID: 6251728841341945271}
-  _lockPlayer: 0
+  grounded: 0
+  startFalling: 0
   topAngleLimit: 20
   bottomAngleLimit: -20
   playerAttack: {fileID: 3203884702869887430}
@@ -948,6 +950,7 @@ MonoBehaviour:
   leftHandTransform: {fileID: 39923705835017211}
   rightHandTransform: {fileID: 22766846785428844}
   bodyTransform: {fileID: 3815161883808866517}
+  itemInHand: {fileID: 0}
 --- !u!50 &7677545041897933634
 Rigidbody2D:
   serializedVersion: 5
@@ -1058,7 +1061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc48ebbf8ed943dcaf032ae2bd24f871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourceData: {fileID: 11400000, guid: 0e1d357d10e34094fb8f72fa3e5fc3a0, type: 2}
+  _resourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}
   _prefab: {fileID: 6712673092602809747, guid: 42f1e9b80fa326d4e94f422d9891b6d5, type: 3}
   _isPreviewing: 0
   _previewColor: {r: 0.07564971, g: 0.14852437, b: 0.9433962, a: 0.8}
@@ -1099,7 +1102,8 @@ MonoBehaviour:
   isClimbing: 0
   rb: {fileID: 7677545041897933634}
   ladderObject: {fileID: 0}
-  canClimbAgain: 1
+  movement: {x: 0, y: 0}
+  stayOnLadderAfterJump: 0
 --- !u!1 &2732549292726789520
 GameObject:
   m_ObjectHideFlags: 0

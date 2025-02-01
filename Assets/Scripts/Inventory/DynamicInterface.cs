@@ -12,12 +12,13 @@ namespace Inventory {
     private List<GameObject> inventoryPrefabs = new List<GameObject>();
 
     public override void CreateSlots() {
+      Debug.Log("DynamicInterface CreateSlots");
       for (int i = 0; i < inventory.GetSlots.Length; i++) {
         var obj = Instantiate(inventoryPrefab, Vector3.zero, Quaternion.identity, transform);
         obj.GetComponent<RectTransform>().localPosition = GetPosition(i);
         inventoryPrefabs.Add(obj);
 
-        _playerInventory.AddSlotEvents(obj, slotsOnInterface, _tempDragParent);
+        playerInventory.AddSlotEvents(obj, slotsOnInterface, tempDragParent);
 
         slotsOnInterface.Add(obj, inventory.GetSlots[i]);
       }

@@ -4,35 +4,41 @@ using Scriptables.Items;
 using Settings;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using Items;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
+using System;
 
 namespace Inventory {
   public class PlayerInventory : MonoBehaviour {
     public InventoryObject inventory;
-    public InventoryObject equipment;
+    //public InventoryObject equipment;
     public InventoryObject quickSlots;
     private int defaultItemId = 0;
     private WindowsController windowsController;
     private PlayerInventoryWindow inventoryWindow;
     private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
+    [NonSerialized]
+    public Action<int> onResourcesTotalUpdate;
+
+    public Action OnQuickSlotLoaded;
+    public Dictionary<int, int> ResourcesTotal => resourcesTotal;
 
     private void Start() {
       CheckSlotsUpdate(inventory, true);
-      CheckSlotsUpdate(equipment);
+      //CheckSlotsUpdate(equipment);
       CheckSlotsUpdate(quickSlots);
 
       inventory.Load();
-      equipment.Load();
+      //equipment.Load();
       quickSlots.Load();
+      OnQuickSlotLoaded?.Invoke();
 
       Item defaultItem = new Item(inventory.database.ItemObjects[defaultItemId]);
       if (!inventory.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])
-          && !equipment.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])) {
+          /*&& !equipment.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])*/) {
         Debug.Log("Adding default item to inventory.");
         inventory.AddItem(defaultItem, 1, null, null);
       }
@@ -65,6 +71,10 @@ namespace Inventory {
       else if (amount > 0) {
         resourcesTotal[resourceId] = amount;
       }
+
+      onResourcesTotalUpdate?.Invoke(resourceId);
+
+      Debug.Log("PlayerInventory UpdateResourceTotal amount " + amount);
     }
 
     public int GetResourceTotalAmount(int resourceId) {
@@ -80,8 +90,8 @@ namespace Inventory {
     }
 
     public void SlotUpdateHandler(InventorySlot slot) {
-      var image = slot.slotDisplay.transform.GetChild(0).GetComponent<Image>();
-      var text = slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
+      var image = slot.Background;//slot.slotDisplay.transform.GetChild(1).GetComponent<Image>();
+      var text = slot.Text;//slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
       if (slot.item.Id <= -1) {
         image.sprite = null;
         image.color = new Color(1, 1, 1, 0);
@@ -107,10 +117,10 @@ namespace Inventory {
 
       var list = resource.GetBonusResources;
       for (int i = 0; i < list.Count; i++) {
-        if (Random.value > list[i].chance)
+        if (UnityEngine.Random.value > list[i].chance)
           return;
 
-        var count = Random.Range((int)list[i].rndCount.x, (int)list[i].rndCount.y);
+        var count = UnityEngine.Random.Range((int)list[i].rndCount.x, (int)list[i].rndCount.y);
         //Debug.LogError($"spawn {list[i].item.name} | count {count} ");
         inventory.AddItem(new Item(list[i].item), count, list[i].item, null);
       }
@@ -127,10 +137,10 @@ namespace Inventory {
 
     public void OnApplicationQuit() {
       inventory.Save();
-      equipment.Save();
+      //equipment.Save();
       quickSlots.Save();
       inventory.Clear();
-      equipment.Clear();
+      //equipment.Clear();
       quickSlots.Clear();
     }
 
@@ -203,7 +213,6 @@ namespace Inventory {
       if (MouseData.interfaceMouseIsOver == null) {
         SpawnItem(slotsOnInterface[obj]);
         slotsOnInterface[obj].RemoveItem();
-        Debug.Log($"need to spawn item on ground");
         return;
       }
       if (MouseData.slotHoveredOver) {

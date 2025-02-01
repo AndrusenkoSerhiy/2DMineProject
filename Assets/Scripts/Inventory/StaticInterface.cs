@@ -12,7 +12,7 @@ namespace Inventory {
       for (int i = 0; i < inventory.GetSlots.Length; i++) {
         var obj = slots[i];
 
-        _playerInventory.AddSlotEvents(obj, slotsOnInterface, _tempDragParent);
+        playerInventory.AddSlotEvents(obj, slotsOnInterface, tempDragParent);
 
         inventory.GetSlots[i].parent = this;
         inventory.GetSlots[i].slotDisplay = obj;

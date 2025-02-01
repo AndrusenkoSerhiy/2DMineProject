@@ -1,4 +1,4 @@
-using Scriptables.Craft;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Scriptables.Craft {
@@ -8,5 +8,6 @@ namespace Scriptables.Craft {
     public string Title;
     [TextArea(15, 20)] public string Description;
     public int OutputSlotsAmount;
+    public List<Recipe> recipes = new List<Recipe>();
   }
 }

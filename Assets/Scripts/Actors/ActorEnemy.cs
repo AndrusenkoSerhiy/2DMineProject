@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Animation;
+using Scriptables;
 using UnityEngine;
 
 namespace Actors {
@@ -20,14 +21,14 @@ namespace Actors {
       AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
     }
     public void TriggerAttack() {
-      if (_animator.GetBool("IsDead"))
+      if (_animator.GetBool(animParam.IsDeadHash))
         return;
 
       currentTarget = GameManager.instance.PlayerController.GetComponent<IDamageable>();
       if (currentTarget.GetHealth() <= 0)
         return;
 
-      _animator.SetTrigger("Attack");
+      _animator.SetTrigger(animParam.AttackHash);
     }
 
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {

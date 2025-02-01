@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour {
   [SerializeField] private WindowsController windowsController;
   [SerializeField] private PlayerInventory playerInventory;
   [SerializeField] private PlayerControllerBase currPlayerController;
+  [SerializeField] private AnimatorParameters animatorParameters;
+  [SerializeField] private PlayerEquipment playerEquipment;
+  [SerializeField] private PlaceCell placeCell;
   public static GameManager instance {
     get {
       if (_instance == null) {
@@ -63,9 +66,13 @@ public class GameManager : MonoBehaviour {
     set { currPlayerController = value; }
     get { return currPlayerController; }
   }
+  
+  public PlayerEquipment PlayerEquipment => playerEquipment;
 
   public WindowsController WindowsController => windowsController;
+  public PlaceCell PlaceCell => placeCell;
 
+  public AnimatorParameters AnimatorParameters => animatorParameters;
   private void Awake() {
     if (_instance != null && _instance != this) {
       Destroy(gameObject);

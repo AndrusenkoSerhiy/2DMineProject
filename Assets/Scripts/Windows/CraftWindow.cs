@@ -1,3 +1,7 @@
 namespace Windows {
-  public class CraftWindow : PlayerInventoryWindow { }
+  public class CraftWindow : WindowBase {
+    protected override void Start() {
+      return;
+    }
+  }
 }

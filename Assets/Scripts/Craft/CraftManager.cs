@@ -1,127 +1,104 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using Inventory;
 using Scriptables.Craft;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Craft {
   public class CraftManager : MonoBehaviour {
-    [SerializeField]
-    private Workstation station;
+    [SerializeField] private Workstation station;
+    [SerializeField] private GameObject recipesListContainerPrefab;
+    [SerializeField] private RecipeDetail detail;
+    [SerializeField] private Button recipesListItemPrefab;
 
-    [SerializeField]
-    private List<Recipe> recipes = new List<Recipe>();
+    [SerializeField] private TMP_InputField countInput;
+    [SerializeField] private Button craftButton;
+    [SerializeField] private Button incrementButton;
+    [SerializeField] private Button decrementButton;
+    [SerializeField] private Button maxCountButton;
+    [SerializeField] private Color buttonsActiveColor;
+    [SerializeField] private Color buttonsDisabledColor;
 
-    [SerializeField]
-    private GameObject recipesListContainerPrefab;
+    [SerializeField] private GameObject inputItemsContainer;
+    [SerializeField] private GameObject inputItemPrefab;
 
-    [SerializeField]
-    private RecipeDetail detail;
+    private PlayerInventory playerInventory;
+    private RecipesManager recipesManager;
+    private CraftActions craftActions;
+    private InputItems inputItems;
 
-    [SerializeField]
-    private Button recipesListItemPrefab;
-    private List<Recipe> previousRecipes;
-    private List<Recipe> availableRecipes = new List<Recipe>();
-    private List<Button> recipesListButtons = new List<Button>();
-    private RecipeListItem selectedRecipeListItem;
+    private void Init() {
+      if (playerInventory != null) {
+        return;
+      }
+      Debug.Log("CraftManager Init");
 
-    // private void Awake() {
-    //   Debug.Log("CraftManager Awake");
-    //   LoadAvailableRecipes();
-
-    //   BuildRecipeList();
-    // }
+      playerInventory = GameManager.instance.PlayerInventory;
+      recipesManager = new RecipesManager(station.recipes, recipesListItemPrefab, recipesListContainerPrefab);
+      craftActions = new CraftActions(countInput, craftButton, incrementButton, decrementButton,
+        maxCountButton, buttonsActiveColor, buttonsDisabledColor, station.OutputSlotsAmount);
+      inputItems = new InputItems(inputItemsContainer, inputItemPrefab, station.OutputSlotsAmount);
+    }
 
     private void OnEnable() {
-      LoadAvailableRecipes();
-      BuildRecipeList();
+      Debug.Log("CraftManager OnEnable");
 
-      AddEvents();
+      Init();
+
+      recipesManager.onSelected += OnRecipeSelectedHandler;
+      recipesManager.BuildList();
+      recipesManager.AddEvents();
+      recipesManager.SelectFirst();
+
+      SlotsUpdateEvents();
+      craftActions.AddCraftActionsEvents();
+      craftActions.onCraftRequested += OnCraftRequestedHandler;
     }
 
     private void OnDisable() {
-      RemoveEvents();
+      craftActions.onCraftRequested -= OnCraftRequestedHandler;
+      craftActions.RemoveCraftActionsEvents();
+      RemoveSlotsUpdateEvents();
+
+      recipesManager.RemoveEvents();
+      recipesManager.onSelected -= OnRecipeSelectedHandler;
     }
 
-    //TODO: Load recipes from file
-    private void LoadAvailableRecipes() {
-      availableRecipes = recipes;
+    private void OnCraftRequestedHandler(int count) {
+      Debug.Log("CraftManager OnCraftRequestedHandler: " + count);
+      inputItems.SetRecipe(count, recipesManager.Recipe);
     }
 
-    private void BuildRecipeList() {
-      if (availableRecipes == previousRecipes) {
-        return;
-      }
+    private void OnRecipeSelectedHandler(Recipe recipe) {
+      Debug.Log("Recipe selected OnRecipeSelectedHandler: " + recipe.RecipeName);
+      detail.SetRecipeDetails(recipe);
 
-      previousRecipes = availableRecipes;
-
-      var count = 0;
-      foreach (Recipe recipe in availableRecipes) {
-        var listItem = Instantiate<Button>(recipesListItemPrefab, recipesListContainerPrefab.transform);
-
-        var recipeListItem = listItem.GetComponent<RecipeListItem>();
-        recipeListItem.SetRecipeDetails(recipe.RecipeName, recipe.Result.UiDisplay, recipe);
-
-        recipesListButtons.Add(listItem);
-
-        // Activate first recipe
-        if (count == 0) {
-          ActivateRecipe(listItem);
-        }
-
-        count++;
-      }
+      craftActions.SetRecipe(recipe);
+      craftActions.UpdateAndPrintInputCount();
     }
 
-    private void AddEvents() {
-      AddRecipesListEvents();
+    private void SlotsUpdateEvents() {
+      playerInventory.onResourcesTotalUpdate += SlotAmountUpdateHandler;
     }
 
-    private void RemoveEvents() {
-      RemoveRecipesListEvents();
+    private void RemoveSlotsUpdateEvents() {
+      playerInventory.onResourcesTotalUpdate -= SlotAmountUpdateHandler;
     }
 
-    private void AddRecipesListEvents() {
-      foreach (var button in recipesListButtons) {
-        button.onClick.AddListener(() => RecipesListItemClickHandler(button));
+    private void SlotAmountUpdateHandler(int resourceId) {
+      var recipeIngredientsIds = detail.GetRecipeIngredientsIds();
+      if (recipeIngredientsIds.Length > 0 && recipeIngredientsIds.Contains(resourceId)) {
+        UpdateResourcesListAndCount();
       }
     }
 
-    private void RemoveRecipesListEvents() {
-      foreach (var button in recipesListButtons) {
-        button.onClick.RemoveAllListeners();
-      }
-    }
+    private void UpdateResourcesListAndCount() {
+      Debug.Log("CraftManager UpdateResourcesListAndCount");
+      detail.PrintList();
 
-    private void RecipesListItemClickHandler(Button button) {
-      Debug.Log("Clicked: recipesListItemClickHandler");
-
-      ActivateRecipe(button);
-    }
-
-    private void ActivateRecipe(Button button) {
-      SelectRecipe(button);
-      PrintDetailInfo();
-    }
-
-    private void SelectRecipe(Button button) {
-      var recipeListItem = button.GetComponent<RecipeListItem>();
-
-      if (selectedRecipeListItem == recipeListItem) {
-        Debug.Log("Clicked: return");
-        return;
-      }
-
-      if (selectedRecipeListItem) {
-        selectedRecipeListItem.ResetStyles();
-      }
-
-      selectedRecipeListItem = recipeListItem;
-      recipeListItem.SetActiveStyles();
-    }
-
-    private void PrintDetailInfo() {
-      detail.SetRecipeDetails(selectedRecipeListItem.Recipe);
+      craftActions.UpdateAndPrintInputCount();
     }
   }
 }

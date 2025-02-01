@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23419512bd349d18debac7d35c1f6fe, type: 3}
+  m_Name: StoneBuildingBlockData
+  m_EditorClassIdentifier: 
+  Durability: 30
+  tileDatas:
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 349aa0db9ae0e5c47a0a063c35289088, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: a7f1c98948d2fec4684ca34014ffe8c5, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: f62124b52fa2cef4187700266664c050, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 099019678b0150a4591ce98445fba658, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 23b38e610cc44fa4192982bf00747fcd, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 952c14891969eb2419e26aed1f472fdf, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 7bcf16f5cd2dc024da5f57878cfb09c3, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 2562ebfcb60068c4b917c495a3906bf4, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 5afb1f12eca87d645b454a7be170734b, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 93e97dde845765446b7c9dcf216a7e6d, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 4021dff7bc92841499a0c4b511346eb8, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 109418c83e9f03142b7f95b7f3abbd8b, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: fa083973df3891a49be2d4ab1fa6ef07, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: bd082e1da9366f040ad2336f8d8c723b, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  - sprite: {fileID: 21300000, guid: 9a6e018b4d944164c86f34e5d21e3905, type: 3}
+    offsetSorting: 0
+    offsetPosition: {x: 0, y: 0, z: 0}
+    offsetCollider: {x: 0, y: 0, z: 0}
+  sortingOrder: 1
+  itemData: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
+  mapColor: {r: 0.41509432, g: 0.41509432, b: 0.41509432, a: 0}

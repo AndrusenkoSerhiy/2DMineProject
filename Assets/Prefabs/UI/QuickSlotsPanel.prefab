@@ -76,9 +76,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: b01922b1ac974a342935c3c12a61a08f, type: 2}
-  _uiCamera: {fileID: 0}
-  _canvas: {fileID: 0}
-  _tempDragParent: {fileID: 0}
+  tempDragParent: {fileID: 3952768001628798844}
   slots:
   - {fileID: 6913014319748417972}
   - {fileID: 4643163149848582921}
@@ -141,6 +139,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _staticInterface: {fileID: 5801279584603716344}
+  slots: []
+  selectedSlot:
+    AllowedItems: 
+    item:
+      Name: 
+      Id: -1
+      buffs: []
+    amount: 0
+    IsSelected: 0
 --- !u!1001 &2509481452840262992
 PrefabInstance:
   m_ObjectHideFlags: 0

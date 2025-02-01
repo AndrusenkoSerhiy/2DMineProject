@@ -1,8 +1,7 @@
-using System;
+using Inventory;
 using Scriptables;
 using Settings;
 using UnityEngine;
-using UnityEngine.Serialization;
 using World;
 
 public class PlaceCell : MonoBehaviour {
@@ -13,10 +12,17 @@ public class PlaceCell : MonoBehaviour {
   [SerializeField] private Color _previewColor;
   [SerializeField] private Color _blockColor;
   private Color _currPreviewColor;
+  private InventorySlot currSlot;
   private void Start() {
-    UserInput.instance.OnBuildClick += Input_OnBuildClick;
+    //don't need subscribe because we call from quickslot
+    //UserInput.instance.OnBuildClick += Input_OnBuildClick;
   }
-
+  
+  public void ActivateBuildMode(InventorySlot slot) {
+    SetEnabled(!_isPreviewing);
+    currSlot = slot;
+  }
+  
   private void StartPreview() {
     if (_prefab == null)
       return;
@@ -48,12 +54,18 @@ public class PlaceCell : MonoBehaviour {
   //enable building mode
   private void SetEnabled(bool value) {
     _isPreviewing = value;
-    //UserInput.instance.EnableGamePlayControls(!value);
-    //TODO need to block only attack 
-    UserInput.instance.EnableUIControls(value);
-
+    BlockAction(value);
     if (value) StartPreview();
     else CancelPreview();
+  }
+
+  private void BlockAction(bool value) {
+    var actionName = "Attack";
+    var reason = "PlaceCell";
+    if (value) {
+      UserInput.instance.BlockAction(actionName, reason);
+    }
+    else UserInput.instance.UnblockAction(actionName, reason);
   }
   
   private void Update() {
@@ -76,16 +88,18 @@ public class PlaceCell : MonoBehaviour {
       worldPosition.z = 0;
 
       _previewInstance.transform.position = worldPosition;
+      /*Debug.LogError($"player {GameManager.instance.PlayerController.PlayerCoords.GetCoords().X} {GameManager.instance.PlayerController.PlayerCoords.GetCoords().Y}");
+      Debug.LogError($"grid   {grid.X} {grid.Y}");*/
       if (GameManager.instance.ChunkController.GetCell(grid.X, grid.Y) != null || GameManager.instance.PlayerController.PlayerCoords.GetCoords().Equals(grid)) {
         SetPreviewColor(_blockColor);
       }
       else {
         SetPreviewColor(_previewColor);
       }
-      if (Input.GetMouseButtonDown(1))
+      /*if (Input.GetMouseButtonDown(1))
       {
         CancelPreview();
-      }
+      }*/
     }
   }
 
@@ -97,13 +111,21 @@ public class PlaceCell : MonoBehaviour {
     PlaceCellOnScene();
   }
 
-  private void Input_OnBuildClick(object sender, EventArgs e) {
+  /*private void Input_OnBuildClick(object sender, EventArgs e) {
     SetEnabled(!_isPreviewing);
-  }
+  }*/
 
   private void PlaceCellOnScene() {
     var coords = CoordsTransformer.WorldToGrid(GetMousePosition());
     GameManager.instance.ChunkController.SpawnCell(coords,_resourceData);
+    currSlot.AddAmount(/*currSlot.amount*/-1, 20);
+    //TODO
+    if (currSlot.amount <=0) {
+      currSlot.Unselect();
+      currSlot.RemoveItem();
+      SetEnabled(false);
+      currSlot = null;
+    }
   }
 
   private Vector3 GetMousePosition() {

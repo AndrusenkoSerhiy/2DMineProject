@@ -138,9 +138,9 @@ namespace Scriptables.Inventory {
       }
 
       if (item2.CanPlaceInSlot(item1.GetItemObject()) && item1.CanPlaceInSlot(item2.GetItemObject())) {
-        InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.amount);
-        item2.UpdateSlot(item1.item, item1.amount, false);
-        item1.UpdateSlot(temp.item, temp.amount, false);
+        InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.amount, item2.IsSelected);
+        item2.UpdateSlotAfterSwap(item1.item, item1.amount, item1.IsSelected);
+        item1.UpdateSlotAfterSwap(temp.item, temp.amount, temp.IsSelected);
       }
     }
 

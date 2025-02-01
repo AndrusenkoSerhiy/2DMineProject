@@ -90,9 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
-  _uiCamera: {fileID: 0}
-  _canvas: {fileID: 0}
-  _tempDragParent: {fileID: 8513554729516146635}
+  tempDragParent: {fileID: 8513554729516146635}
   inventoryPrefab: {fileID: 9024243816369132772, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
   X_START: -150
   Y_START: 250
@@ -209,9 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: 52d66ce2ad878be4e86a562444af14ef, type: 2}
-  _uiCamera: {fileID: 0}
-  _canvas: {fileID: 0}
-  _tempDragParent: {fileID: 8513554729516146635}
+  tempDragParent: {fileID: 0}
   slots:
   - {fileID: 4196807014600301712}
   - {fileID: 5962429973448867125}
@@ -283,7 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17402ad2cc902784ba2f07359bed0f00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isShow: 0
+  isShow: 0
 --- !u!1 &2989107684417561913
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +331,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5258776988445075789
 RectTransform:
   m_ObjectHideFlags: 0

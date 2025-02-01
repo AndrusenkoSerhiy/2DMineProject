@@ -1,6 +1,8 @@
 ﻿using System;
 using Scriptables.Items;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Inventory {
   [Serializable]
@@ -22,25 +24,34 @@ namespace Inventory {
 
     public Item item;
     public int amount;
+    [NonSerialized]
+    private GameObject outline;
+    [NonSerialized]
+    private Image background;
+    [NonSerialized]
+    private TextMeshProUGUI text;
+
+    public bool IsSelected;
+    public Image Background => GetBackground();
+    public TextMeshProUGUI Text => GetText();
 
     public ItemObject GetItemObject() {
       if (parent == null || parent.inventory == null || item.Id < 0) {
         return null;
       }
-
       return parent.inventory.database.ItemObjects[item.Id];
     }
 
     public InventorySlot() => UpdateSlot(new Item(), 0);
 
     //use for swap items in inventory
-    public InventorySlot(Item item, int amount, int maxStack) => UpdateSlot(item, amount, maxStack);
+    public InventorySlot(Item item, int amount, int maxStack, bool selected = false) => UpdateSlot(item, amount, maxStack, selected);
 
     public void RemoveItem() => UpdateSlot(new Item(), 0);
 
     public int AddAmount(int value, int maxStack = -1) => UpdateSlot(item, amount + value, maxStack);
-
-    public int UpdateSlot(Item itemValue, int amountValue, int maxStack) {
+    
+    public int UpdateSlot(Item itemValue, int amountValue, int maxStack, bool selected = false) {
       onBeforeUpdated?.Invoke(this);
 
       var oldAmount = amount;
@@ -49,9 +60,14 @@ namespace Inventory {
 
       item = itemValue;
       amount = newAmount; // Update the slot's amount after calculation
-
+      IsSelected = selected;
       onAfterUpdated?.Invoke(this);
-      onAmountUpdate?.Invoke(itemId, newAmount - oldAmount);
+
+      var amountDelta = newAmount - oldAmount;
+
+      if (amountDelta != 0) {
+        onAmountUpdate?.Invoke(itemId, amountDelta);
+      }
 
       return Mathf.Max(0, amountValue - maxStack);
     }
@@ -67,9 +83,25 @@ namespace Inventory {
 
       onAfterUpdated?.Invoke(this);
 
-      if (triggerAmountEvent) {
-        onAmountUpdate?.Invoke(itemId, amount - oldAmount);
+      var amountDelta = amount - oldAmount;
+
+      if (triggerAmountEvent && amountDelta != 0) {
+        onAmountUpdate?.Invoke(itemId, amountDelta);
       }
+    }
+
+    //use when swap items
+    public void UpdateSlotAfterSwap(Item itemValue, int amountValue, bool isSelected) {
+      onBeforeUpdated?.Invoke(this);
+      var itemId = itemValue.Id != -1 ? itemValue.Id : (item?.Id ?? -1);
+      var oldAmount = amount;
+      item = itemValue;
+      amount = amountValue;
+
+      onAfterUpdated?.Invoke(this);
+
+      if (isSelected) Select();
+      else Unselect();
     }
 
     public bool CanPlaceInSlot(ItemObject itemObject) {
@@ -84,6 +116,36 @@ namespace Inventory {
       }
 
       return false;
+    }
+
+    public void Select() {
+      GetOutline().SetActive(true);
+      IsSelected = true;
+    }
+
+    public void Unselect() {
+      GetOutline().SetActive(false);
+      IsSelected = false;
+    }
+
+    private GameObject GetOutline() {
+      if (outline == null) outline = slotDisplay.transform.GetChild(0).gameObject;
+      return outline;
+    }
+
+    private Image GetBackground() {
+      if (background == null) background = slotDisplay.transform.GetChild(1).GetComponent<Image>();
+      return background;
+    }
+
+    private TextMeshProUGUI GetText() {
+      if (text == null) text = slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
+      return text;
+    }
+
+    public void ResetBackgroundAndText() {
+      background = null;
+      text = null;
     }
   }
 }

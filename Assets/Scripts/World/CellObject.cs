@@ -54,12 +54,13 @@ namespace World {
 
     private void AddItemToInventory(float damage) {
       if (resourceData.ItemData == null) {
-        Debug.LogError($"You need to add itemData in resourceData {resourceData}");
+        //Debug.LogError($"You need to add itemData in resourceData {resourceData}");
         return;
       }
 
       GameManager.instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage);
     }
+
     public float GetHealth() {
       return unitHealth.health;
     }

@@ -21,6 +21,14 @@ namespace Scriptables {
 
       return null;
     }
+    
+    public ResourceDataObject GetDataObject(ResourceData data) {
+      for (int i = 0; i < Resources.Length; i++) {
+        if(Resources[i].Data == data) return Resources[i];
+      }
+
+      return null;
+    }
 
     public Color GetColor(float perlinValue) {
       for (int i = 0; i < Resources.Length; i++) {

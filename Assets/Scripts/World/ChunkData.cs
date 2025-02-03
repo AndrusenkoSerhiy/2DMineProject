@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Scriptables;
 using Unity.Collections;
 using Unity.Jobs;
@@ -8,12 +9,16 @@ using World.Jobs;
 namespace World {
   [Serializable]
   public class ChunkData {
+    //Chunk data info
     public Coords id;
     public int x;
     public int y;
+    //All cells data
     private CellData[,] _cellDatas;
+    //Cells fill data array
     private int[,] _cellFillDatas;
     public int[,] CellFillDatas => _cellFillDatas;
+    //Generation job arrays
     private NativeArray<float> noiseMap;
     private NativeArray<float> smoothedNoiseMap;
 
@@ -92,6 +97,11 @@ namespace World {
       var curRes = GameManager.instance.ChunkController.ResourceDataLibrary.GetData(_cellDatas[x, y].perlin);
       var sameResource = targetRes != null && curRes != null && targetRes.SortingOrder() == curRes.SortingOrder();
       return sameResource ? _cellFillDatas[x, y] : 0;
+    }
+
+    public int GetCellFill(int x, int y) {
+      if (x < 0 || x > width || y < 0 || y > height) return 0;
+      return _cellFillDatas[x, y];
     }
 
     void OnDestroy() {

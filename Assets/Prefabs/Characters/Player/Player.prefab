@@ -1061,11 +1061,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc48ebbf8ed943dcaf032ae2bd24f871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}
-  _prefab: {fileID: 6712673092602809747, guid: 42f1e9b80fa326d4e94f422d9891b6d5, type: 3}
-  _isPreviewing: 0
-  _previewColor: {r: 0.07564971, g: 0.14852437, b: 0.9433962, a: 0.8}
-  _blockColor: {r: 1, g: 0, b: 0, a: 0.79607844}
+  resourceData: {fileID: 0}
+  prefab: {fileID: 6712673092602809747, guid: 42f1e9b80fa326d4e94f422d9891b6d5, type: 3}
+  isPreviewing: 0
+  previewColor: {r: 0.07450981, g: 0.14901961, b: 0.94509804, a: 0.78431374}
+  blockColor: {r: 1, g: 0, b: 0, a: 0.78431374}
 --- !u!114 &6251728841341945271
 MonoBehaviour:
   m_ObjectHideFlags: 0

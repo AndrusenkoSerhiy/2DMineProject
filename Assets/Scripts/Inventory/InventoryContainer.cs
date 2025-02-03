@@ -15,6 +15,7 @@ namespace Inventory {
       for (int i = 0; i < Slots.Length; i++) {
         Slots[i].item = new Item();
         Slots[i].amount = 0;
+        Slots[i].IsSelected = false;
       }
     }
 

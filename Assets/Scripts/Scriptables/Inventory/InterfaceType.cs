@@ -2,6 +2,7 @@
   public enum InterfaceType {
     Inventory,
     Equipment,
-    QuickSlots
+    QuickSlots,
+    WorkbenchOutput
   }
 }

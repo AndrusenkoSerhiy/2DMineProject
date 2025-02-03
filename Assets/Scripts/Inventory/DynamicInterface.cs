@@ -9,30 +9,45 @@ namespace Inventory {
     public int X_SPACE_BETWEEN_ITEM;
     public int NUMBER_OF_COLUMN;
     public int Y_SPACE_BETWEEN_ITEMS;
+    public bool reverseLayout = false;
     private List<GameObject> inventoryPrefabs = new List<GameObject>();
 
     public override void CreateSlots() {
       Debug.Log("DynamicInterface CreateSlots");
-      for (int i = 0; i < inventory.GetSlots.Length; i++) {
+      for (int i = 0; i < Inventory.GetSlots.Length; i++) {
         var obj = Instantiate(inventoryPrefab, Vector3.zero, Quaternion.identity, transform);
         obj.GetComponent<RectTransform>().localPosition = GetPosition(i);
         inventoryPrefabs.Add(obj);
 
-        playerInventory.AddSlotEvents(obj, slotsOnInterface, tempDragParent);
+        var slot = Inventory.GetSlots[i];
 
-        slotsOnInterface.Add(obj, inventory.GetSlots[i]);
+        playerInventory.AddSlotEvents(obj, slot, tempDragParent);
+
+        slotsOnInterface.Add(obj, slot);
       }
     }
 
-    public override void UpdateSlotDisplayObject() {
-      for (int i = 0; i < inventory.GetSlots.Length; i++) {
-        inventory.GetSlots[i].parent = this;
-        inventory.GetSlots[i].slotDisplay = inventoryPrefabs[i];
+    public override void UpdateSlotsDisplayObject() {
+      for (int i = 0; i < Inventory.GetSlots.Length; i++) {
+        UpdateSlotDisplayObject(Inventory.GetSlots[i], i);
       }
     }
 
-    public Vector3 GetPosition(int i) {
-      return new Vector3(X_START + (X_SPACE_BETWEEN_ITEM * (i % NUMBER_OF_COLUMN)), Y_START + (-Y_SPACE_BETWEEN_ITEMS * (i / NUMBER_OF_COLUMN)), 0f);
+    private void UpdateSlotDisplayObject(InventorySlot slot, int slotIndex) {
+      slot.parent = this;
+      slot.slotDisplay = inventoryPrefabs[slotIndex];
+    }
+
+    private Vector3 GetPosition(int i) {
+      int column = i % NUMBER_OF_COLUMN;
+      int row = i / NUMBER_OF_COLUMN;
+
+      if (reverseLayout) {
+        // If reversed, adjust the column's position to go from right to left
+        column = NUMBER_OF_COLUMN - 1 - column;  // Flip the column index
+      }
+
+      return new Vector3(X_START + (X_SPACE_BETWEEN_ITEM * column), Y_START + (-Y_SPACE_BETWEEN_ITEMS * row), 0f);
     }
   }
 }

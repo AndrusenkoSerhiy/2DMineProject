@@ -10,7 +10,7 @@ namespace Inventory {
     public ItemType[] AllowedItems = new ItemType[0];
 
     [NonSerialized]
-    public UserInterface parent;
+    public IInventoryUI parent;
     [NonSerialized]
     public GameObject slotDisplay;
 
@@ -36,10 +36,10 @@ namespace Inventory {
     public TextMeshProUGUI Text => GetText();
 
     public ItemObject GetItemObject() {
-      if (parent == null || parent.inventory == null || item.Id < 0) {
+      if (parent == null || parent.Inventory == null || item.Id < 0) {
         return null;
       }
-      return parent.inventory.database.ItemObjects[item.Id];
+      return parent.Inventory.database.ItemObjects[item.Id];
     }
 
     public InventorySlot() => UpdateSlot(new Item(), 0);

@@ -4,20 +4,21 @@ namespace Inventory {
   public class StaticInterface : UserInterface {
     public GameObject[] slots;
 
-    public override void UpdateSlotDisplayObject() {
+    public override void UpdateSlotsDisplayObject() {
       return;
     }
 
     public override void CreateSlots() {
-      for (int i = 0; i < inventory.GetSlots.Length; i++) {
+      for (int i = 0; i < Inventory.GetSlots.Length; i++) {
         var obj = slots[i];
+        var slot = Inventory.GetSlots[i];
 
-        playerInventory.AddSlotEvents(obj, slotsOnInterface, tempDragParent);
+        playerInventory.AddSlotEvents(obj, slot, tempDragParent);
 
-        inventory.GetSlots[i].parent = this;
-        inventory.GetSlots[i].slotDisplay = obj;
+        Inventory.GetSlots[i].parent = this;
+        Inventory.GetSlots[i].slotDisplay = obj;
 
-        slotsOnInterface.Add(obj, inventory.GetSlots[i]);
+        slotsOnInterface.Add(obj, slot);
       }
     }
   }

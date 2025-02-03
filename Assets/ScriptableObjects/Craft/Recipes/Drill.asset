@@ -18,6 +18,9 @@ MonoBehaviour:
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
     Amount: 3
+  - Material: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
+    Amount: 3
   Result: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
   ResultAmount: 1
-  CraftingTime: 180
+  CraftingTime: 10
+  detailImg: {fileID: 0}

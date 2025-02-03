@@ -9,9 +9,9 @@ namespace Craft {
     private int timeForOne;
     private int totalItems;
     private int itemsLeft;
-    private double totalTime;
-    private double timeLeft;
-    private double lastCheckTime;
+    private float totalTime;
+    private float timeLeft;
+    private float lastCheckTime;
     private bool isStarted;
 
     public Action onTimerStop;
@@ -41,11 +41,11 @@ namespace Craft {
     public void StartTimer(int count, int time) {
       Debug.Log("Timer StartTimer");
       startTime = DateTime.Now.ToUniversalTime();
-      totalTime = count * time;
-      timeLeft = totalTime;
       totalItems = count;
-      itemsLeft = totalItems;
       timeForOne = time;
+      totalTime = count * time;
+      itemsLeft = totalItems;
+      timeLeft = totalTime;
       lastCheckTime = totalTime;
 
       isStarted = true;
@@ -55,7 +55,7 @@ namespace Craft {
 
     private void CheckItemCompletion() {
       var count = 0;
-      while (itemsLeft > 0 && timeLeft <= lastCheckTime - timeForOne) {
+      while (itemsLeft > 0 && timeLeft <= (lastCheckTime - timeForOne)) {
         itemsLeft--;
         lastCheckTime -= timeForOne;
         count++;
@@ -67,36 +67,33 @@ namespace Craft {
     }
 
     private void PrintTime() {
-      timerText.text = Helper.SecondsToTimeString((int)timeLeft);
+      var roundedTimeLeft = (float)Math.Round(timeLeft);
+      timerText.text = Helper.SecondsToTimeString(roundedTimeLeft);
     }
 
     private void UpdateTimer() {
       Debug.Log("Timer UpdateTimer");
       var currentTime = DateTime.Now.ToUniversalTime();
-      double elapsedTime = (currentTime - startTime).TotalSeconds;
+      var elapsedTime = (float)(currentTime - startTime).TotalSeconds;
       timeLeft = totalTime - elapsedTime;
-
-      CheckItemCompletion();
     }
 
     private void TimerTick() {
       timeLeft -= Time.deltaTime;
-      
-      CheckItemCompletion();
 
-      if (timeLeft > 0) {
-        PrintTime();
-        return;
+      CheckItemCompletion();
+      PrintTime();
+
+      if (timeLeft <= 0) {
+        StopTimer();
       }
 
-      StopTimer();
     }
 
     private void StopTimer() {
       Debug.Log("Timer StopTimer");
       onTimerStop?.Invoke();
       Reset();
-      enabled = false;
     }
 
     private void Reset() {

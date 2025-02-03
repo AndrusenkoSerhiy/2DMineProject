@@ -2,7 +2,7 @@
 using UnityEngine;
 
 public static class MouseData {
-  public static UserInterface interfaceMouseIsOver;
+  public static IInventoryUI interfaceMouseIsOver;
   public static GameObject tempItemBeingDragged;
   public static GameObject slotHoveredOver;
 }

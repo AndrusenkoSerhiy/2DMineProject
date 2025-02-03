@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Inventory;
 using Scriptables.Craft;
+using Scriptables.Items;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,8 @@ namespace Craft {
 
     [SerializeField] private GameObject inputItemsContainer;
     [SerializeField] private GameObject inputItemPrefab;
+
+    [SerializeField] private DynamicInterface outputInterface;
 
     private PlayerInventory playerInventory;
     private RecipesManager recipesManager;
@@ -55,9 +58,13 @@ namespace Craft {
       SlotsUpdateEvents();
       craftActions.AddCraftActionsEvents();
       craftActions.onCraftRequested += OnCraftRequestedHandler;
+
+      AddInputEvents();
     }
 
     private void OnDisable() {
+      RemoveInputEvents();
+
       craftActions.onCraftRequested -= OnCraftRequestedHandler;
       craftActions.RemoveCraftActionsEvents();
       RemoveSlotsUpdateEvents();
@@ -68,7 +75,25 @@ namespace Craft {
 
     private void OnCraftRequestedHandler(int count) {
       Debug.Log("CraftManager OnCraftRequestedHandler: " + count);
-      inputItems.SetRecipe(count, recipesManager.Recipe);
+
+      var recipe = recipesManager.Recipe;
+
+      //remove resources from inventory
+      foreach (var item in recipe.RequiredMaterials) {
+        var totalCount = count * item.Amount;
+        playerInventory.inventory.RemoveItem(item.Material.data, totalCount);
+      }
+
+      inputItems.SetRecipe(count, recipe);
+    }
+
+    private void AddCraftedItemToOutput(Recipe recipe, int count) {
+      Debug.Log("CraftManager AddCraftedItemToOutput: " + recipe.RecipeName);
+      var outputInventory = outputInterface.Inventory;
+      var item = new Item(outputInventory.database.ItemObjects[recipe.Result.data.Id]);
+
+      outputInventory.AddItem(item, count, null, null);
+      outputInterface.UpdateUI();
     }
 
     private void OnRecipeSelectedHandler(Recipe recipe) {
@@ -99,6 +124,18 @@ namespace Craft {
       detail.PrintList();
 
       craftActions.UpdateAndPrintInputCount();
+    }
+
+    private void AddInputEvents() {
+      foreach (var input in inputItems.Items) {
+        input.onItemCrafted += AddCraftedItemToOutput;
+      }
+    }
+
+    private void RemoveInputEvents() {
+      foreach (var input in inputItems.Items) {
+        input.onItemCrafted -= AddCraftedItemToOutput;
+      }
     }
   }
 }

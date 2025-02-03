@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Inventory;
@@ -11,11 +12,46 @@ namespace Scriptables.Inventory {
   public class InventoryObject : ScriptableObject {
     public string savePath;
     public ItemDatabaseObject database;
+    public int slotsCount = 24;
     public InterfaceType type;
     //public int MAX_ITEMS;
     [SerializeField]
-    private InventoryContainer Container = new InventoryContainer();
+    // private InventoryContainer Container = new InventoryContainer();
+    private InventoryContainer Container;
     public InventorySlot[] GetSlots => Container.Slots;
+
+    public InventoryObject() {
+      Container = new InventoryContainer(slotsCount);
+    }
+
+    public bool RemoveItem(Item item, int amount) {
+      if (amount <= 0) {
+        return false;
+      }
+
+      int remainingAmount = amount;
+
+      for (var i = GetSlots.Length - 1; i >= 0 && remainingAmount > 0; i--) {
+        var slot = GetSlots[i];
+
+        if (slot.item.Id != item.Id) {
+          continue;
+        }
+
+        var removeAmount = Math.Min(slot.amount, remainingAmount);
+        remainingAmount -= removeAmount;
+        var slotNewAmount = slot.amount - removeAmount;
+
+        if (slotNewAmount <= 0) {
+          slot.RemoveItem();
+        }
+        else {
+          slot.UpdateSlot(slot.item, slotNewAmount);
+        }
+      }
+
+      return remainingAmount == 0;
+    }
 
     //use to get item from mining
     public bool AddItem(Item item, int amount, ItemObject itemObj, GroundItem groundItem) {

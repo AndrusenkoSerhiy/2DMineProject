@@ -5,8 +5,11 @@ using Scriptables.Items;
 namespace Inventory {
   [Serializable]
   public class InventoryContainer {
-    //TODO
-    public InventorySlot[] Slots = new InventorySlot[24];
+    public InventorySlot[] Slots;
+
+    public InventoryContainer(int size) {
+      Slots = new InventorySlot[size];
+    }
 
     public void Clear() {
       for (int i = 0; i < Slots.Length; i++) {

@@ -10,6 +10,7 @@ using Items;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using System;
+using TMPro;
 
 namespace Inventory {
   public class PlayerInventory : MonoBehaviour {
@@ -81,17 +82,19 @@ namespace Inventory {
       return resourcesTotal.ContainsKey(resourceId) ? resourcesTotal[resourceId] : 0;
     }
 
-    public void AddSlotEvents(GameObject obj, Dictionary<GameObject, InventorySlot> slotsOnInterface, Transform parent) {
+    public void AddSlotEvents(GameObject obj, InventorySlot slot, Transform parent) {
       AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
       AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
-      AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(obj, slotsOnInterface, parent); });
-      AddEvent(obj, EventTriggerType.EndDrag, delegate { OnDragEnd(obj, slotsOnInterface); });
+      AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(slot, parent); });
+      AddEvent(obj, EventTriggerType.EndDrag, delegate { OnDragEnd(slot); });
       AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
     }
 
     public void SlotUpdateHandler(InventorySlot slot) {
-      var image = slot.Background;//slot.slotDisplay.transform.GetChild(1).GetComponent<Image>();
-      var text = slot.Text;//slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
+      var image = slot.Background;
+      var text = slot.Text;
+      // var image = slot.slotDisplay.transform.GetChild(1).GetComponent<Image>();
+      // var text = slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
       if (slot.item.Id <= -1) {
         image.sprite = null;
         image.color = new Color(1, 1, 1, 0);
@@ -157,7 +160,7 @@ namespace Inventory {
     }
 
     public void OnEnterInterface(GameObject obj) {
-      MouseData.interfaceMouseIsOver = obj.GetComponent<UserInterface>();
+      MouseData.interfaceMouseIsOver = obj.GetComponent<IInventoryUI>();
     }
 
     public void OnExitInterface(GameObject obj) {
@@ -183,13 +186,13 @@ namespace Inventory {
       }
     }
 
-    public void OnDragStart(GameObject obj, Dictionary<GameObject, InventorySlot> slotsOnInterface, Transform parent) {
-      MouseData.tempItemBeingDragged = CreateTempItem(obj, slotsOnInterface, parent);
+    public void OnDragStart(InventorySlot slot, Transform parent) {
+      MouseData.tempItemBeingDragged = CreateTempItem(slot, parent);
     }
 
-    private GameObject CreateTempItem(GameObject obj, Dictionary<GameObject, InventorySlot> slotsOnInterface, Transform parent) {
+    private GameObject CreateTempItem(InventorySlot slot, Transform parent) {
       GameObject tempItem = null;
-      if (slotsOnInterface[obj].item.Id >= 0) {
+      if (slot.item.Id >= 0) {
         tempItem = new GameObject("TempItemBeingDragged");
         tempItem.layer = 5;
         var rt = tempItem.AddComponent<RectTransform>();
@@ -198,7 +201,7 @@ namespace Inventory {
 
         tempItem.transform.SetParent(parent);
         var img = tempItem.AddComponent<Image>();
-        img.sprite = slotsOnInterface[obj].GetItemObject().UiDisplay;
+        img.sprite = slot.GetItemObject().UiDisplay;
         img.raycastTarget = false;
 
         tempItem.transform.localScale = Vector3.one;
@@ -206,18 +209,18 @@ namespace Inventory {
       return tempItem;
     }
 
-    public void OnDragEnd(GameObject obj, Dictionary<GameObject, InventorySlot> slotsOnInterface) {
+    public void OnDragEnd(InventorySlot slot) {
 
       Destroy(MouseData.tempItemBeingDragged);
 
       if (MouseData.interfaceMouseIsOver == null) {
-        SpawnItem(slotsOnInterface[obj]);
-        slotsOnInterface[obj].RemoveItem();
+        SpawnItem(slot);
+        slot.RemoveItem();
         return;
       }
       if (MouseData.slotHoveredOver) {
-        InventorySlot mouseHoverSlotData = MouseData.interfaceMouseIsOver.slotsOnInterface[MouseData.slotHoveredOver];
-        inventory.SwapItems(slotsOnInterface[obj], mouseHoverSlotData);
+        var mouseHoverSlotData = MouseData.interfaceMouseIsOver.SlotsOnInterface[MouseData.slotHoveredOver];
+        inventory.SwapItems(slot, mouseHoverSlotData);
       }
     }
   }

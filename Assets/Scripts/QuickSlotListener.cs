@@ -11,7 +11,7 @@ public class QuickSlotListener : MonoBehaviour {
   private InventoryObject quickSlots;
 
   private void Awake() {
-    slots = _staticInterface.inventory.GetSlots;
+    slots = _staticInterface.Inventory.GetSlots;
     selectedSlot = null;
     GameManager.instance.PlayerInventory.OnQuickSlotLoaded += UpdateQuickSlotsAfterLoad;
   }

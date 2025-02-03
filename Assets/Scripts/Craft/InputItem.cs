@@ -18,7 +18,7 @@ namespace Craft {
 
     public void Init(int count, Recipe recipe) {
       Debug.Log("InputItem Init");
-      this.countLeft = count;
+      countLeft = count;
       this.recipe = recipe;
 
       icon.sprite = recipe.Result.UiDisplay;
@@ -53,6 +53,10 @@ namespace Craft {
 
     private void ResetInput() {
       Debug.Log("InputItem ResetInput");
+      timer.onTimerStop -= OnTimerStopHandler;
+      timer.onItemTimerEnd -= OnItemTimerEndHandler;
+      timer.enabled = false;
+
       countLeft = 0;
       recipe = null;
 

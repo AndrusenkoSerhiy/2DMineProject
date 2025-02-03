@@ -46,7 +46,7 @@ namespace Inventory {
       if (itemObject == null)
         return;
       
-      switch (slot.parent.inventory.type) {
+      switch (slot.parent.Inventory.type) {
         case InterfaceType.QuickSlots://InterfaceType.Equipment
           switch (slot.GetItemObject().Type) {
             case ItemType.Tool:
@@ -86,7 +86,7 @@ namespace Inventory {
         return;
       }
       
-      switch (slot.parent.inventory.type) {
+      switch (slot.parent.Inventory.type) {
         case InterfaceType.QuickSlots://InterfaceType.Equipment
           if (slot.GetItemObject().CharacterDisplay != null) {
             switch (slot.GetItemObject().Type) {

@@ -5,19 +5,17 @@ using UnityEngine.EventSystems;
 
 namespace Inventory {
   [RequireComponent(typeof(EventTrigger))]
-  public abstract class UserInterface : MonoBehaviour {
-    public InventoryObject inventory;
-    // private InventoryObject _previousInventory;
-    public Dictionary<GameObject, InventorySlot> slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
-    // private Camera uiCamera;
-    // private Canvas canvas;
+  public abstract class UserInterface : MonoBehaviour, IInventoryUI {
+    [SerializeField] protected InventoryObject inventory;
+    public InventoryObject Inventory => inventory;
+    protected Dictionary<GameObject, InventorySlot> slotsOnInterface;
+    public Dictionary<GameObject, InventorySlot> SlotsOnInterface => slotsOnInterface;
     protected PlayerInventory playerInventory;
     [SerializeField] protected Transform tempDragParent;
 
     private void Awake() {
+      slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
       playerInventory = GameManager.instance.PlayerInventory;
-      // uiCamera = GameManager.instance.UiCamera;
-      // canvas = GameManager.instance.OverlayCanvas;
 
       CreateSlots();
 
@@ -27,18 +25,30 @@ namespace Inventory {
 
     public abstract void CreateSlots();
 
-    public abstract void UpdateSlotDisplayObject();
+    public abstract void UpdateSlotsDisplayObject();
 
     public void OnEnable() {
-      UpdateSlotDisplayObject();
+      UpdateUI();
+    }
+
+    public void UpdateUI() {
+      UpdateSlotsDisplayObject();
       UpdateInventoryUI();
     }
 
-    public void UpdateInventoryUI() {
-      foreach (var slot in inventory.GetSlots) {
-        slot.ResetBackgroundAndText();
-        playerInventory.SlotUpdateHandler(slot); // Ensure each slot reflects the correct UI state
+    private void UpdateInventoryUI() {
+      foreach (var slot in Inventory.GetSlots) {
+        UpdateInventorySlotUI(slot);
       }
+    }
+
+    protected void UpdateInventorySlotUI(InventorySlot slot) {
+      slot.ResetBackgroundAndText();
+      playerInventory.SlotUpdateHandler(slot); // Ensure each slot reflects the correct UI state
+    }
+
+    void IInventoryUI.CreateSlots() {
+      throw new System.NotImplementedException();
     }
   }
 }

@@ -16,10 +16,8 @@ MonoBehaviour:
   Code: 
   RecipeType: 0
   RequiredMaterials:
-  - Material: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
-    Amount: 2
   - Material: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
-    Amount: 3
+    Amount: 1
   Result: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
   ResultAmount: 1
   CraftingTime: 5

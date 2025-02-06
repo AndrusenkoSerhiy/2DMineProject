@@ -1102,7 +1102,6 @@ MonoBehaviour:
   isClimbing: 0
   rb: {fileID: 7677545041897933634}
   ladderObject: {fileID: 0}
-  movement: {x: 0, y: 0}
   stayOnLadderAfterJump: 0
 --- !u!1 &2732549292726789520
 GameObject:
@@ -1887,7 +1886,7 @@ Transform:
   m_GameObject: {fileID: 6714654854641847292}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 1.719, y: -0.22, z: 0}
+  m_LocalPosition: {x: 3.254, y: -0.368, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

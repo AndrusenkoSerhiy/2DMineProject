@@ -17,7 +17,7 @@ namespace Craft {
       }
 
       craftWindow = Instantiate(interfacePrefab, overlayPrefab.transform).GetComponent<CraftWindow>();
-      GameManager.instance.WindowsController.WindowsList.Add(craftWindow);
+      GameManager.instance.WindowsController.AddWindow(craftWindow);
     }
 
     public bool Interact(Interactor interactor) {

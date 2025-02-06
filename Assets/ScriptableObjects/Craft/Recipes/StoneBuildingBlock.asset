@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
-  m_Name: Drill
+  m_Name: StoneBuildingBlock
   m_EditorClassIdentifier: 
-  RecipeName: Drill
-  Code: drill
+  RecipeName: Stone Building Block
+  Code: 
   RecipeType: 0
   RequiredMaterials:
+  - Material: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
+    Amount: 1
   - Material: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
     Amount: 3
-  Result: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
+  Result: {fileID: 11400000, guid: c4186f33ab9ebdd4fbc48c6d99586791, type: 2}
   ResultAmount: 1
-  CraftingTime: 10
+  CraftingTime: 3
   detailImg: {fileID: 0}

@@ -18,7 +18,7 @@ namespace Craft {
     public Action<int> onItemTimerEnd;
 
     public void OnEnable() {
-      Debug.Log("Timer OnEnable");
+      //Debug.Log("Timer OnEnable");
       if (!isStarted) {
         return;
       }
@@ -27,7 +27,7 @@ namespace Craft {
     }
 
     public void OnDisable() {
-      Debug.Log("Timer OnDisable");
+      //Debug.Log("Timer OnDisable");
     }
 
     public void Update() {
@@ -38,8 +38,8 @@ namespace Craft {
       TimerTick();
     }
 
-    public void StartTimer(int count, int time) {
-      Debug.Log("Timer StartTimer");
+    public void InitTimer(int count, int time) {
+      //Debug.Log("Timer StartTimer");
       startTime = DateTime.Now.ToUniversalTime();
       totalItems = count;
       timeForOne = time;
@@ -48,9 +48,11 @@ namespace Craft {
       timeLeft = totalTime;
       lastCheckTime = totalTime;
 
-      isStarted = true;
-
       PrintTime();
+    }
+
+    public void StartTimer() {
+      isStarted = true;
     }
 
     private void CheckItemCompletion() {
@@ -72,7 +74,7 @@ namespace Craft {
     }
 
     private void UpdateTimer() {
-      Debug.Log("Timer UpdateTimer");
+      //Debug.Log("Timer UpdateTimer");
       var currentTime = DateTime.Now.ToUniversalTime();
       var elapsedTime = (float)(currentTime - startTime).TotalSeconds;
       timeLeft = totalTime - elapsedTime;
@@ -91,13 +93,13 @@ namespace Craft {
     }
 
     private void StopTimer() {
-      Debug.Log("Timer StopTimer");
+      //Debug.Log("Timer StopTimer");
       onTimerStop?.Invoke();
       Reset();
     }
 
     private void Reset() {
-      Debug.Log("Timer Reset");
+      //Debug.Log("Timer Reset");
       isStarted = false;
       timerText.text = string.Empty;
     }

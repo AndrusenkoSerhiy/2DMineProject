@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Scriptables.Craft;
 using UnityEngine;
@@ -9,11 +10,18 @@ namespace Craft {
     private readonly int itemsCount;
     private List<InputItem> items = new List<InputItem>();
     public List<InputItem> Items => items;
+    private int inputInProgress = 0;
 
-    public InputItems(GameObject itemsContainer, GameObject itemPrefab, int count) {
+    [SerializeField] private bool preventItemDrop;
+    public bool PreventItemDrop => preventItemDrop;
+
+    private Workstation station;
+
+    public InputItems(Workstation station, GameObject itemsContainer, GameObject itemPrefab) {
+      this.station = station;
+      this.itemsCount = station.OutputSlotsAmount;
       this.itemsContainer = itemsContainer;
       this.itemPrefab = itemPrefab;
-      this.itemsCount = count;
 
       PrintInputs();
     }
@@ -27,12 +35,52 @@ namespace Craft {
           input.transform.position = new Vector3(newX, input.transform.position.y, input.transform.position.z);
         }
 
-        items.Add(input.GetComponent<InputItem>());
+        var inputItem = input.GetComponent<InputItem>();
+        inputItem.onInputAllCrafted += OnInputAllCraftedHandler;
+        inputItem.onItemCrafted += OnItemCraftedHandler;
+
+        items.Add(inputItem);
+      }
+    }
+
+    private void OnItemCraftedHandler(Recipe recipe, int count) {
+      station.RemoveCountFromCraftTotal(recipe.Result, count);
+    }
+
+    private void OnInputAllCraftedHandler() {
+      station.RemoveFromCraftInputsItemsIds();
+
+      if (inputInProgress == 1) {
+        inputInProgress--;
+        return;
+      }
+
+      for (var i = 0; i < inputInProgress - 1; i++) {
+        var nextPosition = i + 1;
+
+        // Swap items
+        (items[i], items[nextPosition]) = (items[nextPosition], items[i]);
+
+        // Swap positions
+        var tempPosition = items[i].GetTransformPosition();
+        items[i].UpdateTransformPosition(items[nextPosition].GetTransformPosition());
+        items[nextPosition].UpdateTransformPosition(tempPosition);
+      }
+
+      inputInProgress--;
+
+      if (inputInProgress > 0) {
+        items[0].StartCrafting();
       }
     }
 
     public void SetRecipe(int count, Recipe recipe) {
-      items[0].Init(count, recipe);
+      var item = items[inputInProgress];
+      item.Init(count, recipe, inputInProgress);
+      inputInProgress++;
+
+      station.AddItemToCraftTotal(recipe.Result, count);
+      station.AddToCraftInputsItemsIds(recipe.Result.data.Id);
     }
   }
 }

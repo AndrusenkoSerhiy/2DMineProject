@@ -21,19 +21,19 @@ namespace Inventory {
 
         var slot = Inventory.GetSlots[i];
 
-        playerInventory.AddSlotEvents(obj, slot, tempDragParent);
+        AddSlotEvents(obj, slot, tempDragParent);
 
         slotsOnInterface.Add(obj, slot);
       }
     }
 
-    public override void UpdateSlotsDisplayObject() {
+    public override void UpdateSlotsGameObjects() {
       for (int i = 0; i < Inventory.GetSlots.Length; i++) {
-        UpdateSlotDisplayObject(Inventory.GetSlots[i], i);
+        UpdateSlotGameObject(Inventory.GetSlots[i], i);
       }
     }
 
-    private void UpdateSlotDisplayObject(InventorySlot slot, int slotIndex) {
+    private void UpdateSlotGameObject(InventorySlot slot, int slotIndex) {
       slot.parent = this;
       slot.slotDisplay = inventoryPrefabs[slotIndex];
     }

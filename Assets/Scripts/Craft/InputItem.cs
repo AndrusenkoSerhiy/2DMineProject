@@ -13,11 +13,12 @@ namespace Craft {
     [SerializeField] private Timer timer;
 
     public Action<Recipe, int> onItemCrafted;
+    public Action onInputAllCrafted;
     private Recipe recipe;
     private int countLeft;
 
-    public void Init(int count, Recipe recipe) {
-      Debug.Log("InputItem Init");
+    public void Init(int count, Recipe recipe, int position) {
+      //Debug.Log("InputItem Init");
       countLeft = count;
       this.recipe = recipe;
 
@@ -31,7 +32,15 @@ namespace Craft {
       timer.enabled = true;
       timer.onTimerStop += OnTimerStopHandler;
       timer.onItemTimerEnd += OnItemTimerEndHandler;
-      timer.StartTimer(count, recipe.CraftingTime);
+      timer.InitTimer(count, recipe.CraftingTime);
+
+      if (position == 0) {
+        StartCrafting();
+      }
+    }
+
+    public void StartCrafting() {
+      timer.StartTimer();
     }
 
     private void PrintCount() {
@@ -39,12 +48,14 @@ namespace Craft {
     }
 
     private void OnTimerStopHandler() {
-      Debug.Log("InputItem OnTimerStop");
+      //Debug.Log("InputItem OnTimerStop");
       ResetInput();
+
+      onInputAllCrafted?.Invoke();
     }
 
     private void OnItemTimerEndHandler(int count) {
-      Debug.Log("InputItem OnItemTimerEndHandler: " + count);
+      //Debug.Log("InputItem OnItemTimerEndHandler: " + count);
       onItemCrafted?.Invoke(recipe, count);
 
       countLeft -= count;
@@ -52,7 +63,7 @@ namespace Craft {
     }
 
     private void ResetInput() {
-      Debug.Log("InputItem ResetInput");
+      //Debug.Log("InputItem ResetInput");
       timer.onTimerStop -= OnTimerStopHandler;
       timer.onItemTimerEnd -= OnItemTimerEndHandler;
       timer.enabled = false;
@@ -65,6 +76,16 @@ namespace Craft {
       timeIcon.gameObject.SetActive(false);
       fade.gameObject.SetActive(false);
       countText.text = string.Empty;
+    }
+
+    public void UpdateTransformPosition(Vector3 position) {
+      var rectTransform = GetComponent<RectTransform>();
+      rectTransform.position = position;
+    }
+
+    public Vector3 GetTransformPosition() {
+      var rectTransform = GetComponent<RectTransform>();
+      return rectTransform.position;
     }
   }
 }

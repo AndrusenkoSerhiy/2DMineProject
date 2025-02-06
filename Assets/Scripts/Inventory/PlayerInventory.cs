@@ -3,23 +3,18 @@ using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using UnityEngine.Events;
 using Items;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using System;
-using TMPro;
 
 namespace Inventory {
   public class PlayerInventory : MonoBehaviour {
     public InventoryObject inventory;
     //public InventoryObject equipment;
     public InventoryObject quickSlots;
-    private int defaultItemId = 0;
-    private WindowsController windowsController;
-    private PlayerInventoryWindow inventoryWindow;
+    [SerializeField] private ItemObject defaultItem;
+    // private WindowsController windowsController;
     private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
     [NonSerialized]
     public Action<int> onResourcesTotalUpdate;
@@ -27,33 +22,44 @@ namespace Inventory {
     public Action OnQuickSlotLoaded;
     public Dictionary<int, int> ResourcesTotal => resourcesTotal;
 
-    private void Start() {
-      CheckSlotsUpdate(inventory, true);
-      //CheckSlotsUpdate(equipment);
-      CheckSlotsUpdate(quickSlots);
+    [SerializeField] private GameObject inventoryOverlayPrefab;
+    [SerializeField] private GameObject inventoryInterfacePrefab;
+    private PlayerInventoryWindow inventoryWindow;
+
+    public void Start() {
+      CheckSlotsAmountUpdate(inventory);
 
       inventory.Load();
-      //equipment.Load();
+
       quickSlots.Load();
       OnQuickSlotLoaded?.Invoke();
-
-      Item defaultItem = new Item(inventory.database.ItemObjects[defaultItemId]);
-      if (!inventory.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])
-          /*&& !equipment.IsItemInInventory(inventory.database.ItemObjects[defaultItemId])*/) {
-        Debug.Log("Adding default item to inventory.");
-        inventory.AddItem(defaultItem, 1, null, null);
-      }
-
-      windowsController = GameManager.instance.WindowsController;
-      inventoryWindow = windowsController.GetWindow<PlayerInventoryWindow>();
     }
 
-    private void CheckSlotsUpdate(InventoryObject inventory, bool checkAmount = false) {
-      for (int i = 0; i < inventory.GetSlots.Length; i++) {
-        inventory.GetSlots[i].onAfterUpdated += SlotUpdateHandler;
-        if (checkAmount) {
-          inventory.GetSlots[i].onAmountUpdate += SlotAmountUpdateHandler;
+    public void Update() {
+      if (UserInput.instance.controls.UI.Inventory.triggered /*&& inventoryPrefab != null*/) {
+        InitInventoryWindow();
+        UserInput.instance.EnableUIControls(!inventoryWindow.IsShow);
+        if (inventoryWindow.IsShow) {
+          inventoryWindow.Hide();
         }
+        else {
+          inventoryWindow.Show();
+        }
+      }
+    }
+
+    public void OnApplicationQuit() {
+      inventory.Save();
+      //equipment.Save();
+      quickSlots.Save();
+      inventory.Clear();
+      //equipment.Clear();
+      quickSlots.Clear();
+    }
+
+    public void CheckSlotsAmountUpdate(InventoryObject inventory) {
+      for (int i = 0; i < inventory.GetSlots.Length; i++) {
+        inventory.GetSlots[i].onAmountUpdate += SlotAmountUpdateHandler;
       }
     }
 
@@ -82,31 +88,6 @@ namespace Inventory {
       return resourcesTotal.ContainsKey(resourceId) ? resourcesTotal[resourceId] : 0;
     }
 
-    public void AddSlotEvents(GameObject obj, InventorySlot slot, Transform parent) {
-      AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
-      AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
-      AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(slot, parent); });
-      AddEvent(obj, EventTriggerType.EndDrag, delegate { OnDragEnd(slot); });
-      AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
-    }
-
-    public void SlotUpdateHandler(InventorySlot slot) {
-      var image = slot.Background;
-      var text = slot.Text;
-      // var image = slot.slotDisplay.transform.GetChild(1).GetComponent<Image>();
-      // var text = slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
-      if (slot.item.Id <= -1) {
-        image.sprite = null;
-        image.color = new Color(1, 1, 1, 0);
-        text.text = string.Empty;
-      }
-      else {
-        image.sprite = slot.GetItemObject().UiDisplay;
-        image.color = new Color(1, 1, 1, 1);
-        text.text = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
-      }
-    }
-
     public void AddItemToInventory(ItemObject item, int count) {
       inventory.AddItem(new Item(item), count, item, null);
       AddAdditionalItem(item);
@@ -129,46 +110,24 @@ namespace Inventory {
       }
     }
 
-    private void Update() {
-      if (UserInput.instance.controls.UI.Inventory.triggered /*&& inventoryPrefab != null*/) {
-        UserInput.instance.EnableUIControls(!inventoryWindow.IsShow);
-        if (inventoryWindow.IsShow)
-          inventoryWindow.Hide();
-        else inventoryWindow.Show();
+    private void AddDefaultItem() {
+      if (defaultItem == null) {
+        return;
       }
+
+      inventory.AddDefaultItem(defaultItem);
     }
 
-    public void OnApplicationQuit() {
-      inventory.Save();
-      //equipment.Save();
-      quickSlots.Save();
-      inventory.Clear();
-      //equipment.Clear();
-      quickSlots.Clear();
-    }
+    private void InitInventoryWindow() {
+      if (inventoryWindow != null) {
+        return;
+      }
 
-    public void AddEvent(GameObject obj, EventTriggerType type, UnityAction<BaseEventData> action) {
-      EventTrigger trigger = obj.GetComponent<EventTrigger>();
-      if (!trigger) { Debug.LogWarning("No EventTrigger component found!"); return; }
-      var eventTrigger = new EventTrigger.Entry { eventID = type };
-      eventTrigger.callback.AddListener(action);
-      trigger.triggers.Add(eventTrigger);
-    }
+      AddDefaultItem();
+      // CheckSlotsUpdate(inventory);
 
-    public void OnEnter(GameObject obj) {
-      MouseData.slotHoveredOver = obj;
-    }
-
-    public void OnEnterInterface(GameObject obj) {
-      MouseData.interfaceMouseIsOver = obj.GetComponent<IInventoryUI>();
-    }
-
-    public void OnExitInterface(GameObject obj) {
-      MouseData.interfaceMouseIsOver = null;
-    }
-
-    public void OnExit(GameObject obj) {
-      MouseData.slotHoveredOver = null;
+      inventoryWindow = Instantiate(inventoryInterfacePrefab, inventoryOverlayPrefab.transform).GetComponent<PlayerInventoryWindow>();
+      GameManager.instance.WindowsController.AddWindow(inventoryWindow);
     }
 
     public void SpawnItem(InventorySlot slot) {
@@ -176,52 +135,6 @@ namespace Inventory {
       GameObject newObj = Instantiate(GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = slot.amount;
-    }
-
-    public void OnDrag(GameObject obj) {
-      if (MouseData.tempItemBeingDragged != null) {
-        var mousePos = UserInput.instance.GetMousePosition();//_uiCamera.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
-        MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = mousePos;
-      }
-    }
-
-    public void OnDragStart(InventorySlot slot, Transform parent) {
-      MouseData.tempItemBeingDragged = CreateTempItem(slot, parent);
-    }
-
-    private GameObject CreateTempItem(InventorySlot slot, Transform parent) {
-      GameObject tempItem = null;
-      if (slot.item.Id >= 0) {
-        tempItem = new GameObject("TempItemBeingDragged");
-        tempItem.layer = 5;
-        var rt = tempItem.AddComponent<RectTransform>();
-
-        rt.sizeDelta = new Vector2(80, 80);
-
-        tempItem.transform.SetParent(parent);
-        var img = tempItem.AddComponent<Image>();
-        img.sprite = slot.GetItemObject().UiDisplay;
-        img.raycastTarget = false;
-
-        tempItem.transform.localScale = Vector3.one;
-      }
-      return tempItem;
-    }
-
-    public void OnDragEnd(InventorySlot slot) {
-
-      Destroy(MouseData.tempItemBeingDragged);
-
-      if (MouseData.interfaceMouseIsOver == null) {
-        SpawnItem(slot);
-        slot.RemoveItem();
-        return;
-      }
-      if (MouseData.slotHoveredOver) {
-        var mouseHoverSlotData = MouseData.interfaceMouseIsOver.SlotsOnInterface[MouseData.slotHoveredOver];
-        inventory.SwapItems(slot, mouseHoverSlotData);
-      }
     }
   }
 }

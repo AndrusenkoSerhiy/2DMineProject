@@ -73,7 +73,7 @@ namespace Movement {
           rb.linearVelocity = new Vector2(0, 0f);
         }
         //if we are moving on ground through ladder set the same speed
-        if (playerController.Grounded && movement.x > 0) {
+        if (playerController.Grounded && movement.x != 0) {
           //Debug.LogError("move horizontally");
           rb.linearVelocity = new Vector2(playerController.FrameVelocity.x, playerController.Stats.GroundingForce);
         }

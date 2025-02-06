@@ -5,55 +5,85 @@ using UnityEngine;
 using World;
 
 public class PlaceCell : MonoBehaviour {
-  [SerializeField] private ResourceData _resourceData;
-  [SerializeField] private GameObject _prefab;
-  private GameObject _previewInstance;
-  [SerializeField] private bool _isPreviewing;
-  [SerializeField] private Color _previewColor;
-  [SerializeField] private Color _blockColor;
-  private Color _currPreviewColor;
+  [SerializeField] private ResourceData resourceData;
+  [SerializeField] private GameObject prefab;
+  private GameObject previewInstance;
+  [SerializeField] private bool isPreviewing;
+  [SerializeField] private Color previewColor;
+  [SerializeField] private Color blockColor;
+  private Color currPreviewColor;
   private InventorySlot currSlot;
+  private SpriteRenderer renderer;
   private void Start() {
     //don't need subscribe because we call from quickslot
     //UserInput.instance.OnBuildClick += Input_OnBuildClick;
   }
   
-  public void ActivateBuildMode(InventorySlot slot) {
-    SetEnabled(!_isPreviewing);
+  public void ActivateBuildMode(InventorySlot slot, ResourceData rData) {
+    if (currSlot == null) {
+      EnableBuildMode(slot, rData);
+    }
+    else if (currSlot.item == slot.item) {
+      DisableBuildMode();
+    }
+    else if (currSlot.item != slot.item) {
+      ChangeBuildMode(slot, rData);
+    }
+  }
+
+  private void EnableBuildMode(InventorySlot slot, ResourceData rData) {
     currSlot = slot;
+    resourceData = rData;
+    SetEnabled(true);
+  }
+
+  private void DisableBuildMode() {
+    SetEnabled(false);
+    currSlot = null;
+    resourceData = null;
+  }
+
+  private void ChangeBuildMode(InventorySlot slot, ResourceData rData) {
+    currSlot = slot;
+    resourceData = rData;
+    UpdatePreview();
   }
   
   private void StartPreview() {
-    if (_prefab == null)
+    if (prefab == null)
       return;
 
-    _isPreviewing = true;
-    _previewInstance = Instantiate(_prefab);
+    isPreviewing = true;
+    previewInstance = Instantiate(prefab);
+    UpdatePreview();
 
-    SetPreviewColor(_previewColor);
+    SetPreviewColor(previewColor);
+  }
+  
+  private void UpdatePreview() {
+    renderer = previewInstance.GetComponent<SpriteRenderer>();
+    renderer.sprite = resourceData.Sprite(0);
   }
 
   private void SetPreviewColor(Color col) {
-    var renderer = _previewInstance.GetComponent<SpriteRenderer>();
     renderer.color = col;
-    _currPreviewColor = col;
+    currPreviewColor = col;
   }
-
-  //use for condition if we can to place cell
+  
   private bool GetPreviewColor() {
-    return _currPreviewColor == _previewColor;
+    return currPreviewColor == previewColor;
   }
 
   private void CancelPreview() {
-    _isPreviewing = false;
-    if (_previewInstance != null) {
-      Destroy(_previewInstance);
+    isPreviewing = false;
+    if (previewInstance != null) {
+      Destroy(previewInstance);
     }
   }
   
   //enable building mode
   private void SetEnabled(bool value) {
-    _isPreviewing = value;
+    isPreviewing = value;
     BlockAction(value);
     if (value) StartPreview();
     else CancelPreview();
@@ -72,39 +102,38 @@ public class PlaceCell : MonoBehaviour {
     if (UserInput.instance.controls.UI.Click.WasPressedThisFrame()) {
       UIInput_OnUIClick();
     }
+
+    UpdatePreviewPosition();
+  }
+
+  private void UpdatePreviewPosition() {
+    if (!isPreviewing || previewInstance == null) 
+      return;
     
-    if (_isPreviewing && _previewInstance != null)
-    {
-      // Update the position of the preview to follow the mouse position
-      Vector3 mousePosition = UserInput.instance.GetMousePosition();
-      mousePosition.z = 0f; 
-      Vector3 worldPosition = GetMousePosition();
-
-      var grid = CoordsTransformer.WorldToGrid(worldPosition);
-      var world = CoordsTransformer.GridToWorld(grid.X, grid.Y);
-      
-      worldPosition.x = world.x;
-      worldPosition.y = world.y;
-      worldPosition.z = 0;
-
-      _previewInstance.transform.position = worldPosition;
-      /*Debug.LogError($"player {GameManager.instance.PlayerController.PlayerCoords.GetCoords().X} {GameManager.instance.PlayerController.PlayerCoords.GetCoords().Y}");
-      Debug.LogError($"grid   {grid.X} {grid.Y}");*/
-      if (GameManager.instance.ChunkController.GetCell(grid.X, grid.Y) != null || GameManager.instance.PlayerController.PlayerCoords.GetCoords().Equals(grid)) {
-        SetPreviewColor(_blockColor);
-      }
-      else {
-        SetPreviewColor(_previewColor);
-      }
-      /*if (Input.GetMouseButtonDown(1))
-      {
-        CancelPreview();
-      }*/
-    }
+    var snappedPosition = GetSnappedWorldPosition();
+    previewInstance.transform.position = snappedPosition;
+    
+    SetPreviewColor(ShouldUseBlockColor(snappedPosition) ? blockColor : previewColor);
+  }
+  
+  private Vector3 GetSnappedWorldPosition() {
+    var worldPosition = GetMousePosition();
+    
+    var grid = CoordsTransformer.WorldToGrid(worldPosition);
+    var world = CoordsTransformer.GridToWorld(grid.X, grid.Y);
+    
+    return new Vector3(world.x, world.y, 0f);
+  }
+  
+  private bool ShouldUseBlockColor(Vector3 worldPosition) {
+    var grid = CoordsTransformer.WorldToGrid(worldPosition);
+    var hasCell = GameManager.instance.ChunkController.GetCell(grid.X, grid.Y) != null;
+    var isPlayerOnGrid = GameManager.instance.PlayerController.PlayerCoords.GetCoords().Equals(grid);
+    return hasCell || isPlayerOnGrid;
   }
 
   private void UIInput_OnUIClick() {
-    if (!_isPreviewing || !GetPreviewColor()) {
+    if (!isPreviewing || !GetPreviewColor()) {
       return; 
     }
     
@@ -117,15 +146,23 @@ public class PlaceCell : MonoBehaviour {
 
   private void PlaceCellOnScene() {
     var coords = CoordsTransformer.WorldToGrid(GetMousePosition());
-    GameManager.instance.ChunkController.SpawnCell(coords,_resourceData);
-    currSlot.AddAmount(/*currSlot.amount*/-1, 20);
-    //TODO
-    if (currSlot.amount <=0) {
-      currSlot.Unselect();
-      currSlot.RemoveItem();
-      SetEnabled(false);
-      currSlot = null;
-    }
+    GameManager.instance.ChunkController.SpawnCell(coords,resourceData);
+    currSlot.AddAmount(-1, GetMaxStack());
+    ClearSLot();
+  }
+
+  private int GetMaxStack() {
+    return GameManager.instance.ItemDatabaseObject.ItemObjects[currSlot.item.Id].MaxStackSize;
+  }
+
+  private void ClearSLot() {
+    if (currSlot.amount > 0)
+      return;
+    
+    currSlot.Unselect();
+    currSlot.RemoveItem();
+    SetEnabled(false);
+    currSlot = null;
   }
 
   private Vector3 GetMousePosition() {

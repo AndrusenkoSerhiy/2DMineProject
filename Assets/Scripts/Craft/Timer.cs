@@ -17,6 +17,7 @@ namespace Craft {
 
     public Action onTimerStop;
     public Action<int> onItemTimerEnd;
+    public bool IsStarted => isStarted;
 
     public void OnEnable() {
       UpdateTimer();
@@ -52,6 +53,7 @@ namespace Craft {
     }
 
     public DateTime GetEndTime() => endTime;
+    public DateTime GetStartTime() => startTime;
 
     public void StartTimer() {
       isStarted = true;
@@ -90,10 +92,9 @@ namespace Craft {
     private void StopTimer() {
       //Debug.Log("Timer StopTimer");
       onTimerStop?.Invoke();
-      Reset();
     }
 
-    private void Reset() {
+    public void Reset() {
       //Debug.Log("Timer Reset");
       isStarted = false;
       timerText.text = string.Empty;

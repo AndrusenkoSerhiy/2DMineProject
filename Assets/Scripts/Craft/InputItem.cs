@@ -1,6 +1,7 @@
 using System;
 using Scriptables.Craft;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,24 +12,32 @@ namespace Craft {
     [SerializeField] private Image timeIcon;
     [SerializeField] private Image fade;
     [SerializeField] private Timer timer;
+    [SerializeField] private Button cancel;
+
+    private Recipe recipe;
+    private int countLeft;
+    private int position;
+    private RectTransform rectTransform;
 
     public Action<Recipe, int> onItemCrafted;
     public Action onInputAllCrafted;
-    private Recipe recipe;
-    private int countLeft;
+    public Action<InputItem> onCanceled;
     public Timer Timer => timer;
+    public Recipe Recipe => recipe;
+    public int CountLeft => countLeft;
+    public int Position => position;
 
     public void Init(int count, Recipe recipe, int position, DateTime? start = null) {
       //Debug.Log("InputItem Init");
       countLeft = count;
       this.recipe = recipe;
+      this.position = position;
+      rectTransform = GetComponent<RectTransform>();
 
-      icon.sprite = recipe.Result.UiDisplay;
-      icon.color = new Color(1, 1, 1, 255);
-      timeIcon.gameObject.SetActive(true);
-      fade.gameObject.SetActive(true);
-
+      SetupUI();
       PrintCount();
+
+      cancel.onClick.AddListener(CancelHandler);
 
       timer.enabled = true;
       timer.onTimerStop += OnTimerStopHandler;
@@ -40,8 +49,33 @@ namespace Craft {
       }
     }
 
+    public void UpdatePosition(int position) {
+      this.position = position;
+    }
+
     public void StartCrafting() {
       timer.StartTimer();
+    }
+
+    public void UpdateTransformPosition(Vector3 position) {
+      rectTransform.position = position;
+    }
+
+    public Vector3 GetTransformPosition() {
+      return rectTransform.position;
+    }
+
+    private void CancelHandler() {
+      onCanceled?.Invoke(this);
+      ResetInput();
+    }
+
+    private void SetupUI() {
+      icon.sprite = recipe.Result.UiDisplay;
+      icon.color = new Color(1, 1, 1, 255);
+      timeIcon.gameObject.SetActive(true);
+      fade.gameObject.SetActive(true);
+      cancel.gameObject.SetActive(true);
     }
 
     private void PrintCount() {
@@ -65,9 +99,12 @@ namespace Craft {
 
     private void ResetInput() {
       //Debug.Log("InputItem ResetInput");
+      cancel.onClick.RemoveAllListeners();
+
       timer.onTimerStop -= OnTimerStopHandler;
       timer.onItemTimerEnd -= OnItemTimerEndHandler;
       timer.enabled = false;
+      timer.Reset();
 
       countLeft = 0;
       recipe = null;
@@ -76,17 +113,8 @@ namespace Craft {
       icon.color = new Color(1, 1, 1, 0);
       timeIcon.gameObject.SetActive(false);
       fade.gameObject.SetActive(false);
+      cancel.gameObject.SetActive(false);
       countText.text = string.Empty;
-    }
-
-    public void UpdateTransformPosition(Vector3 position) {
-      var rectTransform = GetComponent<RectTransform>();
-      rectTransform.position = position;
-    }
-
-    public Vector3 GetTransformPosition() {
-      var rectTransform = GetComponent<RectTransform>();
-      return rectTransform.position;
     }
   }
 }

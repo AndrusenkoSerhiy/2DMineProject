@@ -37,43 +37,63 @@ namespace Craft {
         }
 
         var inputItem = input.GetComponent<InputItem>();
-        inputItem.onInputAllCrafted += OnInputAllCraftedHandler;
-        inputItem.onItemCrafted += OnItemCraftedHandler;
 
         items.Add(inputItem);
       }
     }
 
-    private void OnItemCraftedHandler(Recipe recipe, int count) {
-      station.RemoveCountFromCraftTotal(recipe.Result, count);
-    }
-
-    private void OnInputAllCraftedHandler() {
-      station.RemoveFromCraftInputsItemsIds();
-
+    public void UpdateWaitInputs(int fromPosition = 0) {
       if (inputInProgress == 1) {
         inputInProgress--;
         lastEndTime = null;
         return;
       }
 
-      for (var i = 0; i < inputInProgress - 1; i++) {
+      UpdateWaitChain(fromPosition);
+
+      var firstInput = items[0];
+      if (inputInProgress > 0 && !firstInput.Timer.IsStarted) {
+        firstInput.StartCrafting();
+      }
+    }
+
+    public void UpdateTimersStartTimes(InputItem inputItem) {
+      if (inputItem.Position + 1 >= inputInProgress) {
+        return;
+      }
+
+      var currentTime = DateTime.Now.ToUniversalTime();
+      var currentInputStartTime = inputItem.Timer.GetStartTime();
+      var newStartTime = currentTime > currentInputStartTime ? currentTime : currentInputStartTime;
+      for (var i = inputItem.Position + 1; i < inputInProgress; i++) {
+        var item = items[i];
+        item.Timer.InitTimer(item.CountLeft, item.Recipe.CraftingTime, newStartTime);
+        newStartTime = item.Timer.GetEndTime();
+      }
+
+      lastEndTime = newStartTime;
+    }
+
+    private void UpdateWaitChain(int fromPosition = 0) {
+      for (var i = fromPosition; i < inputInProgress - 1; i++) {
         var nextPosition = i + 1;
 
         // Swap items
         (items[i], items[nextPosition]) = (items[nextPosition], items[i]);
 
+        var currentItem = items[i];
+        var nextItem = items[nextPosition];
+
         // Swap positions
-        var tempPosition = items[i].GetTransformPosition();
-        items[i].UpdateTransformPosition(items[nextPosition].GetTransformPosition());
-        items[nextPosition].UpdateTransformPosition(tempPosition);
+        var tempTransformPosition = currentItem.GetTransformPosition();
+        var tempPosition = currentItem.Position;
+        currentItem.UpdateTransformPosition(nextItem.GetTransformPosition());
+        currentItem.UpdatePosition(nextItem.Position);
+        nextItem.UpdateTransformPosition(tempTransformPosition);
+        nextItem.UpdatePosition(tempPosition);
       }
 
       inputInProgress--;
-
-      if (inputInProgress > 0) {
-        items[0].StartCrafting();
-      }
     }
 
     public void SetRecipe(int count, Recipe recipe) {
@@ -83,9 +103,6 @@ namespace Craft {
       lastEndTime = item.Timer.GetEndTime();
 
       inputInProgress++;
-
-      station.AddItemToCraftTotal(recipe.Result, count);
-      station.AddToCraftInputsItemsIds(recipe.Result.data.Id);
     }
   }
 }

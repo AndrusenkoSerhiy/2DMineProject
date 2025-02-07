@@ -94,16 +94,10 @@ namespace Craft {
       }
 
       inputItems.SetRecipe(count, recipe);
+      station.AddItemToCraftTotal(recipe.Result, count);
+      station.AddToCraftInputsItemsIds(recipe.Result.data.Id);
 
       craftActions.UpdateAndPrintInputCount();
-    }
-
-    private void AddCraftedItemToOutput(Recipe recipe, int count) {
-      //Debug.Log("CraftManager AddCraftedItemToOutput: " + recipe.RecipeName);
-      var outputInventory = station.OutputInventory;
-      var item = new Item(outputInventory.database.ItemObjects[recipe.Result.data.Id]);
-
-      outputInventory.AddItem(item, count, null, null);
     }
 
     private void OnRecipeSelectedHandler(Recipe recipe) {
@@ -140,18 +134,46 @@ namespace Craft {
       foreach (var input in inputItems.Items) {
         input.onItemCrafted += AddCraftedItemToOutput;
         input.onInputAllCrafted += OnInputAllCraftedHandler;
+        input.onCanceled += OnInputCanceledHandler;
       }
     }
 
     private void RemoveInputEvents() {
       foreach (var input in inputItems.Items) {
-        input.onItemCrafted -= AddCraftedItemToOutput;
         input.onInputAllCrafted -= OnInputAllCraftedHandler;
+        input.onItemCrafted -= AddCraftedItemToOutput;
+        input.onCanceled -= OnInputCanceledHandler;
       }
     }
 
+    private void AddCraftedItemToOutput(Recipe recipe, int count) {
+      //Debug.Log("CraftManager AddCraftedItemToOutput: " + recipe.RecipeName);
+      station.RemoveCountFromCraftTotal(recipe.Result, count);
+
+      var outputInventory = station.OutputInventory;
+      var item = new Item(outputInventory.database.ItemObjects[recipe.Result.data.Id]);
+
+      outputInventory.AddItem(item, count, null, null);
+    }
+
     private void OnInputAllCraftedHandler() {
+      station.RemoveFromCraftInputsItemsIds();
+      inputItems.UpdateWaitInputs();
       craftActions.UpdateAndPrintInputCount();
+    }
+
+    private void OnInputCanceledHandler(InputItem inputItem) {
+      station.RemoveCountFromCraftTotal(inputItem.Recipe.Result, inputItem.CountLeft);
+      station.RemoveFromCraftInputsItemsIds(inputItem.Position);
+
+      inputItems.UpdateTimersStartTimes(inputItem);
+      inputItems.UpdateWaitInputs(inputItem.Position);
+
+      //remove resources from inventory
+      foreach (var item in inputItem.Recipe.RequiredMaterials) {
+        var totalCount = inputItem.CountLeft * item.Amount;
+        playerInventory.inventory.AddItem(item.Material.data, totalCount, null, null);
+      }
     }
 
     private void AddOutputUpdateEvents() {

@@ -27,6 +27,7 @@ namespace Craft {
     [SerializeField] private GameObject inputItemPrefab;
 
     [SerializeField] private GameObject outputItemsContainer;
+    [SerializeField] private Button takeAllButton;
     // [SerializeField] private InventoryObject outputInventory;
 
     private PlayerInventory playerInventory;
@@ -60,16 +61,18 @@ namespace Craft {
       recipesManager.AddEvents();
       recipesManager.SelectFirst();
 
-      SlotsUpdateEvents();
+      AddSlotsUpdateEvents();
       craftActions.AddCraftActionsEvents();
       craftActions.onCraftRequested += OnCraftRequestedHandler;
 
       AddInputEvents();
 
       AddOutputUpdateEvents();
+      takeAllButton.onClick.AddListener(OnTakeAllButtonClickHandler);
     }
 
     private void OnDisable() {
+      takeAllButton.onClick.RemoveAllListeners();
       RemoveOutputUpdateEvents();
 
       RemoveInputEvents();
@@ -108,7 +111,7 @@ namespace Craft {
       craftActions.UpdateAndPrintInputCount();
     }
 
-    private void SlotsUpdateEvents() {
+    private void AddSlotsUpdateEvents() {
       playerInventory.onResourcesTotalUpdate += SlotAmountUpdateHandler;
     }
 
@@ -193,6 +196,10 @@ namespace Craft {
       if (slot.item.Id < 0) {
         craftActions.UpdateAndPrintInputCount();
       }
+    }
+
+    private void OnTakeAllButtonClickHandler() {
+      station.OutputInventory.MoveAllItemsTo(playerInventory.inventory);
     }
   }
 }

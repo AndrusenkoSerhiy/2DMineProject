@@ -26,6 +26,28 @@ namespace Scriptables.Inventory {
       Container = new InventoryContainer(slotsCount);
     }
 
+    public void MoveAllItemsTo(InventoryObject destinationInventory) {
+      if (destinationInventory == null) {
+        return;
+      }
+
+      foreach (var slot in GetSlots) {
+        if (slot.item.Id < 0 || slot.amount <= 0) {
+          continue; // Skip empty slots
+        }
+
+        var remainingAmount = destinationInventory.AddItem(slot.item, slot.amount);
+
+        if (remainingAmount <= 0) {
+          slot.RemoveItem();
+        }
+        else {
+          slot.UpdateSlot(slot.item, remainingAmount);
+        }
+      }
+    }
+
+
     public bool RemoveItem(Item item, int amount) {
       if (amount <= 0) {
         return false;
@@ -53,6 +75,59 @@ namespace Scriptables.Inventory {
       }
 
       return remainingAmount == 0;
+    }
+
+    /// <summary>
+    /// Attempt to add an item to the inventory. If the item is stackable and there is already an item of the same type in the inventory, it will be added to the existing slot. If not, it will go into a new slot.
+    /// </summary>
+    /// <param name="item">The item to add</param>
+    /// <param name="amount">The amount of the item to add</param>
+    /// <returns>The amount of the item that could not be added to the inventory</returns>
+    public int AddItem(Item item, int amount) {
+      var slot = FindStackableItemOnInventory(item);
+      //don't have empty slot or existing item
+      if (EmptySlotCount <= 0 && slot == null) {
+        return amount;
+      }
+
+      //add to new slot
+      var maxStackSize = database.ItemObjects[item.Id].MaxStackSize;
+      if (!database.ItemObjects[item.Id].Stackable || slot == null) {
+        var overFlow = GetEmptySlot().UpdateSlot(item, amount, maxStackSize);
+        return HandleOverflow(overFlow, maxStackSize, item);
+      }
+
+      //add to exist slot
+      var remainingAmount = slot.AddAmount(amount, maxStackSize);
+      return HandleOverflow(remainingAmount, maxStackSize, item);
+    }
+
+    /// <summary>
+    /// Handles the overflow of items when trying to add an item to the inventory. If the amount of the item to add is greater than the maximum stack size, it will be added to multiple slots.
+    /// </summary>
+    /// <param name="overflowAmount">The amount of the item that is greater than the maximum stack size</param>
+    /// <param name="maxStackSize">The maximum stack size of the item</param>
+    /// <param name="item">The item to add</param>
+    /// <returns>The amount of the item that could not be added to the inventory</returns>
+    private int HandleOverflow(int overflowAmount, int maxStackSize, Item item) {
+      if (overflowAmount <= 0) {
+        return 0;
+      }
+
+      var countRepeat = Mathf.CeilToInt((float)overflowAmount / maxStackSize);
+
+      for (var i = 0; i < countRepeat; i++) {
+        var emptySlot = GetEmptySlot();
+        if (emptySlot != null) {
+          emptySlot.UpdateSlot(item, overflowAmount, maxStackSize);
+          overflowAmount -= maxStackSize;
+        }
+        else {
+          return overflowAmount;
+        }
+      }
+
+      return 0;
     }
 
     //use to get item from mining
@@ -191,6 +266,7 @@ namespace Scriptables.Inventory {
       }
       return true;
     }
+
     private void SpawnItem(ItemObject item, int amount) {
       if (item == null)
         return;
@@ -199,6 +275,7 @@ namespace Scriptables.Inventory {
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = amount;
     }
+
     //update count for ground item
     private void UpdateCount(GroundItem groundItem, int amount) {
       if (groundItem != null) groundItem.Count = amount;

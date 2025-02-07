@@ -104,7 +104,6 @@ namespace Craft {
       var item = new Item(outputInventory.database.ItemObjects[recipe.Result.data.Id]);
 
       outputInventory.AddItem(item, count, null, null);
-      //outputInterface.UpdateUI();
     }
 
     private void OnRecipeSelectedHandler(Recipe recipe) {

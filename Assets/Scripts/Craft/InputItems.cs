@@ -11,6 +11,7 @@ namespace Craft {
     private List<InputItem> items = new List<InputItem>();
     public List<InputItem> Items => items;
     private int inputInProgress = 0;
+    private DateTime? lastEndTime;
 
     [SerializeField] private bool preventItemDrop;
     public bool PreventItemDrop => preventItemDrop;
@@ -52,6 +53,7 @@ namespace Craft {
 
       if (inputInProgress == 1) {
         inputInProgress--;
+        lastEndTime = null;
         return;
       }
 
@@ -76,7 +78,10 @@ namespace Craft {
 
     public void SetRecipe(int count, Recipe recipe) {
       var item = items[inputInProgress];
-      item.Init(count, recipe, inputInProgress);
+      item.Init(count, recipe, inputInProgress, lastEndTime);
+
+      lastEndTime = item.Timer.GetEndTime();
+
       inputInProgress++;
 
       station.AddItemToCraftTotal(recipe.Result, count);

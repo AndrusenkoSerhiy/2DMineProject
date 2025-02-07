@@ -16,8 +16,9 @@ namespace Craft {
     public Action onInputAllCrafted;
     private Recipe recipe;
     private int countLeft;
+    public Timer Timer => timer;
 
-    public void Init(int count, Recipe recipe, int position) {
+    public void Init(int count, Recipe recipe, int position, DateTime? start = null) {
       //Debug.Log("InputItem Init");
       countLeft = count;
       this.recipe = recipe;
@@ -32,7 +33,7 @@ namespace Craft {
       timer.enabled = true;
       timer.onTimerStop += OnTimerStopHandler;
       timer.onItemTimerEnd += OnItemTimerEndHandler;
-      timer.InitTimer(count, recipe.CraftingTime);
+      timer.InitTimer(count, recipe.CraftingTime, start);
 
       if (position == 0) {
         StartCrafting();

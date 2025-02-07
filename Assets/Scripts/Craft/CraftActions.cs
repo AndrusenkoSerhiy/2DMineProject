@@ -25,10 +25,6 @@ namespace Craft {
     private int maxCount = 0;
     private int currentCount = 1;
 
-    // private Dictionary<ItemObject, int> outputSlotsInUse = new Dictionary<ItemObject, int>();
-    // private int outputSlotsAmount;
-    // private int slotsInUse = 0;
-
     public CraftActions(Workstation station, TMP_InputField countInput, Button craftButton, Button incrementButton,
       Button decrementButton, Button maxCountButton, Color buttonsActiveColor, Color buttonsDisabledColor) {
       this.station = station;

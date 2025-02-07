@@ -6,6 +6,7 @@ namespace Craft {
   public class Timer : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI timerText;
     private DateTime startTime;
+    private DateTime endTime;
     private int timeForOne;
     private int totalItems;
     private int itemsLeft;
@@ -18,16 +19,14 @@ namespace Craft {
     public Action<int> onItemTimerEnd;
 
     public void OnEnable() {
-      //Debug.Log("Timer OnEnable");
-      if (!isStarted) {
-        return;
-      }
-
       UpdateTimer();
     }
 
-    public void OnDisable() {
-      //Debug.Log("Timer OnDisable");
+    private void UpdateTimer() {
+      //Debug.Log("Timer UpdateTimer");
+      var currentTime = DateTime.Now.ToUniversalTime();
+      var elapsedTime = (float)(currentTime - startTime).TotalSeconds;
+      timeLeft = totalTime - elapsedTime;
     }
 
     public void Update() {
@@ -38,18 +37,21 @@ namespace Craft {
       TimerTick();
     }
 
-    public void InitTimer(int count, int time) {
+    public void InitTimer(int count, int time, DateTime? start = null) {
       //Debug.Log("Timer StartTimer");
-      startTime = DateTime.Now.ToUniversalTime();
+      startTime = start ?? DateTime.Now.ToUniversalTime();
       totalItems = count;
       timeForOne = time;
       totalTime = count * time;
       itemsLeft = totalItems;
       timeLeft = totalTime;
       lastCheckTime = totalTime;
+      endTime = startTime.AddSeconds(totalTime);
 
       PrintTime();
     }
+
+    public DateTime GetEndTime() => endTime;
 
     public void StartTimer() {
       isStarted = true;
@@ -71,13 +73,6 @@ namespace Craft {
     private void PrintTime() {
       var roundedTimeLeft = (float)Math.Round(timeLeft);
       timerText.text = Helper.SecondsToTimeString(roundedTimeLeft);
-    }
-
-    private void UpdateTimer() {
-      //Debug.Log("Timer UpdateTimer");
-      var currentTime = DateTime.Now.ToUniversalTime();
-      var elapsedTime = (float)(currentTime - startTime).TotalSeconds;
-      timeLeft = totalTime - elapsedTime;
     }
 
     private void TimerTick() {

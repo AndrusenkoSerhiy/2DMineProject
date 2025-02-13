@@ -20,7 +20,7 @@ namespace Craft {
       GameManager.instance.WindowsController.AddWindow(craftWindow);
     }
 
-    public bool Interact(Interactor interactor) {
+    public bool Interact(PlayerInteractor playerInteractor) {
       Init();
 
       if (craftWindow.IsShow) {

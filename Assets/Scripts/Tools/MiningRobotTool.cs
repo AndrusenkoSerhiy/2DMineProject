@@ -20,7 +20,7 @@ namespace Tools {
     }
     public string InteractionPrompt => isPlayerInside ? $"{interactExitName}" : $"{interactEnterName}";
 
-    public bool Interact(Interactor interactor) {
+    public bool Interact(PlayerInteractor playerInteractor) {
       isPlayerInside = !isPlayerInside;
       if (isPlayerInside) {
         SitOnRobot();

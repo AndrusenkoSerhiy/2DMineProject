@@ -8,6 +8,7 @@ namespace Windows {
     public bool IsShow => isShow;
     public delegate void ShowWindow(WindowBase window);
     public event ShowWindow OnShow;
+    public event ShowWindow OnHide;
     
     // protected virtual void Start() {
     //   Hide();
@@ -28,6 +29,7 @@ namespace Windows {
     public virtual void Hide() {
       isShow = false;
       gameObject.SetActive(false);
+      OnHide?.Invoke(this);
       LockPlayer(false);
       LockHighlight(false);
     }

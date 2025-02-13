@@ -1,88 +1,89 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Inventory;
 using Scriptables.Craft;
 using Scriptables.Items;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityServiceLocator;
 
 namespace Craft {
   public class CraftManager : MonoBehaviour, IInventoryDropZoneUI {
     [SerializeField] private Workstation station;
-    [SerializeField] private GameObject recipesListContainerPrefab;
-    [SerializeField] private RecipeDetail detail;
-    [SerializeField] private Button recipesListItemPrefab;
-
-    [SerializeField] private TMP_InputField countInput;
-    [SerializeField] private Button craftButton;
-    [SerializeField] private Button incrementButton;
-    [SerializeField] private Button decrementButton;
-    [SerializeField] private Button maxCountButton;
-    [SerializeField] private Color buttonsActiveColor;
-    [SerializeField] private Color buttonsDisabledColor;
-
-    [SerializeField] private GameObject inputItemsContainer;
-    [SerializeField] private GameObject inputItemPrefab;
-
-    [SerializeField] private GameObject outputItemsContainer;
     [SerializeField] private Button takeAllButton;
-    // [SerializeField] private InventoryObject outputInventory;
-
-    private PlayerInventory playerInventory;
-    private RecipesManager recipesManager;
-    private CraftActions craftActions;
-    private InputItems inputItems;
-
     [SerializeField] private bool preventItemDrop;
+
+    private IRecipesManager recipesManager;
+    private IRecipeDetail detail;
+    private ICraftActions craftActions;
+    private PlayerInventory playerInventory;
+    private IInputItems inputItems;
+    private bool isInitialized;
+
     public bool PreventItemDrop => preventItemDrop;
 
-    private void Init() {
-      if (playerInventory != null) {
-        return;
-      }
-      //Debug.Log("CraftManager Init");
-
-      playerInventory = GameManager.instance.PlayerInventory;
-      recipesManager = new RecipesManager(station, recipesListItemPrefab, recipesListContainerPrefab);
-      craftActions = new CraftActions(station, countInput, craftButton, incrementButton, decrementButton,
-        maxCountButton, buttonsActiveColor, buttonsDisabledColor);
-      inputItems = new InputItems(station, inputItemsContainer, inputItemPrefab);
+    public void Awake() {
+      Debug.Log("CraftManager Awake");
+      ServiceLocator.For(this).Register<Workstation>(station);
     }
 
-    private void OnEnable() {
-      //Debug.Log("CraftManager OnEnable");
-
+    public void Start() {
+      Debug.Log("CraftManager Start");
       Init();
+      AddEvents();
+    }
 
-      recipesManager.onSelected += OnRecipeSelectedHandler;
-      recipesManager.BuildList();
-      recipesManager.AddEvents();
-      recipesManager.SelectFirst();
+    public void OnEnable() {
+      if (!isInitialized) {
+        return;
+      }
 
+      Debug.Log("CraftManager OnEnable");
+
+      AddEvents();
+    }
+
+    private void OnDisable() => RemoveEvents();
+
+    private void Init() {
+      Debug.Log("CraftManager Init");
+
+      playerInventory = GameManager.instance.PlayerInventory;
+      detail = ServiceLocator.For(this).Get<IRecipeDetail>();
+      craftActions = ServiceLocator.For(this).Get<ICraftActions>();
+      inputItems = ServiceLocator.For(this).Get<IInputItems>();
+      recipesManager = ServiceLocator.For(this).Get<IRecipesManager>();
+
+      isInitialized = true;
+    }
+
+    private void AddEvents() {
+      Debug.Log("CraftManager AddEvents");
+      //recipes list
+      recipesManager.OnSelected += OnRecipeSelectedHandler;
+      //inventory slots
       AddSlotsUpdateEvents();
-      craftActions.AddCraftActionsEvents();
-      craftActions.onCraftRequested += OnCraftRequestedHandler;
-
+      //craft input actions
+      craftActions.OnCraftRequested += OnCraftRequestedHandler;
+      //craft input slots
       AddInputEvents();
-
+      //craft output slots
       AddOutputUpdateEvents();
       takeAllButton.onClick.AddListener(OnTakeAllButtonClickHandler);
     }
 
-    private void OnDisable() {
+    private void RemoveEvents() {
+      Debug.Log("CraftManager RemoveEvents");
+      //craft output slots
       takeAllButton.onClick.RemoveAllListeners();
       RemoveOutputUpdateEvents();
-
+      //craft input slots
       RemoveInputEvents();
-
-      craftActions.onCraftRequested -= OnCraftRequestedHandler;
-      craftActions.RemoveCraftActionsEvents();
+      //craft input actions
+      craftActions.OnCraftRequested -= OnCraftRequestedHandler;
+      //inventory slots
       RemoveSlotsUpdateEvents();
-
-      recipesManager.RemoveEvents();
-      recipesManager.onSelected -= OnRecipeSelectedHandler;
+      //recipes list
+      recipesManager.OnSelected -= OnRecipeSelectedHandler;
     }
 
     private void OnCraftRequestedHandler(int count) {
@@ -108,7 +109,7 @@ namespace Craft {
       detail.SetRecipeDetails(recipe);
 
       craftActions.SetRecipe(recipe);
-      craftActions.UpdateAndPrintInputCount();
+      craftActions.UpdateAndPrintInputCount(true);
     }
 
     private void AddSlotsUpdateEvents() {
@@ -135,22 +136,22 @@ namespace Craft {
 
     private void AddInputEvents() {
       foreach (var input in inputItems.Items) {
-        input.onItemCrafted += AddCraftedItemToOutput;
-        input.onInputAllCrafted += OnInputAllCraftedHandler;
-        input.onCanceled += OnInputCanceledHandler;
+        input.OnItemCrafted += AddCraftedItemToOutput;
+        input.OnInputAllCrafted += OnInputAllCraftedHandler;
+        input.OnCanceled += OnInputCanceledHandler;
       }
     }
 
     private void RemoveInputEvents() {
       foreach (var input in inputItems.Items) {
-        input.onInputAllCrafted -= OnInputAllCraftedHandler;
-        input.onItemCrafted -= AddCraftedItemToOutput;
-        input.onCanceled -= OnInputCanceledHandler;
+        input.OnInputAllCrafted -= OnInputAllCraftedHandler;
+        input.OnItemCrafted -= AddCraftedItemToOutput;
+        input.OnCanceled -= OnInputCanceledHandler;
       }
     }
 
     private void AddCraftedItemToOutput(Recipe recipe, int count) {
-      //Debug.Log("CraftManager AddCraftedItemToOutput: " + recipe.RecipeName);
+      Debug.Log("CraftManager AddCraftedItemToOutput: " + recipe.RecipeName);
       station.RemoveCountFromCraftTotal(recipe.Result, count);
 
       var outputInventory = station.OutputInventory;

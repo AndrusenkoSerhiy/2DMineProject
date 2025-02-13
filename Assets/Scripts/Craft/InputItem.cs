@@ -1,7 +1,6 @@
 using System;
 using Scriptables.Craft;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,9 +18,9 @@ namespace Craft {
     private int position;
     private RectTransform rectTransform;
 
-    public Action<Recipe, int> onItemCrafted;
-    public Action onInputAllCrafted;
-    public Action<InputItem> onCanceled;
+    public event Action<Recipe, int> OnItemCrafted;
+    public event Action OnInputAllCrafted;
+    public event Action<InputItem> OnCanceled;
     public Timer Timer => timer;
     public Recipe Recipe => recipe;
     public int CountLeft => countLeft;
@@ -66,7 +65,7 @@ namespace Craft {
     }
 
     private void CancelHandler() {
-      onCanceled?.Invoke(this);
+      OnCanceled?.Invoke(this);
       ResetInput();
     }
 
@@ -86,12 +85,12 @@ namespace Craft {
       //Debug.Log("InputItem OnTimerStop");
       ResetInput();
 
-      onInputAllCrafted?.Invoke();
+      OnInputAllCrafted?.Invoke();
     }
 
     private void OnItemTimerEndHandler(int count) {
       //Debug.Log("InputItem OnItemTimerEndHandler: " + count);
-      onItemCrafted?.Invoke(recipe, count);
+      OnItemCrafted?.Invoke(recipe, count);
 
       countLeft -= count;
       PrintCount();

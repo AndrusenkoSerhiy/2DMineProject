@@ -5,45 +5,49 @@ using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityServiceLocator;
 
 namespace Craft {
-  public class CraftActions {
-    private readonly TMP_InputField countInput;
-    private readonly Button craftButton;
-    private readonly Button incrementButton;
-    private readonly Button decrementButton;
-    private readonly Button maxCountButton;
-    private readonly PlayerInventory playerInventory;
-    private readonly Color buttonsActiveColor;
-    private readonly Color buttonsDisabledColor;
+  public class CraftActions : MonoBehaviour, ICraftActions {
+    [SerializeField] private TMP_InputField countInput;
+    [SerializeField] private Button craftButton;
+    [SerializeField] private Button incrementButton;
+    [SerializeField] private Button decrementButton;
+    [SerializeField] private Button maxCountButton;
+    [SerializeField] private Color buttonsActiveColor;
+    [SerializeField] private Color buttonsDisabledColor;
+
+    private PlayerInventory playerInventory;
     private Recipe recipe;
     private Workstation station;
-
-    public Action<int> onCraftRequested;
 
     private int minCount = 1;
     private int maxCount = 0;
     private int currentCount = 1;
+    private bool isInitialized;
 
-    public CraftActions(Workstation station, TMP_InputField countInput, Button craftButton, Button incrementButton,
-      Button decrementButton, Button maxCountButton, Color buttonsActiveColor, Color buttonsDisabledColor) {
-      this.station = station;
-      this.countInput = countInput;
-      this.craftButton = craftButton;
-      this.incrementButton = incrementButton;
-      this.decrementButton = decrementButton;
-      this.maxCountButton = maxCountButton;
-      this.buttonsActiveColor = buttonsActiveColor;
-      this.buttonsDisabledColor = buttonsDisabledColor;
+    public event Action<int> OnCraftRequested;
+
+    public void Awake() {
+      Debug.Log("CraftActions Awake");
       playerInventory = GameManager.instance.PlayerInventory;
 
-      this.station.CraftItemsTotal.Clear();
-      this.station.CraftInputsItemsIds.Clear();
+      ServiceLocator.For(this).Register<ICraftActions>(this);
+      station = ServiceLocator.For(this).Get<Workstation>();
+      station.CraftItemsTotal.Clear();
+      station.CraftInputsItemsIds.Clear();
     }
 
-    public void UpdateAndPrintInputCount() {
+    public void OnEnable() => AddEvents();
+    
+    public void OnDisable() => RemoveEvents();
+
+    public void UpdateAndPrintInputCount(bool resetCurrentCount = false) {
       Debug.Log("CraftActions UpdateAndPrintInputCount");
-      ResetCurrentCount();
+      if (resetCurrentCount) {
+        ResetCurrentCount();
+      }
+
       CalculateMaxCount();
       SetCurrentCount();
       EnableButtons();
@@ -67,7 +71,8 @@ namespace Craft {
       this.recipe = recipe;
     }
 
-    public void AddCraftActionsEvents() {
+    private void AddEvents() {
+      Debug.Log("CraftActions AddEvents");
       countInput.onValueChanged.AddListener(OnCountInputChangeHandler);
       craftButton.onClick.AddListener(OnCraftClickHandler);
       incrementButton.onClick.AddListener(OnIncrementClickHandler);
@@ -75,7 +80,7 @@ namespace Craft {
       maxCountButton.onClick.AddListener(OnMaxCountButtonClickHandler);
     }
 
-    public void RemoveCraftActionsEvents() {
+    private void RemoveEvents() {
       countInput.onValueChanged.RemoveAllListeners();
       craftButton.onClick.RemoveAllListeners();
       incrementButton.onClick.RemoveAllListeners();
@@ -104,7 +109,7 @@ namespace Craft {
 
     private void OnCraftClickHandler() {
       //Debug.Log("CraftActions Craft Clicked");
-      onCraftRequested?.Invoke(currentCount);
+      OnCraftRequested?.Invoke(currentCount);
     }
 
     private void OnIncrementClickHandler() {
@@ -112,6 +117,7 @@ namespace Craft {
       if (currentCount >= maxCount) {
         return;
       }
+
       currentCount++;
       PrintInputCount();
       EnableButtons();
@@ -122,6 +128,7 @@ namespace Craft {
       if (currentCount <= minCount) {
         return;
       }
+
       currentCount--;
       PrintInputCount();
       EnableButtons();
@@ -207,6 +214,7 @@ namespace Craft {
         currentCount = 1;
         return;
       }
+
       currentCount = currentCount > maxCount ? maxCount : currentCount;
     }
 

@@ -1,12 +1,12 @@
-using System;
 using System.Collections.Generic;
 using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityServiceLocator;
 
 namespace Craft {
-  public class RecipeDetail : MonoBehaviour {
+  public class RecipeDetail : MonoBehaviour, IRecipeDetail {
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI craftTime;
@@ -14,8 +14,14 @@ namespace Craft {
     [SerializeField] private GameObject rowEmptyPrefab;
     [SerializeField] private GameObject listContainer;
     [SerializeField] private List<GameObject> rows;
+    
     private Recipe currentRecipe;
     private int[] recipeIngredientsIds;
+
+    public void Awake() {
+      Debug.Log("RecipeDetail Awake");
+      ServiceLocator.For(this).Register<IRecipeDetail>(this);
+    }
 
     public void SetRecipeDetails(Recipe recipe) {
       currentRecipe = recipe;

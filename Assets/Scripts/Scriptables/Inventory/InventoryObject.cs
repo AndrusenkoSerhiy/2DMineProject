@@ -15,11 +15,15 @@ namespace Scriptables.Inventory {
     public ItemDatabaseObject database;
     public int slotsCount = 24;
     public bool UpdateInventoryAmountOnSwap = false;
+    public bool PreventSwap = false;
+
     public InterfaceType type;
+
     //public int MAX_ITEMS;
     [SerializeField]
     // private InventoryContainer Container = new InventoryContainer();
     private InventoryContainer Container;
+
     public InventorySlot[] GetSlots => Container.Slots;
 
     public InventoryObject() {
@@ -133,7 +137,7 @@ namespace Scriptables.Inventory {
     //use to get item from mining
     public bool AddItem(Item item, int amount, ItemObject itemObj, GroundItem groundItem) {
       Debug.Log("AddItem amount " + amount);
-      InventorySlot slot = FindStackableItemOnInventory(item);//FindItemOnInventory(item);
+      InventorySlot slot = FindStackableItemOnInventory(item); //FindItemOnInventory(item);
       //don't have empty slot or existing item
       if (EmptySlotCount <= 0 && slot == null) {
         DropItemToGround(itemObj, groundItem, amount);
@@ -241,10 +245,12 @@ namespace Scriptables.Inventory {
         Debug.LogError($"Need to spawn item on floor! Amount: {amount}");
         SpawnItem(itemObj, amount);
       }
+
       UpdateCount(groundItem, amount);
     }
 
-    private bool HandleOverflow(int overflowAmount, int maxStackSize, ItemObject itemObj, GroundItem groundItem, Item item) {
+    private bool HandleOverflow(int overflowAmount, int maxStackSize, ItemObject itemObj, GroundItem groundItem,
+      Item item) {
       if (overflowAmount > 0) {
         //Debug.LogError($"lefted count {leftedCount}");
         var countRepeat = Mathf.CeilToInt((float)overflowAmount / maxStackSize);
@@ -262,8 +268,10 @@ namespace Scriptables.Inventory {
             return false;
           }
         }
+
         return true;
       }
+
       return true;
     }
 
@@ -271,7 +279,8 @@ namespace Scriptables.Inventory {
       if (item == null)
         return;
 
-      GameObject newObj = Instantiate(item.spawnPrefab, GameManager.instance.PlayerController.transform.position, Quaternion.identity);
+      GameObject newObj = Instantiate(item.spawnPrefab, GameManager.instance.PlayerController.transform.position,
+        Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = amount;
     }
@@ -289,6 +298,7 @@ namespace Scriptables.Inventory {
             counter++;
           }
         }
+
         return counter;
       }
     }
@@ -299,6 +309,7 @@ namespace Scriptables.Inventory {
           return GetSlots[i];
         }
       }
+
       return null;
     }
 
@@ -308,6 +319,7 @@ namespace Scriptables.Inventory {
           return GetSlots[i];
         }
       }
+
       return null;
     }
 
@@ -317,6 +329,7 @@ namespace Scriptables.Inventory {
           return true;
         }
       }
+
       return false;
     }
 
@@ -326,6 +339,7 @@ namespace Scriptables.Inventory {
           return GetSlots[i];
         }
       }
+
       return null;
     }
 
@@ -346,15 +360,18 @@ namespace Scriptables.Inventory {
     [ContextMenu("Save")]
     public void Save() {
       #region Optional Save
+
       //string saveData = JsonUtility.ToJson(Container, true);
       //BinaryFormatter bf = new BinaryFormatter();
       //FileStream file = File.Create(string.Concat(Application.persistentDataPath, savePath));
       //bf.Serialize(file, saveData);
       //file.Close();
+
       #endregion
 
       IFormatter formatter = new BinaryFormatter();
-      Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Create, FileAccess.Write);
+      Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Create,
+        FileAccess.Write);
       formatter.Serialize(stream, Container);
       stream.Close();
     }
@@ -364,19 +381,23 @@ namespace Scriptables.Inventory {
       //Debug.Log("Load " + Application.persistentDataPath);
       if (File.Exists(string.Concat(Application.persistentDataPath, savePath))) {
         #region Optional Load
+
         //BinaryFormatter bf = new BinaryFormatter();
         //FileStream file = File.Open(string.Concat(Application.persistentDataPath, savePath), FileMode.Open, FileAccess.Read);
         //JsonUtility.FromJsonOverwrite(bf.Deserialize(file).ToString(), Container);
         //file.Close();
+
         #endregion
 
         IFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open, FileAccess.Read);
+        Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open,
+          FileAccess.Read);
         InventoryContainer newContainer = (InventoryContainer)formatter.Deserialize(stream);
 
         for (int i = 0; i < GetSlots.Length; i++) {
           GetSlots[i].UpdateSlot(newContainer.Slots[i].item, newContainer.Slots[i].amount);
         }
+
         stream.Close();
       }
     }

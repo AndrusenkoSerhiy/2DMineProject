@@ -3,31 +3,57 @@ using System.Collections.Generic;
 using Scriptables.Craft;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityServiceLocator;
 
 namespace Craft {
-  public class RecipesManager {
-    private readonly List<Recipe> recipes;
-    private readonly Button recipesListItemPrefab;
-    private readonly GameObject recipesListContainerPrefab;
+  public class RecipesManager : MonoBehaviour, IRecipesManager {
+    [SerializeField] private GameObject recipesListContainerPrefab;
+    [SerializeField] private Button recipesListItemPrefab;
+
+    private Workstation station;
     private List<Button> recipesListButtons = new List<Button>();
     private RecipeListItem selectedRecipeListItem;
-    public Action<Recipe> onSelected { get; set; }
-    public Recipe Recipe { get; private set; }
+    private bool isInitialized;
 
-    public RecipesManager(Workstation station, Button recipesListItemPrefab, GameObject recipesListContainerPrefab) {
-      recipes = station.recipes;
-      this.recipesListItemPrefab = recipesListItemPrefab;
-      this.recipesListContainerPrefab = recipesListContainerPrefab;
+    public Recipe Recipe { get; private set; }
+    public event Action<Recipe> OnSelected;
+
+    public void Awake() {
+      Debug.Log("RecipesManager Awake");
+      ServiceLocator.For(this).Register<IRecipesManager>(this);
+      station = ServiceLocator.For(this).Get<Workstation>();
+    }
+    
+    public void OnEnable() {
+      if (!isInitialized) {
+        return;
+      }
+      Debug.Log("RecipesManager OnEnable");
+
+      ProcessRecipesList();
     }
 
-    public void BuildList() {
+    public void Start() => ProcessRecipesList();
+    
+    public void OnDisable() => RemoveEvents();
+
+    private void ProcessRecipesList() {
+      Debug.Log("RecipesManager ProcessRecipesList");
+      BuildList();
+      AddEvents();
+      SelectFirst();
+
+      isInitialized = true;
+    }
+
+    private void BuildList() {
       if (recipesListButtons.Count > 0) {
         return;
       }
 
       Debug.Log("RecipesManager BuildList");
-      foreach (Recipe recipe in recipes) {
-        var listItem = GameObject.Instantiate<Button>(recipesListItemPrefab, recipesListContainerPrefab.transform);
+      foreach (var recipe in station.recipes) {
+        var listItem = Instantiate<Button>(recipesListItemPrefab, recipesListContainerPrefab.transform);
 
         var recipeListItem = listItem.GetComponent<RecipeListItem>();
         recipeListItem.SetRecipeDetails(recipe.RecipeName, recipe.Result.UiDisplay, recipe);
@@ -36,7 +62,7 @@ namespace Craft {
       }
     }
 
-    public void Select(Button button, bool force = false) {
+    private void Select(Button button, bool force = false) {
       Debug.Log("RecipesManager Select");
       var recipeListItem = button.GetComponent<RecipeListItem>();
 
@@ -52,20 +78,20 @@ namespace Craft {
       recipeListItem.SetActiveStyles();
 
       Recipe = selectedRecipeListItem.Recipe;
-      onSelected?.Invoke(selectedRecipeListItem.Recipe);
+      OnSelected?.Invoke(selectedRecipeListItem.Recipe);
     }
 
-    public void SelectFirst() {
+    private void SelectFirst() {
       Select(recipesListButtons[0], true);
     }
 
-    public void AddEvents() {
+    private void AddEvents() {
       foreach (var button in recipesListButtons) {
         button.onClick.AddListener(() => ListItemClickHandler(button));
       }
     }
 
-    public void RemoveEvents() {
+    private void RemoveEvents() {
       foreach (var button in recipesListButtons) {
         button.onClick.RemoveAllListeners();
       }

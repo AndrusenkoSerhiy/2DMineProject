@@ -1,7 +1,7 @@
+using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Scriptables.Craft.Recipe;
 
 namespace Craft {
   public class RecipeDetailRow : MonoBehaviour {
@@ -12,7 +12,7 @@ namespace Craft {
     [SerializeField] private Color textColor;
     [SerializeField] private Color insufficientTotalAmountColor;
 
-    public void SetRow(CraftingMaterial craftingMaterial) {
+    public void SetRow(Recipe.CraftingMaterial craftingMaterial) {
       var totalAmount = GameManager.instance.PlayerInventory.GetResourceTotalAmount(craftingMaterial.Material.data.Id);
 
       SetName(craftingMaterial.Material.data.Name);

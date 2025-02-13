@@ -7,17 +7,20 @@ using Items;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 using System;
+using UnityServiceLocator;
 
 namespace Inventory {
-  public class PlayerInventory : MonoBehaviour {
+  public class PlayerInventory : MonoBehaviour, IPlayerInventory {
     public InventoryObject inventory;
+
     //public InventoryObject equipment;
     public InventoryObject quickSlots;
+
     [SerializeField] private ItemObject defaultItem;
+
     // private WindowsController windowsController;
     private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
-    [NonSerialized]
-    public Action<int> onResourcesTotalUpdate;
+    [NonSerialized] public Action<int> onResourcesTotalUpdate;
 
     public Action OnQuickSlotLoaded;
     public Dictionary<int, int> ResourcesTotal => resourcesTotal;
@@ -57,9 +60,9 @@ namespace Inventory {
       quickSlots.Clear();
     }
 
-    public void CheckSlotsAmountUpdate(InventoryObject inventory) {
-      for (int i = 0; i < inventory.GetSlots.Length; i++) {
-        inventory.GetSlots[i].onAmountUpdate += SlotAmountUpdateHandler;
+    private void CheckSlotsAmountUpdate(InventoryObject inventory) {
+      foreach (var inventorySlot in inventory.GetSlots) {
+        inventorySlot.onAmountUpdate += SlotAmountUpdateHandler;
       }
     }
 
@@ -126,13 +129,15 @@ namespace Inventory {
       AddDefaultItem();
       // CheckSlotsUpdate(inventory);
 
-      inventoryWindow = Instantiate(inventoryInterfacePrefab, inventoryOverlayPrefab.transform).GetComponent<PlayerInventoryWindow>();
+      inventoryWindow = Instantiate(inventoryInterfacePrefab, inventoryOverlayPrefab.transform)
+        .GetComponent<PlayerInventoryWindow>();
       GameManager.instance.WindowsController.AddWindow(inventoryWindow);
     }
 
     public void SpawnItem(InventorySlot slot) {
       //spawn higher in y pos because need TO DO pick up on action not the trigger enter
-      GameObject newObj = Instantiate(GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).spawnPrefab, GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
+      GameObject newObj = Instantiate(GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).spawnPrefab,
+        GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = slot.amount;
     }

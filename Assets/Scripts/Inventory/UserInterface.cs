@@ -93,12 +93,17 @@ namespace Inventory {
 
         tempItem.transform.localScale = Vector3.one;
       }
+
       return tempItem;
     }
 
     protected void AddEvent(GameObject obj, EventTriggerType type, UnityAction<BaseEventData> action) {
       EventTrigger trigger = obj.GetComponent<EventTrigger>();
-      if (!trigger) { Debug.LogWarning("No EventTrigger component found!"); return; }
+      if (!trigger) {
+        Debug.LogWarning("No EventTrigger component found!");
+        return;
+      }
+
       var eventTrigger = new EventTrigger.Entry { eventID = type };
       eventTrigger.callback.AddListener(action);
       trigger.triggers.Add(eventTrigger);
@@ -130,7 +135,7 @@ namespace Inventory {
 
     protected void OnDrag(GameObject obj) {
       if (MouseData.tempItemBeingDragged != null) {
-        var mousePos = UserInput.instance.GetMousePosition();//_uiCamera.ScreenToWorldPoint(Input.mousePosition);
+        var mousePos = UserInput.instance.GetMousePosition(); //_uiCamera.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
         MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = mousePos;
       }
@@ -164,7 +169,14 @@ namespace Inventory {
       }
 
       if (MouseData.slotHoveredOver) {
-        var mouseHoverSlotData = (MouseData.interfaceMouseIsOver as IInventoryUI).SlotsOnInterface[MouseData.slotHoveredOver];
+        var mouseHoverSlotData =
+          (MouseData.interfaceMouseIsOver as IInventoryUI).SlotsOnInterface[MouseData.slotHoveredOver];
+
+        if ((slot.parent.Inventory.PreventSwap || mouseHoverSlotData.parent.Inventory.PreventSwap) &&
+            mouseHoverSlotData.item.Id >= 0) {
+          return;
+        }
+
         inventory.SwapItems(slot, mouseHoverSlotData);
       }
     }

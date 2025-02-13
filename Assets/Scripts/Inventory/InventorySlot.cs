@@ -50,7 +50,7 @@ namespace Inventory {
     public void RemoveItem() => UpdateSlot(new Item(), 0);
 
     public int AddAmount(int value, int maxStack = -1) => UpdateSlot(item, amount + value, maxStack);
-    
+
     public int UpdateSlot(Item itemValue, int amountValue, int maxStack, bool selected = false) {
       onBeforeUpdated?.Invoke(this);
 
@@ -91,7 +91,11 @@ namespace Inventory {
     }
 
     //use when swap items
-    public void UpdateSlotAfterSwap(Item itemValue, int amountValue, bool isSelected) {
+    // public void UpdateSlotAfterSwap(Item itemValue, int amountValue, bool isSelected, bool triggerAmountEvent = false) {
+    public void UpdateSlotAfterSwap(InventorySlot slot) {
+      var itemValue = slot.item;
+      var amountValue = slot.amount;
+
       onBeforeUpdated?.Invoke(this);
       var itemId = itemValue.Id != -1 ? itemValue.Id : (item?.Id ?? -1);
       var oldAmount = amount;
@@ -100,8 +104,18 @@ namespace Inventory {
 
       onAfterUpdated?.Invoke(this);
 
-      if (isSelected) Select();
-      else Unselect();
+      var amountDelta = amount - oldAmount;
+
+      if (slot.parent != null && slot.parent.Inventory.UpdateInventoryAmountOnSwap && amountDelta != 0) {
+        onAmountUpdate?.Invoke(itemId, amountDelta);
+      }
+
+      if (slot.IsSelected) {
+        Select();
+      }
+      else {
+        Unselect();
+      }
     }
 
     public bool CanPlaceInSlot(ItemObject itemObject) {

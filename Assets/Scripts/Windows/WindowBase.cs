@@ -9,9 +9,9 @@ namespace Windows {
     public delegate void ShowWindow(WindowBase window);
     public event ShowWindow OnShow;
     
-    protected virtual void Start() {
-      Hide();
-    }
+    // protected virtual void Start() {
+    //   Hide();
+    // }
 
     private PlayerControllerBase GetCurrPlayerController() {
       return GameManager.instance.CurrPlayerController;

@@ -6,6 +6,7 @@ namespace Craft {
   public class Timer : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI timerText;
     private DateTime startTime;
+    private DateTime endTime;
     private int timeForOne;
     private int totalItems;
     private int itemsLeft;
@@ -16,18 +17,17 @@ namespace Craft {
 
     public Action onTimerStop;
     public Action<int> onItemTimerEnd;
+    public bool IsStarted => isStarted;
 
     public void OnEnable() {
-      Debug.Log("Timer OnEnable");
-      if (!isStarted) {
-        return;
-      }
-
       UpdateTimer();
     }
 
-    public void OnDisable() {
-      Debug.Log("Timer OnDisable");
+    private void UpdateTimer() {
+      //Debug.Log("Timer UpdateTimer");
+      var currentTime = DateTime.Now.ToUniversalTime();
+      var elapsedTime = (float)(currentTime - startTime).TotalSeconds;
+      timeLeft = totalTime - elapsedTime;
     }
 
     public void Update() {
@@ -38,19 +38,25 @@ namespace Craft {
       TimerTick();
     }
 
-    public void StartTimer(int count, int time) {
-      Debug.Log("Timer StartTimer");
-      startTime = DateTime.Now.ToUniversalTime();
+    public void InitTimer(int count, int time, DateTime? start = null) {
+      //Debug.Log("Timer StartTimer");
+      startTime = start ?? DateTime.Now.ToUniversalTime();
       totalItems = count;
       timeForOne = time;
       totalTime = count * time;
       itemsLeft = totalItems;
       timeLeft = totalTime;
       lastCheckTime = totalTime;
-
-      isStarted = true;
+      endTime = startTime.AddSeconds(totalTime);
 
       PrintTime();
+    }
+
+    public DateTime GetEndTime() => endTime;
+    public DateTime GetStartTime() => startTime;
+
+    public void StartTimer() {
+      isStarted = true;
     }
 
     private void CheckItemCompletion() {
@@ -71,13 +77,6 @@ namespace Craft {
       timerText.text = Helper.SecondsToTimeString(roundedTimeLeft);
     }
 
-    private void UpdateTimer() {
-      Debug.Log("Timer UpdateTimer");
-      var currentTime = DateTime.Now.ToUniversalTime();
-      var elapsedTime = (float)(currentTime - startTime).TotalSeconds;
-      timeLeft = totalTime - elapsedTime;
-    }
-
     private void TimerTick() {
       timeLeft -= Time.deltaTime;
 
@@ -91,13 +90,12 @@ namespace Craft {
     }
 
     private void StopTimer() {
-      Debug.Log("Timer StopTimer");
+      //Debug.Log("Timer StopTimer");
       onTimerStop?.Invoke();
-      Reset();
     }
 
-    private void Reset() {
-      Debug.Log("Timer Reset");
+    public void Reset() {
+      //Debug.Log("Timer Reset");
       isStarted = false;
       timerText.text = string.Empty;
     }

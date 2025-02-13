@@ -4,7 +4,7 @@ namespace Inventory {
   public class StaticInterface : UserInterface {
     public GameObject[] slots;
 
-    public override void UpdateSlotsDisplayObject() {
+    public override void UpdateSlotsGameObjects() {
       return;
     }
 
@@ -13,7 +13,7 @@ namespace Inventory {
         var obj = slots[i];
         var slot = Inventory.GetSlots[i];
 
-        playerInventory.AddSlotEvents(obj, slot, tempDragParent);
+        AddSlotEvents(obj, slot, tempDragParent);
 
         Inventory.GetSlots[i].parent = this;
         Inventory.GetSlots[i].slotDisplay = obj;

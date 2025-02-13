@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Inventory;
 using Scriptables.Craft;
@@ -8,7 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Craft {
-  public class CraftManager : MonoBehaviour {
+  public class CraftManager : MonoBehaviour, IInventoryDropZoneUI {
     [SerializeField] private Workstation station;
     [SerializeField] private GameObject recipesListContainerPrefab;
     [SerializeField] private RecipeDetail detail;
@@ -25,28 +26,33 @@ namespace Craft {
     [SerializeField] private GameObject inputItemsContainer;
     [SerializeField] private GameObject inputItemPrefab;
 
-    [SerializeField] private DynamicInterface outputInterface;
+    [SerializeField] private GameObject outputItemsContainer;
+    [SerializeField] private Button takeAllButton;
+    // [SerializeField] private InventoryObject outputInventory;
 
     private PlayerInventory playerInventory;
     private RecipesManager recipesManager;
     private CraftActions craftActions;
     private InputItems inputItems;
 
+    [SerializeField] private bool preventItemDrop;
+    public bool PreventItemDrop => preventItemDrop;
+
     private void Init() {
       if (playerInventory != null) {
         return;
       }
-      Debug.Log("CraftManager Init");
+      //Debug.Log("CraftManager Init");
 
       playerInventory = GameManager.instance.PlayerInventory;
-      recipesManager = new RecipesManager(station.recipes, recipesListItemPrefab, recipesListContainerPrefab);
-      craftActions = new CraftActions(countInput, craftButton, incrementButton, decrementButton,
-        maxCountButton, buttonsActiveColor, buttonsDisabledColor, station.OutputSlotsAmount);
-      inputItems = new InputItems(inputItemsContainer, inputItemPrefab, station.OutputSlotsAmount);
+      recipesManager = new RecipesManager(station, recipesListItemPrefab, recipesListContainerPrefab);
+      craftActions = new CraftActions(station, countInput, craftButton, incrementButton, decrementButton,
+        maxCountButton, buttonsActiveColor, buttonsDisabledColor);
+      inputItems = new InputItems(station, inputItemsContainer, inputItemPrefab);
     }
 
     private void OnEnable() {
-      Debug.Log("CraftManager OnEnable");
+      //Debug.Log("CraftManager OnEnable");
 
       Init();
 
@@ -55,14 +61,20 @@ namespace Craft {
       recipesManager.AddEvents();
       recipesManager.SelectFirst();
 
-      SlotsUpdateEvents();
+      AddSlotsUpdateEvents();
       craftActions.AddCraftActionsEvents();
       craftActions.onCraftRequested += OnCraftRequestedHandler;
 
       AddInputEvents();
+
+      AddOutputUpdateEvents();
+      takeAllButton.onClick.AddListener(OnTakeAllButtonClickHandler);
     }
 
     private void OnDisable() {
+      takeAllButton.onClick.RemoveAllListeners();
+      RemoveOutputUpdateEvents();
+
       RemoveInputEvents();
 
       craftActions.onCraftRequested -= OnCraftRequestedHandler;
@@ -85,15 +97,10 @@ namespace Craft {
       }
 
       inputItems.SetRecipe(count, recipe);
-    }
+      station.AddItemToCraftTotal(recipe.Result, count);
+      station.AddToCraftInputsItemsIds(recipe.Result.data.Id);
 
-    private void AddCraftedItemToOutput(Recipe recipe, int count) {
-      Debug.Log("CraftManager AddCraftedItemToOutput: " + recipe.RecipeName);
-      var outputInventory = outputInterface.Inventory;
-      var item = new Item(outputInventory.database.ItemObjects[recipe.Result.data.Id]);
-
-      outputInventory.AddItem(item, count, null, null);
-      outputInterface.UpdateUI();
+      craftActions.UpdateAndPrintInputCount();
     }
 
     private void OnRecipeSelectedHandler(Recipe recipe) {
@@ -104,7 +111,7 @@ namespace Craft {
       craftActions.UpdateAndPrintInputCount();
     }
 
-    private void SlotsUpdateEvents() {
+    private void AddSlotsUpdateEvents() {
       playerInventory.onResourcesTotalUpdate += SlotAmountUpdateHandler;
     }
 
@@ -129,13 +136,70 @@ namespace Craft {
     private void AddInputEvents() {
       foreach (var input in inputItems.Items) {
         input.onItemCrafted += AddCraftedItemToOutput;
+        input.onInputAllCrafted += OnInputAllCraftedHandler;
+        input.onCanceled += OnInputCanceledHandler;
       }
     }
 
     private void RemoveInputEvents() {
       foreach (var input in inputItems.Items) {
+        input.onInputAllCrafted -= OnInputAllCraftedHandler;
         input.onItemCrafted -= AddCraftedItemToOutput;
+        input.onCanceled -= OnInputCanceledHandler;
       }
+    }
+
+    private void AddCraftedItemToOutput(Recipe recipe, int count) {
+      //Debug.Log("CraftManager AddCraftedItemToOutput: " + recipe.RecipeName);
+      station.RemoveCountFromCraftTotal(recipe.Result, count);
+
+      var outputInventory = station.OutputInventory;
+      var item = new Item(outputInventory.database.ItemObjects[recipe.Result.data.Id]);
+
+      outputInventory.AddItem(item, count, null, null);
+    }
+
+    private void OnInputAllCraftedHandler() {
+      station.RemoveFromCraftInputsItemsIds();
+      inputItems.UpdateWaitInputs();
+      craftActions.UpdateAndPrintInputCount();
+    }
+
+    private void OnInputCanceledHandler(InputItem inputItem) {
+      station.RemoveCountFromCraftTotal(inputItem.Recipe.Result, inputItem.CountLeft);
+      station.RemoveFromCraftInputsItemsIds(inputItem.Position);
+
+      inputItems.UpdateTimersStartTimes(inputItem);
+      inputItems.UpdateWaitInputs(inputItem.Position);
+
+      //remove resources from inventory
+      foreach (var item in inputItem.Recipe.RequiredMaterials) {
+        var totalCount = inputItem.CountLeft * item.Amount;
+        playerInventory.inventory.AddItem(item.Material.data, totalCount, null, null);
+      }
+    }
+
+    private void AddOutputUpdateEvents() {
+      foreach (var output in station.OutputInventory.GetSlots) {
+        output.onAfterUpdated += OutputUpdateSlotHandler;
+      }
+    }
+
+    private void RemoveOutputUpdateEvents() {
+      foreach (var output in station.OutputInventory.GetSlots) {
+        output.onAfterUpdated -= OutputUpdateSlotHandler;
+      }
+    }
+
+    private void OutputUpdateSlotHandler(InventorySlot slot) {
+      Debug.Log("OutputUpdateSlotHandler slot.item.Id:" + slot.item.Id);
+      if (slot.item.Id < 0) {
+        craftActions.UpdateAndPrintInputCount();
+      }
+    }
+
+    private void OnTakeAllButtonClickHandler() {
+      station.OutputInventory.MoveAllItemsTo(playerInventory.inventory);
     }
   }
 }

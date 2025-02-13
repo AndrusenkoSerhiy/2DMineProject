@@ -13,6 +13,16 @@ namespace Windows {
       return windowsList.OfType<T>().FirstOrDefault();
     }
 
+    public void AddWindow(WindowBase window) {
+      windowsList.Add(window);
+      window.OnShow += OnWindowShow;
+    }
+
+    public void RemoveWindow(WindowBase window) {
+      window.OnShow -= OnWindowShow;
+      windowsList.Remove(window);
+    }
+
     private void Start() {
       WindowsEvents();
     }

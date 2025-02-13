@@ -15,6 +15,7 @@ MonoBehaviour:
   savePath: /inventory.save
   database: {fileID: 11400000, guid: b81f813bb56bb4942a967fdd3bd03ac0, type: 2}
   slotsCount: 24
+  UpdateInventoryAmountOnSwap: 0
   type: 0
   Container:
     Slots:

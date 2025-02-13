@@ -629,7 +629,9 @@ MonoBehaviour:
   buttonsDisabledColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   inputItemsContainer: {fileID: 111233557960811063}
   inputItemPrefab: {fileID: 2710105085976991345, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
-  outputInterface: {fileID: 6768297905690978061}
+  outputItemsContainer: {fileID: 7197737500522931054}
+  takeAllButton: {fileID: 5451062681454557136}
+  preventItemDrop: 1
 --- !u!114 &4536676974413149225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1592,6 +1594,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
   tempDragParent: {fileID: 5724217199559694127}
+  preventItemDrop: 0
   inventoryPrefab: {fileID: 9024243816369132772, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
   X_START: -350
   Y_START: 100
@@ -3955,8 +3958,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7290127139434274384}
   - component: {fileID: 5997681344738156191}
-  - component: {fileID: 5923819005350513367}
-  - component: {fileID: 6768297905690978061}
+  - component: {fileID: 2290063065543671470}
   m_Layer: 5
   m_Name: Items
   m_TagString: Untagged
@@ -3996,29 +3998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
---- !u!114 &5923819005350513367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7197737500522931054}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f42023b9ed02254d9ccc51fffa20c09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tempDragParent: {fileID: 8413352481143893193}
-  inventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
-  playerInventory: {fileID: 0}
-  inventoryPrefab: {fileID: 9024243816369132772, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
-  X_START: -200
-  Y_START: 0
-  X_SPACE_BETWEEN_ITEM: 100
-  NUMBER_OF_COLUMN: 5
-  Y_SPACE_BETWEEN_ITEMS: 0
-  reverseLayout: 1
---- !u!114 &6768297905690978061
+--- !u!114 &2290063065543671470
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4032,6 +4012,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
   tempDragParent: {fileID: 8413352481143893193}
+  preventItemDrop: 1
   inventoryPrefab: {fileID: 9024243816369132772, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
   X_START: -200
   Y_START: 0

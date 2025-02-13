@@ -14,8 +14,8 @@ namespace Craft {
     public Action<Recipe> onSelected { get; set; }
     public Recipe Recipe { get; private set; }
 
-    public RecipesManager(List<Recipe> recipes, Button recipesListItemPrefab, GameObject recipesListContainerPrefab) {
-      this.recipes = recipes;
+    public RecipesManager(Workstation station, Button recipesListItemPrefab, GameObject recipesListContainerPrefab) {
+      recipes = station.recipes;
       this.recipesListItemPrefab = recipesListItemPrefab;
       this.recipesListContainerPrefab = recipesListContainerPrefab;
     }

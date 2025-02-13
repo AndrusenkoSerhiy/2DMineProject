@@ -1027,13 +1027,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fb1513e6cc0a374097dde7a0d061a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactionPoint: {fileID: 6268921245571787948}
-  _interactionPointRadius: 1
-  _interactableMask:
+  interactionPoint: {fileID: 6268921245571787948}
+  radius: 1
+  interactableMask:
     serializedVersion: 2
     m_Bits: 8
-  _interactionPromtUI: {fileID: 0}
-  _numFound: 0
+  interactionPromtUI: {fileID: 0}
+  numFound: 0
 --- !u!114 &4285968199683070401
 MonoBehaviour:
   m_ObjectHideFlags: 0

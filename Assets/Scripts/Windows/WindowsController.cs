@@ -6,9 +6,10 @@ using UnityEngine;
 namespace Windows {
   public class WindowsController : MonoBehaviour {
     [SerializeField] private List<WindowBase> windowsList = new List<WindowBase>();
-
+    private bool isAnyWindowOpen;
     public List<WindowBase> WindowsList => windowsList;
-
+    public bool IsAnyWindowOpen => isAnyWindowOpen;
+    
     public T GetWindow<T>() where T : WindowBase {
       return windowsList.OfType<T>().FirstOrDefault();
     }
@@ -16,10 +17,12 @@ namespace Windows {
     public void AddWindow(WindowBase window) {
       windowsList.Add(window);
       window.OnShow += OnWindowShow;
+      window.OnHide += OnWindowHide;
     }
 
     public void RemoveWindow(WindowBase window) {
       window.OnShow -= OnWindowShow;
+      window.OnHide -= OnWindowHide;
       windowsList.Remove(window);
     }
 
@@ -39,6 +42,11 @@ namespace Windows {
           window.Hide();
         }
       }
+      isAnyWindowOpen = true;
+    }
+    
+    private void OnWindowHide(WindowBase currentWindow) {
+      isAnyWindowOpen = false;
     }
 
     private void Update() {

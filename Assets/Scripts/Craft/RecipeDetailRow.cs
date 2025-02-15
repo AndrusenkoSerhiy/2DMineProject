@@ -12,10 +12,8 @@ namespace Craft {
     [SerializeField] private Color textColor;
     [SerializeField] private Color insufficientTotalAmountColor;
 
-    public void SetRow(Recipe.CraftingMaterial craftingMaterial) {
-      var totalAmount = GameManager.instance.PlayerInventory.GetResourceTotalAmount(craftingMaterial.Material.data.Id);
-
-      SetName(craftingMaterial.Material.data.Name);
+    public void SetRow(Recipe.CraftingMaterial craftingMaterial, int totalAmount) {
+      SetName(craftingMaterial.Material.Name);
       SetSprite(craftingMaterial.Material.UiDisplay, new Color(255, 255, 255, 255));
       SetCount(craftingMaterial.Amount);
       SetTotalAmount(totalAmount, craftingMaterial.Amount);

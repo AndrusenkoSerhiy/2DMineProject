@@ -7,6 +7,7 @@ using UnityEngine;
 namespace Player {
   public class PlayerAttack : BaseAttack {
     [SerializeField] protected PlayerEquipment playerEquipment;
+
     protected override void Awake() {
       base.Awake();
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
@@ -54,11 +55,12 @@ namespace Player {
         return false;
       }
 
-      ItemObject weaponStats = playerEquipment.ItemInHand.GetComponent<GroundItem>().item;
+      var weaponStats = playerEquipment.ItemInHand.GetComponent<GroundItem>().item;
       if (!(weaponStats is IAttackableItem attackableItem)) {
         Debug.LogWarning("Equipped item is not attackable", this);
         return false;
       }
+
       //Debug.LogError("SetAttackParamsFromEquipment");
       attackLayer = attackableItem.AttackLayer;
       blockDamage = attackableItem.BlockDamage;

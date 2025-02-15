@@ -2020,6 +2020,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3952768001628798844, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
   m_PrefabInstance: {fileID: 654027552286385189}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1080412508 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5801279584603716344, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
+  m_PrefabInstance: {fileID: 654027552286385189}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 019ad026bebdf87469acd80c5d778a88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1108057577
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4176,6 +4187,14 @@ PrefabInstance:
       propertyPath: tempDragParent
       value: 
       objectReference: {fileID: 1794132083}
+    - target: {fileID: 5801279584603716344, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
+      propertyPath: preventDropOnGround
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8694691423089828941, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
+      propertyPath: staticInterface
+      value: 
+      objectReference: {fileID: 1080412508}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

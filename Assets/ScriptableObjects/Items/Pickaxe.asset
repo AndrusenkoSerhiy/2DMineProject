@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4485bc801886e4aabde4373b47fa66, type: 3}
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
+  Id:
+    Part1: 408442723
+    Part2: 1246628183
+    Part3: 2604048290
+    Part4: 3345888688
   Type: 2
+  Name: Pickaxe
   ParentType: 1
   UiDisplay: {fileID: 21300000, guid: f41e87b0f3fd49145803a568ad15a4c4, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
@@ -21,10 +27,6 @@ MonoBehaviour:
   SpawnPosition: {x: -0.566, y: 1.566, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   Description: pickaxe description
-  data:
-    Name: Pickaxe
-    Id: 0
-    buffs: []
   spawnPrefab: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
   useSelfAnim: 0
   attackLayer:

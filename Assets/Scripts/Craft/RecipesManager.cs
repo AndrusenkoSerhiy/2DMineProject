@@ -11,9 +11,9 @@ namespace Craft {
     [SerializeField] private Button recipesListItemPrefab;
 
     private Workstation station;
-    private List<Button> recipesListButtons = new List<Button>();
+    private List<Button> recipesListButtons = new();
     private RecipeListItem selectedRecipeListItem;
-    private bool isInitialized;
+    // private bool isInitialized;
 
     public Recipe Recipe { get; private set; }
     public event Action<Recipe> OnSelected;
@@ -22,28 +22,17 @@ namespace Craft {
       Debug.Log("RecipesManager Awake");
       ServiceLocator.For(this).Register<IRecipesManager>(this);
       station = ServiceLocator.For(this).Get<Workstation>();
-    }
-    
-    public void OnEnable() {
-      if (!isInitialized) {
-        return;
-      }
-      Debug.Log("RecipesManager OnEnable");
 
-      ProcessRecipesList();
-    }
-
-    public void Start() => ProcessRecipesList();
-    
-    public void OnDisable() => RemoveEvents();
-
-    private void ProcessRecipesList() {
-      Debug.Log("RecipesManager ProcessRecipesList");
       BuildList();
+    }
+
+    public void InitComponent() {
       AddEvents();
       SelectFirst();
+    }
 
-      isInitialized = true;
+    public void ClearComponent() {
+      RemoveEvents();
     }
 
     private void BuildList() {

@@ -8,8 +8,7 @@ namespace Inventory {
     //private InventoryObject _equipment;
     private InventoryObject quickSlots;
 
-    [Header("Equip Transforms")]
-    [SerializeField]
+    [Header("Equip Transforms")] [SerializeField]
     private Transform offhandWristTransform;
 
     [SerializeField] private Transform offhandHandTransform;
@@ -45,9 +44,9 @@ namespace Inventory {
       var itemObject = slot.GetItemObject();
       if (itemObject == null)
         return;
-      
-      switch (slot.parent.Inventory.type) {
-        case InterfaceType.QuickSlots://InterfaceType.Equipment
+
+      switch (slot.Parent.Inventory.type) {
+        case InventoryType.QuickSlots: //InterfaceType.Equipment
           switch (slot.GetItemObject().Type) {
             case ItemType.Tool:
               itemInHand = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
@@ -85,9 +84,9 @@ namespace Inventory {
       if (slot.GetItemObject() == null) {
         return;
       }
-      
-      switch (slot.parent.Inventory.type) {
-        case InterfaceType.QuickSlots://InterfaceType.Equipment
+
+      switch (slot.Parent.Inventory.type) {
+        case InventoryType.QuickSlots: //InterfaceType.Equipment
           if (slot.GetItemObject().CharacterDisplay != null) {
             switch (slot.GetItemObject().Type) {
               case ItemType.Shield:

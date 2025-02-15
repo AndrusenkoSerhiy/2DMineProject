@@ -15,43 +15,31 @@ MonoBehaviour:
   savePath: /workbench.save
   database: {fileID: 11400000, guid: b81f813bb56bb4942a967fdd3bd03ac0, type: 2}
   slotsCount: 24
-  UpdateInventoryAmountOnSwap: 1
-  PreventSwap: 1
   type: 3
   Container:
     Slots:
-    - AllowedItems: 
-      item:
-        Name: 
-        Id: -1
-        buffs: []
+    - Item:
+        id: 
+        name: 
       amount: 0
-      IsSelected: 0
-    - AllowedItems: 
-      item:
-        Name: 
-        Id: -1
-        buffs: []
+      isSelected: 0
+    - Item:
+        id: 
+        name: 
       amount: 0
-      IsSelected: 0
-    - AllowedItems: 
-      item:
-        Name: 
-        Id: -1
-        buffs: []
+      isSelected: 0
+    - Item:
+        id: 
+        name: 
       amount: 0
-      IsSelected: 0
-    - AllowedItems: 
-      item:
-        Name: 
-        Id: -1
-        buffs: []
+      isSelected: 0
+    - Item:
+        id: 
+        name: 
       amount: 0
-      IsSelected: 0
-    - AllowedItems: 
-      item:
-        Name: 
-        Id: -1
-        buffs: []
+      isSelected: 0
+    - Item:
+        id: 
+        name: 
       amount: 0
-      IsSelected: 0
+      isSelected: 0

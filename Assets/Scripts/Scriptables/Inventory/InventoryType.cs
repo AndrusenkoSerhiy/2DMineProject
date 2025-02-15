@@ -1,5 +1,6 @@
 ﻿namespace Scriptables.Inventory {
-  public enum InterfaceType {
+  public enum InventoryType {
+    None,
     Inventory,
     Equipment,
     QuickSlots,

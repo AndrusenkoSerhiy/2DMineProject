@@ -1,25 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
+using Scriptables.Inventory;
 
 namespace Scriptables.Items {
   [Serializable]
   public class Item {
-    public string Name;
-    public int Id = -1;
-    public ItemBuff[] buffs;
+    [NonSerialized] public ItemObject info;
+    public string id;
+    public string name;
+    public InventoryType InventoryType { get; private set; }
+
+    //TODO: Add ContainerIndex to Item(for storages)
+    public int ContainerIndex { get; private set; } = 0;
+
     public Item() {
-      Name = "";
-      Id = -1;
+      info = null;
+      id = string.Empty;
+      name = string.Empty;
+      InventoryType = InventoryType.None;
     }
-    public Item(ItemObject item) {
-      Name = item.name;
-      Id = item.data.Id;
-      buffs = new ItemBuff[item.data.buffs.Length];
-      for (int i = 0; i < buffs.Length; i++) {
-        buffs[i] = new ItemBuff(item.data.buffs[i].Min, item.data.buffs[i].Max) {
-          stat = item.data.buffs[i].stat
-        };
-      }
+
+    public Item(ItemObject item, InventoryType type = InventoryType.None) {
+      info = item;
+      id = item.Id;
+      name = item.Name;
+      InventoryType = type;
+    }
+
+    public bool isEmpty => info == null || string.IsNullOrEmpty(id);
+    public bool hasId => !string.IsNullOrEmpty(id);
+
+    public void RestoreItemObject(List<ItemObject> itemDatabase) {
+      info = itemDatabase.Find(x => x.Id == id);
+    }
+
+    public void SetInventoryType(InventoryType type) {
+      InventoryType = type;
     }
   }
 }
-

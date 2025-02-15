@@ -4,26 +4,29 @@ using UnityEngine;
 
 namespace Items {
   public class GroundItem : MonoBehaviour, IInteractable {
-    [SerializeField] private int _count = 1;
-    [SerializeField] private string _interactName;
+    [SerializeField] private int count = 1;
+    [SerializeField] private string interactName;
     public ItemObject item;
-    public bool IsPicked;
+    public bool isPicked;
 
     public int Count {
-      get { return _count; }
-      set { _count = value; }
+      get => count;
+      set => count = value;
     }
 
-    public string InteractionPrompt => $"{_interactName} {item.name}";
+    public string InteractionPrompt => $"{interactName} {item.name}";
 
     public bool Interact(PlayerInteractor playerInteractor) {
       //Debug.LogError("Interact");
-      if (!IsPicked) {
-        if (GameManager.instance.PlayerInventory.inventory.AddItem(new Item(item), Count, null, this)) {
-          IsPicked = true;
-          Destroy(gameObject);
-        }
+      if (isPicked) {
+        return true;
       }
+
+      var inventory = GameManager.instance.PlayerInventory.inventory;
+      inventory.AddItem(new Item(item, inventory.type), Count, null, this);
+      isPicked = true;
+      Destroy(gameObject);
+
       return true;
     }
   }

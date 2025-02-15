@@ -14,10 +14,8 @@ namespace Scriptables.Inventory {
     public string savePath;
     public ItemDatabaseObject database;
     public int slotsCount = 24;
-    public bool UpdateInventoryAmountOnSwap = false;
-    public bool PreventSwap = false;
 
-    public InterfaceType type;
+    public InventoryType type;
 
     //public int MAX_ITEMS;
     [SerializeField]
@@ -36,33 +34,32 @@ namespace Scriptables.Inventory {
       }
 
       foreach (var slot in GetSlots) {
-        if (slot.item.Id < 0 || slot.amount <= 0) {
+        if (slot.isEmpty) {
           continue; // Skip empty slots
         }
 
-        var remainingAmount = destinationInventory.AddItem(slot.item, slot.amount);
+        var remainingAmount = destinationInventory.AddItem(slot.Item, slot.amount);
 
         if (remainingAmount <= 0) {
           slot.RemoveItem();
         }
         else {
-          slot.UpdateSlot(slot.item, remainingAmount);
+          slot.UpdateSlot(remainingAmount);
         }
       }
     }
 
-
-    public bool RemoveItem(Item item, int amount) {
+    public bool RemoveItem(string id, int amount) {
       if (amount <= 0) {
         return false;
       }
 
-      int remainingAmount = amount;
+      var remainingAmount = amount;
 
       for (var i = GetSlots.Length - 1; i >= 0 && remainingAmount > 0; i--) {
         var slot = GetSlots[i];
 
-        if (slot.item.Id != item.Id) {
+        if (slot.isEmpty || slot.Item.info.Id != id) {
           continue;
         }
 
@@ -74,59 +71,52 @@ namespace Scriptables.Inventory {
           slot.RemoveItem();
         }
         else {
-          slot.UpdateSlot(slot.item, slotNewAmount);
+          slot.UpdateSlot(slotNewAmount);
         }
       }
 
       return remainingAmount == 0;
     }
 
-    /// <summary>
-    /// Attempt to add an item to the inventory. If the item is stackable and there is already an item of the same type in the inventory, it will be added to the existing slot. If not, it will go into a new slot.
-    /// </summary>
-    /// <param name="item">The item to add</param>
-    /// <param name="amount">The amount of the item to add</param>
-    /// <returns>The amount of the item that could not be added to the inventory</returns>
-    public int AddItem(Item item, int amount) {
-      var slot = FindStackableItemOnInventory(item);
+    public int AddItem(Item item, int amount, InventorySlot placeAt = null, GroundItem groundItem = null) {
+      var slot = placeAt ?? FindStackableItemOnInventory(item);
       //don't have empty slot or existing item
-      if (EmptySlotCount <= 0 && slot == null) {
+      if (emptySlotCount <= 0 && slot == null) {
+        DropItemToGround(item, groundItem, amount);
         return amount;
       }
 
       //add to new slot
-      var maxStackSize = database.ItemObjects[item.Id].MaxStackSize;
-      if (!database.ItemObjects[item.Id].Stackable || slot == null) {
-        var overFlow = GetEmptySlot().UpdateSlot(item, amount, maxStackSize);
-        return HandleOverflow(overFlow, maxStackSize, item);
+      if (!item.info.Stackable || slot == null) {
+        var emptySlot = GetEmptySlot();
+        // emptySlot.PreventAmountEvent(preventAmountEvent);
+        var overFlow = emptySlot.UpdateSlot(amount, item);
+        return HandleOverflow(overFlow, item, groundItem);
       }
 
       //add to exist slot
-      var remainingAmount = slot.AddAmount(amount, maxStackSize);
-      return HandleOverflow(remainingAmount, maxStackSize, item);
+      // slot.PreventAmountEvent(preventAmountEvent);
+      var remainingAmount = slot.AddAmount(amount);
+      return HandleOverflow(remainingAmount, item, groundItem);
     }
 
-    /// <summary>
-    /// Handles the overflow of items when trying to add an item to the inventory. If the amount of the item to add is greater than the maximum stack size, it will be added to multiple slots.
-    /// </summary>
-    /// <param name="overflowAmount">The amount of the item that is greater than the maximum stack size</param>
-    /// <param name="maxStackSize">The maximum stack size of the item</param>
-    /// <param name="item">The item to add</param>
-    /// <returns>The amount of the item that could not be added to the inventory</returns>
-    private int HandleOverflow(int overflowAmount, int maxStackSize, Item item) {
+    private int HandleOverflow(int overflowAmount, Item item, GroundItem groundItem = null) {
       if (overflowAmount <= 0) {
         return 0;
       }
+
+      var maxStackSize = item.info.MaxStackSize;
 
       var countRepeat = Mathf.CeilToInt((float)overflowAmount / maxStackSize);
 
       for (var i = 0; i < countRepeat; i++) {
         var emptySlot = GetEmptySlot();
         if (emptySlot != null) {
-          emptySlot.UpdateSlot(item, overflowAmount, maxStackSize);
+          emptySlot.UpdateSlot(overflowAmount, item);
           overflowAmount -= maxStackSize;
         }
         else {
+          DropItemToGround(item, groundItem, overflowAmount);
           return overflowAmount;
         }
       }
@@ -134,28 +124,19 @@ namespace Scriptables.Inventory {
       return 0;
     }
 
-    //use to get item from mining
-    public bool AddItem(Item item, int amount, ItemObject itemObj, GroundItem groundItem) {
-      Debug.Log("AddItem amount " + amount);
-      InventorySlot slot = FindStackableItemOnInventory(item); //FindItemOnInventory(item);
-      //don't have empty slot or existing item
-      if (EmptySlotCount <= 0 && slot == null) {
-        DropItemToGround(itemObj, groundItem, amount);
-        return false;
+    public void MergeItems(InventorySlot slot, InventorySlot targetSlot) {
+      if (!slot.SlotsHasSameItems(targetSlot)) {
+        return;
       }
 
-      //add to new slot
-      int maxStackSize = database.ItemObjects[item.Id].MaxStackSize;
-      if (!database.ItemObjects[item.Id].Stackable || slot == null) {
-        var overFlow = GetEmptySlot().UpdateSlot(item, amount, maxStackSize);
-        Debug.Log("AddItem overFlow " + overFlow);
-        return HandleOverflow(overFlow, maxStackSize, itemObj, groundItem, item);
-      }
+      var remainingAmount = AddItem(slot.Item, slot.amount, targetSlot);
 
-      //add to exist slot
-      var remainingAmount = slot.AddAmount(amount, maxStackSize);
-      Debug.Log("AddItem remainingAmount " + remainingAmount);
-      return HandleOverflow(remainingAmount, maxStackSize, itemObj, groundItem, item);
+      if (remainingAmount <= 0) {
+        slot.RemoveItem();
+      }
+      else {
+        slot.UpdateSlot(remainingAmount);
+      }
     }
 
     public int GetFreeSlotsCount() {
@@ -163,7 +144,7 @@ namespace Scriptables.Inventory {
 
       foreach (var slot in GetSlots) {
         //slot is empty
-        if (slot.item.Id < 0) {
+        if (slot.isEmpty) {
           count++;
         }
       }
@@ -171,50 +152,21 @@ namespace Scriptables.Inventory {
       return count;
     }
 
-    public int CalculateFreeCapacity(ItemObject item) {
-      var capacity = 0;
-
-      for (var i = 0; i < GetSlots.Length; i++) {
-        var slot = GetSlots[i];
-        //slot is empty
-        if (slot.item.Id < 0) {
-          capacity += item.MaxStackSize;
-        }
-        //slot contains same item
-        else if (slot.item.Id == item.data.Id) {
-          capacity += item.MaxStackSize - slot.amount;
-        }
-      }
-
-      return capacity;
-    }
-
-    public int CalculateTotalCountByItem(ItemObject item) {
-      var count = 0;
+    public Dictionary<string, int> CalculateTotalCounts() {
+      var count = new Dictionary<string, int>();
 
       foreach (var slot in GetSlots) {
-        //slot is empty
-        if (slot.item.Id == item.data.Id) {
-          count += slot.amount;
-        }
-      }
-
-      return count;
-    }
-
-    public Dictionary<int, int> CalculateTotalCounts() {
-      var count = new Dictionary<int, int>();
-
-      foreach (var slot in GetSlots) {
-        if (slot.item.Id < 0) {
+        if (slot.isEmpty) {
           continue;
         }
 
-        if (!count.ContainsKey(slot.item.Id)) {
-          count.Add(slot.item.Id, slot.amount);
+        var slotItemId = slot.Item.info.Id;
+
+        if (!count.ContainsKey(slotItemId)) {
+          count.Add(slotItemId, slot.amount);
         }
         else {
-          count[slot.item.Id] += slot.amount;
+          count[slotItemId] += slot.amount;
         }
       }
 
@@ -226,12 +178,13 @@ namespace Scriptables.Inventory {
         return;
       }
 
-      var item = new Item(defaultItem);
-      GetSlots[0].UpdateSlot(item, 1);
+      var item = new Item(defaultItem, type);
+      // GetSlots[0].UpdateSlot(1, item);
+      AddItem(item, 1);
     }
 
     private bool isEmpty() {
-      for (int i = 0; i < GetSlots.Length; i++) {
+      for (var i = 0; i < GetSlots.Length; i++) {
         if (GetSlots[i].amount > 0) {
           return false;
         }
@@ -240,61 +193,39 @@ namespace Scriptables.Inventory {
       return true;
     }
 
-    private void DropItemToGround(ItemObject itemObj, GroundItem groundItem, int amount) {
-      if (itemObj != null) {
-        Debug.LogError($"Need to spawn item on floor! Amount: {amount}");
-        SpawnItem(itemObj, amount);
-      }
-
-      UpdateCount(groundItem, amount);
-    }
-
-    private bool HandleOverflow(int overflowAmount, int maxStackSize, ItemObject itemObj, GroundItem groundItem,
-      Item item) {
-      if (overflowAmount > 0) {
-        //Debug.LogError($"lefted count {leftedCount}");
-        var countRepeat = Mathf.CeilToInt((float)overflowAmount / maxStackSize);
-
-        //Debug.LogError($"count repeat {countRepeat}!!!!!!!!!!!!!!!!!!!");
-        for (int i = 0; i < countRepeat; i++) {
-          var emptySlot = GetEmptySlot();
-          if (emptySlot != null) {
-            emptySlot.UpdateSlot(item, overflowAmount, maxStackSize);
-            overflowAmount -= maxStackSize;
-          }
-          else {
-            Debug.LogError($"Also need to spawn item on floor {overflowAmount}");
-            DropItemToGround(itemObj, groundItem, overflowAmount);
-            return false;
-          }
-        }
-
-        return true;
-      }
-
-      return true;
-    }
-
-    private void SpawnItem(ItemObject item, int amount) {
-      if (item == null)
+    private void DropItemToGround(Item item, GroundItem groundItem, int amount) {
+      if (!groundItem) {
         return;
+      }
 
-      GameObject newObj = Instantiate(item.spawnPrefab, GameManager.instance.PlayerController.transform.position,
-        Quaternion.identity);
+      if (item != null) {
+        Debug.LogError($"Need to spawn item on floor! Amount: {amount}");
+        SpawnItem(item, amount);
+      }
+
+      // UpdateCount(groundItem, amount);
+      groundItem.Count = amount;
+      groundItem.isPicked = false;
+    }
+
+
+    public void SpawnItem(Item item, int amount) {
+      if (item == null) {
+        return;
+      }
+
+      //spawn higher in y pos because need TO DO pick up on action not the trigger enter
+      var newObj = Instantiate(item.info.spawnPrefab,
+        GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = amount;
     }
 
-    //update count for ground item
-    private void UpdateCount(GroundItem groundItem, int amount) {
-      if (groundItem != null) groundItem.Count = amount;
-    }
-
-    public int EmptySlotCount {
+    private int emptySlotCount {
       get {
-        int counter = 0;
-        for (int i = 0; i < GetSlots.Length; i++) {
-          if (GetSlots[i].item.Id <= -1) {
+        var counter = 0;
+        for (var i = 0; i < GetSlots.Length; i++) {
+          if (GetSlots[i].isEmpty) {
             counter++;
           }
         }
@@ -304,8 +235,8 @@ namespace Scriptables.Inventory {
     }
 
     public InventorySlot FindItemOnInventory(Item item) {
-      for (int i = 0; i < GetSlots.Length; i++) {
-        if (GetSlots[i].item.Id == item.Id) {
+      for (var i = 0; i < GetSlots.Length; i++) {
+        if (GetSlots[i].Item?.info.Id == item.info.Id) {
           return GetSlots[i];
         }
       }
@@ -314,8 +245,13 @@ namespace Scriptables.Inventory {
     }
 
     public InventorySlot FindStackableItemOnInventory(Item item) {
-      for (int i = 0; i < GetSlots.Length; i++) {
-        if (GetSlots[i].item.Id == item.Id && GetSlots[i].amount < database.ItemObjects[item.Id].MaxStackSize) {
+      for (var i = 0; i < GetSlots.Length; i++) {
+        var slot = GetSlots[i];
+        if (slot.isEmpty) {
+          continue;
+        }
+
+        if (slot.Item?.info.Id == item.info.Id && slot.amount < item.info.MaxStackSize) {
           return GetSlots[i];
         }
       }
@@ -324,8 +260,8 @@ namespace Scriptables.Inventory {
     }
 
     public bool IsItemInInventory(ItemObject item) {
-      for (int i = 0; i < GetSlots.Length; i++) {
-        if (GetSlots[i].item.Id == item.data.Id) {
+      for (var i = 0; i < GetSlots.Length; i++) {
+        if (GetSlots[i].Item?.info.Id == item.Id) {
           return true;
         }
       }
@@ -334,8 +270,8 @@ namespace Scriptables.Inventory {
     }
 
     public InventorySlot GetEmptySlot() {
-      for (int i = 0; i < GetSlots.Length; i++) {
-        if (GetSlots[i].item.Id <= -1) {
+      for (var i = 0; i < GetSlots.Length; i++) {
+        if (GetSlots[i].isEmpty) {
           return GetSlots[i];
         }
       }
@@ -343,32 +279,8 @@ namespace Scriptables.Inventory {
       return null;
     }
 
-    public void SwapItems(InventorySlot item1, InventorySlot item2) {
-      if (item1 == item2) {
-        return;
-      }
-
-      if (item2.CanPlaceInSlot(item1.GetItemObject()) && item1.CanPlaceInSlot(item2.GetItemObject())) {
-        InventorySlot temp = new InventorySlot(item2.item, item2.amount, item2.amount, item2.IsSelected);
-        // item2.UpdateSlotAfterSwap(item1.item, item1.amount, item1.IsSelected);
-        // item1.UpdateSlotAfterSwap(temp.item, temp.amount, temp.IsSelected);
-        item2.UpdateSlotAfterSwap(item1);
-        item1.UpdateSlotAfterSwap(temp);
-      }
-    }
-
     [ContextMenu("Save")]
     public void Save() {
-      #region Optional Save
-
-      //string saveData = JsonUtility.ToJson(Container, true);
-      //BinaryFormatter bf = new BinaryFormatter();
-      //FileStream file = File.Create(string.Concat(Application.persistentDataPath, savePath));
-      //bf.Serialize(file, saveData);
-      //file.Close();
-
-      #endregion
-
       IFormatter formatter = new BinaryFormatter();
       Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Create,
         FileAccess.Write);
@@ -379,27 +291,28 @@ namespace Scriptables.Inventory {
     [ContextMenu("Load")]
     public void Load() {
       //Debug.Log("Load " + Application.persistentDataPath);
-      if (File.Exists(string.Concat(Application.persistentDataPath, savePath))) {
-        #region Optional Load
+      if (!File.Exists(string.Concat(Application.persistentDataPath, savePath))) {
+        return;
+      }
 
-        //BinaryFormatter bf = new BinaryFormatter();
-        //FileStream file = File.Open(string.Concat(Application.persistentDataPath, savePath), FileMode.Open, FileAccess.Read);
-        //JsonUtility.FromJsonOverwrite(bf.Deserialize(file).ToString(), Container);
-        //file.Close();
+      IFormatter formatter = new BinaryFormatter();
+      Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open,
+        FileAccess.Read);
+      var newContainer = (InventoryContainer)formatter.Deserialize(stream);
 
-        #endregion
-
-        IFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open,
-          FileAccess.Read);
-        InventoryContainer newContainer = (InventoryContainer)formatter.Deserialize(stream);
-
-        for (int i = 0; i < GetSlots.Length; i++) {
-          GetSlots[i].UpdateSlot(newContainer.Slots[i].item, newContainer.Slots[i].amount);
+      for (var i = 0; i < GetSlots.Length; i++) {
+        var newSlot = newContainer.Slots[i];
+        var item = newSlot.Item;
+        if (item == null || !item.hasId) {
+          continue;
         }
 
-        stream.Close();
+        newSlot.Item.RestoreItemObject(database.ItemObjects);
+
+        GetSlots[i].UpdateSlot(newContainer.Slots[i].amount, newContainer.Slots[i].Item);
       }
+
+      stream.Close();
     }
 
     [ContextMenu("Clear")]

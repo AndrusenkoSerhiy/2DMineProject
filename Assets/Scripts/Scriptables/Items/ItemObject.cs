@@ -1,10 +1,15 @@
+using System;
 using Inventory;
 using QuickSlots;
 using UnityEngine;
 
 namespace Scriptables.Items {
+  [Serializable]
   public abstract class ItemObject : ScriptableObject, IUsableItem {
+    [SerializeField, HideInInspector] private string id;
+    public string Id => id;
     public ItemType Type;
+    public string Name;
     public ParentType ParentType;
     public Sprite UiDisplay;
     public GameObject CharacterDisplay;
@@ -12,17 +17,17 @@ namespace Scriptables.Items {
     public int MaxStackSize = 10;
     public Vector3 SpawnPosition;
     public Vector3 SpawnRotation;
-    [TextArea(15, 20)] public string Description;
-    public Item data = new Item();
     public GameObject spawnPrefab;
 
-    public Item CreateItem() {
-      Item newItem = new Item(this);
-      return newItem;
+    [TextArea(15, 20)] public string Description;
+
+    private void OnValidate() {
+      if (string.IsNullOrEmpty(id)) {
+        id = Guid.NewGuid().ToString();
+      }
     }
 
     public virtual void Use(InventorySlot slot) {
-      
     }
   }
 }

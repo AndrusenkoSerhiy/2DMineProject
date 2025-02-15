@@ -16,8 +16,14 @@ namespace Inventory {
     protected PlayerInventory playerInventory;
     [SerializeField] protected Transform tempDragParent;
 
-    [SerializeField] private bool preventItemDrop;
-    public bool PreventItemDrop => preventItemDrop;
+    [SerializeField] private bool preventItemDropIn;
+    [SerializeField] private bool preventDropOnGround;
+    [SerializeField] private bool preventSwapIn;
+    [SerializeField] private bool preventMergeIn;
+    public bool PreventItemDropIn => preventItemDropIn;
+    public bool PreventDropOnGround => preventDropOnGround;
+    public bool PreventSwapIn => preventSwapIn;
+    public bool PreventMergeIn => preventMergeIn;
 
     public abstract void CreateSlots();
     public abstract void UpdateSlotsGameObjects();
@@ -54,45 +60,51 @@ namespace Inventory {
       UpdateSlotDisplay(slot); // Ensure each slot reflects the correct UI state
     }
 
+    private void UpdateSlotHandler(InventorySlot arg1, InventorySlot arg2) {
+      UpdateSlotDisplay(arg2);
+    }
+
     public void UpdateSlotDisplay(InventorySlot slot) {
       var image = slot.Background;
       var text = slot.Text;
       // var image = slot.slotDisplay.transform.GetChild(1).GetComponent<Image>();
       // var text = slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
-      if (slot.item.Id <= -1) {
+      if (slot.Item.info == null) {
         image.sprite = null;
         image.color = new Color(1, 1, 1, 0);
         text.text = string.Empty;
       }
       else {
-        image.sprite = slot.GetItemObject().UiDisplay;
+        image.sprite = slot.Item.info.UiDisplay;
         image.color = new Color(1, 1, 1, 1);
         text.text = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
       }
     }
 
     public void CheckSlotsUpdate(InventoryObject inventory) {
-      for (int i = 0; i < inventory.GetSlots.Length; i++) {
-        inventory.GetSlots[i].onAfterUpdated += UpdateSlotDisplay;
+      for (var i = 0; i < inventory.GetSlots.Length; i++) {
+        inventory.GetSlots[i].OnAfterUpdated += UpdateSlotHandler;
       }
     }
 
     public GameObject CreateTempItem(InventorySlot slot, Transform parent) {
       GameObject tempItem = null;
-      if (slot.item.Id >= 0) {
-        tempItem = new GameObject("TempItemBeingDragged");
-        tempItem.layer = 5;
-        var rt = tempItem.AddComponent<RectTransform>();
-
-        rt.sizeDelta = new Vector2(80, 80);
-
-        tempItem.transform.SetParent(parent);
-        var img = tempItem.AddComponent<Image>();
-        img.sprite = slot.GetItemObject().UiDisplay;
-        img.raycastTarget = false;
-
-        tempItem.transform.localScale = Vector3.one;
+      if (slot.isEmpty) {
+        return tempItem;
       }
+
+      tempItem = new GameObject("TempItemBeingDragged");
+      tempItem.layer = 5;
+      var rt = tempItem.AddComponent<RectTransform>();
+
+      rt.sizeDelta = new Vector2(80, 80);
+
+      tempItem.transform.SetParent(parent);
+      var img = tempItem.AddComponent<Image>();
+      img.sprite = slot.GetItemObject().UiDisplay;
+      img.raycastTarget = false;
+
+      tempItem.transform.localScale = Vector3.one;
 
       return tempItem;
     }
@@ -147,38 +159,67 @@ namespace Inventory {
 
     protected void OnDragEnd(BaseEventData data, InventorySlot slot) {
       var pointerData = data as PointerEventData;
-
       Destroy(MouseData.tempItemBeingDragged);
 
-      if (pointerData != null && pointerData.pointerEnter != null) {
-        var dropObj = pointerData.pointerEnter.GetComponentInParent<IInventoryDropZoneUI>();
-
-        if (dropObj != null && dropObj.PreventItemDrop) {
+      // Prevent dropping if the pointer is over a restricted drop zone
+      if (pointerData?.pointerEnter != null) {
+        var dropZone = pointerData.pointerEnter.GetComponentInParent<IInventoryDropZoneUI>();
+        if (dropZone?.PreventItemDropIn == true) {
+          Debug.Log("Preventing item drop on restricted drop zone");
           return;
         }
       }
 
+      // Handle item drop on the ground
       if (MouseData.interfaceMouseIsOver == null) {
-        playerInventory.SpawnItem(slot);
-        slot.RemoveItem();
-        return;
-      }
+        if (!PreventDropOnGround) {
+          inventory.SpawnItem(slot.Item, slot.amount);
+          slot.RemoveItem();
 
-      if (MouseData.interfaceMouseIsOver.PreventItemDrop) {
-        return;
-      }
-
-      if (MouseData.slotHoveredOver) {
-        var mouseHoverSlotData =
-          (MouseData.interfaceMouseIsOver as IInventoryUI).SlotsOnInterface[MouseData.slotHoveredOver];
-
-        if ((slot.parent.Inventory.PreventSwap || mouseHoverSlotData.parent.Inventory.PreventSwap) &&
-            mouseHoverSlotData.item.Id >= 0) {
-          return;
+          Debug.Log("Dropping item on the ground");
         }
 
-        inventory.SwapItems(slot, mouseHoverSlotData);
+        return;
       }
+
+      if (!MouseData.slotHoveredOver) {
+        Debug.Log("Slot hovered over is null");
+        return;
+      }
+
+      // Retrieve the slot being hovered over
+      var targetSlot = (MouseData.interfaceMouseIsOver as IInventoryUI)?.SlotsOnInterface[MouseData.slotHoveredOver];
+      if (targetSlot == null) {
+        Debug.Log("Target slot is null");
+        return;
+      }
+
+      var targetInventory = targetSlot.Parent.Inventory;
+      var targetUI = targetSlot.Parent;
+
+      // Prevent any item movement if drop is disabled
+      if (targetUI.PreventItemDropIn) {
+        Debug.Log("Preventing item drop");
+        return;
+      }
+
+      var slotsHasSameItems = slot.SlotsHasSameItems(targetSlot);
+      // Handle merging items
+      if (slotsHasSameItems && !targetUI.PreventMergeIn) {
+        targetInventory.MergeItems(slot, targetSlot);
+
+        Debug.Log("Merging items");
+        return;
+      }
+
+      // Handle swapping items
+      // var canSwap = !targetUI.PreventSwapIn && (PreventSwapIn || (!PreventSwapIn && slot.isEmpty));
+      var cantSwap = targetUI.PreventSwapIn || (PreventSwapIn && !targetSlot.isEmpty);
+      if (cantSwap) {
+        return;
+      }
+
+      slot.SwapWith(targetSlot);
     }
   }
 }

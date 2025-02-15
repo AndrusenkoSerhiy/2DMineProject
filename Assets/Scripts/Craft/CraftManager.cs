@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Inventory;
 using Scriptables.Craft;
@@ -17,9 +18,11 @@ namespace Craft {
     private ICraftActions craftActions;
     private PlayerInventory playerInventory;
     private IInputItems inputItems;
-    private bool isInitialized;
+    private ITotalAmount totalAmount;
 
-    public bool PreventItemDrop => preventItemDrop;
+    private bool started;
+
+    public bool PreventItemDropIn => preventItemDrop;
 
     public void Awake() {
       Debug.Log("CraftManager Awake");
@@ -29,31 +32,48 @@ namespace Craft {
     public void Start() {
       Debug.Log("CraftManager Start");
       Init();
-      AddEvents();
+      started = true;
     }
 
     public void OnEnable() {
-      if (!isInitialized) {
+      if (!started) {
         return;
       }
 
       Debug.Log("CraftManager OnEnable");
 
-      AddEvents();
+      Init();
     }
 
-    private void OnDisable() => RemoveEvents();
+    private void OnDisable() {
+      craftActions.ClearComponent();
+      recipesManager.ClearComponent();
+      totalAmount.ClearComponent();
+      RemoveEvents();
+    }
 
     private void Init() {
       Debug.Log("CraftManager Init");
+      InitReferences();
+      AddEvents();
+      totalAmount.InitComponent();
+      recipesManager.InitComponent();
+      craftActions.InitComponent();
+    }
+
+    private void InitReferences() {
+      if (totalAmount != null) {
+        return;
+      }
+
+      Debug.Log("CraftManager InitReferences");
 
       playerInventory = GameManager.instance.PlayerInventory;
+      totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
       detail = ServiceLocator.For(this).Get<IRecipeDetail>();
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
       recipesManager = ServiceLocator.For(this).Get<IRecipesManager>();
-
-      isInitialized = true;
     }
 
     private void AddEvents() {
@@ -94,12 +114,12 @@ namespace Craft {
       //remove resources from inventory
       foreach (var item in recipe.RequiredMaterials) {
         var totalCount = count * item.Amount;
-        playerInventory.inventory.RemoveItem(item.Material.data, totalCount);
+        playerInventory.inventory.RemoveItem(item.Material.Id, totalCount);
       }
 
       inputItems.SetRecipe(count, recipe);
       station.AddItemToCraftTotal(recipe.Result, count);
-      station.AddToCraftInputsItemsIds(recipe.Result.data.Id);
+      station.AddToCraftInputsItemsIds(recipe.Result.Id);
 
       craftActions.UpdateAndPrintInputCount();
     }
@@ -113,14 +133,15 @@ namespace Craft {
     }
 
     private void AddSlotsUpdateEvents() {
-      playerInventory.onResourcesTotalUpdate += SlotAmountUpdateHandler;
+      totalAmount.onResourcesTotalUpdate += SlotAmountUpdateHandler;
     }
 
     private void RemoveSlotsUpdateEvents() {
-      playerInventory.onResourcesTotalUpdate -= SlotAmountUpdateHandler;
+      totalAmount.onResourcesTotalUpdate -= SlotAmountUpdateHandler;
     }
 
-    private void SlotAmountUpdateHandler(int resourceId) {
+    private void SlotAmountUpdateHandler(string resourceId) {
+      Debug.Log("CraftManager SlotAmountUpdateHandler: " + resourceId);
       var recipeIngredientsIds = detail.GetRecipeIngredientsIds();
       if (recipeIngredientsIds.Length > 0 && recipeIngredientsIds.Contains(resourceId)) {
         UpdateResourcesListAndCount();
@@ -155,9 +176,9 @@ namespace Craft {
       station.RemoveCountFromCraftTotal(recipe.Result, count);
 
       var outputInventory = station.OutputInventory;
-      var item = new Item(outputInventory.database.ItemObjects[recipe.Result.data.Id]);
+      var item = new Item(recipe.Result, outputInventory.type);
 
-      outputInventory.AddItem(item, count, null, null);
+      outputInventory.AddItem(item, count);
     }
 
     private void OnInputAllCraftedHandler() {
@@ -176,25 +197,26 @@ namespace Craft {
       //remove resources from inventory
       foreach (var item in inputItem.Recipe.RequiredMaterials) {
         var totalCount = inputItem.CountLeft * item.Amount;
-        playerInventory.inventory.AddItem(item.Material.data, totalCount, null, null);
+        var addItem = new Item(item.Material, playerInventory.inventory.type);
+        playerInventory.inventory.AddItem(addItem, totalCount);
       }
     }
 
     private void AddOutputUpdateEvents() {
       foreach (var output in station.OutputInventory.GetSlots) {
-        output.onAfterUpdated += OutputUpdateSlotHandler;
+        output.OnAfterUpdated += OutputUpdateSlotHandler;
       }
     }
 
     private void RemoveOutputUpdateEvents() {
       foreach (var output in station.OutputInventory.GetSlots) {
-        output.onAfterUpdated -= OutputUpdateSlotHandler;
+        output.OnAfterUpdated -= OutputUpdateSlotHandler;
       }
     }
 
-    private void OutputUpdateSlotHandler(InventorySlot slot) {
-      Debug.Log("OutputUpdateSlotHandler slot.item.Id:" + slot.item.Id);
-      if (slot.item.Id < 0) {
+    private void OutputUpdateSlotHandler(InventorySlot slotBefore, InventorySlot slot) {
+      Debug.Log("OutputUpdateSlotHandler slot.item.Id:" + slot.Item.info?.Id);
+      if (slot.isEmpty) {
         craftActions.UpdateAndPrintInputCount();
       }
     }

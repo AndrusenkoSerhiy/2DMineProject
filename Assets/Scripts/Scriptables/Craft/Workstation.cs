@@ -15,7 +15,7 @@ namespace Scriptables.Craft {
     public InventoryObject OutputInventory;
 
     public SerializedDictionary<ItemObject, int> CraftItemsTotal = new();
-    public List<int> CraftInputsItemsIds = new();
+    public List<string> CraftInputsItemsIds = new();
 
     public void AddItemToCraftTotal(ItemObject item, int count) {
       if (!CraftItemsTotal.ContainsKey(item)) {
@@ -42,7 +42,7 @@ namespace Scriptables.Craft {
       }
     }
 
-    public void AddToCraftInputsItemsIds(int id) {
+    public void AddToCraftInputsItemsIds(string id) {
       CraftInputsItemsIds.Add(id);
     }
 

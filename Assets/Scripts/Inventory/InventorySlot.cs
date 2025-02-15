@@ -7,153 +7,154 @@ using UnityEngine.UI;
 namespace Inventory {
   [Serializable]
   public class InventorySlot {
-    public ItemType[] AllowedItems = new ItemType[0];
+    [NonSerialized] public IInventoryUI Parent;
+    [NonSerialized] public GameObject SlotDisplay;
+    [NonSerialized] public Action<InventorySlot, InventorySlot> OnAfterUpdated;
 
-    [NonSerialized]
-    public IInventoryUI parent;
-    [NonSerialized]
-    public GameObject slotDisplay;
+    [NonSerialized] public Action<InventorySlot> OnBeforeUpdated;
 
+    // [NonSerialized] public Action<string, int> OnAmountUpdate;
+    [NonSerialized] private GameObject outline;
+    [NonSerialized] private Image background;
+    [NonSerialized] private TextMeshProUGUI text;
+    [NonSerialized] private const bool PREVENT_AMOUNT_EVENT_DEFAULT = false;
+    // [NonSerialized] private bool preventAmountEvent;
 
-    [NonSerialized]
-    public Action<InventorySlot> onAfterUpdated;
-    [NonSerialized]
-    public Action<InventorySlot> onBeforeUpdated;
-    [NonSerialized]
-    public Action<int, int> onAmountUpdate;
-
-    public Item item;
+    public Item Item;
     public int amount;
-    [NonSerialized]
-    private GameObject outline;
-    [NonSerialized]
-    private Image background;
-    [NonSerialized]
-    private TextMeshProUGUI text;
 
-    public bool IsSelected;
+    public bool isSelected;
     public Image Background => GetBackground();
     public TextMeshProUGUI Text => GetText();
 
     public ItemObject GetItemObject() {
-      if (parent == null || parent.Inventory == null || item.Id < 0) {
-        return null;
-      }
-      return parent.Inventory.database.ItemObjects[item.Id];
+      return Item.info;
     }
 
-    public InventorySlot() => UpdateSlot(new Item(), 0);
+    public bool isEmpty => Item.info == null || amount <= 0;
 
-    //use for swap items in inventory
-    public InventorySlot(Item item, int amount, int maxStack, bool selected = false) => UpdateSlot(item, amount, maxStack, selected);
-
-    public void RemoveItem() => UpdateSlot(new Item(), 0);
-
-    public int AddAmount(int value, int maxStack = -1) => UpdateSlot(item, amount + value, maxStack);
-
-    public int UpdateSlot(Item itemValue, int amountValue, int maxStack, bool selected = false) {
-      onBeforeUpdated?.Invoke(this);
-
-      var oldAmount = amount;
-      var newAmount = Mathf.Min(amountValue, maxStack); // Calculate the new amount
-      var itemId = itemValue.Id != -1 ? itemValue.Id : (item?.Id ?? -1);
-
-      item = itemValue;
-      amount = newAmount; // Update the slot's amount after calculation
-      IsSelected = selected;
-      onAfterUpdated?.Invoke(this);
-
-      var amountDelta = newAmount - oldAmount;
-
-      if (amountDelta != 0) {
-        onAmountUpdate?.Invoke(itemId, amountDelta);
-      }
-
-      return Mathf.Max(0, amountValue - maxStack);
+    public InventorySlot() {
+      Item = new Item();
+      amount = 0;
     }
 
-    //use for load
-    public void UpdateSlot(Item itemValue, int amountValue, bool triggerAmountEvent = true) {
-      onBeforeUpdated?.Invoke(this);
+    public InventorySlot Clone() {
+      return new InventorySlot {
+        Item = Item,
+        amount = amount,
+        isSelected = isSelected
+      };
+    }
 
-      var itemId = itemValue.Id != -1 ? itemValue.Id : (item?.Id ?? -1);
-      var oldAmount = amount;
-      item = itemValue;
-      amount = amountValue;
+    public void RemoveItem() {
+      UpdateSlot(0, new Item());
+    }
 
-      onAfterUpdated?.Invoke(this);
+    public int AddAmount(int value) {
+      return UpdateSlot(amount + value);
+    }
 
-      var amountDelta = amount - oldAmount;
+    public int UpdateSlot(int amountValue, InventorySlot slot, bool? selected = null) {
+      return UpdateSlot(amountValue, slot.Item, selected);
+    }
 
-      if (triggerAmountEvent && amountDelta != 0) {
-        onAmountUpdate?.Invoke(itemId, amountDelta);
+    public int UpdateSlot(int amountValue, Item itemValue = null, bool? selected = null) {
+      var slotDataBefore = Clone();
+      OnBeforeUpdated?.Invoke(slotDataBefore);
+      itemValue ??= Item;
+      var maxStack = itemValue.info ? itemValue.info.MaxStackSize : 0;
+      var newAmount = Mathf.Min(amountValue, maxStack);
+      var overFlow = Mathf.Max(0, newAmount - maxStack);
+
+      Item = itemValue;
+      amount = newAmount;
+
+      if (Parent?.Inventory) {
+        Item.SetInventoryType(Parent.Inventory.type);
       }
+
+      if (selected != null) {
+        isSelected = (bool)selected;
+        CheckSelectDisplay();
+      }
+
+      OnAfterUpdated?.Invoke(slotDataBefore, this);
+
+      return overFlow;
     }
 
     //use when swap items
-    // public void UpdateSlotAfterSwap(Item itemValue, int amountValue, bool isSelected, bool triggerAmountEvent = false) {
-    public void UpdateSlotAfterSwap(InventorySlot slot) {
-      var itemValue = slot.item;
-      var amountValue = slot.amount;
-
-      onBeforeUpdated?.Invoke(this);
-      var itemId = itemValue.Id != -1 ? itemValue.Id : (item?.Id ?? -1);
-      var oldAmount = amount;
-      item = itemValue;
-      amount = amountValue;
-
-      onAfterUpdated?.Invoke(this);
-
-      var amountDelta = amount - oldAmount;
-
-      if (slot.parent != null && slot.parent.Inventory.UpdateInventoryAmountOnSwap && amountDelta != 0) {
-        onAmountUpdate?.Invoke(itemId, amountDelta);
+    public void SwapWith(InventorySlot targetSlot) {
+      if (targetSlot == null || targetSlot == this) {
+        return;
       }
 
-      if (slot.IsSelected) {
-        Select();
+      // Save current slot data
+      var tempItem = Item;
+      var tempAmount = amount;
+      var tempSelected = isSelected;
+
+      // Swap data
+      UpdateSlot(targetSlot.amount, targetSlot.Item, targetSlot.isSelected);
+      targetSlot.UpdateSlot(tempAmount, tempItem, tempSelected);
+    }
+
+    private void CheckSelectDisplay() {
+      if (isSelected) {
+        ActivateOutline();
       }
       else {
-        Unselect();
+        DeactivateOutline();
       }
     }
 
-    public bool CanPlaceInSlot(ItemObject itemObject) {
-      if (AllowedItems.Length <= 0 || itemObject == null || itemObject.data.Id < 0) {
-        return true;
+    public bool SlotsHasSameItems(InventorySlot targetSlot) {
+      if (isEmpty || targetSlot.isEmpty || Item.isEmpty || targetSlot.Item.isEmpty) {
+        return false;
       }
 
-      for (int i = 0; i < AllowedItems.Length; i++) {
-        if (itemObject.Type == AllowedItems[i]) {
-          return true;
-        }
-      }
-
-      return false;
+      return Item.info.Id == targetSlot.Item.info.Id;
     }
 
     public void Select() {
-      GetOutline().SetActive(true);
-      IsSelected = true;
+      ActivateOutline();
+      isSelected = true;
     }
 
     public void Unselect() {
+      DeactivateOutline();
+      isSelected = false;
+    }
+
+    private void ActivateOutline() {
+      GetOutline().SetActive(true);
+    }
+
+    private void DeactivateOutline() {
       GetOutline().SetActive(false);
-      IsSelected = false;
     }
 
     private GameObject GetOutline() {
-      if (outline == null) outline = slotDisplay.transform.GetChild(0).gameObject;
+      if (!outline) {
+        outline = SlotDisplay.transform.GetChild(0).gameObject;
+      }
+
       return outline;
     }
 
     private Image GetBackground() {
-      if (background == null) background = slotDisplay.transform.GetChild(1).GetComponent<Image>();
+      if (background == null) {
+        background = SlotDisplay.transform.GetChild(1).GetComponent<Image>();
+      }
+
       return background;
     }
 
     private TextMeshProUGUI GetText() {
-      if (text == null) text = slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
+      if (text == null) {
+        text = SlotDisplay.GetComponentInChildren<TextMeshProUGUI>();
+      }
+
       return text;
     }
 

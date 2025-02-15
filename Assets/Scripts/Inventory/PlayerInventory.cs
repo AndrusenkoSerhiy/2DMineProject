@@ -3,43 +3,32 @@ using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
 using UnityEngine;
-using Items;
-using System.Collections.Generic;
-using UnityEngine.Rendering;
 using System;
-using UnityServiceLocator;
 
 namespace Inventory {
   public class PlayerInventory : MonoBehaviour, IPlayerInventory {
     public InventoryObject inventory;
-
-    //public InventoryObject equipment;
     public InventoryObject quickSlots;
 
     [SerializeField] private ItemObject defaultItem;
-
-    // private WindowsController windowsController;
-    private SerializedDictionary<int, int> resourcesTotal = new SerializedDictionary<int, int>();
-    [NonSerialized] public Action<int> onResourcesTotalUpdate;
-
-    public Action OnQuickSlotLoaded;
-    public Dictionary<int, int> ResourcesTotal => resourcesTotal;
-
     [SerializeField] private GameObject inventoryOverlayPrefab;
     [SerializeField] private GameObject inventoryInterfacePrefab;
+
+    public Action OnQuickSlotLoaded;
+
     private PlayerInventoryWindow inventoryWindow;
 
     public void Start() {
-      CheckSlotsAmountUpdate(inventory);
-
       inventory.Load();
+
+      AddDefaultItem();
 
       quickSlots.Load();
       OnQuickSlotLoaded?.Invoke();
     }
 
     public void Update() {
-      if (UserInput.instance.controls.UI.Inventory.triggered /*&& inventoryPrefab != null*/) {
+      if (UserInput.instance.controls.UI.Inventory.triggered) {
         InitInventoryWindow();
         UserInput.instance.EnableUIControls(!inventoryWindow.IsShow);
         if (inventoryWindow.IsShow) {
@@ -53,46 +42,14 @@ namespace Inventory {
 
     public void OnApplicationQuit() {
       inventory.Save();
-      //equipment.Save();
       quickSlots.Save();
+
       inventory.Clear();
-      //equipment.Clear();
       quickSlots.Clear();
     }
 
-    private void CheckSlotsAmountUpdate(InventoryObject inventory) {
-      foreach (var inventorySlot in inventory.GetSlots) {
-        inventorySlot.onAmountUpdate += SlotAmountUpdateHandler;
-      }
-    }
-
-    private void SlotAmountUpdateHandler(int resourceId, int amountDelta) {
-      UpdateResourceTotal(resourceId, amountDelta);
-    }
-
-    private void UpdateResourceTotal(int resourceId, int amount) {
-      if (resourcesTotal.ContainsKey(resourceId)) {
-        resourcesTotal[resourceId] += amount;
-
-        if (resourcesTotal[resourceId] <= 0) {
-          resourcesTotal.Remove(resourceId);
-        }
-      }
-      else if (amount > 0) {
-        resourcesTotal[resourceId] = amount;
-      }
-
-      onResourcesTotalUpdate?.Invoke(resourceId);
-
-      Debug.Log("PlayerInventory UpdateResourceTotal amount " + amount);
-    }
-
-    public int GetResourceTotalAmount(int resourceId) {
-      return resourcesTotal.ContainsKey(resourceId) ? resourcesTotal[resourceId] : 0;
-    }
-
     public void AddItemToInventory(ItemObject item, int count) {
-      inventory.AddItem(new Item(item), count, item, null);
+      inventory.AddItem(new Item(item, inventory.type), count);
       AddAdditionalItem(item);
     }
 
@@ -109,7 +66,7 @@ namespace Inventory {
 
         var count = UnityEngine.Random.Range((int)list[i].rndCount.x, (int)list[i].rndCount.y);
         //Debug.LogError($"spawn {list[i].item.name} | count {count} ");
-        inventory.AddItem(new Item(list[i].item), count, list[i].item, null);
+        inventory.AddItem(new Item(list[i].item, inventory.type), count);
       }
     }
 
@@ -126,20 +83,9 @@ namespace Inventory {
         return;
       }
 
-      AddDefaultItem();
-      // CheckSlotsUpdate(inventory);
-
       inventoryWindow = Instantiate(inventoryInterfacePrefab, inventoryOverlayPrefab.transform)
         .GetComponent<PlayerInventoryWindow>();
       GameManager.instance.WindowsController.AddWindow(inventoryWindow);
-    }
-
-    public void SpawnItem(InventorySlot slot) {
-      //spawn higher in y pos because need TO DO pick up on action not the trigger enter
-      GameObject newObj = Instantiate(GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).spawnPrefab,
-        GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
-      var groundObj = newObj.GetComponent<GroundItem>();
-      groundObj.Count = slot.amount;
     }
   }
 }

@@ -17,30 +17,32 @@ namespace Craft {
     [SerializeField] private Color buttonsActiveColor;
     [SerializeField] private Color buttonsDisabledColor;
 
-    private PlayerInventory playerInventory;
+    // private PlayerInventory playerInventory;
+    private ITotalAmount totalAmount;
     private Recipe recipe;
     private Workstation station;
 
     private int minCount = 1;
     private int maxCount = 0;
     private int currentCount = 1;
-    private bool isInitialized;
 
     public event Action<int> OnCraftRequested;
 
     public void Awake() {
       Debug.Log("CraftActions Awake");
-      playerInventory = GameManager.instance.PlayerInventory;
-
+      // playerInventory = GameManager.instance.PlayerInventory;
       ServiceLocator.For(this).Register<ICraftActions>(this);
+
       station = ServiceLocator.For(this).Get<Workstation>();
       station.CraftItemsTotal.Clear();
       station.CraftInputsItemsIds.Clear();
+
+      totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
     }
 
-    public void OnEnable() => AddEvents();
-    
-    public void OnDisable() => RemoveEvents();
+    public void InitComponent() => AddEvents();
+
+    public void ClearComponent() => RemoveEvents();
 
     public void UpdateAndPrintInputCount(bool resetCurrentCount = false) {
       Debug.Log("CraftActions UpdateAndPrintInputCount");
@@ -151,7 +153,7 @@ namespace Craft {
       var max = int.MaxValue;
 
       foreach (var resource in recipe.RequiredMaterials) {
-        var availableAmount = playerInventory.GetResourceTotalAmount(resource.Material.data.Id);
+        var availableAmount = totalAmount.GetResourceTotalAmount(resource.Material.Id);
         var maxCraftable = availableAmount / resource.Amount;
         max = Math.Min(max, maxCraftable);
       }
@@ -172,11 +174,11 @@ namespace Craft {
 
       var maxStackSize = recipe.Result.MaxStackSize;
       var outputSlotsCount = station.OutputInventory.CalculateTotalCounts();
-      var inputItemsIds = station.CraftItemsTotal.Keys.Select(x => x.data.Id).ToList();
+      var inputItemsIds = station.CraftItemsTotal.Keys.Select(x => x.Id).ToList();
 
       // Count used slots and check crafting progress
       foreach (var (item, count) in station.CraftItemsTotal) {
-        var outputCount = outputSlotsCount.ContainsKey(item.data.Id) ? outputSlotsCount[item.data.Id] : 0;
+        var outputCount = outputSlotsCount.ContainsKey(item.Id) ? outputSlotsCount[item.Id] : 0;
         var inputOutputCount = count + outputCount;
 
         usedSlotsByCrafting += (inputOutputCount + item.MaxStackSize - 1) / item.MaxStackSize;
@@ -185,7 +187,7 @@ namespace Craft {
           usedSlotsByCrafting -= (outputCount + item.MaxStackSize - 1) / item.MaxStackSize;
         }
 
-        if (item.data.Id == recipe.Result.data.Id) {
+        if (item.Id == recipe.Result.Id) {
           var left = inputOutputCount % maxStackSize;
           leftCount += (left == 0) ? 0 : maxStackSize - (left);
         }
@@ -196,7 +198,7 @@ namespace Craft {
           continue;
         }
 
-        if (output.Key == recipe.Result.data.Id) {
+        if (output.Key == recipe.Result.Id) {
           var left = output.Value % maxStackSize;
           leftCount += (left == 0) ? 0 : maxStackSize - (left);
         }

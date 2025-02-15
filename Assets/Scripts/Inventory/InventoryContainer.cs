@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Scriptables.Items;
 
 namespace Inventory {
@@ -12,19 +11,11 @@ namespace Inventory {
     }
 
     public void Clear() {
-      for (int i = 0; i < Slots.Length; i++) {
-        Slots[i].item = new Item();
-        Slots[i].amount = 0;
-        Slots[i].IsSelected = false;
+      foreach (var slot in Slots) {
+        slot.Item = new Item();
+        slot.amount = 0;
+        slot.isSelected = false;
       }
-    }
-
-    public bool ContainsItem(ItemObject itemObject) {
-      return Array.Find(Slots, i => i.item.Id == itemObject.data.Id) != null;
-    }
-
-    public bool ContainsItem(int id) {
-      return Slots.FirstOrDefault(i => i.item.Id == id) != null;
     }
   }
 }

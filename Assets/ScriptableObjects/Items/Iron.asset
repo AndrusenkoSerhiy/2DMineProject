@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
   m_Name: Iron
   m_EditorClassIdentifier: 
+  Id:
+    Part1: 1139139866
+    Part2: 1285320390
+    Part3: 149233837
+    Part4: 2978092557
   Type: 0
+  Name: Iron
   ParentType: 0
   UiDisplay: {fileID: -2947526863502713391, guid: 79f6be81af46ddd4ba055012ce683954, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -21,9 +27,5 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   Description: 
-  data:
-    Name: Iron
-    Id: 3
-    buffs: []
   spawnPrefab: {fileID: 3890226224433729309, guid: def850f4a3fb51c429e338b7f19b1b9a, type: 3}
   bonusResources: []

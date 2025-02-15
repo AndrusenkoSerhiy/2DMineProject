@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
+  Id:
+    Part1: 2563692927
+    Part2: 1180281806
+    Part3: 776073640
+    Part4: 1627819910
   Type: 0
+  Name: Stone
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 5af73e1e2243a6f4f9016b1f22292d36, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -21,10 +27,6 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   Description: 
-  data:
-    Name: Stone
-    Id: 2
-    buffs: []
   spawnPrefab: {fileID: 3890226224433729309, guid: 9629ad65c25f97048966dd27f06d3261, type: 3}
   bonusResources:
   - item: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}

@@ -575,6 +575,7 @@ GameObject:
   - component: {fileID: 5632360634988604397}
   - component: {fileID: 4536676974413149225}
   - component: {fileID: 5137945162172599595}
+  - component: {fileID: 4516180426620023818}
   m_Layer: 5
   m_Name: WorkbenchWindow
   m_TagString: Untagged
@@ -594,10 +595,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3226268727989124837}
-  - {fileID: 6568222275279256379}
-  - {fileID: 3484314731410262416}
   - {fileID: 5724217199559694127}
+  - {fileID: 3226268727989124837}
+  - {fileID: 3484314731410262416}
+  - {fileID: 6568222275279256379}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -645,6 +646,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11618102ed3248e4aca7d6cb9d880e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4516180426620023818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208913450436918581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95489154ccf14ab4b973d03c8b24f46a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkInventories:
+  - {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
+  - {fileID: 11400000, guid: b01922b1ac974a342935c3c12a61a08f, type: 2}
 --- !u!1 &1346737500725256781
 GameObject:
   m_ObjectHideFlags: 0
@@ -1629,7 +1645,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
   tempDragParent: {fileID: 5724217199559694127}
-  preventItemDrop: 0
+  preventItemDropIn: 0
+  preventDropOnGround: 1
+  preventSwapIn: 0
+  preventMergeIn: 0
   inventoryPrefab: {fileID: 9024243816369132772, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
   X_START: -350
   Y_START: 100
@@ -4062,7 +4081,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
   tempDragParent: {fileID: 8413352481143893193}
-  preventItemDrop: 1
+  preventItemDropIn: 1
+  preventDropOnGround: 1
+  preventSwapIn: 1
+  preventMergeIn: 1
   inventoryPrefab: {fileID: 9024243816369132772, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
   X_START: -200
   Y_START: 0

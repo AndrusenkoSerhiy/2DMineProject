@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8bc6611c57a4211b23b3959ff98e207, type: 3}
   m_Name: StoneBuildingBlock
   m_EditorClassIdentifier: 
+  Id:
+    Part1: 412537932
+    Part2: 1310080513
+    Part3: 922137786
+    Part4: 3371449510
   Type: 10
+  Name: Stone block
   ParentType: 0
   UiDisplay: {fileID: -1351413478, guid: e6eef2e803027b84f9458344fb769d3a, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -21,9 +27,5 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   Description: 
-  data:
-    Name: StoneBuildingBlock
-    Id: 6
-    buffs: []
   spawnPrefab: {fileID: 3890226224433729309, guid: 5f54c42773ad3d44693014ab6605598a, type: 3}
   ResourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}

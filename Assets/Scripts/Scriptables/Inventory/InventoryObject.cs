@@ -16,6 +16,7 @@ namespace Scriptables.Inventory {
     public int slotsCount = 24;
 
     public InventoryType type;
+    public event Action<SlotSwappedEventData> OnSlotSwapped;
 
     //public int MAX_ITEMS;
     [SerializeField]
@@ -64,8 +65,9 @@ namespace Scriptables.Inventory {
       }
     }
 
-    public static void SwapSlots(InventorySlot slot, InventorySlot targetSlot) {
+    public void SwapSlots(InventorySlot slot, InventorySlot targetSlot) {
       slot.SwapWith(targetSlot);
+      OnSlotSwapped?.Invoke(new SlotSwappedEventData(slot, targetSlot));
     }
 
     public int RemoveItem(string id, int amount) {
@@ -105,7 +107,7 @@ namespace Scriptables.Inventory {
       InventorySlot formSlot = null) {
       if (placeAt != null) {
         var overFlow = placeAt.isEmpty
-          ? placeAt.UpdateSlot(amount, item, null, formSlot)
+          ? placeAt.UpdateSlot(amount, item, formSlot)
           : placeAt.AddAmount(amount, formSlot);
         return HandleOverflow(overFlow, item, groundItem);
       }
@@ -120,7 +122,7 @@ namespace Scriptables.Inventory {
       //add to new slot
       if (!item.info.Stackable || slot == null) {
         var emptySlot = GetEmptySlot();
-        var overFlow = emptySlot.UpdateSlot(amount, item, null, formSlot);
+        var overFlow = emptySlot.UpdateSlot(amount, item, formSlot);
         return HandleOverflow(overFlow, item, groundItem);
       }
 
@@ -142,7 +144,7 @@ namespace Scriptables.Inventory {
       for (var i = 0; i < countRepeat; i++) {
         var emptySlot = GetEmptySlot();
         if (emptySlot != null) {
-          emptySlot.UpdateSlot(overflowAmount, item, null, formSlot);
+          emptySlot.UpdateSlot(overflowAmount, item, formSlot);
           overflowAmount -= maxStackSize;
         }
         else {

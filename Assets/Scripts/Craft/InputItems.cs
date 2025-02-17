@@ -6,8 +6,6 @@ using UnityServiceLocator;
 
 namespace Craft {
   public class InputItems : MonoBehaviour, IInputItems {
-    // [SerializeField] private GameObject itemsContainer;
-    // [SerializeField] private GameObject itemPrefab;
     [SerializeField] private GameObject[] slots;
 
     private int itemsCount;
@@ -86,22 +84,6 @@ namespace Craft {
 
       lastEndTime = newStartTime;
     }
-
-    /*private void PrintInputs() {
-      Debug.Log("InputItems PrintInputs");
-      for (var i = 0; i < itemsCount; i++) {
-        var input = Instantiate(itemPrefab, itemsContainer.transform);
-        var rectTransform = input.GetComponent<RectTransform>();
-        if (rectTransform != null) {
-          var newX = input.transform.position.x - (i * rectTransform.rect.width);
-          input.transform.position = new Vector3(newX, input.transform.position.y, input.transform.position.z);
-        }
-
-        var inputItem = input.GetComponent<InputItem>();
-
-        items.Add(inputItem);
-      }
-    }*/
 
     private void UpdateWaitChain(int fromPosition = 0) {
       for (var i = fromPosition; i < inputInProgress - 1; i++) {

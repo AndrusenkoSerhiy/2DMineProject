@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
-using Inventory;
 using Scriptables.Craft;
 using Settings;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityServiceLocator;
 
@@ -42,10 +42,9 @@ namespace Craft {
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
     }
 
-    public void Update() {
-      if (UserInput.instance.controls.UI.Craft.triggered) {
-        OnCraftRequested?.Invoke(currentCount);
-      }
+    public void Start() {
+      UserInput.instance.controls.UI.Craft.performed +=
+        (InputAction.CallbackContext obj) => OnCraftRequested?.Invoke(currentCount);
     }
 
     public void InitComponent() => AddEvents();

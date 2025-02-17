@@ -45,12 +45,12 @@ namespace Inventory {
       UpdateSlotsGameObjects();
       UpdateInventoryUI();
     }
-    
+
     private void UpdateSlotsGameObjects() {
       for (var i = 0; i < Inventory.GetSlots.Length; i++) {
         var slot = Inventory.GetSlots[i];
         slot.SetParent(this);
-        slot.SlotDisplay = slotsPrefabs[i];
+        slot.SetSlotDisplay(slotsPrefabs[i]);
         slotsOnInterface[slotsPrefabs[i]] = slot;
       }
     }
@@ -71,9 +71,6 @@ namespace Inventory {
         var slot = Inventory.GetSlots[i];
 
         AddSlotEvents(obj, slot, tempDragParent);
-
-        // slot.SetParent(this);
-        // slot.SlotDisplay = obj;
 
         slotsOnInterface.Add(obj, slot);
       }
@@ -97,8 +94,6 @@ namespace Inventory {
     public void UpdateSlotDisplay(InventorySlot slot) {
       var image = slot.Background;
       var text = slot.Text;
-      // var image = slot.slotDisplay.transform.GetChild(1).GetComponent<Image>();
-      // var text = slot.slotDisplay.GetComponentInChildren<TextMeshProUGUI>();
       if (slot.Item.info == null) {
         image.sprite = null;
         image.color = new Color(1, 1, 1, 0);
@@ -184,12 +179,22 @@ namespace Inventory {
     }
 
     protected void OnDragStart(InventorySlot slot, Transform parent) {
+      if (slot.isEmpty) {
+        Debug.Log("OnDragStart Slot is empty, cant drag");
+        return;
+      }
+
       MouseData.tempItemBeingDragged = CreateTempItem(slot, parent);
     }
 
     protected void OnDragEnd(BaseEventData data, InventorySlot slot) {
       var pointerData = data as PointerEventData;
       Destroy(MouseData.tempItemBeingDragged);
+
+      if (slot.isEmpty) {
+        Debug.Log("OnDragEnd Slot is empty, cant drag");
+        return;
+      }
 
       // Prevent dropping if the pointer is over a restricted drop zone
       if (pointerData?.pointerEnter != null) {
@@ -253,7 +258,7 @@ namespace Inventory {
         return;
       }
 
-      InventoryObject.SwapSlots(slot, targetSlot);
+      inventory.SwapSlots(slot, targetSlot);
     }
   }
 }

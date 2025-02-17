@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using Scriptables.Inventory;
 using Scriptables.Items;
 using TMPro;
@@ -42,6 +41,14 @@ namespace Inventory {
       InventoryType = parent.Inventory.type;
     }
 
+    public void SetSlotDisplay(GameObject display) {
+      if (display == null) {
+        return;
+      }
+
+      SlotDisplay = display;
+    }
+
     public InventorySlot() {
       Item = new Item();
       amount = 0;
@@ -61,15 +68,14 @@ namespace Inventory {
     }
 
     public int AddAmount(int value, InventorySlot formSlot = null) {
-      return UpdateSlot(amount + value, Item, null, formSlot);
+      return UpdateSlot(amount + value, Item, formSlot);
     }
 
     public int UpdateSlotBySlot(InventorySlot slot) {
-      return UpdateSlot(slot.amount, slot.Item, slot.isSelected, slot);
+      return UpdateSlot(slot.amount, slot.Item, slot);
     }
 
-    public int UpdateSlot(int amountValue, Item itemValue = null, bool? selected = null,
-      InventorySlot formSlot = null) {
+    public int UpdateSlot(int amountValue, Item itemValue = null, InventorySlot formSlot = null) {
       var slotDataBefore = Clone(this);
       OnBeforeUpdated?.Invoke(slotDataBefore);
       itemValue ??= Item;
@@ -79,10 +85,6 @@ namespace Inventory {
 
       Item = itemValue;
       amount = newAmount;
-
-      if (selected != null) {
-        isSelected = (bool)selected;
-      }
 
       OnAfterUpdated?.Invoke(new SlotUpdateEventData(slotDataBefore, this, formSlot));
 
@@ -95,10 +97,6 @@ namespace Inventory {
         return;
       }
 
-      // Save current slot data
-      // var tempItem = Item;
-      // var tempAmount = amount;
-      // var tempSelected = isSelected;
       var tempSlot = Clone();
 
       // Swap data
@@ -130,6 +128,15 @@ namespace Inventory {
     public void Unselect() {
       DeactivateOutline();
       isSelected = false;
+    }
+
+    public void CheckSelectedUi() {
+      if (isSelected) {
+        ActivateOutline();
+      }
+      else {
+        DeactivateOutline();
+      }
     }
 
     private void ActivateOutline() {

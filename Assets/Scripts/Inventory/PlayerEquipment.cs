@@ -80,15 +80,15 @@ namespace Inventory {
       return tr;
     }
 
-    public void OnRemoveItem(InventorySlot slot) {
-      if (slot.GetItemObject() == null) {
+    public void OnRemoveItem(Item item, InventoryType type) {
+      if (item.info == null) {
         return;
       }
 
-      switch (slot.Parent.Inventory.type) {
+      switch (type) {
         case InventoryType.QuickSlots: //InterfaceType.Equipment
-          if (slot.GetItemObject().CharacterDisplay != null) {
-            switch (slot.GetItemObject().Type) {
+          if (item.info.CharacterDisplay != null) {
+            switch (item.info.Type) {
               case ItemType.Shield:
                 Destroy(_offhand.gameObject);
                 break;
@@ -106,6 +106,10 @@ namespace Inventory {
 
           break;
       }
+    }
+
+    public void OnRemoveItem(InventorySlot slot) {
+      OnRemoveItem(slot.Item, slot.InventoryType);
     }
   }
 }

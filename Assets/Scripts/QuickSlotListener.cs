@@ -1,31 +1,60 @@
 using Inventory;
 using Scriptables.Inventory;
+using Scriptables.Items;
 using Settings;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class QuickSlotListener : MonoBehaviour {
-  // [SerializeField] private UserInterface _staticInterface;
-  // [SerializeField] private InventorySlot[] slots;
   [SerializeField] private InventorySlot selectedSlot;
   private InventoryObject quickSlots;
   private InventorySlot[] slots;
+  private Item selectedItem;
+  private PlayerInventory playerInventory;
 
   private void Awake() {
-    // slots = _staticInterface.Inventory.GetSlots;
-    // slots = quickSlots.GetSlots;
-    quickSlots = GameManager.instance.PlayerInventory.quickSlots;
+    playerInventory = GameManager.instance.PlayerInventory;
+    quickSlots = playerInventory.quickSlots;
     slots = quickSlots.GetSlots;
+
+    playerInventory.OnQuickSlotLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
-    GameManager.instance.PlayerInventory.OnQuickSlotLoaded += UpdateQuickSlotsAfterLoad;
+    selectedItem = null;
   }
 
   private void Start() {
     UserInput.instance.controls.GamePlay.QuickSlots.performed += ChooseSlot;
+
+    quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
+    playerInventory.inventory.OnSlotSwapped += OnSlotUpdateHandler;
   }
 
+  private void OnSlotUpdateHandler(SlotSwappedEventData data) {
+    var slot = data.slot;
+    var target = data.target;
+
+    // If neither slot is selected, ignore
+    if (!slot.isSelected && !target.isSelected) {
+      return;
+    }
+
+    var activeSlot = slot.isSelected ? slot : target;
+    var otherSlot = !slot.isSelected ? slot : target;
+
+    if (slot.InventoryType == target.InventoryType && activeSlot.InventoryType == InventoryType.QuickSlots) {
+      //change selected
+      activeSlot.Unselect();
+      selectedSlot = otherSlot;
+      selectedItem = otherSlot.Item;
+      otherSlot.Select();
+    }
+    else {
+      UnselectSlot(activeSlot);
+    }
+  }
+
+
   private void UpdateQuickSlotsAfterLoad() {
-    // quickSlots = GameManager.instance.PlayerInventory.quickSlots;
     // Manually instantiate equipped items after loading the equipment
     for (var i = 0; i < slots.Length; i++) {
       var slot = slots[i];
@@ -33,12 +62,11 @@ public class QuickSlotListener : MonoBehaviour {
         continue;
       }
 
-      // GameManager.instance.ItemDatabaseObject.GetByID(quickSlots.GetSlots[i].Item.info.Id).Use(quickSlots.GetSlots[i]);
       slot.Item.info.Use(slots[i]);
-      SelectSlot(i);
+      SelectSlotByIndex(i);
     }
 
-    GameManager.instance.PlayerInventory.OnQuickSlotLoaded -= UpdateQuickSlotsAfterLoad;
+    playerInventory.OnQuickSlotLoaded -= UpdateQuickSlotsAfterLoad;
   }
 
   private void ChooseSlot(InputAction.CallbackContext obj) {
@@ -51,31 +79,42 @@ public class QuickSlotListener : MonoBehaviour {
     var slot = slots[index];
     if (slot.Item != null && slot.Item.info != null) {
       //Debug.LogError($"select slot {index} item {slot.amount} {slot.item.Name}");
-      //GameManager.instance.ItemDatabaseObject.GetByID(slot.item.Id).Use(slot);
-      SelectSlot(index);
+      SelectSlotByIndex(index);
     }
-    //else Debug.LogError($"slot {index} is empty");
   }
 
-  private void SelectSlot(int index) {
-    if (selectedSlot == slots[index]) {
-      //Debug.LogError($"uselectSlot");
+  private void SelectSlotByIndex(int index) => SelectSlot(slots[index]);
+
+  private bool UnselectSlot(InventorySlot slot) {
+    if (selectedSlot != slot) {
+      return false;
+    }
+
+    GameManager.instance.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
+    selectedSlot.Unselect();
+    selectedItem?.info?.Use(selectedSlot);
+    selectedSlot = null;
+    selectedItem = null;
+
+    return true;
+  }
+
+
+  private void SelectSlot(InventorySlot slot) {
+    if (UnselectSlot(slot)) {
+      return;
+    }
+
+    if (selectedSlot != null && selectedSlot.Item.info != null) {
+      //Debug.LogError($"log1");
       GameManager.instance.PlayerEquipment.OnRemoveItem(selectedSlot);
       selectedSlot.Unselect();
-      GameManager.instance.ItemDatabaseObject.GetByID(selectedSlot.Item.info.Id).Use(selectedSlot);
-      selectedSlot = null;
     }
-    else {
-      if (selectedSlot != null && selectedSlot.Item.info != null) {
-        //Debug.LogError($"log1");
-        GameManager.instance.PlayerEquipment.OnRemoveItem(selectedSlot);
-        selectedSlot.Unselect();
-      }
 
-      selectedSlot = slots[index];
-      selectedSlot.Select();
-      GameManager.instance.PlayerEquipment.OnEquipItem(selectedSlot);
-      GameManager.instance.ItemDatabaseObject.GetByID(selectedSlot.Item.info.Id).Use(selectedSlot);
-    }
+    selectedSlot = slot;
+    selectedItem = slot.Item;
+    selectedSlot.Select();
+    GameManager.instance.PlayerEquipment.OnEquipItem(selectedSlot);
+    selectedSlot.Item.info.Use(selectedSlot);
   }
 }

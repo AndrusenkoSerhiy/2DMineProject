@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3952768001628798844}
   - component: {fileID: 5827254494741369891}
-  - component: {fileID: 5801279584603716344}
+  - component: {fileID: 1780339617607901965}
   - component: {fileID: 1690498783930826734}
   - component: {fileID: 8694691423089828941}
   - component: {fileID: 2619697107618083881}
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
---- !u!114 &5801279584603716344
+--- !u!114 &1780339617607901965
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -72,16 +72,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 34652264887592026}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 019ad026bebdf87469acd80c5d778a88, type: 3}
+  m_Script: {fileID: 11500000, guid: 90f7905586725f7459b39caf7bcd63bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: b01922b1ac974a342935c3c12a61a08f, type: 2}
   tempDragParent: {fileID: 0}
+  disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 0}
   preventItemDropIn: 0
-  preventDropOnGround: 0
+  preventDropOnGround: 1
   preventSwapIn: 0
   preventMergeIn: 0
-  slots:
+  slotsPrefabs:
   - {fileID: 6913014319748417972}
   - {fileID: 4643163149848582921}
   - {fileID: 4705225197806633396}
@@ -112,8 +113,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 554fb8e28dc240cdac4b7c39f362f1bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _staticInterface: {fileID: 5801279584603716344}
-  slots: []
   selectedSlot:
     Item:
       id: 

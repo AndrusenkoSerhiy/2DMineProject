@@ -8,31 +8,29 @@ using UnityEngine.UI;
 
 namespace Inventory {
   [RequireComponent(typeof(EventTrigger))]
-  public abstract class UserInterface : MonoBehaviour, IInventoryUI {
-    [SerializeField] protected InventoryObject inventory;
-    public InventoryObject Inventory => inventory;
-    protected Dictionary<GameObject, InventorySlot> slotsOnInterface;
-    public Dictionary<GameObject, InventorySlot> SlotsOnInterface => slotsOnInterface;
-    protected PlayerInventory playerInventory;
-    [SerializeField] protected Transform tempDragParent;
+  public class UserInterface : MonoBehaviour, IInventoryUI {
+    [SerializeField] private InventoryObject inventory;
+    [SerializeField] private Transform tempDragParent;
+    [SerializeField] private Color disabledSlotColor;
 
     [SerializeField] private bool preventItemDropIn;
     [SerializeField] private bool preventDropOnGround;
     [SerializeField] private bool preventSwapIn;
     [SerializeField] private bool preventMergeIn;
 
-    [SerializeField] protected Color disabledSlotColor;
+    private Dictionary<GameObject, InventorySlot> slotsOnInterface;
+
+    public GameObject[] slotsPrefabs;
+    public InventoryObject Inventory => inventory;
+    public Dictionary<GameObject, InventorySlot> SlotsOnInterface => slotsOnInterface;
+
     public bool PreventItemDropIn => preventItemDropIn;
     public bool PreventDropOnGround => preventDropOnGround;
     public bool PreventSwapIn => preventSwapIn;
     public bool PreventMergeIn => preventMergeIn;
 
-    public abstract void CreateSlots();
-    public abstract void UpdateSlotsGameObjects();
-
     public void Awake() {
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
-      playerInventory = GameManager.instance.PlayerInventory;
 
       CheckSlotsUpdate();
 
@@ -43,12 +41,41 @@ namespace Inventory {
     }
 
     public void OnEnable() {
-      UpdateUI();
-    }
-
-    public void UpdateUI() {
       UpdateSlotsGameObjects();
       UpdateInventoryUI();
+    }
+    
+    private void UpdateSlotsGameObjects() {
+      for (var i = 0; i < Inventory.GetSlots.Length; i++) {
+        var slot = Inventory.GetSlots[i];
+        slot.SetParent(this);
+        slot.SlotDisplay = slotsPrefabs[i];
+        slotsOnInterface[slotsPrefabs[i]] = slot;
+      }
+    }
+
+    public void CreateSlots() {
+      if (slotsPrefabs.Length < Inventory.GetSlots.Length) {
+        Debug.LogError("Not enough slots in the interface");
+        return;
+      }
+
+      for (var i = 0; i < slotsPrefabs.Length; i++) {
+        if (i > Inventory.GetSlots.Length - 1) {
+          slotsPrefabs[i].GetComponent<Image>().color = disabledSlotColor;
+          continue;
+        }
+
+        var obj = slotsPrefabs[i];
+        var slot = Inventory.GetSlots[i];
+
+        AddSlotEvents(obj, slot, tempDragParent);
+
+        // slot.SetParent(this);
+        // slot.SlotDisplay = obj;
+
+        slotsOnInterface.Add(obj, slot);
+      }
     }
 
     public void UpdateInventoryUI() {

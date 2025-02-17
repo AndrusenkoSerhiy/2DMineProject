@@ -9,6 +9,7 @@ namespace World {
     public string Name;
     public List<POICellObject> targetCellObjects = new();
 
+#if UNITY_EDITOR
     [ContextMenu("Create POIData")]
     private void SavePOIData() {
       var poiData = ScriptableObject.CreateInstance<POIData>();
@@ -29,5 +30,6 @@ namespace World {
       AssetDatabase.SaveAssets();
       AssetDatabase.Refresh();
     }
+#endif
   }
 }

@@ -10,9 +10,14 @@ namespace Player {
 
     protected override void Awake() {
       base.Awake();
+      SetDefaultAttackParam();
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
       playerEquipment.OnUnequippedWeapon += SetParamsFromPlayerStats;
       playerEquipment = GetComponent<PlayerEquipment>();
+    }
+
+    private void SetDefaultAttackParam() {
+      UpdateParams(.5f, stats.AttackRange, stats.AttackColliderSize.x, stats.AttackColliderSize.y);
     }
 
     //get param from equipped tool
@@ -33,6 +38,8 @@ namespace Player {
       timeBtwAttacks = stats.TimeBtwAttacks;
       staminaUsage = stats.StaminaUsage;
       attackID = stats.AttackID;
+      colliderSize = stats.AttackColliderSize;
+      SetDefaultAttackParam();
     }
 
     private void UpdateAttackParam() {

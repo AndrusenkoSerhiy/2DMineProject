@@ -72,5 +72,6 @@ namespace Scriptables
     public float TimeBtwAttacks = 0.4f;
     public float StaminaUsage = 1f;
     public int AttackID;
+    public Vector2 AttackColliderSize = Vector2.one;
   }
 }

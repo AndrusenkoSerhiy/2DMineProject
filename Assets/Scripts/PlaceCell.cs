@@ -18,9 +18,11 @@ public class PlaceCell : MonoBehaviour {
   private SpriteRenderer renderer;
   [SerializeField] private int radius = 1;
   private Coords playerCoords;
+  private PlayerControllerBase playerController;
 
   private void Start() {
     playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords();
+    playerController = GameManager.instance.CurrPlayerController;
   }
   public void ActivateBuildMode(InventorySlot slot, ResourceData rData) {
     if (currSlot == null) {
@@ -61,6 +63,7 @@ public class PlaceCell : MonoBehaviour {
     UpdatePreview();
 
     SetPreviewColor(previewColor);
+    playerController?.SetLockHighlight(true);
   }
 
   private void UpdatePreview() {
@@ -82,6 +85,7 @@ public class PlaceCell : MonoBehaviour {
     if (previewInstance != null) {
       Destroy(previewInstance);
     }
+    playerController?.SetLockHighlight(false);
   }
 
   //enable building mode

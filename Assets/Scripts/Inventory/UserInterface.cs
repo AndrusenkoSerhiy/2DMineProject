@@ -32,7 +32,7 @@ namespace Inventory {
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
       playerInventory = GameManager.instance.PlayerInventory;
 
-      CheckSlotsUpdate(inventory);
+      CheckSlotsUpdate();
 
       CreateSlots();
 
@@ -60,8 +60,8 @@ namespace Inventory {
       UpdateSlotDisplay(slot); // Ensure each slot reflects the correct UI state
     }
 
-    private void UpdateSlotHandler(InventorySlot arg1, InventorySlot arg2) {
-      UpdateSlotDisplay(arg2);
+    private void UpdateSlotHandler(InventorySlot before, InventorySlot after, InventorySlot from) {
+      UpdateSlotDisplay(after);
     }
 
     public void UpdateSlotDisplay(InventorySlot slot) {
@@ -81,7 +81,7 @@ namespace Inventory {
       }
     }
 
-    public void CheckSlotsUpdate(InventoryObject inventory) {
+    public void CheckSlotsUpdate() {
       for (var i = 0; i < inventory.GetSlots.Length; i++) {
         inventory.GetSlots[i].OnAfterUpdated += UpdateSlotHandler;
       }
@@ -194,6 +194,11 @@ namespace Inventory {
         return;
       }
 
+      if (targetSlot == slot) {
+        Debug.Log("Target slot is the same as the source slot");
+        return;
+      }
+
       var targetInventory = targetSlot.Parent.Inventory;
       var targetUI = targetSlot.Parent;
 
@@ -203,9 +208,8 @@ namespace Inventory {
         return;
       }
 
-      var slotsHasSameItems = slot.SlotsHasSameItems(targetSlot);
       // Handle merging items
-      if (slotsHasSameItems && !targetUI.PreventMergeIn) {
+      if (!targetUI.PreventMergeIn && slot.CanMerge(targetSlot)) {
         targetInventory.MergeItems(slot, targetSlot);
 
         Debug.Log("Merging items");
@@ -219,7 +223,7 @@ namespace Inventory {
         return;
       }
 
-      slot.SwapWith(targetSlot);
+      InventoryObject.SwapSlots(slot, targetSlot);
     }
   }
 }

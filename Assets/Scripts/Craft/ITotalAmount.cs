@@ -5,5 +5,6 @@ namespace Craft {
   public interface ITotalAmount : ICraftComponent {
     public event Action<string> onResourcesTotalUpdate;
     public int GetResourceTotalAmount(string resourceId);
+    public void RemoveFromInventoriesPool(string id, int amount);
   }
 }

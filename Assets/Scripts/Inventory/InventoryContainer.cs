@@ -1,4 +1,5 @@
 ﻿using System;
+using Scriptables.Inventory;
 using Scriptables.Items;
 
 namespace Inventory {

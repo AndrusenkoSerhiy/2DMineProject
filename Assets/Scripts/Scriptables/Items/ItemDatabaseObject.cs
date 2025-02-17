@@ -23,12 +23,10 @@ namespace Scriptables.Items {
 
       foreach (var item in ItemObjects) {
         if (item == null) {
-          Debug.LogWarning("ItemDatabaseObject contains a null reference.");
           continue;
         }
 
         if (string.IsNullOrEmpty(item.Id)) {
-          Debug.LogWarning($"Item '{item.name}' has a null or empty ID and will be skipped.");
           continue;
         }
 

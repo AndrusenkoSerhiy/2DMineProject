@@ -32,6 +32,20 @@ namespace Craft {
       return resourcesTotal.GetValueOrDefault(resourceId, 0);
     }
 
+    public void RemoveFromInventoriesPool(string id, int amount) {
+      if (amount <= 0) {
+        return;
+      }
+
+      var remainingAmount = amount;
+      foreach (var inventory in checkInventories) {
+        remainingAmount = inventory.RemoveItem(id, remainingAmount);
+        if (remainingAmount <= 0) {
+          break;
+        }
+      }
+    }
+
     private void CalculateResourcesTotal() {
       Debug.Log("Craft TotalAmount CalculateResourcesTotal");
       resourcesTotal.Clear();
@@ -75,34 +89,48 @@ namespace Craft {
       }
     }
 
-    private void SlotAmountUpdateHandler(InventorySlot slotBefore, InventorySlot slotAfter) {
-      var itemBefore = slotBefore.Item.info;
-      var itemAfter = slotAfter.Item.info;
+    private bool IsTypeInCheckInventories(InventoryType? inventoryType) {
+      if (inventoryType == null) {
+        return false;
+      }
 
-      Debug.LogWarning(
-        $"SlotAmountUpdateHandler slotBefore Inventory {slotBefore.Item.InventoryType}, amount {slotBefore.amount}");
-      Debug.LogWarning(
-        $"SlotAmountUpdateHandler slotAfter Inventory {slotAfter.Item.InventoryType}, amount {slotAfter.amount}");
+      foreach (var inventory in checkInventories) {
+        if (inventory.type == inventoryType) {
+          return true;
+        }
+      }
 
-      if (itemBefore == null && itemAfter == null) {
+      return false;
+    }
+
+    private void SlotAmountUpdateHandler(InventorySlot before, InventorySlot after, InventorySlot from) {
+      var itemBefore = before?.Item?.info;
+      var itemAfter = after?.Item?.info;
+
+      // Swap empty slots
+      if (!itemBefore && !itemAfter) {
+        Debug.Log("SlotAmountUpdateHandler swap empty slots -> return;");
         return;
       }
 
-      if (itemBefore == itemAfter) {
-        // Same item, update the amount difference
-        UpdateResourceTotal(itemAfter.Id, slotAfter.amount - slotBefore.amount);
+      var itemsInSameInventoriesPool = IsTypeInCheckInventories(from?.InventoryType)
+                                       && IsTypeInCheckInventories(after?.InventoryType);
+      // Swap different in same inventory pool
+      if (itemsInSameInventoriesPool && itemBefore != itemAfter) {
+        Debug.Log("SlotAmountUpdateHandler swap in same inventory -> return;");
+        return;
       }
-      else {
-        // Remove old item amount (if any)
-        if (itemBefore != null) {
-          UpdateResourceTotal(itemBefore.Id, -slotBefore.amount);
-        }
 
-        // Add new item amount (if any)
-        if (itemAfter != null) {
-          UpdateResourceTotal(itemAfter.Id, slotAfter.amount);
-        }
+      //Item amount changed
+      if (before?.amount == after?.amount) {
+        return;
       }
+
+      var id = itemBefore?.Id ?? itemAfter?.Id;
+
+      var amountDelta = after.amount - before.amount;
+      UpdateResourceTotal(id, amountDelta);
+      Debug.Log("SlotAmountUpdateHandler Item amount changed: " + amountDelta);
     }
 
     private void UpdateResourceTotal(string resourceId, int amount, bool triggerEvent = true) {

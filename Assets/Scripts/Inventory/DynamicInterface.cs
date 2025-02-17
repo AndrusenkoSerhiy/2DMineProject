@@ -33,7 +33,7 @@ namespace Inventory {
     }
 
     private void UpdateSlotGameObject(InventorySlot slot, int slotIndex) {
-      slot.Parent = this;
+      slot.SetParent(this);
       slot.SlotDisplay = inventoryPrefabs[slotIndex];
     }
 
@@ -43,7 +43,7 @@ namespace Inventory {
 
       if (reverseLayout) {
         // If reversed, adjust the column's position to go from right to left
-        column = NUMBER_OF_COLUMN - 1 - column;  // Flip the column index
+        column = NUMBER_OF_COLUMN - 1 - column; // Flip the column index
       }
 
       return new Vector3(X_START + (X_SPACE_BETWEEN_ITEM * column), Y_START + (-Y_SPACE_BETWEEN_ITEMS * row), 0f);

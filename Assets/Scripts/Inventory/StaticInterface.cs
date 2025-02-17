@@ -15,8 +15,8 @@ namespace Inventory {
 
         AddSlotEvents(obj, slot, tempDragParent);
 
-        Inventory.GetSlots[i].Parent = this;
-        Inventory.GetSlots[i].SlotDisplay = obj;
+        slot.SetParent(this);
+        slot.SlotDisplay = obj;
 
         slotsOnInterface.Add(obj, slot);
       }

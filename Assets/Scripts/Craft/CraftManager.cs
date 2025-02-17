@@ -114,7 +114,8 @@ namespace Craft {
       //remove resources from inventory
       foreach (var item in recipe.RequiredMaterials) {
         var totalCount = count * item.Amount;
-        playerInventory.inventory.RemoveItem(item.Material.Id, totalCount);
+        //playerInventory.inventory.RemoveItem(item.Material.Id, totalCount);
+        totalAmount.RemoveFromInventoriesPool(item.Material.Id, totalCount);
       }
 
       inputItems.SetRecipe(count, recipe);
@@ -176,7 +177,7 @@ namespace Craft {
       station.RemoveCountFromCraftTotal(recipe.Result, count);
 
       var outputInventory = station.OutputInventory;
-      var item = new Item(recipe.Result, outputInventory.type);
+      var item = new Item(recipe.Result);
 
       outputInventory.AddItem(item, count);
     }
@@ -197,7 +198,7 @@ namespace Craft {
       //remove resources from inventory
       foreach (var item in inputItem.Recipe.RequiredMaterials) {
         var totalCount = inputItem.CountLeft * item.Amount;
-        var addItem = new Item(item.Material, playerInventory.inventory.type);
+        var addItem = new Item(item.Material);
         playerInventory.inventory.AddItem(addItem, totalCount);
       }
     }
@@ -214,7 +215,7 @@ namespace Craft {
       }
     }
 
-    private void OutputUpdateSlotHandler(InventorySlot slotBefore, InventorySlot slot) {
+    private void OutputUpdateSlotHandler(InventorySlot slotBefore, InventorySlot slot, InventorySlot fromSlot) {
       Debug.Log("OutputUpdateSlotHandler slot.item.Id:" + slot.Item.info?.Id);
       if (slot.isEmpty) {
         craftActions.UpdateAndPrintInputCount();

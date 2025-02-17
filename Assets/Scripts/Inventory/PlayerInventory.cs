@@ -21,7 +21,7 @@ namespace Inventory {
     public void Start() {
       inventory.Load();
 
-      AddDefaultItem();
+      // AddDefaultItem();
 
       quickSlots.Load();
       OnQuickSlotLoaded?.Invoke();
@@ -49,7 +49,7 @@ namespace Inventory {
     }
 
     public void AddItemToInventory(ItemObject item, int count) {
-      inventory.AddItem(new Item(item, inventory.type), count);
+      inventory.AddItem(new Item(item), count);
       AddAdditionalItem(item);
     }
 
@@ -66,7 +66,7 @@ namespace Inventory {
 
         var count = UnityEngine.Random.Range((int)list[i].rndCount.x, (int)list[i].rndCount.y);
         //Debug.LogError($"spawn {list[i].item.name} | count {count} ");
-        inventory.AddItem(new Item(list[i].item, inventory.type), count);
+        inventory.AddItem(new Item(list[i].item), count);
       }
     }
 

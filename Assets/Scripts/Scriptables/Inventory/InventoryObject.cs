@@ -38,7 +38,7 @@ namespace Scriptables.Inventory {
           continue; // Skip empty slots
         }
 
-        var remainingAmount = destinationInventory.AddItem(slot.Item, slot.amount);
+        var remainingAmount = destinationInventory.AddItemBySlot(slot);
 
         if (remainingAmount <= 0) {
           slot.RemoveItem();
@@ -49,9 +49,28 @@ namespace Scriptables.Inventory {
       }
     }
 
-    public bool RemoveItem(string id, int amount) {
+    public void MergeItems(InventorySlot slot, InventorySlot targetSlot) {
+      if (!slot.SlotsHasSameItems(targetSlot)) {
+        return;
+      }
+
+      var remainingAmount = AddItemBySlot(slot, targetSlot);
+
+      if (remainingAmount <= 0) {
+        slot.RemoveItem();
+      }
+      else {
+        slot.UpdateSlot(remainingAmount);
+      }
+    }
+
+    public static void SwapSlots(InventorySlot slot, InventorySlot targetSlot) {
+      slot.SwapWith(targetSlot);
+    }
+
+    public int RemoveItem(string id, int amount) {
       if (amount <= 0) {
-        return false;
+        return 0;
       }
 
       var remainingAmount = amount;
@@ -75,11 +94,23 @@ namespace Scriptables.Inventory {
         }
       }
 
-      return remainingAmount == 0;
+      return remainingAmount;
     }
 
-    public int AddItem(Item item, int amount, InventorySlot placeAt = null, GroundItem groundItem = null) {
-      var slot = placeAt ?? FindStackableItemOnInventory(item);
+    public int AddItemBySlot(InventorySlot slot, InventorySlot placeAt = null) {
+      return AddItem(slot.Item, slot.amount, placeAt, null, slot);
+    }
+
+    public int AddItem(Item item, int amount, InventorySlot placeAt = null, GroundItem groundItem = null,
+      InventorySlot formSlot = null) {
+      if (placeAt != null) {
+        var overFlow = placeAt.isEmpty
+          ? placeAt.UpdateSlot(amount, item, null, formSlot)
+          : placeAt.AddAmount(amount, formSlot);
+        return HandleOverflow(overFlow, item, groundItem);
+      }
+
+      var slot = FindStackableItemOnInventory(item);
       //don't have empty slot or existing item
       if (emptySlotCount <= 0 && slot == null) {
         DropItemToGround(item, groundItem, amount);
@@ -89,18 +120,17 @@ namespace Scriptables.Inventory {
       //add to new slot
       if (!item.info.Stackable || slot == null) {
         var emptySlot = GetEmptySlot();
-        // emptySlot.PreventAmountEvent(preventAmountEvent);
-        var overFlow = emptySlot.UpdateSlot(amount, item);
+        var overFlow = emptySlot.UpdateSlot(amount, item, null, formSlot);
         return HandleOverflow(overFlow, item, groundItem);
       }
 
       //add to exist slot
-      // slot.PreventAmountEvent(preventAmountEvent);
-      var remainingAmount = slot.AddAmount(amount);
+      var remainingAmount = slot.AddAmount(amount, formSlot);
       return HandleOverflow(remainingAmount, item, groundItem);
     }
 
-    private int HandleOverflow(int overflowAmount, Item item, GroundItem groundItem = null) {
+    private int HandleOverflow(int overflowAmount, Item item, GroundItem groundItem = null,
+      InventorySlot formSlot = null) {
       if (overflowAmount <= 0) {
         return 0;
       }
@@ -112,7 +142,7 @@ namespace Scriptables.Inventory {
       for (var i = 0; i < countRepeat; i++) {
         var emptySlot = GetEmptySlot();
         if (emptySlot != null) {
-          emptySlot.UpdateSlot(overflowAmount, item);
+          emptySlot.UpdateSlot(overflowAmount, item, null, formSlot);
           overflowAmount -= maxStackSize;
         }
         else {
@@ -122,21 +152,6 @@ namespace Scriptables.Inventory {
       }
 
       return 0;
-    }
-
-    public void MergeItems(InventorySlot slot, InventorySlot targetSlot) {
-      if (!slot.SlotsHasSameItems(targetSlot)) {
-        return;
-      }
-
-      var remainingAmount = AddItem(slot.Item, slot.amount, targetSlot);
-
-      if (remainingAmount <= 0) {
-        slot.RemoveItem();
-      }
-      else {
-        slot.UpdateSlot(remainingAmount);
-      }
     }
 
     public int GetFreeSlotsCount() {
@@ -178,7 +193,7 @@ namespace Scriptables.Inventory {
         return;
       }
 
-      var item = new Item(defaultItem, type);
+      var item = new Item(defaultItem);
       // GetSlots[0].UpdateSlot(1, item);
       AddItem(item, 1);
     }
@@ -302,14 +317,10 @@ namespace Scriptables.Inventory {
 
       for (var i = 0; i < GetSlots.Length; i++) {
         var newSlot = newContainer.Slots[i];
-        var item = newSlot.Item;
-        if (item == null || !item.hasId) {
-          continue;
-        }
 
         newSlot.Item.RestoreItemObject(database.ItemObjects);
 
-        GetSlots[i].UpdateSlot(newContainer.Slots[i].amount, newContainer.Slots[i].Item);
+        GetSlots[i].UpdateSlotBySlot(newSlot);
       }
 
       stream.Close();

@@ -103,7 +103,10 @@ namespace Craft {
       return false;
     }
 
-    private void SlotAmountUpdateHandler(InventorySlot before, InventorySlot after, InventorySlot from) {
+    private void SlotAmountUpdateHandler(SlotUpdateEventData data) {
+      var before = data.before;
+      var after = data.after;
+      var from = data.from;
       var itemBefore = before?.Item?.info;
       var itemAfter = after?.Item?.info;
 

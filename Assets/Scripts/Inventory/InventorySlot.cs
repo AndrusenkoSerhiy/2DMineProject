@@ -11,7 +11,7 @@ namespace Inventory {
   public class InventorySlot {
     [NonSerialized] public IInventoryUI Parent;
     [NonSerialized] public GameObject SlotDisplay;
-    [field: NonSerialized] public event Action<InventorySlot, InventorySlot, InventorySlot> OnAfterUpdated;
+    [field: NonSerialized] public event Action<SlotUpdateEventData> OnAfterUpdated;
     [field: NonSerialized] public event Action<InventorySlot> OnBeforeUpdated;
 
     // [NonSerialized] public Action<string, int> OnAmountUpdate;
@@ -84,7 +84,7 @@ namespace Inventory {
         isSelected = (bool)selected;
       }
 
-      OnAfterUpdated?.Invoke(slotDataBefore, this, formSlot);
+      OnAfterUpdated?.Invoke(new SlotUpdateEventData(slotDataBefore, this, formSlot));
 
       return overFlow;
     }

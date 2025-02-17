@@ -215,9 +215,9 @@ namespace Craft {
       }
     }
 
-    private void OutputUpdateSlotHandler(InventorySlot slotBefore, InventorySlot slot, InventorySlot fromSlot) {
-      Debug.Log("OutputUpdateSlotHandler slot.item.Id:" + slot.Item.info?.Id);
-      if (slot.isEmpty) {
+    private void OutputUpdateSlotHandler(SlotUpdateEventData data) {
+      Debug.Log("OutputUpdateSlotHandler slot.item.Id:" + data.after.Item.info?.Id);
+      if (data.after.isEmpty) {
         craftActions.UpdateAndPrintInputCount();
       }
     }

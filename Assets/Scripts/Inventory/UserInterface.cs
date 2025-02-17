@@ -20,7 +20,7 @@ namespace Inventory {
     [SerializeField] private bool preventDropOnGround;
     [SerializeField] private bool preventSwapIn;
     [SerializeField] private bool preventMergeIn;
-    
+
     [SerializeField] protected Color disabledSlotColor;
     public bool PreventItemDropIn => preventItemDropIn;
     public bool PreventDropOnGround => preventDropOnGround;
@@ -62,8 +62,8 @@ namespace Inventory {
       UpdateSlotDisplay(slot); // Ensure each slot reflects the correct UI state
     }
 
-    private void UpdateSlotHandler(InventorySlot before, InventorySlot after, InventorySlot from) {
-      UpdateSlotDisplay(after);
+    private void UpdateSlotHandler(SlotUpdateEventData data) {
+      UpdateSlotDisplay(data.after);
     }
 
     public void UpdateSlotDisplay(InventorySlot slot) {

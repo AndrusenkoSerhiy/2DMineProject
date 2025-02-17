@@ -40,6 +40,8 @@ namespace Player {
     //lock player when ui window is open
     protected bool lockPlayer;
     [SerializeField]private bool startFalling;
+    private bool wasSprintingOnJump;
+    public bool WasSprintingOnJump => wasSprintingOnJump;
     
     public bool Grounded => grounded;
     
@@ -218,7 +220,7 @@ namespace Player {
     }
 
     private void ExecuteJump() {
-      //Debug.LogError($"ExecuteJump");
+      wasSprintingOnJump = _stamina.IsSprinting;
       startFalling = false;
       _ladderMovement.SetClimbing(false, "jump");
       //Debug.LogError("start fall false");
@@ -257,8 +259,9 @@ namespace Player {
     }
 
     protected virtual float GetMaxSpeed() {
-      return (Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x)))
-        ? _stamina.IsSprinting ? _stats.SprintSpeed : _stats.MaxSpeed
+      var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
+      //var canSprintInAir = !grounded && wasSprintingOnJump;
+      return isMovingForward ? (_stamina.IsSprinting /*&& (grounded || canSprintInAir)*/) ? _stats.SprintSpeed : _stats.MaxSpeed
         : _stats.MaxBackSpeed;
     }
 

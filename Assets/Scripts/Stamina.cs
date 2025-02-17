@@ -1,3 +1,4 @@
+using Player;
 using Settings;
 using UI;
 using UnityEngine;
@@ -12,7 +13,8 @@ namespace DefaultNamespace {
     [SerializeField] private float staminaRecovery = 10f;
     [Tooltip("min amount of stamina when we can start sprinting")][SerializeField] private float minStamina = 10f;
     [SerializeField] private bool isSprinting;
-    
+    private PlayerController playerController;
+    private float previousStamina;
     public bool IsSprinting => isSprinting;
 
 
@@ -21,6 +23,7 @@ namespace DefaultNamespace {
       staminaBar.SetMaxStamina(maxStamina);
       UserInput.instance.controls.GamePlay.Sprint.performed += SprintPerformed;
       UserInput.instance.controls.GamePlay.Sprint.canceled += SprintCanceled;
+      playerController = GameManager.instance.PlayerController;
     }
     
     private void SprintPerformed(InputAction.CallbackContext context) {
@@ -33,8 +36,9 @@ namespace DefaultNamespace {
 
     private void SetSprinting(bool value) {
       //block use stamina if she not enough 
-      if (value && (currentStamina < minStamina || Mathf.Sign(GameManager.instance.PlayerController.GetMoveForward()) < 0) ||
-          UserInput.instance.GetMovement().Equals(Vector2.zero))
+      if (value && (currentStamina < minStamina || Mathf.Sign(playerController.GetMoveForward()) < 0) ||
+          UserInput.instance.GetMovement().Equals(Vector2.zero) ||
+          !playerController.Grounded && !playerController.WasSprintingOnJump)
         
         return;
       
@@ -42,20 +46,27 @@ namespace DefaultNamespace {
     }
 
     private void Update() {
+      UpdateStaminaValue();
+      UpdateStaminaUI();
+    }
+
+    private void UpdateStaminaValue() {
+      previousStamina = currentStamina;
       if (isSprinting && currentStamina > 0) {
         currentStamina -= staminaDrain * Time.deltaTime;
       }
       else {
         currentStamina += staminaRecovery * Time.deltaTime;
       }
-
-      // Clamp stamina between 0 and maxStamina
       currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
       if (currentStamina <= 0) {
         SetSprinting(false);
       }
-      // Update the UI
-      staminaBar.SetStamina(currentStamina);
+    }
+    private void UpdateStaminaUI() {
+      if (!Mathf.Approximately(previousStamina, currentStamina)) {
+        staminaBar.SetStamina(currentStamina);
+      }
     }
 
     private void OnDestroy() {

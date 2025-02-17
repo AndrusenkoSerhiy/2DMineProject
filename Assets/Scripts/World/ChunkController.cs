@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Scriptables;
 using Scriptables.POI;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -18,6 +16,7 @@ namespace World {
 
     private Dictionary<Coords, CellObject> _activeCellObjects = new();
     private ChunkData chunkData;
+    public ChunkData ChunkData => chunkData;
     private bool isInited = false;
 
     private void Awake() {
@@ -206,11 +205,10 @@ namespace World {
           for (int k = 0; k < _poiDataLibrary.POIDataList[i].Cells.Count; k++) {
             var targetData = _poiDataLibrary.POIDataList[i].Cells[i];
             if (targetData == null) continue;
-            var cell = chunkData.GetCellData(startCell.x + targetData.localX, startCell.y + targetData.localY);
-            var dataObject = ResourceDataLibrary.GetDataObject(targetData.resourceData);
-            if (dataObject == null) continue;
-            cell.perlin = (dataObject.PerlinRange.x + dataObject.PerlinRange.y) / 2;
-            chunkData.SetCellFill(cell.x, cell.y);
+            var xCoord = startCell.x + targetData.localX;
+            var yCoord = startCell.y + targetData.localY;
+            var cell = chunkData.ForceCellFill(targetData.resourceData, xCoord, yCoord);
+            if (cell == null) continue;
             emptyCells.Remove(cell);
             if (emptyCells.Count == 0) return;
           }

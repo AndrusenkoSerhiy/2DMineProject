@@ -104,6 +104,16 @@ namespace World {
       return _cellFillDatas[x, y];
     }
 
+    public CellData ForceCellFill(ResourceData data, int x, int y) {
+      if (!data) return null;
+      var dataObject = GameManager.instance.ChunkController.ResourceDataLibrary.GetDataObject(data);
+      if(dataObject == null) return null;
+      var cell = GetCellData(x, y);
+      cell.perlin = (dataObject.PerlinRange.x + dataObject.PerlinRange.y) / 2;
+      SetCellFill(cell.x, cell.y);
+      return cell;
+    }
+
     void OnDestroy() {
       // Dispose of NativeArrays when done
       if (noiseMap.IsCreated) noiseMap.Dispose();

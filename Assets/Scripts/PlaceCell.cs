@@ -1,7 +1,9 @@
 using Inventory;
+using Player;
 using Scriptables;
 using Settings;
 using UnityEngine;
+using Utils;
 using World;
 
 public class PlaceCell : MonoBehaviour {
@@ -14,12 +16,14 @@ public class PlaceCell : MonoBehaviour {
   private Color currPreviewColor;
   private InventorySlot currSlot;
   private SpriteRenderer renderer;
+  [SerializeField] private int radius = 1;
+  private Coords playerCoords;
+  private PlayerControllerBase playerController;
 
   private void Start() {
-    //don't need subscribe because we call from quickslot
-    //UserInput.instance.OnBuildClick += Input_OnBuildClick;
+    playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords();
+    playerController = GameManager.instance.CurrPlayerController;
   }
-
   public void ActivateBuildMode(InventorySlot slot, ResourceData rData) {
     if (currSlot == null) {
       EnableBuildMode(slot, rData);
@@ -59,6 +63,7 @@ public class PlaceCell : MonoBehaviour {
     UpdatePreview();
 
     SetPreviewColor(previewColor);
+    playerController?.SetLockHighlight(true);
   }
 
   private void UpdatePreview() {
@@ -80,6 +85,7 @@ public class PlaceCell : MonoBehaviour {
     if (previewInstance != null) {
       Destroy(previewInstance);
     }
+    playerController?.SetLockHighlight(false);
   }
 
   //enable building mode
@@ -119,9 +125,11 @@ public class PlaceCell : MonoBehaviour {
 
   private Vector3 GetSnappedWorldPosition() {
     var worldPosition = GetMousePosition();
-
     var grid = CoordsTransformer.WorldToGrid(worldPosition);
-    var world = CoordsTransformer.GridToWorld(grid.X, grid.Y);
+    var clampedPosition = grid;
+    clampedPosition.X = Mathf.Clamp(grid.X, playerCoords.X - radius, playerCoords.X + radius);
+    clampedPosition.Y = Mathf.Clamp(grid.Y, playerCoords.Y - radius, playerCoords.Y + radius);
+    var world = CoordsTransformer.GridToWorld(clampedPosition.X, clampedPosition.Y);
 
     return new Vector3(world.x, world.y, 0f);
   }
@@ -146,7 +154,7 @@ public class PlaceCell : MonoBehaviour {
   }*/
 
   private void PlaceCellOnScene() {
-    var coords = CoordsTransformer.WorldToGrid(GetMousePosition());
+    var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
     GameManager.instance.ChunkController.SpawnCell(coords, resourceData);
     currSlot.AddAmount(-1);
     ClearSLot();
@@ -163,6 +171,8 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private Vector3 GetMousePosition() {
-    return GameManager.instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+    var mousePosition = GameManager.instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+    mousePosition.z = 0;
+    return mousePosition;
   }
 }

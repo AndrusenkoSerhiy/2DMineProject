@@ -6,8 +6,8 @@ using World;
 namespace Player {
   public class PlayerCoords : MonoBehaviour {
     public Coords Coords;
-
-    private Vector3 prevPos;
+    [SerializeField] private Transform trForGrid;
+    //private Vector3 prevPos;
 
     public Coords GetCoords() {
       if (Coords.X == -1 || Coords.Y == -1) {
@@ -16,17 +16,16 @@ namespace Player {
 
       return Coords;
     }
-
-    // Update is called once per frame
-    void Update() {
-      if (Vector3.Distance(transform.position, prevPos) >= GameManager.instance.GameConfig.CheckAreaStep) {
+    
+    private void Update() {
+      //if (Vector3.Distance(transform.position, prevPos) >= GameManager.instance.GameConfig.CheckAreaStep) {
         SetCoords();
-        prevPos = transform.position;
-      }
+        //prevPos = transform.position;
+      //}
     }
 
-    void SetCoords() {
-      var coords = CoordsTransformer.WorldToGrid(transform.position);
+    private void SetCoords() {
+      var coords = CoordsTransformer.WorldToGrid(trForGrid.position);
       Coords.X = coords.X;
       Coords.Y = coords.Y;
       GameManager.instance.ChunkController.CheckArea();

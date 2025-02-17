@@ -67,7 +67,7 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
+  m_ReverseArrangement: 1
 --- !u!114 &531193625614581122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1620,6 +1620,7 @@ MonoBehaviour:
   incrementButton: {fileID: 7898296680388248286}
   decrementButton: {fileID: 3901149323394511988}
   maxCountButton: {fileID: 7520190091656462600}
+  minCountButton: {fileID: 5599132674743307327}
   buttonsActiveColor: {r: 1, g: 1, b: 1, a: 0.07058824}
   buttonsDisabledColor: {r: 0.45490196, g: 0.45490196, b: 0.45490196, a: 1}
 --- !u!1 &2536662659631536878
@@ -1784,8 +1785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
-  tempDragParent: {fileID: 8413352481143893193}
-  disabledSlotColor: {r: 0.22745098, g: 0.22745098, b: 0.22745098, a: 1}
+  disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
   preventItemDropIn: 0
   preventDropOnGround: 1
   preventSwapIn: 0
@@ -4666,7 +4666,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7290127139434274384}
   - component: {fileID: 5997681344738156191}
-  - component: {fileID: 351129856248647436}
+  - component: {fileID: 433823098922649114}
   - component: {fileID: 4709208628425894090}
   m_Layer: 5
   m_Name: Items
@@ -4712,7 +4712,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
---- !u!114 &351129856248647436
+--- !u!114 &433823098922649114
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4721,7 +4721,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7197737500522931054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -4730,12 +4730,14 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_StartCorner: 1
-  m_StartAxis: 0
-  m_CellSize: {x: 96, y: 96}
-  m_Spacing: {x: 0, y: 0}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 1
 --- !u!114 &4709208628425894090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4749,8 +4751,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
-  tempDragParent: {fileID: 8413352481143893193}
-  disabledSlotColor: {r: 0, g: 0, b: 0, a: 0}
+  disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
   preventItemDropIn: 1
   preventDropOnGround: 1
   preventSwapIn: 1
@@ -5570,7 +5571,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1964899450086478389, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 346
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 1964899450086478389, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -5784,7 +5785,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1964899450086478389, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 154
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 1964899450086478389, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -5998,7 +5999,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1964899450086478389, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 442
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 1964899450086478389, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -6747,7 +6748,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2604715275176370159, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 150
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 2604715275176370159, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -7603,7 +7604,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2604715275176370159, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 350
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2604715275176370159, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -8351,7 +8352,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1964899450086478389, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 58
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1964899450086478389, guid: d1fd1488edd70b644a9a0fe3ac39a630, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -8988,7 +8989,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2604715275176370159, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 450
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2604715275176370159, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -10368,7 +10369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2604715275176370159, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 2604715275176370159, guid: 166e161dcb3ee174b9bf91cedc04fccb, type: 3}
       propertyPath: m_AnchoredPosition.y

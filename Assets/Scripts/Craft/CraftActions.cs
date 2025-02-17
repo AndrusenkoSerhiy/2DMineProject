@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Inventory;
 using Scriptables.Craft;
+using Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ namespace Craft {
     [SerializeField] private Button incrementButton;
     [SerializeField] private Button decrementButton;
     [SerializeField] private Button maxCountButton;
+    [SerializeField] private Button minCountButton;
     [SerializeField] private Color buttonsActiveColor;
     [SerializeField] private Color buttonsDisabledColor;
 
@@ -40,6 +42,12 @@ namespace Craft {
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
     }
 
+    public void Update() {
+      if (UserInput.instance.controls.UI.Craft.triggered) {
+        OnCraftRequested?.Invoke(currentCount);
+      }
+    }
+
     public void InitComponent() => AddEvents();
 
     public void ClearComponent() => RemoveEvents();
@@ -60,6 +68,7 @@ namespace Craft {
       EnableButton(decrementButton, currentCount > minCount);
       EnableButton(incrementButton, currentCount < maxCount);
       EnableButton(maxCountButton, currentCount < maxCount);
+      EnableButton(minCountButton, currentCount > minCount);
       EnableButton(craftButton, currentCount > 0);
     }
 
@@ -80,6 +89,7 @@ namespace Craft {
       incrementButton.onClick.AddListener(OnIncrementClickHandler);
       decrementButton.onClick.AddListener(OnDecrementClickHandler);
       maxCountButton.onClick.AddListener(OnMaxCountButtonClickHandler);
+      minCountButton.onClick.AddListener(OnMinCountButtonClickHandler);
     }
 
     private void RemoveEvents() {
@@ -88,6 +98,7 @@ namespace Craft {
       incrementButton.onClick.RemoveAllListeners();
       decrementButton.onClick.RemoveAllListeners();
       maxCountButton.onClick.RemoveAllListeners();
+      minCountButton.onClick.RemoveAllListeners();
     }
 
     private void OnCountInputChangeHandler(string value) {
@@ -139,6 +150,13 @@ namespace Craft {
     private void OnMaxCountButtonClickHandler() {
       //Debug.Log("CraftActions MaxCountButton Clicked");
       currentCount = maxCount;
+      PrintInputCount();
+      EnableButtons();
+    }
+
+    private void OnMinCountButtonClickHandler() {
+      //Debug.Log("CraftActions MaxCountButton Clicked");
+      currentCount = minCount;
       PrintInputCount();
       EnableButtons();
     }

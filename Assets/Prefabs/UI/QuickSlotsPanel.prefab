@@ -76,8 +76,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: b01922b1ac974a342935c3c12a61a08f, type: 2}
-  tempDragParent: {fileID: 0}
-  disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 0}
+  disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
   preventItemDropIn: 0
   preventDropOnGround: 1
   preventSwapIn: 0

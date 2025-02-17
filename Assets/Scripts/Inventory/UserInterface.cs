@@ -10,7 +10,6 @@ namespace Inventory {
   [RequireComponent(typeof(EventTrigger))]
   public class UserInterface : MonoBehaviour, IInventoryUI {
     [SerializeField] private InventoryObject inventory;
-    [SerializeField] private Transform tempDragParent;
     [SerializeField] private Color disabledSlotColor;
 
     [SerializeField] private bool preventItemDropIn;
@@ -18,6 +17,7 @@ namespace Inventory {
     [SerializeField] private bool preventSwapIn;
     [SerializeField] private bool preventMergeIn;
 
+    private Transform tempDragParent;
     private Dictionary<GameObject, InventorySlot> slotsOnInterface;
 
     public GameObject[] slotsPrefabs;
@@ -30,6 +30,7 @@ namespace Inventory {
     public bool PreventMergeIn => preventMergeIn;
 
     public void Awake() {
+      tempDragParent = GameManager.instance.Canvas.transform;
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
 
       CheckSlotsUpdate();

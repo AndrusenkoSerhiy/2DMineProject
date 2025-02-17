@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour {
   [SerializeField] private ItemDatabaseObject database;
 
   [SerializeField] private Camera mainCamera;
+  [SerializeField] private Canvas canvas;
   [SerializeField] private WindowsController windowsController;
   [SerializeField] private PlayerInventory playerInventory;
   [SerializeField] private PlayerControllerBase currPlayerController;
@@ -51,6 +52,7 @@ public class GameManager : MonoBehaviour {
   }
 
   public Camera MainCamera => mainCamera;
+  public Canvas Canvas => canvas;
   public PlayerController PlayerController {
     set { playerController = value; }
     get { return playerController; }

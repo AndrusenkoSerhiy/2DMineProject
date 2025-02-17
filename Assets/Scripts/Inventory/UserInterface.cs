@@ -20,6 +20,8 @@ namespace Inventory {
     [SerializeField] private bool preventDropOnGround;
     [SerializeField] private bool preventSwapIn;
     [SerializeField] private bool preventMergeIn;
+    
+    [SerializeField] protected Color disabledSlotColor;
     public bool PreventItemDropIn => preventItemDropIn;
     public bool PreventDropOnGround => preventDropOnGround;
     public bool PreventSwapIn => preventSwapIn;

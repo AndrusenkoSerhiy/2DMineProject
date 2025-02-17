@@ -11,14 +11,15 @@ namespace Inventory {
     public InventoryObject quickSlots;
 
     [SerializeField] private ItemObject defaultItem;
-    [SerializeField] private GameObject inventoryOverlayPrefab;
-    [SerializeField] private GameObject inventoryInterfacePrefab;
+    // [SerializeField] private GameObject inventoryOverlayPrefab;
+    // [SerializeField] private GameObject inventoryInterfacePrefab;
 
     public Action OnQuickSlotLoaded;
 
     private PlayerInventoryWindow inventoryWindow;
 
     public void Start() {
+      inventoryWindow = GameManager.instance.WindowsController.GetWindow<PlayerInventoryWindow>();
       inventory.Load();
 
       // AddDefaultItem();
@@ -29,7 +30,7 @@ namespace Inventory {
 
     public void Update() {
       if (UserInput.instance.controls.UI.Inventory.triggered) {
-        InitInventoryWindow();
+        // InitInventoryWindow();
         UserInput.instance.EnableUIControls(!inventoryWindow.IsShow);
         if (inventoryWindow.IsShow) {
           inventoryWindow.Hide();
@@ -78,14 +79,14 @@ namespace Inventory {
       inventory.AddDefaultItem(defaultItem);
     }
 
-    private void InitInventoryWindow() {
-      if (inventoryWindow != null) {
-        return;
-      }
-
-      inventoryWindow = Instantiate(inventoryInterfacePrefab, inventoryOverlayPrefab.transform)
-        .GetComponent<PlayerInventoryWindow>();
-      GameManager.instance.WindowsController.AddWindow(inventoryWindow);
-    }
+    // private void InitInventoryWindow() {
+    //   if (inventoryWindow != null) {
+    //     return;
+    //   }
+    //
+    //   inventoryWindow = Instantiate(inventoryInterfacePrefab, inventoryOverlayPrefab.transform)
+    //     .GetComponent<PlayerInventoryWindow>();
+    //   GameManager.instance.WindowsController.AddWindow(inventoryWindow);
+    // }
   }
 }

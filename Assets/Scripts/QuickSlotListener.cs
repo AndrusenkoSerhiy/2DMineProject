@@ -5,13 +5,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class QuickSlotListener : MonoBehaviour {
-  [SerializeField] private StaticInterface _staticInterface;
-  [SerializeField] private InventorySlot[] slots;
+  // [SerializeField] private UserInterface _staticInterface;
+  // [SerializeField] private InventorySlot[] slots;
   [SerializeField] private InventorySlot selectedSlot;
   private InventoryObject quickSlots;
+  private InventorySlot[] slots;
 
   private void Awake() {
-    slots = _staticInterface.Inventory.GetSlots;
+    // slots = _staticInterface.Inventory.GetSlots;
+    // slots = quickSlots.GetSlots;
+    quickSlots = GameManager.instance.PlayerInventory.quickSlots;
+    slots = quickSlots.GetSlots;
     selectedSlot = null;
     GameManager.instance.PlayerInventory.OnQuickSlotLoaded += UpdateQuickSlotsAfterLoad;
   }
@@ -21,16 +25,16 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private void UpdateQuickSlotsAfterLoad() {
-    quickSlots = GameManager.instance.PlayerInventory.quickSlots;
+    // quickSlots = GameManager.instance.PlayerInventory.quickSlots;
     // Manually instantiate equipped items after loading the equipment
-    for (var i = 0; i < quickSlots.GetSlots.Length; i++) {
-      var slot = quickSlots.GetSlots[i];
+    for (var i = 0; i < slots.Length; i++) {
+      var slot = slots[i];
       if (slot.isEmpty || !slot.isSelected) {
         continue;
       }
 
       // GameManager.instance.ItemDatabaseObject.GetByID(quickSlots.GetSlots[i].Item.info.Id).Use(quickSlots.GetSlots[i]);
-      slot.Item.info.Use(quickSlots.GetSlots[i]);
+      slot.Item.info.Use(slots[i]);
       SelectSlot(i);
     }
 

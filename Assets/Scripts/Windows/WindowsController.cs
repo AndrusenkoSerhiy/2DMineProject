@@ -33,6 +33,7 @@ namespace Windows {
     private void WindowsEvents() {
       foreach (var window in windowsList) {
         window.OnShow += OnWindowShow;
+        window.OnHide += OnWindowHide;
       }
     }
 

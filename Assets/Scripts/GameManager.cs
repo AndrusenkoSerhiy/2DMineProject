@@ -1,4 +1,5 @@
 using Windows;
+using DG.Tweening;
 using Player;
 using Scriptables;
 using Scriptables.Items;
@@ -81,6 +82,7 @@ public class GameManager : MonoBehaviour {
       _instance = this;
       //DontDestroyOnLoad(this.gameObject);
     }
+    DOTween.Init();
     UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
   }
 }

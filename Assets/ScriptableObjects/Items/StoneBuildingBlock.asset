@@ -12,20 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8bc6611c57a4211b23b3959ff98e207, type: 3}
   m_Name: StoneBuildingBlock
   m_EditorClassIdentifier: 
-  Id:
-    Part1: 412537932
-    Part2: 1310080513
-    Part3: 922137786
-    Part4: 3371449510
+  id: b2982000-df40-4ee0-9958-96db97933f5f
   Type: 10
   Name: Stone block
   ParentType: 0
-  UiDisplay: {fileID: -1351413478, guid: e6eef2e803027b84f9458344fb769d3a, type: 3}
+  UiDisplay: {fileID: 21300000, guid: 9a6e018b4d944164c86f34e5d21e3905, type: 3}
   CharacterDisplay: {fileID: 0}
   Stackable: 1
   MaxStackSize: 50
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
-  Description: 
   spawnPrefab: {fileID: 3890226224433729309, guid: 5f54c42773ad3d44693014ab6605598a, type: 3}
+  Description: 
   ResourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}

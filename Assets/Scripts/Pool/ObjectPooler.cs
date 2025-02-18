@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Scriptables.Items;
 using UnityEngine;
 
 namespace Pool {
@@ -11,9 +12,8 @@ namespace Pool {
     }
 
     public List<Pool> pools;
-    [SerializeField] private Dictionary<string, Queue<GameObject>> poolDictionary;
+    private Dictionary<string, Queue<PoolObjectBase>> poolDictionary;
 
-    // Singleton pattern to access the pooler from other scripts
     public static ObjectPooler Instance;
 
     private void Awake() {
@@ -21,58 +21,66 @@ namespace Pool {
     }
 
     void Start() {
-      poolDictionary = new Dictionary<string, Queue<GameObject>>();
+      poolDictionary = new Dictionary<string, Queue<PoolObjectBase>>();
 
       foreach (Pool pool in pools) {
-        Queue<GameObject> objectPool = new Queue<GameObject>();
+        Queue<PoolObjectBase> objectPool = new Queue<PoolObjectBase>();
 
         for (int i = 0; i < pool.size; i++) {
           GameObject obj = Instantiate(pool.prefab, transform);
           obj.SetActive(false);
-          objectPool.Enqueue(obj);
+          objectPool.Enqueue(obj.GetComponent<PoolObjectBase>());
         }
 
         poolDictionary.Add(pool.tag, objectPool);
       }
     }
 
-    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation) {
+    public PoolObjectBase SpawnFromPool(string tag, Vector3 position, Quaternion rotation) {
       if (!poolDictionary.ContainsKey(tag)) {
         Debug.LogWarning("Pool with tag " + tag + " doesn't exist.");
         return null;
       }
 
-      Queue<GameObject> objectPool = poolDictionary[tag];
-      GameObject objectToSpawn = null;
+      Queue<PoolObjectBase> objectPool = poolDictionary[tag];
+      PoolObjectBase objectToSpawn = null;
 
-      // Find the first inactive object in the pool
       for (int i = 0; i < objectPool.Count; i++) {
-        GameObject obj = objectPool.Dequeue();
+        PoolObjectBase obj = objectPool.Dequeue();
 
-        if (!obj.activeInHierarchy) {
+        if (!obj.gameObject.activeInHierarchy) {
           objectToSpawn = obj;
           break;
         }
 
-        objectPool.Enqueue(obj); // Requeue the object if it's active
+        objectPool.Enqueue(obj);
       }
 
-      // If no inactive object is found, instantiate a new one
       if (objectToSpawn == null) {
         Pool poolConfig = pools.Find(p => p.tag == tag);
 
         if (poolConfig != null) {
-          objectToSpawn = Instantiate(poolConfig.prefab, transform);
+          GameObject newObj = Instantiate(poolConfig.prefab, transform);
+          objectToSpawn = newObj.GetComponent<PoolObjectBase>();
         }
       }
 
-      objectToSpawn.SetActive(true);
+      objectToSpawn.gameObject.SetActive(true);
       objectToSpawn.transform.position = position;
       objectToSpawn.transform.rotation = rotation;
 
       poolDictionary[tag].Enqueue(objectToSpawn);
 
       return objectToSpawn;
+    }
+
+    //TODO
+    public void SpawnFlyEffect(ItemObject item, Vector3 cellPos) {
+      var fly = (PoolObjectFly)SpawnFromPool("WavyMove", cellPos, Quaternion.identity) as PoolObjectFly;
+      if (fly != null) {
+        fly.SetSprite(item.UiDisplay);
+        fly.SetPosition(cellPos, GameManager.instance.PlayerController.transform);
+      }
     }
   }
 }

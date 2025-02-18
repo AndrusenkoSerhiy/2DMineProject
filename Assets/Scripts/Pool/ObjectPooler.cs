@@ -75,11 +75,15 @@ namespace Pool {
     }
 
     //TODO
-    public void SpawnFlyEffect(ItemObject item, Vector3 cellPos) {
-      var fly = (PoolObjectFly)SpawnFromPool("WavyMove", cellPos, Quaternion.identity) as PoolObjectFly;
+    public void SpawnFlyEffect(ItemObject item, Vector3 cellPos, float radius = 1.5f) {
+      var randomOffset = Random.insideUnitCircle * radius;
+      var offset = new Vector3(randomOffset.x, randomOffset.y, 0); 
+      // Додаємо зміщення до початкової позиції
+      var spawnPosition = cellPos + offset;
+      var fly = (PoolObjectFly)SpawnFromPool("WavyMove", spawnPosition, Quaternion.identity) as PoolObjectFly;
       if (fly != null) {
         fly.SetSprite(item.UiDisplay);
-        fly.SetPosition(cellPos, GameManager.instance.PlayerController.transform);
+        fly.SetPosition(spawnPosition, GameManager.instance.PlayerController.transform);
       }
     }
   }

@@ -156,6 +156,10 @@ namespace World {
       RemoveCellFromActives(new Coords(cellObject.CellData.x, cellObject.CellData.y));
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
+      UpdateCellAround(x, y);
+    }
+    
+    public void UpdateCellAround(int x, int y) {
       var cellUp = GetCell(x - 1, y);
       var cellDown = GetCell(x + 1, y);
       var cellLeft = GetCell(x, y - 1);

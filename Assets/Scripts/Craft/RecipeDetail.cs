@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Scriptables.Craft;
 using TMPro;
@@ -21,7 +20,6 @@ namespace Craft {
     private ITotalAmount totalAmount;
 
     public void Awake() {
-      Debug.Log("RecipeDetail Awake");
       ServiceLocator.For(this).Register<IRecipeDetail>(this);
 
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();

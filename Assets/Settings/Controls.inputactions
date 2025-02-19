@@ -436,6 +436,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Shift",
+                    "type": "Button",
+                    "id": "3a98bb7d-9c96-4fa5-828a-3adf190ec149",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Ctrl",
+                    "type": "Button",
+                    "id": "aff05793-5c9e-4f8e-b026-62c9a33f55af",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -887,6 +905,28 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "Craft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6779c35a-e383-4638-ac1d-ee974ab09c89",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "Press(pressPoint=0.01)",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Shift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "32b6fe50-3bd9-4c9e-843c-7724b46c3bde",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "Press(pressPoint=0.01)",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Ctrl",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

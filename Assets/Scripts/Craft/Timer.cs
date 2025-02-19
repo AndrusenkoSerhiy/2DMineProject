@@ -24,7 +24,6 @@ namespace Craft {
     }
 
     private void UpdateTimer() {
-      //Debug.Log("Timer UpdateTimer");
       var currentTime = DateTime.Now.ToUniversalTime();
       var elapsedTime = (float)(currentTime - startTime).TotalSeconds;
       timeLeft = totalTime - elapsedTime;
@@ -39,7 +38,6 @@ namespace Craft {
     }
 
     public void InitTimer(int count, int time, DateTime? start = null) {
-      //Debug.Log("Timer StartTimer");
       startTime = start ?? DateTime.Now.ToUniversalTime();
       totalItems = count;
       timeForOne = time;
@@ -90,12 +88,10 @@ namespace Craft {
     }
 
     private void StopTimer() {
-      //Debug.Log("Timer StopTimer");
       onTimerStop?.Invoke();
     }
 
     public void Reset() {
-      //Debug.Log("Timer Reset");
       isStarted = false;
       timerText.text = string.Empty;
     }

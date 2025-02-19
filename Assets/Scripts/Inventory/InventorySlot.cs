@@ -71,6 +71,10 @@ namespace Inventory {
       return UpdateSlot(amount + value, Item, formSlot);
     }
 
+    public int RemoveAmount(int value, InventorySlot formSlot = null) {
+      return UpdateSlot(amount - value, Item, formSlot);
+    }
+
     public int UpdateSlotBySlot(InventorySlot slot) {
       return UpdateSlot(slot.amount, slot.Item, slot);
     }

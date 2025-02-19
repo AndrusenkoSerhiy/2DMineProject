@@ -458,6 +458,24 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shift"",
+                    ""type"": ""Button"",
+                    ""id"": ""3a98bb7d-9c96-4fa5-828a-3adf190ec149"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ctrl"",
+                    ""type"": ""Button"",
+                    ""id"": ""aff05793-5c9e-4f8e-b026-62c9a33f55af"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -911,6 +929,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Craft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6779c35a-e383-4638-ac1d-ee974ab09c89"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": ""Press(pressPoint=0.01)"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Shift"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""32b6fe50-3bd9-4c9e-843c-7724b46c3bde"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": ""Press(pressPoint=0.01)"",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Ctrl"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -963,6 +1003,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_Craft = m_UI.FindAction("Craft", throwIfNotFound: true);
+        m_UI_Shift = m_UI.FindAction("Shift", throwIfNotFound: true);
+        m_UI_Ctrl = m_UI.FindAction("Ctrl", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -1136,6 +1178,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
     private readonly InputAction m_UI_Craft;
+    private readonly InputAction m_UI_Shift;
+    private readonly InputAction m_UI_Ctrl;
     public struct UIActions
     {
         private @Controls m_Wrapper;
@@ -1152,6 +1196,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
         public InputAction @Craft => m_Wrapper.m_UI_Craft;
+        public InputAction @Shift => m_Wrapper.m_UI_Shift;
+        public InputAction @Ctrl => m_Wrapper.m_UI_Ctrl;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1197,6 +1243,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Craft.started += instance.OnCraft;
             @Craft.performed += instance.OnCraft;
             @Craft.canceled += instance.OnCraft;
+            @Shift.started += instance.OnShift;
+            @Shift.performed += instance.OnShift;
+            @Shift.canceled += instance.OnShift;
+            @Ctrl.started += instance.OnCtrl;
+            @Ctrl.performed += instance.OnCtrl;
+            @Ctrl.canceled += instance.OnCtrl;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1237,6 +1289,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Craft.started -= instance.OnCraft;
             @Craft.performed -= instance.OnCraft;
             @Craft.canceled -= instance.OnCraft;
+            @Shift.started -= instance.OnShift;
+            @Shift.performed -= instance.OnShift;
+            @Shift.canceled -= instance.OnShift;
+            @Ctrl.started -= instance.OnCtrl;
+            @Ctrl.performed -= instance.OnCtrl;
+            @Ctrl.canceled -= instance.OnCtrl;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1296,5 +1354,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
         void OnCraft(InputAction.CallbackContext context);
+        void OnShift(InputAction.CallbackContext context);
+        void OnCtrl(InputAction.CallbackContext context);
     }
 }

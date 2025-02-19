@@ -27,7 +27,6 @@ namespace Craft {
     public int Position => position;
 
     public void Init(int count, Recipe recipe, int position, DateTime? start = null) {
-      //Debug.Log("InputItem Init");
       countLeft = count;
       this.recipe = recipe;
       this.position = position;
@@ -82,14 +81,12 @@ namespace Craft {
     }
 
     private void OnTimerStopHandler() {
-      //Debug.Log("InputItem OnTimerStop");
       ResetInput();
 
       OnInputAllCrafted?.Invoke();
     }
 
     private void OnItemTimerEndHandler(int count) {
-      //Debug.Log("InputItem OnItemTimerEndHandler: " + count);
       OnItemCrafted?.Invoke(recipe, count);
 
       countLeft -= count;
@@ -97,7 +94,6 @@ namespace Craft {
     }
 
     private void ResetInput() {
-      //Debug.Log("InputItem ResetInput");
       cancel.onClick.RemoveAllListeners();
 
       timer.onTimerStop -= OnTimerStopHandler;

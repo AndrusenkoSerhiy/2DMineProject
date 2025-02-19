@@ -19,12 +19,14 @@ namespace Settings {
     [SerializeField] private PlayerStats _stats;
     [SerializeField] private VirtualMouseUI _virtualMouse;
     private Dictionary<string, List<string>> blockedActions = new Dictionary<string, List<string>>();
-    public enum GameDevice{
-       KeyboardAndMouse = 0,
-       Gamepad = 1,
+
+    public enum GameDevice {
+      KeyboardAndMouse = 0,
+      Gamepad = 1,
     }
 
     private GameDevice _activeGameDevice;
+
     private void Awake() {
       if (_instance != null && _instance != this) {
         Destroy(gameObject);
@@ -39,7 +41,7 @@ namespace Settings {
       controls.GamePlay.Attack.canceled += AttackCanceled;
       InputSystem.onActionChange += InputActionChangeCallback;
     }
-    
+
     public void BlockAction(string actionName, string reason) {
       if (!blockedActions.ContainsKey(actionName)) {
         blockedActions[actionName] = new List<string>();
@@ -51,10 +53,10 @@ namespace Settings {
         action.Disable();
       }
     }
-    
+
     public void UnblockAction(string actionName, string reason) {
       if (!blockedActions.ContainsKey(actionName)) return;
-    
+
       blockedActions[actionName].Remove(reason);
 
       if (blockedActions[actionName].Count == 0) {
@@ -63,28 +65,31 @@ namespace Settings {
         action.Enable();
       }
     }
-    
+
     private void InputActionChangeCallback(object arg1, InputActionChange inputActionChange) {
-      if (inputActionChange == InputActionChange.ActionPerformed && arg1 is InputAction) {//
+      if (inputActionChange == InputActionChange.ActionPerformed && arg1 is InputAction) {
+        //
         InputAction inputAction = arg1 as InputAction;
         //Debug.LogError($"InputActionChangeCallback {inputAction.activeControl.device.displayName}");
-        if(inputAction.activeControl.device.displayName == "VirtualMouse"){
-            return;
+        if (inputAction.activeControl.device.displayName == "VirtualMouse") {
+          return;
         }
 
-        if(inputAction.activeControl.device is Gamepad){//(lastDevice.name.Equals("Keyboard") || lastDevice.name.Equals("Mouse")){//
-          if(_activeGameDevice != GameDevice.Gamepad){
+        if (inputAction.activeControl.device is Gamepad) {
+          //(lastDevice.name.Equals("Keyboard") || lastDevice.name.Equals("Mouse")){//
+          if (_activeGameDevice != GameDevice.Gamepad) {
             ChangeActiveGameDevice(GameDevice.Gamepad);
-          }          
-        } else {
-          if(_activeGameDevice != GameDevice.KeyboardAndMouse){
+          }
+        }
+        else {
+          if (_activeGameDevice != GameDevice.KeyboardAndMouse) {
             ChangeActiveGameDevice(GameDevice.KeyboardAndMouse);
           }
         }
       }
     }
 
-    private void ChangeActiveGameDevice(GameDevice activeGameDevice){
+    private void ChangeActiveGameDevice(GameDevice activeGameDevice) {
       _activeGameDevice = activeGameDevice;
       //Debug.LogError($"activeGameDevice {activeGameDevice}");
       UnityEngine.Cursor.visible = _activeGameDevice == GameDevice.KeyboardAndMouse;
@@ -92,20 +97,22 @@ namespace Settings {
       OnGameDeviceChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public GameDevice GetActiveGameDevice(){
+    public GameDevice GetActiveGameDevice() {
       return _activeGameDevice;
     }
 
-    public Vector3 GetMousePosition(){
+    public Vector3 GetMousePosition() {
       return _activeGameDevice == GameDevice.KeyboardAndMouse ? Input.mousePosition : _virtualMouse.VirtualMousePos;
       //return _virtualMouse.VirtualMousePos;
     }
+
     public Vector2 GetMovement() {
       var movement = controls.GamePlay.Movement.ReadValue<Vector2>();
       if (_stats.SnapInput) {
         movement.x = Mathf.Abs(movement.x) < _stats.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(movement.x);
         movement.y = Mathf.Abs(movement.y) < _stats.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(movement.y);
       }
+
       //Debug.LogError($"movement {movement}");
       return movement;
     }
@@ -129,6 +136,7 @@ namespace Settings {
     #endregion
 
     #region Controls
+
     public void EnableUIControls(bool val) {
       /*if (val) {
         controls.UI.Enable();
@@ -137,7 +145,7 @@ namespace Settings {
         controls.UI.Disable();
       }*/
     }
-    
+
     public void EnableGamePlayControls(bool val) {
       if (val) {
         //controls.GamePlay.Enable();
@@ -147,18 +155,19 @@ namespace Settings {
         controls.GamePlay.Disable();
       }
     }
-    
+
     void EnableAllExceptBlocked() {
       var gameplayMap = controls.GamePlay.Get();
-    
+
       foreach (var action in gameplayMap) {
         if (!blockedActions.ContainsKey(action.name)) {
           action.Enable();
         }
       }
     }
+
     #endregion
-    
+
 
     private void OnEnable() {
       controls?.Enable();

@@ -17,8 +17,6 @@ namespace Craft {
     public List<InputItem> Items => items;
 
     public void Awake() {
-      Debug.Log("InputItems Awake");
-
       ServiceLocator.For(this).Register<IInputItems>(this);
       station = ServiceLocator.For(this).Get<Workstation>();
       itemsCount = station.OutputSlotsAmount;
@@ -27,7 +25,6 @@ namespace Craft {
     }
 
     private void InitInputs() {
-      Debug.Log("InputItems InitInputs");
       if (slots.Length < itemsCount) {
         Debug.LogError("InputItems: not enough slots in the interface");
         return;

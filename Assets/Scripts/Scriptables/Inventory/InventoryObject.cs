@@ -77,7 +77,7 @@ namespace Scriptables.Inventory {
 
       var remainingAmount = amount;
 
-      for (var i = GetSlots.Length - 1; i >= 0 && remainingAmount > 0; i--) {
+      for (var i = 0; i < GetSlots.Length - 1 && remainingAmount > 0; i++) {
         var slot = GetSlots[i];
 
         if (slot.isEmpty || slot.Item.info.Id != id) {

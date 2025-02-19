@@ -14,7 +14,6 @@ namespace Craft {
     public event Action<string> onResourcesTotalUpdate;
 
     public void Awake() {
-      Debug.Log("Craft TotalAmount Awake");
       ServiceLocator.For(this).Register<ITotalAmount>(this);
     }
 
@@ -47,7 +46,6 @@ namespace Craft {
     }
 
     private void CalculateResourcesTotal() {
-      Debug.Log("Craft TotalAmount CalculateResourcesTotal");
       resourcesTotal.Clear();
 
       foreach (var inventory in checkInventories) {
@@ -65,7 +63,7 @@ namespace Craft {
 
     private void AddEvents() {
       if (checkInventories.Count == 0) {
-        Debug.LogWarning("Craft TotalAmount: No inventories to check");
+        Debug.LogError("Craft TotalAmount: No inventories to check");
         return;
       }
 
@@ -78,7 +76,7 @@ namespace Craft {
 
     private void RemoveEvents() {
       if (checkInventories.Count == 0) {
-        Debug.LogWarning("Craft TotalAmount: No inventories to check");
+        Debug.LogError("Craft TotalAmount: No inventories to check");
         return;
       }
 
@@ -112,7 +110,6 @@ namespace Craft {
 
       // Swap empty slots
       if (!itemBefore && !itemAfter) {
-        Debug.Log("SlotAmountUpdateHandler swap empty slots -> return;");
         return;
       }
 
@@ -120,7 +117,6 @@ namespace Craft {
                                        && IsTypeInCheckInventories(after?.InventoryType);
       // Swap different in same inventory pool
       if (itemsInSameInventoriesPool && itemBefore != itemAfter) {
-        Debug.Log("SlotAmountUpdateHandler swap in same inventory -> return;");
         return;
       }
 
@@ -133,7 +129,6 @@ namespace Craft {
 
       var amountDelta = after.amount - before.amount;
       UpdateResourceTotal(id, amountDelta);
-      Debug.Log("SlotAmountUpdateHandler Item amount changed: " + amountDelta);
     }
 
     private void UpdateResourceTotal(string resourceId, int amount, bool triggerEvent = true) {

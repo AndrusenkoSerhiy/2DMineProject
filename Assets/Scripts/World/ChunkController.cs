@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Scriptables;
 using Scriptables.POI;
 using UnityEngine;
@@ -27,13 +28,6 @@ namespace World {
     private void Start() {
       InitStartChunk();
     }
-
-    void SpawnChunk(int x, int y) {
-      var startChunk = _chunkGenerator.GetChunk(x, y);
-      if (startChunk == null) return;
-      SpawnNearbyCells();
-    }
-
 
     #region TextureMap
 
@@ -69,7 +63,14 @@ namespace World {
 
     #endregion
 
-    void SpawnNearbyCells() {
+    void SpawnChunk(int x, int y) {
+      var startChunk = _chunkGenerator.GetChunk(x, y);
+      if (startChunk == null) return;
+      SpawnNearbyCells();
+    }
+
+    async Task SpawnNearbyCells() {
+      var _proxyCoords = new Coords(-1, -1);
       var playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords();
       var cols = GameManager.instance.GameConfig.ChunkSizeX;
       var rows = GameManager.instance.GameConfig.ChunkSizeY;
@@ -79,10 +80,13 @@ namespace World {
       var max_x = Mathf.Clamp(playerCoords.X + visionOffsetX, 0, cols - 1);
       var min_y = Mathf.Clamp(playerCoords.Y - visionOffsetY, 0, rows - 1);
       var max_y = Mathf.Clamp(playerCoords.Y + visionOffsetY, 0, rows - 1);
-      var keys = _activeCellObjects.Keys;
+      //var keys = _activeCellObjects.Keys;
       for (var i = min_x; i < max_x; i++) {
         for (var j = min_y; j < max_y; j++) {
-          if (_activeCellObjects.ContainsKey(new Coords(i, j))) {
+          _proxyCoords.X = i;
+          _proxyCoords.Y = j;
+          _proxyCoords.GetHashCode();
+          if (_activeCellObjects.ContainsKey(_proxyCoords)) {
             continue;
           }
 
@@ -100,9 +104,10 @@ namespace World {
           var data = _resourceDataLib.GetData(cellData.perlin);
           cell.Init(cellData, data);
           cell.InitSprite();
-          _activeCellObjects[new Coords(i, j)] = cell;
+          _activeCellObjects[_proxyCoords] = cell;
         }
       }
+
 
       isInited = true;
     }
@@ -156,6 +161,10 @@ namespace World {
       RemoveCellFromActives(new Coords(cellObject.CellData.x, cellObject.CellData.y));
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
+      UpdateCellAround(x, y);
+    }
+
+    public void UpdateCellAround(int x, int y) {
       var cellUp = GetCell(x - 1, y);
       var cellDown = GetCell(x + 1, y);
       var cellLeft = GetCell(x, y - 1);

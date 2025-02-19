@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Scriptables;
 using Unity.Collections;
 using Unity.Jobs;
@@ -114,7 +113,7 @@ namespace World {
       return cell;
     }
 
-    void OnDestroy() {
+    private void OnDestroy() {
       // Dispose of NativeArrays when done
       if (noiseMap.IsCreated) noiseMap.Dispose();
       if (smoothedNoiseMap.IsCreated) smoothedNoiseMap.Dispose();

@@ -75,12 +75,8 @@ public class QuickSlotListener : MonoBehaviour {
     if (index == -1) {
       index = slots.Length - 1;
     }
-
-    var slot = slots[index];
-    if (slot.Item != null && slot.Item.info != null) {
-      //Debug.LogError($"select slot {index} item {slot.amount} {slot.item.Name}");
-      SelectSlotByIndex(index);
-    }
+    
+    SelectSlotByIndex(index);
   }
 
   private void SelectSlotByIndex(int index) => SelectSlot(slots[index]);
@@ -89,26 +85,35 @@ public class QuickSlotListener : MonoBehaviour {
     if (selectedSlot != slot) {
       return false;
     }
+    ResetSlot();
+    return true;
+  }
 
+  private void ResetSlot() {
     GameManager.instance.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
     selectedSlot.Unselect();
     selectedItem?.info?.Use(selectedSlot);
     selectedSlot = null;
     selectedItem = null;
-
-    return true;
   }
 
-
   private void SelectSlot(InventorySlot slot) {
+    //select empty slot
+    if (slot == null || slot.Item.info == null) {
+      if (selectedSlot != null && selectedSlot.Item.info != null) {
+        ResetSlot();
+      }
+      return;
+    }
+    
     if (UnselectSlot(slot)) {
       return;
     }
 
     if (selectedSlot != null && selectedSlot.Item.info != null) {
-      //Debug.LogError($"log1");
       GameManager.instance.PlayerEquipment.OnRemoveItem(selectedSlot);
       selectedSlot.Unselect();
+      selectedItem?.info?.Use(selectedSlot);
     }
 
     selectedSlot = slot;

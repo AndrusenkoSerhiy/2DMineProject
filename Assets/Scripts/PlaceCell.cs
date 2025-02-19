@@ -155,7 +155,8 @@ public class PlaceCell : MonoBehaviour {
 
   private void PlaceCellOnScene() {
     var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
-    GameManager.instance.ChunkController.SpawnCell(coords, resourceData);
+    GameManager.instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+    GameManager.instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
     currSlot.AddAmount(-1);
     ClearSLot();
   }

@@ -58,7 +58,7 @@ namespace World {
         return;
       }
 
-      GameManager.instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage);
+      GameManager.instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage, transform.position);
     }
 
     public float GetHealth() {

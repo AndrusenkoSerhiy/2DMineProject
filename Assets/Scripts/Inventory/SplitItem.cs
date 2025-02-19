@@ -30,19 +30,16 @@ namespace Inventory {
     public InventorySlot Slot => slot;
 
     public void Awake() {
-      Debug.Log("SplitItem Awake");
       var uiSettings = GameManager.instance.UISettings;
       buttonsActiveColor = uiSettings.buttonsActiveColor;
       buttonsDisabledColor = uiSettings.buttonsDisabledColor;
     }
 
     public void OnEnable() {
-      Debug.Log("SplitItem OnEnable");
       AddEvents();
     }
 
     public void OnDisable() {
-      Debug.Log("SplitItem OnDisable");
       RemoveEvents();
     }
 
@@ -54,7 +51,6 @@ namespace Inventory {
       else {
         if (UserInput.instance.controls.UI.Cancel.triggered
             || Input.GetMouseButtonDown(0) && !IsPointerOverUIObject()) {
-          Debug.Log("SplitItem Click outside");
           Cancel();
         }
       }
@@ -64,8 +60,6 @@ namespace Inventory {
       if (slot.amount <= 1) {
         return;
       }
-      
-      Debug.Log("SplitItem Show");
 
       this.slot = slot;
       this.tempDragParent = tempDragParent;
@@ -82,7 +76,6 @@ namespace Inventory {
 
     public void End(bool success) {
       if (!success) {
-        Debug.Log($"SplitItem AddAmount {currentCount}");
         slot.AddAmount(currentCount);
       }
 
@@ -94,7 +87,6 @@ namespace Inventory {
     }
 
     private void Disable() {
-      Debug.Log("SplitItem Disable");
       gameObject.SetActive(false);
       slot = null;
       tempDragParent = null;
@@ -102,7 +94,6 @@ namespace Inventory {
     }
 
     private void OnOkButtonClickHandler() {
-      Debug.Log("OnOkButtonClickHandler");
       active = true;
       tempDragItem.Enable(slot.Item, slot.amount, tempDragParent);
       tempDragItem.SetAmount(currentCount);
@@ -123,7 +114,6 @@ namespace Inventory {
     private void OnCancelButtonClickHandler() => Cancel();
 
     private void Cancel() {
-      Debug.Log("SplitItem Cancel");
       HideWindow();
       Disable();
     }
@@ -165,7 +155,6 @@ namespace Inventory {
     }
 
     private void EnableButtons() {
-      Debug.Log($"EnableButtons");
       EnableButton(decrementButton, currentCount > minCount);
       EnableButton(incrementButton, currentCount < maxCount);
     }

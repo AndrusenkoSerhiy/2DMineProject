@@ -30,11 +30,22 @@ namespace Inventory {
     public Image Background => GetBackground();
     public TextMeshProUGUI Text => GetText();
 
+    private bool preventEvents = false;
+
     public ItemObject GetItemObject() {
       return Item.info;
     }
 
     public bool isEmpty => Item.info == null || amount <= 0;
+
+    public InventorySlot PreventEvents() {
+      preventEvents = true;
+      return this;
+    }
+
+    private void ResetPreventEvents() {
+      preventEvents = false;
+    }
 
     public void SetParent(IInventoryUI parent) {
       Parent = parent;
@@ -63,6 +74,10 @@ namespace Inventory {
       };
     }
 
+    public int AddItem(Item item, int amount) {
+      return UpdateSlot(amount, item);
+    }
+
     public void RemoveItem() {
       UpdateSlot(0, new Item());
     }
@@ -72,7 +87,10 @@ namespace Inventory {
     }
 
     public int RemoveAmount(int value, InventorySlot formSlot = null) {
-      return UpdateSlot(amount - value, Item, formSlot);
+      var newAmount = amount - value;
+      var item = newAmount <= 0 ? new Item() : Item;
+
+      return UpdateSlot(newAmount, item, formSlot);
     }
 
     public int UpdateSlotBySlot(InventorySlot slot) {
@@ -81,7 +99,10 @@ namespace Inventory {
 
     public int UpdateSlot(int amountValue, Item itemValue = null, InventorySlot formSlot = null) {
       var slotDataBefore = Clone(this);
-      OnBeforeUpdated?.Invoke(slotDataBefore);
+      if (!preventEvents) {
+        OnBeforeUpdated?.Invoke(slotDataBefore);
+      }
+
       itemValue ??= Item;
       var maxStack = itemValue.info ? itemValue.info.MaxStackSize : 0;
       var newAmount = Mathf.Min(amountValue, maxStack);
@@ -90,7 +111,11 @@ namespace Inventory {
       Item = itemValue;
       amount = newAmount;
 
-      OnAfterUpdated?.Invoke(new SlotUpdateEventData(slotDataBefore, this, formSlot));
+      if (!preventEvents) {
+        OnAfterUpdated?.Invoke(new SlotUpdateEventData(slotDataBefore, this, formSlot));
+      }
+
+      ResetPreventEvents();
 
       return overFlow;
     }

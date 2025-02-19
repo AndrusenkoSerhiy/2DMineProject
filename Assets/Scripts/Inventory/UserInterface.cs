@@ -55,6 +55,8 @@ namespace Inventory {
       AddSlotsEvents();
 
       UpdateInventoryUI();
+      
+      inventory.OnResorted += ResortHandler;
     }
 
     public void OnDisable() {
@@ -62,6 +64,8 @@ namespace Inventory {
       RemoveAllEvents(gameObject);
 
       RemoveSlotsEvents();
+      
+      inventory.OnResorted -= ResortHandler;
     }
 
     public void CreateSlots() {
@@ -93,6 +97,10 @@ namespace Inventory {
       foreach (var slot in slotsOnInterface) {
         RemoveAllEvents(slot.Key);
       }
+    }
+
+    private void ResortHandler() {
+      UpdateInventoryUI();
     }
 
     private void RemoveAllEvents(GameObject obj) {

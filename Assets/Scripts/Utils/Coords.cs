@@ -2,17 +2,13 @@ using System;
 
 namespace Utils {
   [Serializable]
-  public class Coords {
+  public struct Coords {
     public int X;
     public int Y;
 
     public Coords(int x, int y) {
       X = x;
       Y = y;
-    }
-
-    public override bool Equals(object obj) {
-      return Equals(obj as Coords);
     }
 
     public bool Equals(Coords coords) {

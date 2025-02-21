@@ -25,12 +25,10 @@ namespace Craft {
     public bool PreventItemDropIn => preventItemDrop;
 
     public void Awake() {
-      Debug.Log("CraftManager Awake");
       ServiceLocator.For(this).Register<Workstation>(station);
     }
 
     public void Start() {
-      Debug.Log("CraftManager Start");
       Init();
       started = true;
     }
@@ -39,8 +37,6 @@ namespace Craft {
       if (!started) {
         return;
       }
-
-      Debug.Log("CraftManager OnEnable");
 
       Init();
     }
@@ -53,7 +49,6 @@ namespace Craft {
     }
 
     private void Init() {
-      Debug.Log("CraftManager Init");
       InitReferences();
       AddEvents();
       totalAmount.InitComponent();
@@ -65,8 +60,6 @@ namespace Craft {
       if (totalAmount != null) {
         return;
       }
-
-      Debug.Log("CraftManager InitReferences");
 
       playerInventory = GameManager.instance.PlayerInventory;
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
@@ -107,8 +100,6 @@ namespace Craft {
     }
 
     private void OnCraftRequestedHandler(int count) {
-      Debug.Log("CraftManager OnCraftRequestedHandler: " + count);
-
       var recipe = recipesManager.Recipe;
 
       //remove resources from inventory
@@ -126,7 +117,6 @@ namespace Craft {
     }
 
     private void OnRecipeSelectedHandler(Recipe recipe) {
-      Debug.Log("Recipe selected OnRecipeSelectedHandler: " + recipe.RecipeName);
       detail.SetRecipeDetails(recipe);
 
       craftActions.SetRecipe(recipe);
@@ -142,7 +132,6 @@ namespace Craft {
     }
 
     private void SlotAmountUpdateHandler(string resourceId) {
-      Debug.Log("CraftManager SlotAmountUpdateHandler: " + resourceId);
       var recipeIngredientsIds = detail.GetRecipeIngredientsIds();
       if (recipeIngredientsIds.Length > 0 && recipeIngredientsIds.Contains(resourceId)) {
         UpdateResourcesListAndCount();
@@ -150,7 +139,6 @@ namespace Craft {
     }
 
     private void UpdateResourcesListAndCount() {
-      Debug.Log("CraftManager UpdateResourcesListAndCount");
       detail.PrintList();
 
       craftActions.UpdateAndPrintInputCount();
@@ -173,7 +161,6 @@ namespace Craft {
     }
 
     private void AddCraftedItemToOutput(Recipe recipe, int count) {
-      Debug.Log("CraftManager AddCraftedItemToOutput: " + recipe.RecipeName);
       station.RemoveCountFromCraftTotal(recipe.Result, count);
 
       var outputInventory = station.OutputInventory;
@@ -216,7 +203,6 @@ namespace Craft {
     }
 
     private void OutputUpdateSlotHandler(SlotUpdateEventData data) {
-      Debug.Log("OutputUpdateSlotHandler slot.item.Id:" + data.after.Item.info?.Id);
       if (data.after.isEmpty) {
         craftActions.UpdateAndPrintInputCount();
       }

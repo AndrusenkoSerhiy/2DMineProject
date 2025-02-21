@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Inventory;
@@ -9,6 +10,16 @@ using Scriptables.Items;
 using UnityEngine;
 
 namespace Scriptables.Inventory {
+  public class ItemComparer : IEqualityComparer<Item> {
+    public bool Equals(Item x, Item y) {
+      return x != null && y != null && x.id == y.id;
+    }
+
+    public int GetHashCode(Item obj) {
+      return obj.id.GetHashCode();
+    }
+  }
+
   [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
   public class InventoryObject : ScriptableObject {
     public string savePath;
@@ -17,6 +28,7 @@ namespace Scriptables.Inventory {
 
     public InventoryType type;
     public event Action<SlotSwappedEventData> OnSlotSwapped;
+    public event Action OnResorted;
 
     //public int MAX_ITEMS;
     [SerializeField]
@@ -28,6 +40,45 @@ namespace Scriptables.Inventory {
     public InventoryObject() {
       Container = new InventoryContainer(slotsCount);
     }
+
+    public void SortInventory(bool ascending = true) {
+      var tmpList = new Dictionary<Item, int>(new ItemComparer());
+
+      for (var i = 0; i < GetSlots.Length; i++) {
+        var slot = GetSlots[i];
+        if (slot.isEmpty) {
+          continue;
+        }
+
+        if (tmpList.ContainsKey(slot.Item)) {
+          tmpList[slot.Item] += slot.amount;
+        }
+        else {
+          tmpList[slot.Item] = slot.amount;
+        }
+
+        slot.PreventEvents()
+          .RemoveItem();
+      }
+
+      // Sort items by name
+      var sortedItems = ascending
+        ? tmpList.OrderBy(pair => pair.Key.info.Name, StringComparer.Ordinal)
+        : tmpList.OrderByDescending(pair => pair.Key.info.Name, StringComparer.Ordinal);
+
+      var slotIndex = 0;
+      foreach (var (item, totalAmount) in sortedItems) {
+        var remainAmount = totalAmount;
+        while (remainAmount > 0) {
+          var slot = GetSlots[slotIndex];
+          remainAmount = slot.PreventEvents().AddItem(item, remainAmount);
+          slotIndex++;
+        }
+      }
+
+      OnResorted?.Invoke();
+    }
+
 
     public void MoveAllItemsTo(InventoryObject destinationInventory) {
       if (destinationInventory == null) {
@@ -77,7 +128,7 @@ namespace Scriptables.Inventory {
 
       var remainingAmount = amount;
 
-      for (var i = GetSlots.Length - 1; i >= 0 && remainingAmount > 0; i--) {
+      for (var i = 0; i < GetSlots.Length - 1 && remainingAmount > 0; i++) {
         var slot = GetSlots[i];
 
         if (slot.isEmpty || slot.Item.info.Id != id) {

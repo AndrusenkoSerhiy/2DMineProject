@@ -4,7 +4,6 @@ using Scriptables.Craft;
 using Settings;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityServiceLocator;
 
@@ -14,10 +13,12 @@ namespace Craft {
     [SerializeField] private Button craftButton;
     [SerializeField] private Button incrementButton;
     [SerializeField] private Button decrementButton;
-    [SerializeField] private Button maxCountButton;
     [SerializeField] private Button minCountButton;
-    [SerializeField] private Color buttonsActiveColor;
-    [SerializeField] private Color buttonsDisabledColor;
+    [SerializeField] private Button maxCountButton;
+    [SerializeField] private Image maxCountButtonSub;
+    [SerializeField] private Image minCountButtonSub;
+    private Color buttonsActiveColor;
+    private Color buttonsDisabledColor;
 
     // private PlayerInventory playerInventory;
     private ITotalAmount totalAmount;
@@ -25,14 +26,16 @@ namespace Craft {
     private Workstation station;
 
     private int minCount = 1;
-    private int maxCount = 0;
+    private int maxCount;
     private int currentCount = 1;
 
     public event Action<int> OnCraftRequested;
 
     public void Awake() {
-      Debug.Log("CraftActions Awake");
-      // playerInventory = GameManager.instance.PlayerInventory;
+      var uiSettings = GameManager.instance.UISettings;
+      buttonsActiveColor = uiSettings.buttonsActiveColor;
+      buttonsDisabledColor = uiSettings.buttonsDisabledColor;
+      
       ServiceLocator.For(this).Register<ICraftActions>(this);
 
       station = ServiceLocator.For(this).Get<Workstation>();
@@ -43,8 +46,7 @@ namespace Craft {
     }
 
     public void Start() {
-      UserInput.instance.controls.UI.Craft.performed +=
-        (InputAction.CallbackContext obj) => OnCraftRequested?.Invoke(currentCount);
+      UserInput.instance.controls.UI.Craft.performed += ctx => OnCraftClickHandler();
     }
 
     public void InitComponent() => AddEvents();
@@ -52,7 +54,6 @@ namespace Craft {
     public void ClearComponent() => RemoveEvents();
 
     public void UpdateAndPrintInputCount(bool resetCurrentCount = false) {
-      Debug.Log("CraftActions UpdateAndPrintInputCount");
       if (resetCurrentCount) {
         ResetCurrentCount();
       }
@@ -66,18 +67,21 @@ namespace Craft {
     private void EnableButtons() {
       EnableButton(decrementButton, currentCount > minCount);
       EnableButton(incrementButton, currentCount < maxCount);
-      EnableButton(maxCountButton, currentCount < maxCount);
-      EnableButton(minCountButton, currentCount > minCount);
+      EnableButton(maxCountButton, currentCount < maxCount, maxCountButtonSub);
+      EnableButton(minCountButton, currentCount > minCount, minCountButtonSub);
       EnableButton(craftButton, currentCount > 0);
     }
 
-    private void EnableButton(Button button, bool state) {
+    private void EnableButton(Button button, bool state, Image subimage = null) {
+      var color = state ? buttonsActiveColor : buttonsDisabledColor;
       button.enabled = state;
-      button.image.color = state ? buttonsActiveColor : buttonsDisabledColor;
+      button.image.color = color;
+      if (subimage) {
+        subimage.color = color;
+      }
     }
 
     public void SetRecipe(Recipe recipe) {
-      //Debug.Log("CraftActions SetRecipe: " + recipe.RecipeName);
       this.recipe = recipe;
     }
 
@@ -92,6 +96,7 @@ namespace Craft {
     }
 
     private void RemoveEvents() {
+      Debug.Log("CraftActions RemoveEvents");
       countInput.onValueChanged.RemoveAllListeners();
       craftButton.onClick.RemoveAllListeners();
       incrementButton.onClick.RemoveAllListeners();
@@ -101,18 +106,17 @@ namespace Craft {
     }
 
     private void OnCountInputChangeHandler(string value) {
-      //Debug.Log("CraftActions Value changed: " + value);
       if (value == string.Empty) {
         return;
       }
 
       var count = int.Parse(value);
 
-      if (count == minCount || count == maxCount) {
-        return;
-      }
+      // if (count == minCount || count == maxCount) {
+      //   return;
+      // }
 
-      count = Math.Clamp(count, minCount, maxCount);
+      count = Math.Clamp(count, 0, maxCount);
 
       SetCurrentCount(count);
       PrintInputCount();
@@ -120,44 +124,39 @@ namespace Craft {
     }
 
     private void OnCraftClickHandler() {
-      //Debug.Log("CraftActions Craft Clicked");
+      if (currentCount < minCount) {
+        return;
+      }
+
       OnCraftRequested?.Invoke(currentCount);
     }
 
     private void OnIncrementClickHandler() {
-      //Debug.Log("CraftActions Increment Clicked");
       if (currentCount >= maxCount) {
         return;
       }
 
       currentCount++;
       PrintInputCount();
-      EnableButtons();
     }
 
     private void OnDecrementClickHandler() {
-      //Debug.Log("CraftActions Decrement Clicked");
       if (currentCount <= minCount) {
         return;
       }
 
       currentCount--;
       PrintInputCount();
-      EnableButtons();
     }
 
     private void OnMaxCountButtonClickHandler() {
-      //Debug.Log("CraftActions MaxCountButton Clicked");
       currentCount = maxCount;
       PrintInputCount();
-      EnableButtons();
     }
 
     private void OnMinCountButtonClickHandler() {
-      //Debug.Log("CraftActions MaxCountButton Clicked");
       currentCount = minCount;
       PrintInputCount();
-      EnableButtons();
     }
 
     private void CalculateMaxCount() {

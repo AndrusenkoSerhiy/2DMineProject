@@ -12,11 +12,16 @@ namespace Inventory {
     [SerializeField] private InventoryObject inventory;
     [SerializeField] private Color disabledSlotColor;
 
+    [SerializeField] private InventoryObject fastDropInventory;
     [SerializeField] private bool preventItemDropIn;
     [SerializeField] private bool preventDropOnGround;
     [SerializeField] private bool preventSwapIn;
     [SerializeField] private bool preventMergeIn;
+    [SerializeField] private bool preventSplit;
 
+    private SplitItem splitItem;
+    private GameObject tempDragItemObject;
+    private TempDragItem tempDragItem;
     private Transform tempDragParent;
     private Dictionary<GameObject, InventorySlot> slotsOnInterface;
 
@@ -30,29 +35,37 @@ namespace Inventory {
     public bool PreventMergeIn => preventMergeIn;
 
     public void Awake() {
+      splitItem = GameManager.instance.SplitItem;
+      tempDragItemObject = GameManager.instance.TempDragItem;
+      tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
       tempDragParent = GameManager.instance.Canvas.transform;
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
 
       CheckSlotsUpdate();
 
       CreateSlots();
-
-      AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
-      AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
     }
 
     public void OnEnable() {
       UpdateSlotsGameObjects();
+
+      AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
+      AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
+
+      AddSlotsEvents();
+
       UpdateInventoryUI();
+      
+      inventory.OnResorted += ResortHandler;
     }
 
-    private void UpdateSlotsGameObjects() {
-      for (var i = 0; i < Inventory.GetSlots.Length; i++) {
-        var slot = Inventory.GetSlots[i];
-        slot.SetParent(this);
-        slot.SetSlotDisplay(slotsPrefabs[i]);
-        slotsOnInterface[slotsPrefabs[i]] = slot;
-      }
+    public void OnDisable() {
+      RemoveAllEvents(gameObject);
+      RemoveAllEvents(gameObject);
+
+      RemoveSlotsEvents();
+      
+      inventory.OnResorted -= ResortHandler;
     }
 
     public void CreateSlots() {
@@ -70,9 +83,50 @@ namespace Inventory {
         var obj = slotsPrefabs[i];
         var slot = Inventory.GetSlots[i];
 
-        AddSlotEvents(obj, slot, tempDragParent);
-
         slotsOnInterface.Add(obj, slot);
+      }
+    }
+
+    private void AddSlotsEvents() {
+      foreach (var slot in slotsOnInterface) {
+        AddSlotEvents(slot.Key, slot.Value);
+      }
+    }
+
+    private void RemoveSlotsEvents() {
+      foreach (var slot in slotsOnInterface) {
+        RemoveAllEvents(slot.Key);
+      }
+    }
+
+    private void ResortHandler() {
+      UpdateInventoryUI();
+    }
+
+    private void RemoveAllEvents(GameObject obj) {
+      if (!obj.TryGetComponent(out EventTrigger trigger)) {
+        Debug.LogWarning($"No EventTrigger component found on {obj.name}!");
+        return;
+      }
+
+      trigger.triggers.Clear();
+    }
+
+    private void AddSlotEvents(GameObject obj, InventorySlot slot) {
+      AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
+      AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
+      AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(slot); });
+      AddEvent(obj, EventTriggerType.EndDrag, (data) => SlotDrop(data, slot));
+      AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
+      AddEvent(obj, EventTriggerType.PointerClick, (data) => OnSlotClick(data, slot, obj));
+    }
+
+    private void UpdateSlotsGameObjects() {
+      for (var i = 0; i < Inventory.GetSlots.Length; i++) {
+        var slot = Inventory.GetSlots[i];
+        slot.SetParent(this);
+        slot.SetSlotDisplay(slotsPrefabs[i]);
+        slotsOnInterface[slotsPrefabs[i]] = slot;
       }
     }
 
@@ -82,7 +136,7 @@ namespace Inventory {
       }
     }
 
-    protected void UpdateInventorySlotUI(InventorySlot slot) {
+    private void UpdateInventorySlotUI(InventorySlot slot) {
       slot.ResetBackgroundAndText();
       UpdateSlotDisplay(slot); // Ensure each slot reflects the correct UI state
     }
@@ -112,88 +166,109 @@ namespace Inventory {
       }
     }
 
-    public GameObject CreateTempItem(InventorySlot slot, Transform parent) {
-      GameObject tempItem = null;
+    public void CreateTempItem(InventorySlot slot) {
       if (slot.isEmpty) {
-        return tempItem;
-      }
-
-      tempItem = new GameObject("TempItemBeingDragged");
-      tempItem.layer = 5;
-      var rt = tempItem.AddComponent<RectTransform>();
-
-      rt.sizeDelta = new Vector2(80, 80);
-
-      tempItem.transform.SetParent(parent);
-      var img = tempItem.AddComponent<Image>();
-      img.sprite = slot.GetItemObject().UiDisplay;
-      img.raycastTarget = false;
-
-      tempItem.transform.localScale = Vector3.one;
-
-      return tempItem;
-    }
-
-    protected void AddEvent(GameObject obj, EventTriggerType type, UnityAction<BaseEventData> action) {
-      EventTrigger trigger = obj.GetComponent<EventTrigger>();
-      if (!trigger) {
-        Debug.LogWarning("No EventTrigger component found!");
         return;
       }
 
-      var eventTrigger = new EventTrigger.Entry { eventID = type };
-      eventTrigger.callback.AddListener(action);
-      trigger.triggers.Add(eventTrigger);
+      tempDragItem.Enable(slot.Item, slot.amount, tempDragParent);
     }
 
-    protected void AddSlotEvents(GameObject obj, InventorySlot slot, Transform parent) {
-      AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
-      AddEvent(obj, EventTriggerType.PointerExit, delegate { OnExit(obj); });
-      AddEvent(obj, EventTriggerType.BeginDrag, delegate { OnDragStart(slot, parent); });
-      AddEvent(obj, EventTriggerType.EndDrag, (data) => OnDragEnd(data, slot));
-      AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
+    private void AddEvent(GameObject obj, EventTriggerType type, UnityAction<BaseEventData> action) {
+      if (!obj.TryGetComponent(out EventTrigger trigger)) {
+        Debug.LogWarning($"No EventTrigger component found on {obj.name}!");
+        return;
+      }
+
+      var entry = trigger.triggers.Find(e => e.eventID == type);
+
+      if (entry == null) {
+        entry = new EventTrigger.Entry { eventID = type };
+        trigger.triggers.Add(entry);
+      }
+
+      entry.callback.AddListener(action);
     }
 
-    protected void OnEnter(GameObject obj) {
-      MouseData.slotHoveredOver = obj;
-    }
+    private void OnSlotClick(BaseEventData data, InventorySlot slot, GameObject obj) {
+      if (data is not PointerEventData { button: PointerEventData.InputButton.Left }) {
+        return;
+      }
 
-    protected void OnEnterInterface(GameObject obj) {
-      MouseData.interfaceMouseIsOver = obj.GetComponent<IInventoryDropZoneUI>();
-    }
+      //drop splited
+      if (splitItem.Active) {
+        var dropResult = SlotDrop(data, splitItem.Slot);
+        splitItem.End(dropResult);
+        return;
+      }
 
-    protected void OnExitInterface(GameObject obj) {
-      MouseData.interfaceMouseIsOver = null;
-    }
+      if (slot.isEmpty) {
+        return;
+      }
 
-    protected void OnExit(GameObject obj) {
-      MouseData.slotHoveredOver = null;
-    }
+      //fast drop item to another inventory
+      if (UserInput.instance.controls.UI.Ctrl.IsPressed() && fastDropInventory) {
+        var overFlow = fastDropInventory.AddItem(slot.Item, slot.amount);
+        if (overFlow > 0) {
+          slot.RemoveAmount(slot.amount - overFlow);
+        }
+        else {
+          slot.RemoveItem();
+        }
 
-    protected void OnDrag(GameObject obj) {
-      if (MouseData.tempItemBeingDragged != null) {
-        var mousePos = UserInput.instance.GetMousePosition(); //_uiCamera.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
-        MouseData.tempItemBeingDragged.GetComponent<RectTransform>().position = mousePos;
+        return;
+      }
+
+      //split
+      if (UserInput.instance.controls.UI.Shift.IsPressed() && !preventSplit) {
+        splitItem.Show(slot, obj, tempDragParent);
       }
     }
 
-    protected void OnDragStart(InventorySlot slot, Transform parent) {
+    private void OnEnter(GameObject obj) {
+      MouseData.slotHoveredOver = obj;
+    }
+
+    private void OnEnterInterface(GameObject obj) {
+      MouseData.interfaceMouseIsOver = obj.GetComponent<IInventoryDropZoneUI>();
+    }
+
+    private void OnExitInterface(GameObject obj) {
+      MouseData.interfaceMouseIsOver = null;
+    }
+
+    private void OnExit(GameObject obj) {
+      MouseData.slotHoveredOver = null;
+    }
+
+    private void OnDrag(GameObject obj) {
+      if (!tempDragItem.IsDrag) {
+        return;
+      }
+
+      var mousePos = UserInput.instance.GetMousePosition();
+      mousePos.z = 0;
+      tempDragItem.UpdatePosition(mousePos);
+    }
+
+    private void OnDragStart(InventorySlot slot) {
       if (slot.isEmpty) {
         Debug.Log("OnDragStart Slot is empty, cant drag");
         return;
       }
 
-      MouseData.tempItemBeingDragged = CreateTempItem(slot, parent);
+      CreateTempItem(slot);
     }
 
-    protected void OnDragEnd(BaseEventData data, InventorySlot slot) {
+    private bool SlotDrop(BaseEventData data, InventorySlot slot) {
       var pointerData = data as PointerEventData;
-      Destroy(MouseData.tempItemBeingDragged);
+      var dragFull = tempDragItem.DragFull;
+      var dragAmount = tempDragItem.Amount;
+      tempDragItem.Disable();
 
       if (slot.isEmpty) {
         Debug.Log("OnDragEnd Slot is empty, cant drag");
-        return;
+        return false;
       }
 
       // Prevent dropping if the pointer is over a restricted drop zone
@@ -201,7 +276,7 @@ namespace Inventory {
         var dropZone = pointerData.pointerEnter.GetComponentInParent<IInventoryDropZoneUI>();
         if (dropZone?.PreventItemDropIn == true) {
           Debug.Log("Preventing item drop on restricted drop zone");
-          return;
+          return false;
         }
       }
 
@@ -212,26 +287,27 @@ namespace Inventory {
           slot.RemoveItem();
 
           Debug.Log("Dropping item on the ground");
+          return true;
         }
 
-        return;
+        return false;
       }
 
       if (!MouseData.slotHoveredOver) {
         Debug.Log("Slot hovered over is null");
-        return;
+        return false;
       }
 
       // Retrieve the slot being hovered over
       var targetSlot = (MouseData.interfaceMouseIsOver as IInventoryUI)?.SlotsOnInterface[MouseData.slotHoveredOver];
       if (targetSlot == null) {
         Debug.Log("Target slot is null");
-        return;
+        return false;
       }
 
       if (targetSlot == slot) {
         Debug.Log("Target slot is the same as the source slot");
-        return;
+        return false;
       }
 
       var targetInventory = targetSlot.Parent.Inventory;
@@ -240,7 +316,7 @@ namespace Inventory {
       // Prevent any item movement if drop is disabled
       if (targetUI.PreventItemDropIn) {
         Debug.Log("Preventing item drop");
-        return;
+        return false;
       }
 
       // Handle merging items
@@ -248,17 +324,26 @@ namespace Inventory {
         targetInventory.MergeItems(slot, targetSlot);
 
         Debug.Log("Merging items");
-        return;
+        return true;
+      }
+
+      //Add split item
+      if (targetSlot.isEmpty && !dragFull) {
+        inventory.AddItem(slot.Item, dragAmount, targetSlot);
+        Debug.Log("Add split item");
+        return true;
       }
 
       // Handle swapping items
       // var canSwap = !targetUI.PreventSwapIn && (PreventSwapIn || (!PreventSwapIn && slot.isEmpty));
       var cantSwap = targetUI.PreventSwapIn || (PreventSwapIn && !targetSlot.isEmpty);
       if (cantSwap) {
-        return;
+        return false;
       }
 
       inventory.SwapSlots(slot, targetSlot);
+      Debug.Log("SwapSlots");
+      return true;
     }
   }
 }

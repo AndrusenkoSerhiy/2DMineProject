@@ -16,7 +16,9 @@ namespace Craft {
         return;
       }
 
-      craftWindow = Instantiate(interfacePrefab, overlayPrefab.transform).GetComponent<CraftWindow>();
+      var craftWindowObj = Instantiate(interfacePrefab, overlayPrefab.transform);
+      craftWindowObj.transform.SetSiblingIndex(0);
+      craftWindow = craftWindowObj.GetComponent<CraftWindow>();
       GameManager.instance.WindowsController.AddWindow(craftWindow);
     }
 

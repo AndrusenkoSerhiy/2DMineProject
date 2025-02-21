@@ -13,13 +13,11 @@ namespace Craft {
     private Workstation station;
     private List<Button> recipesListButtons = new();
     private RecipeListItem selectedRecipeListItem;
-    // private bool isInitialized;
 
     public Recipe Recipe { get; private set; }
     public event Action<Recipe> OnSelected;
 
     public void Awake() {
-      Debug.Log("RecipesManager Awake");
       ServiceLocator.For(this).Register<IRecipesManager>(this);
       station = ServiceLocator.For(this).Get<Workstation>();
 
@@ -40,7 +38,6 @@ namespace Craft {
         return;
       }
 
-      Debug.Log("RecipesManager BuildList");
       foreach (var recipe in station.recipes) {
         var listItem = Instantiate<Button>(recipesListItemPrefab, recipesListContainerPrefab.transform);
 
@@ -52,7 +49,6 @@ namespace Craft {
     }
 
     private void Select(Button button, bool force = false) {
-      Debug.Log("RecipesManager Select");
       var recipeListItem = button.GetComponent<RecipeListItem>();
 
       if (!force && selectedRecipeListItem == recipeListItem) {
@@ -87,8 +83,6 @@ namespace Craft {
     }
 
     private void ListItemClickHandler(Button button) {
-      Debug.Log("RecipesManager Clicked: ListItemClickHandler");
-
       Select(button);
     }
   }

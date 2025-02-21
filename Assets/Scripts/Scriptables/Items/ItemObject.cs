@@ -5,9 +5,7 @@ using UnityEngine;
 
 namespace Scriptables.Items {
   [Serializable]
-  public abstract class ItemObject : ScriptableObject, IUsableItem {
-    [SerializeField, HideInInspector] private string id;
-    public string Id => id;
+  public abstract class ItemObject : BaseScriptableObject, IUsableItem {
     public ItemType Type;
     public string Name;
     public ParentType ParentType;
@@ -20,12 +18,6 @@ namespace Scriptables.Items {
     public GameObject spawnPrefab;
 
     [TextArea(15, 20)] public string Description;
-
-    private void OnValidate() {
-      if (string.IsNullOrEmpty(id)) {
-        id = Guid.NewGuid().ToString();
-      }
-    }
 
     public virtual void Use(InventorySlot slot) {
     }

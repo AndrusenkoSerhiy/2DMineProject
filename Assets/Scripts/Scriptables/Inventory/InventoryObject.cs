@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using Inventory;
 using Items;
 using Scriptables.Items;
@@ -28,6 +25,7 @@ namespace Scriptables.Inventory {
 
     public InventoryType type;
     public event Action<SlotSwappedEventData> OnSlotSwapped;
+    // public event Action OnLoaded;
     public event Action OnResorted;
 
     //public int MAX_ITEMS;
@@ -36,6 +34,12 @@ namespace Scriptables.Inventory {
     private InventoryContainer Container;
 
     public InventorySlot[] GetSlots => Container.Slots;
+    private bool loaded;
+
+    public void OnEnable() {
+      Debug.Log("InventoryObject OnEnable");
+      loaded = false;
+    }
 
     public InventoryObject() {
       Container = new InventoryContainer(slotsCount);
@@ -119,6 +123,27 @@ namespace Scriptables.Inventory {
     public void SwapSlots(InventorySlot slot, InventorySlot targetSlot) {
       slot.SwapWith(targetSlot);
       OnSlotSwapped?.Invoke(new SlotSwappedEventData(slot, targetSlot));
+    }
+
+    public void Load(InventorySlot[] slots) {
+      if (loaded) {
+        return;
+      }
+      // Debug.Log($"Load Inventory.type {type}");
+
+      for (var i = 0; i < slots.Length; i++) {
+        var slotData = slots[i];
+        if (slotData.Item.id == string.Empty) {
+          continue;
+        }
+
+        slotData.Item.RestoreItemObject(database.ItemObjects);
+
+        GetSlots[i].UpdateSlotBySlot(slotData);
+      }
+
+      loaded = true;
+      // OnLoaded?.Invoke();
     }
 
     public int RemoveItem(string id, int amount) {
@@ -347,8 +372,14 @@ namespace Scriptables.Inventory {
       return null;
     }
 
-    [ContextMenu("Save")]
+    [ContextMenu("Clear")]
+    public void Clear() {
+      Container.Clear();
+    }
+
+    /*[ContextMenu("Save")]
     public void Save() {
+      Debug.Log($"Old inventory Save {name}");
       IFormatter formatter = new BinaryFormatter();
       Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Create,
         FileAccess.Write);
@@ -358,7 +389,7 @@ namespace Scriptables.Inventory {
 
     [ContextMenu("Load")]
     public void Load() {
-      //Debug.Log("Load " + Application.persistentDataPath);
+      Debug.Log($"Old inventory load {name}");
       if (!File.Exists(string.Concat(Application.persistentDataPath, savePath))) {
         return;
       }
@@ -381,6 +412,7 @@ namespace Scriptables.Inventory {
 
     [ContextMenu("Clear")]
     public void Clear() {
+      Debug.Log($"Old inventory Clear {name}");
       Container.Clear();
     }
 
@@ -388,6 +420,6 @@ namespace Scriptables.Inventory {
     public void ClearAndSave() {
       Clear();
       Save();
-    }
+    }*/
   }
 }

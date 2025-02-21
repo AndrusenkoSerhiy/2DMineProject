@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4485bc801886e4aabde4373b47fa66, type: 3}
   m_Name: SuperPickaxe
   m_EditorClassIdentifier: 
-  Id:
-    Part1: 1747117773
-    Part2: 1191985298
-    Part3: 2576166537
-    Part4: 1125638770
+  id: b0852391-1959-46b5-9886-4c3cdd51bb38
   Type: 2
   Name: Super pickaxe
   ParentType: 1
@@ -26,8 +22,8 @@ MonoBehaviour:
   MaxStackSize: 1
   SpawnPosition: {x: -1.21, y: 3.47, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
-  Description: super pickaxe description
   spawnPrefab: {fileID: 3890226224433729309, guid: 7119352d529e2f24b89e23a6ca2f6f27, type: 3}
+  Description: super pickaxe description
   useSelfAnim: 0
   attackLayer:
     serializedVersion: 2

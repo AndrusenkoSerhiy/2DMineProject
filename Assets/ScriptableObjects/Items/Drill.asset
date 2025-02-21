@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4485bc801886e4aabde4373b47fa66, type: 3}
   m_Name: Drill
   m_EditorClassIdentifier: 
-  Id:
-    Part1: 4236891124
-    Part2: 1176761495
-    Part3: 1739243428
-    Part4: 4197274160
+  id: 069402c4-c222-4fc5-8b6b-c4468a3dfbbe
   Type: 2
   Name: Drill
   ParentType: 3
@@ -26,8 +22,8 @@ MonoBehaviour:
   MaxStackSize: 1
   SpawnPosition: {x: 0.4, y: -0.29, z: 0}
   SpawnRotation: {x: 0, y: 0, z: -90}
-  Description: drill description
   spawnPrefab: {fileID: 3890226224433729309, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+  Description: drill description
   useSelfAnim: 1
   attackLayer:
     serializedVersion: 2

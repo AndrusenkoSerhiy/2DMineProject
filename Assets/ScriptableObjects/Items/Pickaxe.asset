@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4485bc801886e4aabde4373b47fa66, type: 3}
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
-  Id:
-    Part1: 408442723
-    Part2: 1246628183
-    Part3: 2604048290
-    Part4: 3345888688
+  id: 6be64c02-9f2d-4155-82e5-ea12a92a0278
   Type: 2
   Name: Pickaxe
   ParentType: 1
@@ -26,8 +22,8 @@ MonoBehaviour:
   MaxStackSize: 1
   SpawnPosition: {x: -0.566, y: 1.566, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
-  Description: pickaxe description
   spawnPrefab: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
+  Description: pickaxe description
   useSelfAnim: 0
   attackLayer:
     serializedVersion: 2

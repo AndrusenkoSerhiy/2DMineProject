@@ -1,4 +1,4 @@
 namespace Windows {
-  public class CraftWindow : WindowBase {
+  public class CraftWindow : InventoryWindowBase {
   }
 }

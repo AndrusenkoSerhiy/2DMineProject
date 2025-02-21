@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 
 public class QuickSlotListener : MonoBehaviour {
   [SerializeField] private InventorySlot selectedSlot;
+  [SerializeField] private UserInterface userInterface;
   private InventoryObject quickSlots;
   private InventorySlot[] slots;
   private Item selectedItem;
@@ -17,7 +18,7 @@ public class QuickSlotListener : MonoBehaviour {
     quickSlots = playerInventory.quickSlots;
     slots = quickSlots.GetSlots;
 
-    playerInventory.OnQuickSlotLoaded += UpdateQuickSlotsAfterLoad;
+    userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
     selectedItem = null;
   }
@@ -66,7 +67,7 @@ public class QuickSlotListener : MonoBehaviour {
       SelectSlotByIndex(i);
     }
 
-    playerInventory.OnQuickSlotLoaded -= UpdateQuickSlotsAfterLoad;
+    userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
   }
 
   private void ChooseSlot(InputAction.CallbackContext obj) {
@@ -75,7 +76,7 @@ public class QuickSlotListener : MonoBehaviour {
     if (index == -1) {
       index = slots.Length - 1;
     }
-    
+
     SelectSlotByIndex(index);
   }
 
@@ -85,6 +86,7 @@ public class QuickSlotListener : MonoBehaviour {
     if (selectedSlot != slot) {
       return false;
     }
+
     ResetSlot();
     return true;
   }
@@ -103,9 +105,10 @@ public class QuickSlotListener : MonoBehaviour {
       if (selectedSlot != null && selectedSlot.Item.info != null) {
         ResetSlot();
       }
+
       return;
     }
-    
+
     if (UnselectSlot(slot)) {
       return;
     }

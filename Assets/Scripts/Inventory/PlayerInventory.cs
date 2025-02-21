@@ -3,7 +3,6 @@ using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
 using UnityEngine;
-using System;
 using Pool;
 
 namespace Inventory {
@@ -13,16 +12,16 @@ namespace Inventory {
 
     [SerializeField] private ItemObject defaultItem;
 
-    public Action OnQuickSlotLoaded;
+    // public Action OnQuickSlotLoaded;
 
     private PlayerInventoryWindow inventoryWindow;
 
     public void Start() {
       inventoryWindow = GameManager.instance.WindowsController.GetWindow<PlayerInventoryWindow>();
-      inventory.Load();
+      /*inventory.Load();
 
       quickSlots.Load();
-      OnQuickSlotLoaded?.Invoke();
+      OnQuickSlotLoaded?.Invoke();*/
     }
 
     public void Update() {
@@ -38,13 +37,13 @@ namespace Inventory {
       }
     }
 
-    public void OnApplicationQuit() {
+    /*public void OnApplicationQuit() {
       inventory.Save();
       quickSlots.Save();
 
       inventory.Clear();
       quickSlots.Clear();
-    }
+    }*/
 
     public void AddItemToInventory(ItemObject item, int count, Vector3 cellPos) {
       inventory.AddItem(new Item(item), count);

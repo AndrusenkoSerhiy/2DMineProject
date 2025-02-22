@@ -76,12 +76,12 @@ SpriteRenderer:
   m_SortingLayerID: 2145118225
   m_SortingLayer: 3
   m_SortingOrder: 1
-  m_Sprite: {fileID: 6937817954938267909, guid: c9979c7a27e4af94b9964514e0bc3891, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c9979c7a27e4af94b9964514e0bc3891, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2, y: 1.28}
+  m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -133,10 +133,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dd16bfd3ff0d17408d926e3d68b829c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _count: 30
-  _interactName: Pickup
+  count: 1
+  interactName: 
   item: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
-  IsPicked: 0
+  isPicked: 0
 --- !u!70 &8794410963485848602
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

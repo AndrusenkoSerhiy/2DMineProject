@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 2145118225
   m_SortingLayer: 3
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 79f6be81af46ddd4ba055012ce683954, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bc85394dfc053e842ae4d8b6449b9e19, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 9064497359182062437}
   - component: {fileID: 8794410963485848602}
   m_Layer: 3
-  m_Name: Iron
+  m_Name: Dirt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 1
   interactName: 
-  item: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
+  item: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
   isPicked: 0
 --- !u!70 &8794410963485848602
 CapsuleCollider2D:

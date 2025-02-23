@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: MushroomStew
+  m_EditorClassIdentifier: 
+  RecipeName: Mushroom Stew
+  Code: mushroomstew
+  RecipeType: 4
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: 7684243e236b60b4dac023d5e8cdd7f6, type: 2}
+    Amount: 2
+  Result: {fileID: 11400000, guid: 6313de26ee526784197208c35fc1ff4a, type: 2}
+  ResultAmount: 1
+  CraftingTime: 10
+  detailImg: {fileID: 0}

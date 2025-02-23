@@ -12,13 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c790fc7afd8b62a4bac7524e9e72ef23, type: 3}
   m_Name: Workbench
   m_EditorClassIdentifier: 
-  RecipeType: 0
+  RecipeType: 2
   Title: Workbench
   Description: Workbench desc
   OutputSlotsAmount: 5
   recipes:
-  - {fileID: 11400000, guid: c0485cbe71c0c3d4f8feb3310413b304, type: 2}
   - {fileID: 11400000, guid: d6f6dfbe05db8a84690f901a44d4b532, type: 2}
-  - {fileID: 11400000, guid: 836346a7ff0f36c47b91a037cafd2ab6, type: 2}
+  - {fileID: 11400000, guid: 56a787a1235cd534db7c96a9994b227c, type: 2}
+  - {fileID: 11400000, guid: 5eecbe3007d122b4e8bcca346df1e343, type: 2}
+  - {fileID: 11400000, guid: 1a92d056579142c4e87fac569368ea01, type: 2}
+  - {fileID: 11400000, guid: c0485cbe71c0c3d4f8feb3310413b304, type: 2}
   OutputInventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
-  CraftItems: []
+  CraftItemsTotal:
+    m_Keys: []
+    m_Values: 
+  CraftInputsItemsIds: []

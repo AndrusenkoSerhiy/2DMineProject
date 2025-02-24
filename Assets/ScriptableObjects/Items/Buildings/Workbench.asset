@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8bc6611c57a4211b23b3959ff98e207, type: 3}
+  m_Name: Workbench
+  m_EditorClassIdentifier: 
+  id: 11d92d6b-41cc-4f6c-b8c8-b77f8ae0af72
+  Type: 10
+  Name: Workbench
+  ParentType: 0
+  UiDisplay: {fileID: 21300000, guid: a9d7290621ed08a4a8137b00b48edad3, type: 3}
+  CharacterDisplay: {fileID: 0}
+  Stackable: 1
+  MaxStackSize: 1
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 7576532664203053056, guid: 5fe3e4a4c9e9f314aa1db32aef4d2542, type: 3}
+  Description: 
+  ResourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}

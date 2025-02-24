@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e4485bc801886e4aabde4373b47fa66, type: 3}
+  m_Name: Mace
+  m_EditorClassIdentifier: 
+  id: 7f0e7fa3-8fe7-4b7d-b832-debc1bd23c0d
+  Type: 2
+  Name: Mace
+  ParentType: 1
+  UiDisplay: {fileID: 21300000, guid: 233ee28691d870e4684e87f019d65e5a, type: 3}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 83a198d11423b0a42a382d3065171476, type: 3}
+  Stackable: 0
+  MaxStackSize: 1
+  SpawnPosition: {x: -0.566, y: 1.566, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 83a198d11423b0a42a382d3065171476, type: 3}
+  Description: pickaxe description
+  useSelfAnim: 0
+  attackLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  blockDamage: 6
+  entityDamage: 3
+  range: 3
+  timeBtwAttacks: 0.4
+  staminaUsage: 5
+  animationattackID: 0
+  colliderSize: {x: 0.5, y: 0.5}
+  maxTargets: 1

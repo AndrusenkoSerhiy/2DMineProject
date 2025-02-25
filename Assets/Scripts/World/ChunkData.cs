@@ -21,8 +21,8 @@ namespace World {
     private NativeArray<float> noiseMap;
     private NativeArray<float> smoothedNoiseMap;
 
-    public int width => GameManager.instance.GameConfig.ChunkSizeX;
-    public int height => GameManager.instance.GameConfig.ChunkSizeY;
+    public int width => GameManager.Instance.GameConfig.ChunkSizeX;
+    public int height => GameManager.Instance.GameConfig.ChunkSizeY;
 
     public ChunkData(Coords id, int x, int y) {
       this.id = id;
@@ -48,7 +48,7 @@ namespace World {
       var perlinJob = new PerlinNoiseParallelJob {
         width = width,
         height = height,
-        scale = GameManager.instance.GameConfig.PerlinScale,
+        scale = GameManager.Instance.GameConfig.PerlinScale,
         seed = randomSeed,
         noiseMap = noiseMap
       };
@@ -74,7 +74,7 @@ namespace World {
         for (var j = 0; j < height; j++) {
           var perlin = smoothedNoiseMap[i + j * width];
           _cellDatas[i, j] = new CellData(i, j, perlin, this);
-          var data = GameManager.instance.ChunkController.ResourceDataLibrary.GetData(perlin);
+          var data = GameManager.Instance.ChunkController.ResourceDataLibrary.GetData(perlin);
           if (data) {
             SetCellFill(i, j);
           }
@@ -92,8 +92,8 @@ namespace World {
 
     public int GetCellFill(int x, int y, float perlin) {
       if (x < 0 || x > width || y < 0 || y > height) return 0;
-      var targetRes = GameManager.instance.ChunkController.ResourceDataLibrary.GetData(perlin);
-      var curRes = GameManager.instance.ChunkController.ResourceDataLibrary.GetData(_cellDatas[x, y].perlin);
+      var targetRes = GameManager.Instance.ChunkController.ResourceDataLibrary.GetData(perlin);
+      var curRes = GameManager.Instance.ChunkController.ResourceDataLibrary.GetData(_cellDatas[x, y].perlin);
       var sameResource = targetRes != null && curRes != null && targetRes.SortingOrder() == curRes.SortingOrder();
       return sameResource ? _cellFillDatas[x, y] : 0;
     }
@@ -105,7 +105,7 @@ namespace World {
 
     public CellData ForceCellFill(ResourceData data, int x, int y) {
       if (!data) return null;
-      var dataObject = GameManager.instance.ChunkController.ResourceDataLibrary.GetDataObject(data);
+      var dataObject = GameManager.Instance.ChunkController.ResourceDataLibrary.GetDataObject(data);
       if(dataObject == null) return null;
       var cell = GetCellData(x, y);
       cell.perlin = (dataObject.PerlinRange.x + dataObject.PerlinRange.y) / 2;

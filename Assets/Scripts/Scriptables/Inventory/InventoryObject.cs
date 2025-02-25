@@ -309,7 +309,7 @@ namespace Scriptables.Inventory {
 
       //spawn higher in y pos because need TO DO pick up on action not the trigger enter
       var newObj = Instantiate(item.info.spawnPrefab,
-        GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
+        GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = amount;
     }

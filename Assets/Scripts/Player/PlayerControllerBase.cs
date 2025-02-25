@@ -79,7 +79,7 @@ namespace Player {
       isFlipped = false;
       rotationCoef = 1f;
       AnimationEventManager.onFootstep += SpawnFootstepEffect;
-      animParam = GameManager.instance.AnimatorParameters;
+      animParam = GameManager.Instance.AnimatorParameters;
     }
 
 

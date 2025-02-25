@@ -17,7 +17,7 @@ namespace Inventory {
     private PlayerInventoryWindow inventoryWindow;
 
     public void Start() {
-      inventoryWindow = GameManager.instance.WindowsController.GetWindow<PlayerInventoryWindow>();
+      inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
       /*inventory.Load();
 
       quickSlots.Load();

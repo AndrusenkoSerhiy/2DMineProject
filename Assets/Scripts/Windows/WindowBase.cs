@@ -15,7 +15,7 @@ namespace Windows {
     // }
 
     private PlayerControllerBase GetCurrPlayerController() {
-      return GameManager.instance.CurrPlayerController;
+      return GameManager.Instance.CurrPlayerController;
     }
     
     public virtual void Show() {

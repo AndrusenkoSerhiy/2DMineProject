@@ -23,7 +23,7 @@ namespace DefaultNamespace {
       staminaBar.SetMaxStamina(maxStamina);
       UserInput.instance.controls.GamePlay.Sprint.performed += SprintPerformed;
       UserInput.instance.controls.GamePlay.Sprint.canceled += SprintCanceled;
-      playerController = GameManager.instance.PlayerController;
+      playerController = GameManager.Instance.PlayerController;
     }
     
     private void SprintPerformed(InputAction.CallbackContext context) {

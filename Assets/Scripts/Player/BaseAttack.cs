@@ -102,7 +102,7 @@ namespace Player {
     }
     
     private Vector3 GetMousePosition() {
-      var mousePos = GameManager.instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+      var mousePos = GameManager.Instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
       mousePos.z = 0f;
       return mousePos;
     }
@@ -122,7 +122,7 @@ namespace Player {
     private void SetTargetsFromHighlight() {
       foreach (var elem in objectHighlighter.Highlights) {
         var pos = CoordsTransformer.WorldToGrid(elem.transform.position);
-        var cell = GameManager.instance.ChunkController.GetCell(pos.X, pos.Y);
+        var cell = GameManager.Instance.ChunkController.GetCell(pos.X, pos.Y);
         if (cell != null) targets.Add(cell);
       }
     }

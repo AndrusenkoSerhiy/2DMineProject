@@ -61,7 +61,7 @@ namespace Craft {
         return;
       }
 
-      playerInventory = GameManager.instance.PlayerInventory;
+      playerInventory = GameManager.Instance.PlayerInventory;
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
       detail = ServiceLocator.For(this).Get<IRecipeDetail>();
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();

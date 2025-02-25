@@ -15,7 +15,7 @@ namespace Interaction
     private IInteractable interactable;
     private void Update() {
       //id any window is open don't allow to find items and show interaction message
-      if (GameManager.instance.WindowsController.IsAnyWindowOpen) {
+      if (GameManager.Instance.WindowsController.IsAnyWindowOpen) {
         interactionPromtUI.ShowPrompt(false);
         return; 
       }

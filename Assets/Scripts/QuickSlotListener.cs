@@ -14,7 +14,7 @@ public class QuickSlotListener : MonoBehaviour {
   private PlayerInventory playerInventory;
 
   private void Awake() {
-    playerInventory = GameManager.instance.PlayerInventory;
+    playerInventory = GameManager.Instance.PlayerInventory;
     quickSlots = playerInventory.quickSlots;
     slots = quickSlots.GetSlots;
 
@@ -92,7 +92,7 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private void ResetSlot() {
-    GameManager.instance.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
+    GameManager.Instance.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
     selectedSlot.Unselect();
     selectedItem?.info?.Use(selectedSlot);
     selectedSlot = null;
@@ -114,7 +114,7 @@ public class QuickSlotListener : MonoBehaviour {
     }
 
     if (selectedSlot != null && selectedSlot.Item.info != null) {
-      GameManager.instance.PlayerEquipment.OnRemoveItem(selectedSlot);
+      GameManager.Instance.PlayerEquipment.OnRemoveItem(selectedSlot);
       selectedSlot.Unselect();
       selectedItem?.info?.Use(selectedSlot);
     }
@@ -122,7 +122,7 @@ public class QuickSlotListener : MonoBehaviour {
     selectedSlot = slot;
     selectedItem = slot.Item;
     selectedSlot.Select();
-    GameManager.instance.PlayerEquipment.OnEquipItem(selectedSlot);
+    GameManager.Instance.PlayerEquipment.OnEquipItem(selectedSlot);
     selectedSlot.Item.info.Use(selectedSlot);
   }
 }

@@ -58,7 +58,7 @@ namespace World {
         return;
       }
 
-      GameManager.instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage, transform.position);
+      GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage, transform.position);
     }
 
     public float GetHealth() {
@@ -72,10 +72,10 @@ namespace World {
     public void DestroyObject() {
       var pos = transform.position;
       ResetShake();
-      GameManager.instance.ChunkController.TriggerCellDestroyed(this);
-      GameManager.instance.CellObjectsPool.ReturnObject(this);
+      GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
+      GameManager.Instance.CellObjectsPool.ReturnObject(this);
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
-      GameManager.instance.TaskManager.DelayAsync(
+      GameManager.Instance.TaskManager.DelayAsync(
         () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
       highlight.ClearHighlight();
     }

@@ -53,9 +53,9 @@ namespace Tools {
     }
 
     private void LookAt() {
-      var mousePosition = GameManager.instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+      var mousePosition = GameManager.Instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
       
-      var direction = GameManager.instance.PlayerController.transform.localScale.x * (mousePosition - transform.position);
+      var direction = GameManager.Instance.PlayerController.transform.localScale.x * (mousePosition - transform.position);
       
       float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 

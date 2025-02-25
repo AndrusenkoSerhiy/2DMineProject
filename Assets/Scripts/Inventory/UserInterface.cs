@@ -38,10 +38,10 @@ namespace Inventory {
     public bool PreventMergeIn => preventMergeIn;
 
     public void Awake() {
-      splitItem = GameManager.instance.SplitItem;
-      tempDragItemObject = GameManager.instance.TempDragItem;
+      splitItem = GameManager.Instance.SplitItem;
+      tempDragItemObject = GameManager.Instance.TempDragItem;
       tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
-      tempDragParent = GameManager.instance.Canvas.transform;
+      tempDragParent = GameManager.Instance.Canvas.transform;
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
 
       Load();

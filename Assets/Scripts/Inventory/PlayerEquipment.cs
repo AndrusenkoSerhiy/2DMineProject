@@ -32,7 +32,7 @@ namespace Inventory {
     }
 
     private void Start() {
-      quickSlots = GameManager.instance.PlayerInventory.quickSlots;
+      quickSlots = GameManager.Instance.PlayerInventory.quickSlots;
       /*for (int i = 0; i < quickSlots.GetSlots.Length; i++) {
         if (quickSlots.GetSlots[i].IsSelected) {
           OnEquipItem(quickSlots.GetSlots[i]);

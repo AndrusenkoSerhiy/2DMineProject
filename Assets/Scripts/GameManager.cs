@@ -6,10 +6,9 @@ using Scriptables.Items;
 using UnityEngine;
 using World;
 using Inventory;
-using UnityServiceLocator;
+using Utility;
 
-public class GameManager : MonoBehaviour {
-  private static GameManager _instance;
+public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private TaskManager taskManagerRef;
   [SerializeField] private GameConfig gameConfigRef;
   [SerializeField] private ChunkController chunkController;
@@ -31,20 +30,6 @@ public class GameManager : MonoBehaviour {
   [SerializeField] private SplitItem splitItem;
   [SerializeField] private GameObject tempDragItem;
 
-  public static GameManager instance {
-    get {
-      if (_instance == null) {
-        _instance = FindAnyObjectByType<GameManager>();
-
-        if (_instance == null) {
-          Debug.LogError("GameManager instance not found in the scene.");
-        }
-      }
-
-      return _instance;
-    }
-  }
-
   public ChunkController ChunkController => chunkController;
   public UISettings UISettings => uiSettings;
   public SplitItem SplitItem => splitItem;
@@ -55,10 +40,7 @@ public class GameManager : MonoBehaviour {
 
   public TaskManager TaskManager => taskManagerRef;
 
-  public PlayerInventory PlayerInventory {
-    set { playerInventory = value; }
-    get { return playerInventory; }
-  }
+  public PlayerInventory PlayerInventory => playerInventory;
 
   public Camera MainCamera => mainCamera;
   public Canvas Canvas => canvas;
@@ -88,13 +70,7 @@ public class GameManager : MonoBehaviour {
   public AnimatorParameters AnimatorParameters => animatorParameters;
 
   private void Awake() {
-    if (_instance != null && _instance != this) {
-      Destroy(gameObject);
-    }
-    else {
-      _instance = this;
-      //DontDestroyOnLoad(this.gameObject);
-    }
+    base.Awake();
 
     DOTween.Init();
     UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;

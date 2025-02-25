@@ -30,7 +30,7 @@ namespace Inventory {
     public InventorySlot Slot => slot;
 
     public void Awake() {
-      var uiSettings = GameManager.instance.UISettings;
+      var uiSettings = GameManager.Instance.UISettings;
       buttonsActiveColor = uiSettings.buttonsActiveColor;
       buttonsDisabledColor = uiSettings.buttonsDisabledColor;
     }

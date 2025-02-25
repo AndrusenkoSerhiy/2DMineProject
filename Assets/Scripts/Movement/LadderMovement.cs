@@ -17,7 +17,7 @@ namespace Movement {
     public bool IsOnLadder => isOnLadder;
 
     private void Start() {
-      playerController = GameManager.instance.PlayerController;
+      playerController = GameManager.Instance.PlayerController;
       playerController.GroundedChanged += ChangeGround;
     }
     

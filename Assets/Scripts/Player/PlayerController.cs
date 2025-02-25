@@ -9,8 +9,8 @@ namespace Player {
 
     protected override void Awake() {
       base.Awake();
-      GameManager.instance.PlayerController = this;
-      GameManager.instance.CurrPlayerController = this;
+      GameManager.Instance.PlayerController = this;
+      GameManager.Instance.CurrPlayerController = this;
     }
     
     public override void SetLockHighlight(bool state) {

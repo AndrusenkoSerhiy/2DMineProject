@@ -33,14 +33,14 @@ namespace World {
 
     [ContextMenu("Create TextureMap In Assets(PLAYMODE ONLY)")]
     private void GenerateTexture() {
-      var width = GameManager.instance.GameConfig.ChunkSizeX;
-      var height = GameManager.instance.GameConfig.ChunkSizeY;
+      var width = GameManager.Instance.GameConfig.ChunkSizeX;
+      var height = GameManager.Instance.GameConfig.ChunkSizeY;
       var texture = new Texture2D(width, height, TextureFormat.RGB24, false);
       for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
           // Check the Perlin noise value
           var color =
-            GameManager.instance.ChunkController.ResourceDataLibrary.GetColor(chunkData.GetCellData(i, j).perlin);
+            GameManager.Instance.ChunkController.ResourceDataLibrary.GetColor(chunkData.GetCellData(i, j).perlin);
 
           // Set the pixel color at (j, i)
           texture.SetPixel(width - 1 - i, height - 1 - j, color);
@@ -71,11 +71,11 @@ namespace World {
 
     async Task SpawnNearbyCells() {
       var _proxyCoords = new Coords(-1, -1);
-      var playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords();
-      var cols = GameManager.instance.GameConfig.ChunkSizeX;
-      var rows = GameManager.instance.GameConfig.ChunkSizeY;
-      var visionOffsetX = GameManager.instance.GameConfig.PlayerAreaWidth / 2;
-      var visionOffsetY = GameManager.instance.GameConfig.PlayerAreaHeight / 2;
+      var playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var cols = GameManager.Instance.GameConfig.ChunkSizeX;
+      var rows = GameManager.Instance.GameConfig.ChunkSizeY;
+      var visionOffsetX = GameManager.Instance.GameConfig.PlayerAreaWidth / 2;
+      var visionOffsetY = GameManager.Instance.GameConfig.PlayerAreaHeight / 2;
       var min_x = Mathf.Clamp(playerCoords.X - visionOffsetX, 0, cols - 1);
       var max_x = Mathf.Clamp(playerCoords.X + visionOffsetX, 0, cols - 1);
       var min_y = Mathf.Clamp(playerCoords.Y - visionOffsetY, 0, rows - 1);
@@ -133,9 +133,9 @@ namespace World {
 
     public void CheckArea() {
       if (!isInited) return;
-      var playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords();
-      var visionOffsetX = GameManager.instance.GameConfig.PlayerAreaWidth / 2;
-      var visionOffsetY = GameManager.instance.GameConfig.PlayerAreaHeight / 2;
+      var playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var visionOffsetX = GameManager.Instance.GameConfig.PlayerAreaWidth / 2;
+      var visionOffsetY = GameManager.Instance.GameConfig.PlayerAreaHeight / 2;
       foreach (var coord in _activeCellObjects.Keys) {
         if (Mathf.Abs(playerCoords.X - coord.X) > visionOffsetX ||
             Mathf.Abs(playerCoords.Y - coord.Y) > visionOffsetY) {
@@ -227,7 +227,7 @@ namespace World {
 
 
     private CellObjectsPool getCellObjectsPool() {
-      return GameManager.instance.CellObjectsPool;
+      return GameManager.Instance.CellObjectsPool;
     }
   }
 }

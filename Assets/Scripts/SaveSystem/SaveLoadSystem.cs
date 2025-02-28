@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Inventory;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Utility;
@@ -12,6 +11,7 @@ namespace SaveSystem {
     public string FileName;
     public string Name;
     public SerializedDictionary<string, InventoryData> Inventories;
+    public SerializedDictionary<string, WorkstationsData> Workstations;
   }
 
   public interface ISaveable {
@@ -27,6 +27,10 @@ namespace SaveSystem {
   public class SaveLoadSystem : PersistentSingleton<SaveLoadSystem> {
     [SerializeField] public GameData gameData;
     [SerializeField] private int maxSaveFiles = 3;
+    [Tooltip("Time in seconds")]
+    [SerializeField] private float autosaveInterval = 300f;
+
+    private float autosaveTimer = 0f;
     private IDataService dataService;
 
     public int MaxSaveFiles => maxSaveFiles;
@@ -42,6 +46,23 @@ namespace SaveSystem {
       SaveAllEntities();
       // Debug.Log("OnApplicationQuit SaveGame");
       SaveGame();
+    }
+
+    private void Update() {
+      autosaveTimer += Time.deltaTime;
+      if (autosaveTimer >= autosaveInterval) {
+        Autosave();
+        autosaveTimer = 0f;
+      }
+    }
+
+    private void Autosave() {
+      //Todo show message
+      //Todo Async????
+      Debug.Log("Autosaving game...");
+      SaveAllEntities();
+      SaveGame();
+      Debug.Log("Game Saved");
     }
 
     private void SaveAllEntities() {
@@ -67,7 +88,8 @@ namespace SaveSystem {
         // FileName = $"Game_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}",
         FileName = "Game",
         Name = $"Game {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
-        Inventories = new SerializedDictionary<string, InventoryData>()
+        Inventories = new SerializedDictionary<string, InventoryData>(),
+        Workstations = new SerializedDictionary<string, WorkstationsData>()
       };
     }
 

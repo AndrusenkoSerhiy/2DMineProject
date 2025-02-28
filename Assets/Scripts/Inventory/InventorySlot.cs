@@ -106,7 +106,7 @@ namespace Inventory {
       itemValue ??= Item;
       var maxStack = itemValue.info ? itemValue.info.MaxStackSize : 0;
       var newAmount = Mathf.Min(amountValue, maxStack);
-      var overFlow = Mathf.Max(0, newAmount - maxStack);
+      var overFlow = Mathf.Max(0, amountValue - maxStack);
       isSelected = formSlot?.isSelected ?? isSelected;
 
       Item = itemValue;

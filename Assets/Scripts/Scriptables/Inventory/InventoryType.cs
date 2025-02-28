@@ -4,6 +4,11 @@
     Inventory,
     Equipment,
     QuickSlots,
-    WorkbenchOutput
+    HandCraftOutput,
+    WorkbenchOutput,
+    StoneCutterOutput,
+    FoodStationOutput,
+    ChemicalStationOutput,
+    ForgeOutput,
   }
 }

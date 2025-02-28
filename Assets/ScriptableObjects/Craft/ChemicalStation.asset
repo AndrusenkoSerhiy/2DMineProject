@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c790fc7afd8b62a4bac7524e9e72ef23, type: 3}
   m_Name: ChemicalStation
   m_EditorClassIdentifier: 
+  id: d546f39c-5fa9-410e-af9a-59db71f515f3
   RecipeType: 5
   Title: Chemical Station
   Description: Workbench desc
   OutputSlotsAmount: 5
   recipes:
   - {fileID: 11400000, guid: 5b154c60482907047b03bf8881db66a6, type: 2}
-  OutputInventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
-  CraftItemsTotal:
-    m_Keys: []
-    m_Values: 
-  CraftInputsItemsIds: []
+  OutputInventory: {fileID: 11400000, guid: ddbab7ed55347bd42b77e666cd957aea, type: 2}
+  PlayEffectsWhenOpened: 0
+  PlayEffectsWhenClosed: 1
+  CraftStartTimeString: 
+  SecondsLeft: 0
+  CraftingTasks: []
+  Inputs: []

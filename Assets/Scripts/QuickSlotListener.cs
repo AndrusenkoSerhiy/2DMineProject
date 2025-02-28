@@ -1,11 +1,12 @@
 using Inventory;
+using SaveSystem;
 using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class QuickSlotListener : MonoBehaviour {
+public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   [SerializeField] private InventorySlot selectedSlot;
   [SerializeField] private UserInterface userInterface;
   private InventoryObject quickSlots;
@@ -17,6 +18,8 @@ public class QuickSlotListener : MonoBehaviour {
     playerInventory = GameManager.Instance.PlayerInventory;
     quickSlots = playerInventory.quickSlots;
     slots = quickSlots.GetSlots;
+    
+    Load();
 
     userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
@@ -125,4 +128,27 @@ public class QuickSlotListener : MonoBehaviour {
     GameManager.Instance.PlayerEquipment.OnEquipItem(selectedSlot);
     selectedSlot.Item.info.Use(selectedSlot);
   }
+
+  #region Save/Load
+
+  public string Id => quickSlots.type.ToString();
+
+  public void Load() {
+    if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(Id, out var data)) {
+      return;
+    }
+
+    var isNew = data.Slots == null || data.Slots.Length == 0;
+    if (isNew) {
+      return;
+    }
+
+    quickSlots.Load(data.Slots);
+  }
+
+  public void Save() {
+    SaveLoadSystem.Instance.gameData.Inventories[Id] = new InventoryData { Id = Id, Slots = quickSlots.GetSlots };
+  }
+
+  #endregion
 }

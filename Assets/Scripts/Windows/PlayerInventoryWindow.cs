@@ -1,4 +1,4 @@
 namespace Windows {
-  public class PlayerInventoryWindow : InventoryWindowBase {
+  public class PlayerInventoryWindow : WindowBase {
   }
 }

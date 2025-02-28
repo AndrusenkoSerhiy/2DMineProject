@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c790fc7afd8b62a4bac7524e9e72ef23, type: 3}
   m_Name: Stonecutter
   m_EditorClassIdentifier: 
+  id: 949f1b4f-bee4-4ccd-b91c-f341a3fc752b
   RecipeType: 1
   Title: Stonecutter
   Description: Workbench desc
@@ -23,8 +24,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1d00b046ebb8da841a198c4ea2a20369, type: 2}
   - {fileID: 11400000, guid: 836346a7ff0f36c47b91a037cafd2ab6, type: 2}
   - {fileID: 11400000, guid: 0b01b94f72e50ee438b161d854d42eb2, type: 2}
-  OutputInventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
-  CraftItemsTotal:
-    m_Keys: []
-    m_Values: 
-  CraftInputsItemsIds: []
+  OutputInventory: {fileID: 11400000, guid: f87c58a7253a1f94d81dad02483ba97a, type: 2}
+  PlayEffectsWhenOpened: 0
+  PlayEffectsWhenClosed: 1
+  CraftStartTimeString: 
+  SecondsLeft: 0
+  CraftingTasks: []
+  Inputs: []

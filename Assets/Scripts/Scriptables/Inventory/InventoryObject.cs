@@ -19,7 +19,7 @@ namespace Scriptables.Inventory {
 
   [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
   public class InventoryObject : ScriptableObject {
-    public string savePath;
+    // public string savePath;
     public ItemDatabaseObject database;
     public int slotsCount = 24;
 

@@ -4,9 +4,10 @@ using Scriptables.Items;
 using Settings;
 using UnityEngine;
 using Pool;
+using SaveSystem;
 
 namespace Inventory {
-  public class PlayerInventory : MonoBehaviour, IPlayerInventory {
+  public class PlayerInventory : MonoBehaviour, IPlayerInventory, ISaveLoad {
     public InventoryObject inventory;
     public InventoryObject quickSlots;
 
@@ -16,18 +17,16 @@ namespace Inventory {
 
     private PlayerInventoryWindow inventoryWindow;
 
+    public void Awake() {
+      Load();
+    }
+
     public void Start() {
       inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
-      /*inventory.Load();
-
-      quickSlots.Load();
-      OnQuickSlotLoaded?.Invoke();*/
     }
 
     public void Update() {
       if (UserInput.instance.controls.UI.Inventory.triggered) {
-        // InitInventoryWindow();
-        // UserInput.instance.EnableUIControls(!inventoryWindow.IsShow);
         if (inventoryWindow.IsShow) {
           inventoryWindow.Hide();
         }
@@ -36,14 +35,6 @@ namespace Inventory {
         }
       }
     }
-
-    /*public void OnApplicationQuit() {
-      inventory.Save();
-      quickSlots.Save();
-
-      inventory.Clear();
-      quickSlots.Clear();
-    }*/
 
     public void AddItemToInventory(ItemObject item, int count, Vector3 cellPos) {
       inventory.AddItem(new Item(item), count);
@@ -68,5 +59,28 @@ namespace Inventory {
         ObjectPooler.Instance.SpawnFlyEffect(list[i].item, cellPos);
       }
     }
+
+    #region Save/Load
+
+    public string Id => inventory.type.ToString();
+
+    public void Load() {
+      if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(Id, out var data)) {
+        return;
+      }
+
+      var isNew = data.Slots == null || data.Slots.Length == 0;
+      if (isNew) {
+        return;
+      }
+
+      inventory.Load(data.Slots);
+    }
+
+    public void Save() {
+      SaveLoadSystem.Instance.gameData.Inventories[Id] = new InventoryData { Id = Id, Slots = inventory.GetSlots };
+    }
+
+    #endregion
   }
 }

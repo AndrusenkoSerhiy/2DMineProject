@@ -35,13 +35,10 @@ namespace Craft {
       var uiSettings = GameManager.Instance.UISettings;
       buttonsActiveColor = uiSettings.buttonsActiveColor;
       buttonsDisabledColor = uiSettings.buttonsDisabledColor;
-      
+
       ServiceLocator.For(this).Register<ICraftActions>(this);
 
       station = ServiceLocator.For(this).Get<Workstation>();
-      station.CraftItemsTotal.Clear();
-      station.CraftInputsItemsIds.Clear();
-
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
     }
 
@@ -179,7 +176,7 @@ namespace Craft {
 
     private int CalculateMaxCountByCurrentCraftingAndOutput() {
       var freeOutputSlotsCount = station.OutputInventory.GetFreeSlotsCount();
-      var freeInputSlotsCount = station.OutputSlotsAmount - station.CraftInputsItemsIds.Count;
+      var freeInputSlotsCount = station.OutputSlotsAmount - station.Inputs.Count;
 
       if (freeInputSlotsCount <= 0) {
         return 0;
@@ -190,20 +187,23 @@ namespace Craft {
 
       var maxStackSize = recipe.Result.MaxStackSize;
       var outputSlotsCount = station.OutputInventory.CalculateTotalCounts();
-      var inputItemsIds = station.CraftItemsTotal.Keys.Select(x => x.Id).ToList();
+      // var inputItemsIds = station.CraftItemsTotal.Keys.Select(x => x.Id).ToList();
+      var inputItemsIds = station.Inputs.Select(x => x.Recipe.Result.Id).ToList();
 
       // Count used slots and check crafting progress
-      foreach (var (item, count) in station.CraftItemsTotal) {
-        var outputCount = outputSlotsCount.ContainsKey(item.Id) ? outputSlotsCount[item.Id] : 0;
-        var inputOutputCount = count + outputCount;
+      foreach (var input in station.Inputs) {
+        var id = input.Recipe.Result.Id;
+        var inputMaxStackSize = input.Recipe.Result.MaxStackSize;
+        var outputCount = outputSlotsCount.ContainsKey(id) ? outputSlotsCount[id] : 0;
+        var inputOutputCount = input.Count + outputCount;
 
-        usedSlotsByCrafting += (inputOutputCount + item.MaxStackSize - 1) / item.MaxStackSize;
+        usedSlotsByCrafting += (inputOutputCount + inputMaxStackSize - 1) / inputMaxStackSize;
 
         if (outputCount > 0) {
-          usedSlotsByCrafting -= (outputCount + item.MaxStackSize - 1) / item.MaxStackSize;
+          usedSlotsByCrafting -= (outputCount + inputMaxStackSize - 1) / inputMaxStackSize;
         }
 
-        if (item.Id == recipe.Result.Id) {
+        if (id == recipe.Result.Id) {
           var left = inputOutputCount % maxStackSize;
           leftCount += (left == 0) ? 0 : maxStackSize - (left);
         }

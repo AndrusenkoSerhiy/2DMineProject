@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c790fc7afd8b62a4bac7524e9e72ef23, type: 3}
   m_Name: FoodStation
   m_EditorClassIdentifier: 
+  id: f67712f8-d9db-4a13-8bae-6ce49e301e15
   RecipeType: 4
   Title: Food Station
   Description: Workbench desc
@@ -20,8 +21,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1242243c9034f704d990de345922cfe3, type: 2}
   - {fileID: 11400000, guid: 127925887c3484f4f843ce0e684f12f1, type: 2}
   - {fileID: 11400000, guid: c1e9e4ea0655b864db598b29fb7895f0, type: 2}
-  OutputInventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
-  CraftItemsTotal:
-    m_Keys: []
-    m_Values: 
-  CraftInputsItemsIds: []
+  OutputInventory: {fileID: 11400000, guid: bb22dc2148cb4be4e80c6151f7b96f6d, type: 2}
+  PlayEffectsWhenOpened: 0
+  PlayEffectsWhenClosed: 1
+  CraftStartTimeString: 
+  SecondsLeft: 0
+  CraftingTasks: []
+  Inputs: []

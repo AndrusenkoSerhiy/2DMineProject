@@ -124,7 +124,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9194511913274475197}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 14.44, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -228,3 +228,4 @@ MonoBehaviour:
   interactText: Craft
   overlayPrefab: {fileID: 0}
   interfacePrefab: {fileID: 1208913450436918581, guid: abbc60578dfa33f41b51b3768e65e5e7, type: 3}
+  station: {fileID: 11400000, guid: 8c59846aeb63aa741b392d468811fa88, type: 2}

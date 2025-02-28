@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Inventory;
 using Scriptables.Craft;
@@ -45,7 +44,10 @@ namespace Craft {
       craftActions.ClearComponent();
       recipesManager.ClearComponent();
       totalAmount.ClearComponent();
+      inputItems.ClearComponent();
+
       RemoveEvents();
+      station.UpdateCraftingTasks();
     }
 
     private void Init() {
@@ -54,6 +56,9 @@ namespace Craft {
       totalAmount.InitComponent();
       recipesManager.InitComponent();
       craftActions.InitComponent();
+      inputItems.InitComponent();
+
+      Load();
     }
 
     private void InitReferences() {
@@ -67,6 +72,27 @@ namespace Craft {
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
       recipesManager = ServiceLocator.For(this).Get<IRecipesManager>();
+    }
+
+    private void Load() {
+      ProcessCraftedInputs();
+    }
+
+    private void ProcessCraftedInputs() {
+      station.ProcessCraftedInputs();
+
+      var inputs = station.Inputs;
+      if (inputs.Count == 0) {
+        return;
+      }
+
+      foreach (var input in inputs) {
+        if (inputItems.InputInProgress == 0) {
+          station.SecondsLeft = station.CalculateTimeLeft(input);
+        }
+
+        inputItems.SetRecipe(input.Count, input.Recipe);
+      }
     }
 
     private void AddEvents() {
@@ -105,13 +131,11 @@ namespace Craft {
       //remove resources from inventory
       foreach (var item in recipe.RequiredMaterials) {
         var totalCount = count * item.Amount;
-        //playerInventory.inventory.RemoveItem(item.Material.Id, totalCount);
         totalAmount.RemoveFromInventoriesPool(item.Material.Id, totalCount);
       }
 
       inputItems.SetRecipe(count, recipe);
-      station.AddItemToCraftTotal(recipe.Result, count);
-      station.AddToCraftInputsItemsIds(recipe.Result.Id);
+      station.AddItemToInputs(recipe, count);
 
       craftActions.UpdateAndPrintInputCount();
     }
@@ -146,48 +170,49 @@ namespace Craft {
 
     private void AddInputEvents() {
       foreach (var input in inputItems.Items) {
-        input.OnItemCrafted += AddCraftedItemToOutput;
-        input.OnInputAllCrafted += OnInputAllCraftedHandler;
         input.OnCanceled += OnInputCanceledHandler;
       }
+
+      var craftInput = inputItems.CraftInput;
+      craftInput.OnItemCrafted += AddCraftedItemToOutput;
+      craftInput.OnInputAllCrafted += OnInputAllCraftedHandler;
     }
 
     private void RemoveInputEvents() {
       foreach (var input in inputItems.Items) {
-        input.OnInputAllCrafted -= OnInputAllCraftedHandler;
-        input.OnItemCrafted -= AddCraftedItemToOutput;
         input.OnCanceled -= OnInputCanceledHandler;
       }
+
+      var craftInput = inputItems.CraftInput;
+      craftInput.OnInputAllCrafted -= OnInputAllCraftedHandler;
+      craftInput.OnItemCrafted -= AddCraftedItemToOutput;
     }
 
-    private void AddCraftedItemToOutput(Recipe recipe, int count) {
-      station.RemoveCountFromCraftTotal(recipe.Result, count);
+    private void AddCraftedItemToOutput(ItemCraftedEventData data) {
+      station.RemoveInputCountFromInputs(data.Count);
 
       var outputInventory = station.OutputInventory;
-      var item = new Item(recipe.Result);
+      var item = new Item(data.Recipe.Result);
 
-      outputInventory.AddItem(item, count);
+      outputInventory.AddItem(item, data.Count);
     }
 
     private void OnInputAllCraftedHandler() {
-      station.RemoveFromCraftInputsItemsIds();
       inputItems.UpdateWaitInputs();
       craftActions.UpdateAndPrintInputCount();
     }
 
-    private void OnInputCanceledHandler(InputItem inputItem) {
-      station.RemoveCountFromCraftTotal(inputItem.Recipe.Result, inputItem.CountLeft);
-      station.RemoveFromCraftInputsItemsIds(inputItem.Position);
-
-      inputItems.UpdateTimersStartTimes(inputItem);
-      inputItems.UpdateWaitInputs(inputItem.Position);
+    private void OnInputCanceledHandler(ItemCanceledEventData data) {
+      station.RemoveInputFromInputs(data.Position);
 
       //remove resources from inventory
-      foreach (var item in inputItem.Recipe.RequiredMaterials) {
-        var totalCount = inputItem.CountLeft * item.Amount;
+      foreach (var item in data.Recipe.RequiredMaterials) {
+        var totalCount = data.CountLeft * item.Amount;
         var addItem = new Item(item.Material);
         playerInventory.inventory.AddItem(addItem, totalCount);
       }
+
+      inputItems.UpdateWaitInputs(data.Position);
     }
 
     private void AddOutputUpdateEvents() {

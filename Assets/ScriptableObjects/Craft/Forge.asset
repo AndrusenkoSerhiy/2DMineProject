@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c790fc7afd8b62a4bac7524e9e72ef23, type: 3}
   m_Name: Forge
   m_EditorClassIdentifier: 
+  id: 7ad89b17-0f52-4686-85d3-f35cabc8ad3d
   RecipeType: 3
   Title: Forge
   Description: Workbench desc
   OutputSlotsAmount: 5
   recipes:
   - {fileID: 11400000, guid: 0b2da3a7f7f714942853f3a6f27f2027, type: 2}
-  OutputInventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
-  CraftItemsTotal:
-    m_Keys: []
-    m_Values: 
-  CraftInputsItemsIds: []
+  OutputInventory: {fileID: 11400000, guid: aabd5fa6752b5304799d43821d5b2d40, type: 2}
+  PlayEffectsWhenOpened: 0
+  PlayEffectsWhenClosed: 1
+  CraftStartTimeString: 
+  SecondsLeft: 0
+  CraftingTasks: []
+  Inputs: []

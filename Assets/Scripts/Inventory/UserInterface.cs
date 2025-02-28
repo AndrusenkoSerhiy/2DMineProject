@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SaveSystem;
 using Scriptables.Inventory;
 using Settings;
 using UnityEngine;
@@ -10,7 +9,7 @@ using UnityEngine.UI;
 
 namespace Inventory {
   [RequireComponent(typeof(EventTrigger))]
-  public class UserInterface : MonoBehaviour, IInventoryUI, ISaveLoad {
+  public class UserInterface : MonoBehaviour, IInventoryUI {
     [SerializeField] private InventoryObject inventory;
     [SerializeField] private Color disabledSlotColor;
 
@@ -43,8 +42,7 @@ namespace Inventory {
       tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
       tempDragParent = GameManager.Instance.Canvas.transform;
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
-
-      Load();
+      
       CheckSlotsUpdate();
       CreateSlots();
     }
@@ -349,30 +347,5 @@ namespace Inventory {
       Debug.Log("SwapSlots");
       return true;
     }
-
-    #region Bind data for save/load
-
-    public string Id => inventory.type.ToString();
-
-    public void Load() {
-      // Debug.Log($"Load Inventory.type {Inventory.type}");
-      if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(Id, out var data)) {
-        return;
-      }
-
-      var isNew = data.Slots == null || data.Slots.Length == 0;
-      if (isNew) {
-        return;
-      }
-
-      Inventory.Load(data.Slots);
-    }
-
-    public void Save() {
-      // Debug.Log($"Save Inventory.type {Inventory.type}");
-      SaveLoadSystem.Instance.gameData.Inventories[Id] = new InventoryData { Id = Id, Slots = Inventory.GetSlots };
-    }
-
-    #endregion
   }
 }

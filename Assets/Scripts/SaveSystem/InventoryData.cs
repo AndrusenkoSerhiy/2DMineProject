@@ -1,8 +1,8 @@
 ﻿using System;
-using SaveSystem;
+using Inventory;
 using UnityEngine;
 
-namespace Inventory {
+namespace SaveSystem {
   [Serializable]
   public class InventoryData : ISaveable {
     [field: SerializeField] public string Id { get; set; }

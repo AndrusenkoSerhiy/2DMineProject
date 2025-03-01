@@ -10,9 +10,10 @@ namespace Craft {
     [SerializeField] private string interactText;
     [SerializeField] private GameObject overlayPrefab;
     [SerializeField] private GameObject interfacePrefab;
-    [SerializeField] private Workstation station;
+    [SerializeField] protected Workstation station;
 
     private CraftWindow craftWindow;
+    private CraftManager craftManager;
     public string InteractionPrompt => interactText;
 
     private bool saving;
@@ -52,7 +53,11 @@ namespace Craft {
       }
 
       var craftWindowObj = Instantiate(interfacePrefab, overlayPrefab.transform);
+      craftManager = craftWindowObj.GetComponent<CraftManager>();
+      craftManager.Setup(station);
+
       craftWindowObj.transform.SetSiblingIndex(0);
+
       craftWindow = craftWindowObj.GetComponent<CraftWindow>();
       GameManager.Instance.WindowsController.AddWindow(craftWindow);
     }
@@ -76,6 +81,7 @@ namespace Craft {
     public string Id => station.Id;
 
     public void Load() {
+      LoadFuelInventory();
       LoadInputs();
       LoadOutputInventory();
     }
@@ -85,30 +91,46 @@ namespace Craft {
 
       station.ProcessCraftedInputs();
       SaveOutputInventory();
+      SaveFuelInventory();
       SaveWorkstationInputs();
       saving = false;
     }
 
-    private void SaveOutputInventory() {
-      var saveId = station.OutputInventory.type.ToString();
-      SaveLoadSystem.Instance.gameData.Inventories[saveId] = new InventoryData {
-        Id = saveId,
-        Slots = station.OutputInventory.GetSlots
-      };
-    }
-
-    private void LoadOutputInventory() {
-      var saveId = station.OutputInventory.type.ToString();
-      if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(saveId, out var data)) {
+    private void LoadFuelInventory() {
+      if (station.FuelInventory == null) {
         return;
       }
 
-      var isNew = data.Slots == null || data.Slots.Length == 0;
+      station.FuelInventory.LoadFromGameData();
+    }
+
+    private void LoadOutputInventory() {
+      station.OutputInventory.LoadFromGameData();
+    }
+
+    private void LoadInputs() {
+      if (!SaveLoadSystem.Instance.gameData.Workstations.TryGetValue(Id, out var data)) {
+        return;
+      }
+
+      var isNew = data.Inputs == null || data.Inputs.Count == 0;
       if (isNew) {
         return;
       }
 
-      station.OutputInventory.Load(data.Slots);
+      station.Load(data);
+    }
+
+    private void SaveOutputInventory() {
+      station.OutputInventory.SaveToGameData();
+    }
+
+    private void SaveFuelInventory() {
+      if (station.FuelInventory == null) {
+        return;
+      }
+
+      station.FuelInventory.SaveToGameData();
     }
 
     private void SaveWorkstationInputs() {
@@ -130,19 +152,6 @@ namespace Craft {
 
       SaveLoadSystem.Instance.gameData.Workstations[Id] = new WorkstationsData
         { Id = Id, Inputs = inputs, SecondsLeft = timeLeft };
-    }
-
-    private void LoadInputs() {
-      if (!SaveLoadSystem.Instance.gameData.Workstations.TryGetValue(Id, out var data)) {
-        return;
-      }
-
-      var isNew = data.Inputs == null || data.Inputs.Count == 0;
-      if (isNew) {
-        return;
-      }
-
-      station.Load(data);
     }
 
     #endregion

@@ -10,5 +10,6 @@
     FoodStationOutput,
     ChemicalStationOutput,
     ForgeOutput,
+    ForgeFuel,
   }
 }

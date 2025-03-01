@@ -8,31 +8,40 @@ using UnityServiceLocator;
 
 namespace Craft {
   public class CraftManager : MonoBehaviour, IInventoryDropZoneUI {
-    [SerializeField] private Workstation station;
     [SerializeField] private Button takeAllButton;
     [SerializeField] private bool preventItemDrop;
+    [SerializeField] private UserInterface outputInterface;
 
+    private Workstation station;
     private IRecipesManager recipesManager;
     private IRecipeDetail detail;
     private ICraftActions craftActions;
     private PlayerInventory playerInventory;
     private IInputItems inputItems;
     private ITotalAmount totalAmount;
+    private IFuelItems fuelItems;
 
     private bool started;
 
     public bool PreventItemDropIn => preventItemDrop;
 
+    public void Setup(Workstation station) {
+      this.station = station;
+      outputInterface.Setup(station.OutputInventory);
+    }
+
     public void Awake() {
-      ServiceLocator.For(this).Register<Workstation>(station);
+      ServiceLocator.For(this).Register(station);
     }
 
     public void Start() {
+      Debug.Log("CraftManager Start");
       Init();
       started = true;
     }
 
     public void OnEnable() {
+      Debug.Log("CraftManager OnEnable");
       if (!started) {
         return;
       }
@@ -45,6 +54,7 @@ namespace Craft {
       recipesManager.ClearComponent();
       totalAmount.ClearComponent();
       inputItems.ClearComponent();
+      fuelItems?.ClearComponent();
 
       RemoveEvents();
       station.UpdateCraftingTasks();
@@ -57,8 +67,10 @@ namespace Craft {
       recipesManager.InitComponent();
       craftActions.InitComponent();
       inputItems.InitComponent();
-
+      
       Load();
+      
+      fuelItems?.InitComponent();
     }
 
     private void InitReferences() {
@@ -72,6 +84,8 @@ namespace Craft {
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
       recipesManager = ServiceLocator.For(this).Get<IRecipesManager>();
+
+      ServiceLocator.For(this).TryGet(out fuelItems);
     }
 
     private void Load() {
@@ -101,6 +115,8 @@ namespace Craft {
       recipesManager.OnSelected += OnRecipeSelectedHandler;
       //inventory slots
       AddSlotsUpdateEvents();
+      //Fuel slots
+      AddFuelUpdateEvents();
       //craft input actions
       craftActions.OnCraftRequested += OnCraftRequestedHandler;
       //craft input slots
@@ -119,6 +135,8 @@ namespace Craft {
       RemoveInputEvents();
       //craft input actions
       craftActions.OnCraftRequested -= OnCraftRequestedHandler;
+      //Fuel slots
+      RemoveFuelUpdateEvents();
       //inventory slots
       RemoveSlotsUpdateEvents();
       //recipes list
@@ -194,6 +212,7 @@ namespace Craft {
       var outputInventory = station.OutputInventory;
       var item = new Item(data.Recipe.Result);
 
+      fuelItems?.ConsumeFuel(data.Recipe, data.Count);
       outputInventory.AddItem(item, data.Count);
     }
 
@@ -235,6 +254,30 @@ namespace Craft {
 
     private void OnTakeAllButtonClickHandler() {
       station.OutputInventory.MoveAllItemsTo(playerInventory.inventory);
+    }
+
+    private void AddFuelUpdateEvents() {
+      if (station.FuelInventory == null) {
+        return;
+      }
+
+      foreach (var slot in station.FuelInventory.GetSlots) {
+        slot.OnAfterUpdated += FuelSlotUpdateHandler;
+      }
+    }
+
+    private void RemoveFuelUpdateEvents() {
+      if (station.FuelInventory == null) {
+        return;
+      }
+
+      foreach (var slot in station.FuelInventory.GetSlots) {
+        slot.OnAfterUpdated -= FuelSlotUpdateHandler;
+      }
+    }
+
+    private void FuelSlotUpdateHandler(SlotUpdateEventData data) {
+      craftActions.UpdateAndPrintInputCount();
     }
   }
 }

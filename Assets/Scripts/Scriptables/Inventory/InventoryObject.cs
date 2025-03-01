@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Inventory;
 using Items;
+using SaveSystem;
 using Scriptables.Items;
 using UnityEngine;
 
@@ -24,7 +25,9 @@ namespace Scriptables.Inventory {
     public int slotsCount = 24;
 
     public InventoryType type;
+
     public event Action<SlotSwappedEventData> OnSlotSwapped;
+
     // public event Action OnLoaded;
     public event Action OnResorted;
 
@@ -125,27 +128,6 @@ namespace Scriptables.Inventory {
       OnSlotSwapped?.Invoke(new SlotSwappedEventData(slot, targetSlot));
     }
 
-    public void Load(InventorySlot[] slots) {
-      if (loaded) {
-        return;
-      }
-      // Debug.Log($"Load Inventory.type {type}");
-
-      for (var i = 0; i < slots.Length; i++) {
-        var slotData = slots[i];
-        if (slotData.Item.id == string.Empty) {
-          continue;
-        }
-
-        slotData.Item.RestoreItemObject(database.ItemObjects);
-
-        GetSlots[i].UpdateSlotBySlot(slotData);
-      }
-
-      loaded = true;
-      // OnLoaded?.Invoke();
-    }
-
     public int RemoveItem(string id, int amount) {
       if (amount <= 0) {
         return 0;
@@ -153,7 +135,7 @@ namespace Scriptables.Inventory {
 
       var remainingAmount = amount;
 
-      for (var i = 0; i < GetSlots.Length - 1 && remainingAmount > 0; i++) {
+      for (var i = 0; i < GetSlots.Length && remainingAmount > 0; i++) {
         var slot = GetSlots[i];
 
         if (slot.isEmpty || slot.Item.info.Id != id) {
@@ -261,6 +243,20 @@ namespace Scriptables.Inventory {
         else {
           count[slotItemId] += slot.amount;
         }
+      }
+
+      return count;
+    }
+
+    public int GetTotalCount() {
+      var count = 0;
+
+      foreach (var slot in GetSlots) {
+        if (slot.isEmpty) {
+          continue;
+        }
+
+        count += slot.amount;
       }
 
       return count;
@@ -377,49 +373,48 @@ namespace Scriptables.Inventory {
       Container.Clear();
     }
 
-    /*[ContextMenu("Save")]
-    public void Save() {
-      Debug.Log($"Old inventory Save {name}");
-      IFormatter formatter = new BinaryFormatter();
-      Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Create,
-        FileAccess.Write);
-      formatter.Serialize(stream, Container);
-      stream.Close();
+    public void SaveToGameData() {
+      var saveId = type.ToString();
+      SaveLoadSystem.Instance.gameData.Inventories[saveId] = new InventoryData {
+        Id = saveId,
+        Slots = GetSlots
+      };
     }
 
-    [ContextMenu("Load")]
-    public void Load() {
-      Debug.Log($"Old inventory load {name}");
-      if (!File.Exists(string.Concat(Application.persistentDataPath, savePath))) {
+    public void LoadFromGameData() {
+      Clear();
+
+      var saveId = type.ToString();
+      if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(saveId, out var data)) {
         return;
       }
 
-      IFormatter formatter = new BinaryFormatter();
-      Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open,
-        FileAccess.Read);
-      var newContainer = (InventoryContainer)formatter.Deserialize(stream);
-
-      for (var i = 0; i < GetSlots.Length; i++) {
-        var newSlot = newContainer.Slots[i];
-
-        newSlot.Item.RestoreItemObject(database.ItemObjects);
-
-        GetSlots[i].UpdateSlotBySlot(newSlot);
+      var isNew = data.Slots == null || data.Slots.Length == 0;
+      if (isNew) {
+        return;
       }
 
-      stream.Close();
+      Load(data.Slots);
     }
 
-    [ContextMenu("Clear")]
-    public void Clear() {
-      Debug.Log($"Old inventory Clear {name}");
-      Container.Clear();
-    }
+    private void Load(InventorySlot[] slots) {
+      if (loaded) {
+        return;
+      }
 
-    [ContextMenu("Clear and Save", false, 0)]
-    public void ClearAndSave() {
-      Clear();
-      Save();
-    }*/
+      for (var i = 0; i < slots.Length; i++) {
+        var slotData = slots[i];
+        if (slotData.Item.id == string.Empty) {
+          continue;
+        }
+
+        slotData.Item.RestoreItemObject(database.ItemObjects);
+
+        GetSlots[i].UpdateSlotBySlot(slotData);
+      }
+
+      loaded = true;
+      // OnLoaded?.Invoke();
+    }
   }
 }

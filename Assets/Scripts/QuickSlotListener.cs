@@ -18,7 +18,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     playerInventory = GameManager.Instance.PlayerInventory;
     quickSlots = playerInventory.quickSlots;
     slots = quickSlots.GetSlots;
-    
+
     Load();
 
     userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
@@ -134,20 +134,11 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   public string Id => quickSlots.type.ToString();
 
   public void Load() {
-    if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(Id, out var data)) {
-      return;
-    }
-
-    var isNew = data.Slots == null || data.Slots.Length == 0;
-    if (isNew) {
-      return;
-    }
-
-    quickSlots.Load(data.Slots);
+    quickSlots.LoadFromGameData();
   }
 
   public void Save() {
-    SaveLoadSystem.Instance.gameData.Inventories[Id] = new InventoryData { Id = Id, Slots = quickSlots.GetSlots };
+    quickSlots.SaveToGameData();
   }
 
   #endregion

@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 6668474803497008179}
   - component: {fileID: 2292073947769524504}
   - component: {fileID: 774638107267072334}
-  - component: {fileID: 8800614227498318926}
+  - component: {fileID: 3773624294396459548}
   m_Layer: 3
   m_Name: Forge
   m_TagString: Untagged
@@ -213,7 +213,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &8800614227498318926
+--- !u!114 &3773624294396459548
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,5 +227,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactText: Craft
   overlayPrefab: {fileID: 0}
-  interfacePrefab: {fileID: 1208913450436918581, guid: abbc60578dfa33f41b51b3768e65e5e7, type: 3}
+  interfacePrefab: {fileID: 1208913450436918581, guid: e73402fd722c5c741bee34ac848b61ac, type: 3}
   station: {fileID: 11400000, guid: 43c0c4c50d7cc5a4da0d15bc6e03fa14, type: 2}

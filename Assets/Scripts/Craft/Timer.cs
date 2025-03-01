@@ -1,6 +1,7 @@
 using System;
 using Scriptables.Craft;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityServiceLocator;
 
@@ -51,7 +52,7 @@ namespace Craft {
 
       PrintTime();
     }
-    
+
     public void Pause() => isPaused = true;
 
     public void StartTimer() {
@@ -59,6 +60,14 @@ namespace Craft {
       var currentTime = Helper.GetCurrentTime();
       var timePassed = totalTime - timeLeft;
       station.CraftStartTime = timePassed <= 0 ? currentTime : currentTime.AddSeconds(-timePassed);
+
+      var timeLeftForCurrent = Mathf.Min(timeLeft, timeForOne);
+      station.SetProgress(timeForOne, timeLeftForCurrent);
+    }
+
+    public void Reset() {
+      isStarted = false;
+      timerText.text = string.Empty;
     }
 
     private void CheckItemCompletion() {
@@ -82,6 +91,9 @@ namespace Craft {
     private void TimerTick() {
       timeLeft -= Time.deltaTime;
 
+      var timeLeftForCurrent = timeLeft - ((itemsLeft - 1) * timeForOne);
+      station.UpdateProgress(timeLeftForCurrent);
+
       CheckItemCompletion();
       PrintTime();
 
@@ -91,12 +103,8 @@ namespace Craft {
     }
 
     private void StopTimer() {
+      station.ResetProgress();
       onTimerStop?.Invoke();
-    }
-
-    public void Reset() {
-      isStarted = false;
-      timerText.text = string.Empty;
     }
   }
 }

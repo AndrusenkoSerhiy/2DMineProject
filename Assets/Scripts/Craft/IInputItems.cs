@@ -8,9 +8,6 @@ namespace Craft {
     public int InputInProgress { get; }
     public TimerInputItem CraftInput { get; }
     public void SetRecipe(int count, Recipe recipe);
-
     public void UpdateWaitInputs(int fromPosition = 0);
-    // public void UpdateTimersStartTimes(InputItem inputItem);
-    // public int GetItemsCountBeforeInputPosition(int position);
   }
 }

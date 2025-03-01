@@ -65,20 +65,11 @@ namespace Inventory {
     public string Id => inventory.type.ToString();
 
     public void Load() {
-      if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(Id, out var data)) {
-        return;
-      }
-
-      var isNew = data.Slots == null || data.Slots.Length == 0;
-      if (isNew) {
-        return;
-      }
-
-      inventory.Load(data.Slots);
+      inventory.LoadFromGameData();
     }
 
     public void Save() {
-      SaveLoadSystem.Instance.gameData.Inventories[Id] = new InventoryData { Id = Id, Slots = inventory.GetSlots };
+      inventory.SaveToGameData();
     }
 
     #endregion

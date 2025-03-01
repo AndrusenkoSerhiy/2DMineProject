@@ -1,20 +1,18 @@
 using System.Collections.Generic;
-using SaveSystem;
 using Scriptables.Craft;
 using UnityEngine;
 using UnityServiceLocator;
 
 namespace Craft {
   public class InputItems : MonoBehaviour, IInputItems {
-    [SerializeField] private GameObject[] slots;
     [SerializeField] private TimerInputItem craftInput;
+    [SerializeField] private List<InputItem> items;
 
     private int itemsCount;
-    private List<InputItem> items = new();
 
-    private int inputInProgress = 0;
+    private int inputInProgress;
     public int InputInProgress => inputInProgress;
-    
+
     private Workstation station;
 
     public List<InputItem> Items => items;
@@ -40,20 +38,13 @@ namespace Craft {
     }
 
     private void InitInputs() {
-      if (slots.Length < itemsCount) {
+      if (items.Count < itemsCount) {
         Debug.LogError("InputItems: not enough slots in the interface");
         return;
       }
 
-      for (var i = 0; i < slots.Length; i++) {
-        if (i > itemsCount - 1) {
-          continue;
-        }
-
-        var inputItem = slots[i].GetComponent<InputItem>();
-        inputItem.SetPosition(i);
-
-        items.Add(inputItem);
+      for (var i = 0; i < items.Count - 1; i++) {
+        items[i].SetPosition(i);
       }
     }
 
@@ -62,12 +53,6 @@ namespace Craft {
       item.Init(count, recipe);
 
       inputInProgress++;
-    }
-
-    public List<CraftInputData> GetSaveData() {
-      var data = new List<CraftInputData>();
-
-      return data;
     }
 
     public void UpdateWaitInputs(int fromPosition = 0) {

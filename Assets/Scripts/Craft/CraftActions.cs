@@ -20,7 +20,6 @@ namespace Craft {
     private Color buttonsActiveColor;
     private Color buttonsDisabledColor;
 
-    // private PlayerInventory playerInventory;
     private ITotalAmount totalAmount;
     private Recipe recipe;
     private Workstation station;
@@ -83,7 +82,6 @@ namespace Craft {
     }
 
     private void AddEvents() {
-      Debug.Log("CraftActions AddEvents");
       countInput.onValueChanged.AddListener(OnCountInputChangeHandler);
       craftButton.onClick.AddListener(OnCraftClickHandler);
       incrementButton.onClick.AddListener(OnIncrementClickHandler);
@@ -93,7 +91,6 @@ namespace Craft {
     }
 
     private void RemoveEvents() {
-      Debug.Log("CraftActions RemoveEvents");
       countInput.onValueChanged.RemoveAllListeners();
       craftButton.onClick.RemoveAllListeners();
       incrementButton.onClick.RemoveAllListeners();
@@ -108,10 +105,6 @@ namespace Craft {
       }
 
       var count = int.Parse(value);
-
-      // if (count == minCount || count == maxCount) {
-      //   return;
-      // }
 
       count = Math.Clamp(count, 0, maxCount);
 
@@ -159,7 +152,16 @@ namespace Craft {
     private void CalculateMaxCount() {
       var maxCountByInputOutput = CalculateMaxCountByCurrentCraftingAndOutput();
       var maxCountByResources = CalculateMaxCountByResources();
-      maxCount = Math.Min(maxCountByInputOutput, maxCountByResources);
+      var maxCountByFuel = CalculateMaxCountByFuel(maxCountByResources);
+      maxCount = Math.Min(maxCountByInputOutput, Math.Min(maxCountByResources, maxCountByFuel));
+    }
+
+    private int CalculateMaxCountByFuel(int defaultValue) {
+      if (station.FuelInventory == null || recipe.Fuel == null) {
+        return defaultValue;
+      }
+
+      return station.FuelInventory.GetTotalCount() / recipe.Fuel.Amount;
     }
 
     private int CalculateMaxCountByResources() {

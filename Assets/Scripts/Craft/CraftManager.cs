@@ -57,7 +57,6 @@ namespace Craft {
       fuelItems?.ClearComponent();
 
       RemoveEvents();
-      station.UpdateCraftingTasks();
     }
 
     private void Init() {

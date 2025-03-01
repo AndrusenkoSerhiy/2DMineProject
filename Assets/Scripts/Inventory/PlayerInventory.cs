@@ -23,16 +23,15 @@ namespace Inventory {
 
     public void Start() {
       inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
+      UserInput.instance.controls.UI.Inventory.performed += ctx => ShowInventory();
     }
 
-    public void Update() {
-      if (UserInput.instance.controls.UI.Inventory.triggered) {
-        if (inventoryWindow.IsShow) {
-          inventoryWindow.Hide();
-        }
-        else {
-          inventoryWindow.Show();
-        }
+    private void ShowInventory() {
+      if (inventoryWindow.IsShow) {
+        inventoryWindow.Hide();
+      }
+      else {
+        inventoryWindow.Show();
       }
     }
 

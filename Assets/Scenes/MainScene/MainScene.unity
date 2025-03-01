@@ -2232,6 +2232,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1255239565477947570, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
+      propertyPath: overlayPrefab
+      value: 
+      objectReference: {fileID: 1794132079}
     - target: {fileID: 2428154648203464867, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_Name
       value: Player

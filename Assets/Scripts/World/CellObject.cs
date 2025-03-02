@@ -11,6 +11,7 @@ namespace World {
     [SerializeField] private CellStats cellStats;
     [SerializeField] private SpriteAtlas atlasRef;
     [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private BoxCollider2D boxCollider2D;
     [SerializeField] private ObjectHighlight highlight;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
@@ -39,7 +40,8 @@ namespace World {
       var targetSprite = resourceData.Sprite(neighbourIndex);
       sprite.sprite = atlasRef.GetSprite(targetSprite.name);
       sprite.sortingOrder = resourceData.SortingOrder(neighbourIndex);
-      sprite.transform.localPosition = resourceData.PosOffset(neighbourIndex);
+      boxCollider2D.offset = resourceData.ColOffset();
+      boxCollider2D.size = resourceData.ColSize();
     }
 
     public bool hasTakenDamage {

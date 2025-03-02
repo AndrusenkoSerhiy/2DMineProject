@@ -1,9 +1,7 @@
 ﻿using System;
 using Scriptables.Inventory;
 using Scriptables.Items;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Inventory {
   [Serializable]
@@ -12,6 +10,7 @@ namespace Inventory {
     [NonSerialized] public SlotDisplay SlotDisplay;
     [field: NonSerialized] public event Action<SlotUpdateEventData> OnAfterUpdated;
     [field: NonSerialized] public event Action<InventorySlot> OnBeforeUpdated;
+    public ItemObject AllowedItem;
 
     // [NonSerialized] public Action<string, int> OnAmountUpdate;
     // [NonSerialized] private GameObject outline;
@@ -50,6 +49,10 @@ namespace Inventory {
     public void SetParent(IInventoryUI parent) {
       Parent = parent;
       InventoryType = parent.Inventory.type;
+    }
+
+    public bool IsItemAllowed(ItemObject item) {
+      return AllowedItem == null || AllowedItem == item || item == null;
     }
 
     public void SetSlotDisplay(SlotDisplay display) {

@@ -60,7 +60,7 @@ namespace Movement {
       if (!isOnLadder) 
         return;
       
-      movement = UserInput.instance.GetMovement();
+      movement = GameManager.Instance.UserInput.GetMovement();
       if (movement.magnitude > 0) {
         SetIsClimbing(true);
         rb.linearVelocity = new Vector2(movement.x * climbSpeed, movement.y * climbSpeed);

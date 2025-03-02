@@ -1,3 +1,4 @@
+using System.Collections;
 using Scriptables.Craft;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,6 +9,7 @@ namespace Craft {
   public class FuelItem : MonoBehaviour {
     [SerializeField] private Image blockFade;
     [SerializeField] private Image progressFade;
+    [SerializeField] private Image background;
 
     private Workstation station;
     private GameObject blockFadeGameObject;
@@ -15,9 +17,12 @@ namespace Craft {
     private EventTrigger trigger;
     private bool blocked;
     private bool current;
+    private Color defaultBgColor;
+    private Coroutine blinkCoroutine;
 
     public void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
+      defaultBgColor = background.color;
     }
 
     public void Update() {
@@ -26,6 +31,10 @@ namespace Craft {
       }
 
       Progress();
+    }
+
+    public void OnDisable() {
+      ClearBlinkEffect();
     }
 
     public void Block() {
@@ -49,6 +58,32 @@ namespace Craft {
       GetProgressGameObject().SetActive(true);
     }
 
+    public void StartBlink(Color color, float time) {
+      blinkCoroutine = StartCoroutine(BlinkBackgroundColor(color, time));
+    }
+
+    public void ClearBlinkEffect() {
+      if (blinkCoroutine != null) {
+        StopCoroutine(blinkCoroutine);
+        blinkCoroutine = null;
+      }
+
+      ResetBackgroundColor();
+    }
+
+    private IEnumerator BlinkBackgroundColor(Color color, float time) {
+      while (true) {
+        background.color = color;
+        yield return new WaitForSeconds(time);
+        background.color = defaultBgColor;
+        yield return new WaitForSeconds(time);
+      }
+    }
+
+    private void ResetBackgroundColor() {
+      background.color = defaultBgColor;
+    }
+
     private void Progress() {
       var totalTime = station.GetProgressCraftTime();
       var currentTime = station.GetProgressTime();
@@ -67,10 +102,28 @@ namespace Craft {
       progressFade.fillAmount = 1;
     }
 
-    private GameObject GetFadeGameObject() => blockFadeGameObject ?? blockFade.gameObject;
+    private GameObject GetFadeGameObject() {
+      if (blockFadeGameObject == null) {
+        blockFadeGameObject = blockFade.gameObject;
+      }
 
-    private GameObject GetProgressGameObject() => progressFadeGameObject ?? progressFade.gameObject;
+      return blockFadeGameObject;
+    }
 
-    private EventTrigger GetTrigger() => trigger ?? gameObject.GetComponent<EventTrigger>();
+    private GameObject GetProgressGameObject() {
+      if (progressFadeGameObject == null) {
+        progressFadeGameObject = progressFade.gameObject;
+      }
+
+      return progressFadeGameObject;
+    }
+
+    private EventTrigger GetTrigger() {
+      if (trigger == null) {
+        trigger = gameObject.GetComponent<EventTrigger>();
+      }
+
+      return trigger;
+    }
   }
 }

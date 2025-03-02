@@ -73,7 +73,7 @@ namespace Player {
     }
     
     private void HandleAttack() {
-      if (UserInput.instance.IsAttacking() /*&& currentTarget != null*/
+      if (GameManager.Instance.UserInput.IsAttacking() /*&& currentTarget != null*/
           && attackTimeCounter >= timeBtwAttacks) {
         TriggerAttack();
       }
@@ -102,7 +102,7 @@ namespace Player {
     }
     
     private Vector3 GetMousePosition() {
-      var mousePos = GameManager.Instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+      var mousePos = GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
       mousePos.z = 0f;
       return mousePos;
     }

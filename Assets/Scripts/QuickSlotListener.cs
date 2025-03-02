@@ -27,7 +27,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   private void Start() {
-    UserInput.instance.controls.GamePlay.QuickSlots.performed += ChooseSlot;
+    GameManager.Instance.UserInput.controls.GamePlay.QuickSlots.performed += ChooseSlot;
 
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.inventory.OnSlotSwapped += OnSlotUpdateHandler;

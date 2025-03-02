@@ -100,13 +100,13 @@ public class PlaceCell : MonoBehaviour {
     var actionName = "Attack";
     var reason = "PlaceCell";
     if (value) {
-      UserInput.instance.BlockAction(actionName, reason);
+      GameManager.Instance.UserInput.BlockAction(actionName, reason);
     }
-    else UserInput.instance.UnblockAction(actionName, reason);
+    else GameManager.Instance.UserInput.UnblockAction(actionName, reason);
   }
 
   private void Update() {
-    if (UserInput.instance.controls.UI.Click.WasPressedThisFrame()) {
+    if (GameManager.Instance.UserInput.controls.UI.Click.WasPressedThisFrame()) {
       UIInput_OnUIClick();
     }
 
@@ -172,7 +172,7 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private Vector3 GetMousePosition() {
-    var mousePosition = GameManager.Instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+    var mousePosition = GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
     mousePosition.z = 0;
     return mousePosition;
   }

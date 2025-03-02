@@ -16,9 +16,9 @@ namespace Utility {
         if (instance == null) {
           instance = FindFirstObjectByType<T>();
           if (instance == null) {
-            // var obj = new GameObject();
-            // obj.name = typeof(T).Name + "AutoCreated";
-            // instance = obj.AddComponent<T>();
+            var obj = new GameObject();
+            obj.name = typeof(T).Name + "AutoCreated";
+            instance = obj.AddComponent<T>();
             Debug.LogError($"{typeof(T)} instance not found in the scene.");
           }
         }

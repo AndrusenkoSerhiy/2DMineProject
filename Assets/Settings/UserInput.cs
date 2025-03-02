@@ -6,9 +6,6 @@ using UnityEngine.InputSystem;
 
 namespace Settings {
   public class UserInput : MonoBehaviour {
-    private static UserInput _instance;
-    public static UserInput instance => _instance;
-
     public event EventHandler OnAttackPerformed;
     public event EventHandler OnAttackCanceled;
     public event EventHandler OnGameDeviceChanged;
@@ -28,13 +25,6 @@ namespace Settings {
     private GameDevice _activeGameDevice;
 
     private void Awake() {
-      if (_instance != null && _instance != this) {
-        Destroy(gameObject);
-      }
-      else {
-        _instance = this;
-      }
-
       controls = new Controls();
 
       controls.GamePlay.Attack.performed += AttackPerformed;

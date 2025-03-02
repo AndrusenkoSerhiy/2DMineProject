@@ -8,6 +8,8 @@ namespace Craft {
   public class FuelItems : MonoBehaviour, IFuelItems {
     [SerializeField] private UserInterface fuelInterface;
     [SerializeField] private List<FuelItem> items;
+    [SerializeField] private Color blinkBgColor;
+    [SerializeField] private float blinkTime = 1.5f;
 
     private Workstation station;
 
@@ -21,6 +23,25 @@ namespace Craft {
 
       fuelInterface.Setup(station.FuelInventory);
       ServiceLocator.For(this).Register<IFuelItems>(this);
+    }
+
+    public void UpdateInterface(Recipe recipe) {
+      var fuelInventory = fuelInterface.Inventory;
+      var fuelSlots = fuelInventory.GetSlots;
+      var currentFuel = recipe.Fuel.Material;
+
+      //check current fuel items, move them to inventory if they are not in the recipe
+      if (fuelSlots[0].AllowedItem == currentFuel) {
+        return;
+      }
+
+      fuelInventory.MoveAllItemsTo(GameManager.Instance.PlayerInventory.inventory);
+
+      foreach (var slot in fuelSlots) {
+        slot.AllowedItem = currentFuel;
+      }
+
+      fuelInterface.UpdateInventoryUI();
     }
 
     public void ConsumeFuel(Recipe recipe, int count) {
@@ -40,6 +61,18 @@ namespace Craft {
       station.OnCraftStopped -= CraftStoppedHandler;
     }
 
+    public void StartBlink() {
+      foreach (var item in items) {
+        item.StartBlink(blinkBgColor, blinkTime);
+      }
+    }
+
+    public void StopBlink() {
+      foreach (var item in items) {
+        item.ClearBlinkEffect();
+      }
+    }
+
     private void CraftStartedHandler() {
       BlockUnblockItems();
     }
@@ -51,8 +84,6 @@ namespace Craft {
     private void BlockUnblockItems() {
       var fuelAmountNeed = 0;
       var inputItems = station.Inputs;
-
-      Debug.Log("BlockUnblockItems: " + inputItems.Count);
 
       foreach (var input in inputItems) {
         fuelAmountNeed += input.Count * input.Recipe.Fuel.Amount;

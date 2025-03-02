@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityServiceLocator;
 
 namespace Craft {
-  public class RecipesManager : MonoBehaviour, IRecipesManager {
+  public class RecipesList : MonoBehaviour, IRecipesList {
     [SerializeField] private GameObject recipesListContainerPrefab;
     [SerializeField] private Button recipesListItemPrefab;
 
@@ -18,7 +18,7 @@ namespace Craft {
     public event Action<Recipe> OnSelected;
 
     public void Awake() {
-      ServiceLocator.For(this).Register<IRecipesManager>(this);
+      ServiceLocator.For(this).Register<IRecipesList>(this);
       station = ServiceLocator.For(this).Get<Workstation>();
 
       BuildList();

@@ -38,7 +38,7 @@ namespace Interaction
         return;
 
       interactionPromtUI.ShowPrompt(true, interactable.InteractionPrompt);
-      if (UserInput.instance.controls.GamePlay.Interact.WasPressedThisFrame()) {
+      if (GameManager.Instance.UserInput.controls.GamePlay.Interact.WasPressedThisFrame()) {
         interactable.Interact(this);
       }
     }

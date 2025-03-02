@@ -12,7 +12,7 @@ namespace Craft {
     [SerializeField] private TextMeshProUGUI craftTime;
     [SerializeField] private GameObject listContainer;
     [SerializeField] private List<RecipeDetailRow> rows;
-    [SerializeField] private List<RecipeDetailRow> fuelRows;
+    // [SerializeField] private List<RecipeDetailRow> fuelRows;
 
     protected Recipe currentRecipe;
     private string[] recipeIngredientsIds;
@@ -42,12 +42,12 @@ namespace Craft {
     public void PrintList() {
       PrintList(rows, currentRecipe.RequiredMaterials);
 
-      if (currentRecipe.Fuel == null || fuelRows.Count <= 0) {
+      /*if (currentRecipe.Fuel == null || fuelRows.Count <= 0) {
         return;
       }
 
       var fuels = new List<Recipe.CraftingMaterial> { currentRecipe.Fuel };
-      PrintList(fuelRows, fuels);
+      PrintList(fuelRows, fuels);*/
     }
 
     protected void PrintList(List<RecipeDetailRow> rows, List<Recipe.CraftingMaterial> materials) {

@@ -13,7 +13,7 @@ namespace Craft {
     [SerializeField] private UserInterface outputInterface;
 
     private Workstation station;
-    private IRecipesManager recipesManager;
+    private IRecipesList recipesList;
     private IRecipeDetail detail;
     private ICraftActions craftActions;
     private PlayerInventory playerInventory;
@@ -35,13 +35,11 @@ namespace Craft {
     }
 
     public void Start() {
-      Debug.Log("CraftManager Start");
       Init();
       started = true;
     }
 
     public void OnEnable() {
-      Debug.Log("CraftManager OnEnable");
       if (!started) {
         return;
       }
@@ -51,7 +49,7 @@ namespace Craft {
 
     private void OnDisable() {
       craftActions.ClearComponent();
-      recipesManager.ClearComponent();
+      recipesList.ClearComponent();
       totalAmount.ClearComponent();
       inputItems.ClearComponent();
       fuelItems?.ClearComponent();
@@ -63,12 +61,12 @@ namespace Craft {
       InitReferences();
       AddEvents();
       totalAmount.InitComponent();
-      recipesManager.InitComponent();
+      recipesList.InitComponent();
       craftActions.InitComponent();
       inputItems.InitComponent();
-      
+
       Load();
-      
+
       fuelItems?.InitComponent();
     }
 
@@ -82,7 +80,7 @@ namespace Craft {
       detail = ServiceLocator.For(this).Get<IRecipeDetail>();
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
-      recipesManager = ServiceLocator.For(this).Get<IRecipesManager>();
+      recipesList = ServiceLocator.For(this).Get<IRecipesList>();
 
       ServiceLocator.For(this).TryGet(out fuelItems);
     }
@@ -109,9 +107,8 @@ namespace Craft {
     }
 
     private void AddEvents() {
-      Debug.Log("CraftManager AddEvents");
       //recipes list
-      recipesManager.OnSelected += OnRecipeSelectedHandler;
+      recipesList.OnSelected += OnRecipeSelectedHandler;
       //inventory slots
       AddSlotsUpdateEvents();
       //Fuel slots
@@ -126,7 +123,6 @@ namespace Craft {
     }
 
     private void RemoveEvents() {
-      Debug.Log("CraftManager RemoveEvents");
       //craft output slots
       takeAllButton.onClick.RemoveAllListeners();
       RemoveOutputUpdateEvents();
@@ -139,11 +135,11 @@ namespace Craft {
       //inventory slots
       RemoveSlotsUpdateEvents();
       //recipes list
-      recipesManager.OnSelected -= OnRecipeSelectedHandler;
+      recipesList.OnSelected -= OnRecipeSelectedHandler;
     }
 
     private void OnCraftRequestedHandler(int count) {
-      var recipe = recipesManager.Recipe;
+      var recipe = recipesList.Recipe;
 
       //remove resources from inventory
       foreach (var item in recipe.RequiredMaterials) {
@@ -162,6 +158,8 @@ namespace Craft {
 
       craftActions.SetRecipe(recipe);
       craftActions.UpdateAndPrintInputCount(true);
+
+      fuelItems?.UpdateInterface(recipe);
     }
 
     private void AddSlotsUpdateEvents() {

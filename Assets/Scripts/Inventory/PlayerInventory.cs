@@ -23,7 +23,7 @@ namespace Inventory {
 
     public void Start() {
       inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
-      UserInput.instance.controls.UI.Inventory.performed += ctx => ShowInventory();
+      GameManager.Instance.UserInput.controls.UI.Inventory.performed += ctx => ShowInventory();
     }
 
     private void ShowInventory() {

@@ -36,7 +36,7 @@ namespace Windows {
     
     private void LockPlayer(bool state) {
       GetCurrPlayerController().SetLockPlayer(state);
-      UserInput.instance.EnableGamePlayControls(!state);
+      GameManager.Instance.UserInput.EnableGamePlayControls(!state);
     }
 
     private void LockHighlight(bool state) {

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Scriptables.Craft;
-using Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +20,7 @@ namespace Craft {
     private Color buttonsDisabledColor;
 
     private ITotalAmount totalAmount;
+    private IFuelItems fuelItems;
     private Recipe recipe;
     private Workstation station;
 
@@ -42,7 +42,7 @@ namespace Craft {
     }
 
     public void Start() {
-      UserInput.instance.controls.UI.Craft.performed += ctx => OnCraftClickHandler();
+      GameManager.Instance.UserInput.controls.UI.Craft.performed += ctx => OnCraftClickHandler();
     }
 
     public void InitComponent() => AddEvents();
@@ -66,6 +66,14 @@ namespace Craft {
       EnableButton(maxCountButton, currentCount < maxCount, maxCountButtonSub);
       EnableButton(minCountButton, currentCount > minCount, minCountButtonSub);
       EnableButton(craftButton, currentCount > 0);
+    }
+
+    private IFuelItems GetFuelItems() {
+      if (fuelItems == null) {
+        ServiceLocator.For(this).TryGet(out fuelItems);
+      }
+
+      return fuelItems;
     }
 
     private void EnableButton(Button button, bool state, Image subimage = null) {
@@ -152,13 +160,31 @@ namespace Craft {
     private void CalculateMaxCount() {
       var maxCountByInputOutput = CalculateMaxCountByCurrentCraftingAndOutput();
       var maxCountByResources = CalculateMaxCountByResources();
-      var maxCountByFuel = CalculateMaxCountByFuel(maxCountByResources);
-      maxCount = Math.Min(maxCountByInputOutput, Math.Min(maxCountByResources, maxCountByFuel));
+      var maxCountByFuel = CalculateMaxCountByFuel();
+
+      maxCount = maxCountByFuel > -1
+        ? Math.Min(maxCountByInputOutput, Math.Min(maxCountByResources, maxCountByFuel))
+        : Math.Min(maxCountByInputOutput, maxCountByResources);
+
+      RunFuelEffect(maxCountByFuel);
     }
 
-    private int CalculateMaxCountByFuel(int defaultValue) {
+    private void RunFuelEffect(int maxCountByFuel) {
+      if (GetFuelItems() == null) {
+        return;
+      }
+
+      if (maxCountByFuel == 0) {
+        GetFuelItems().StartBlink();
+      }
+      else {
+        GetFuelItems().StopBlink();
+      }
+    }
+
+    private int CalculateMaxCountByFuel() {
       if (station.FuelInventory == null || recipe.Fuel == null) {
-        return defaultValue;
+        return -1;
       }
 
       return station.FuelInventory.GetTotalCount() / recipe.Fuel.Amount;

@@ -10,6 +10,7 @@ namespace Scriptables.Craft {
     public string Code;
     public RecipeType RecipeType;
     public List<CraftingMaterial> RequiredMaterials;
+    public CraftingMaterial Fuel;
     public ItemObject Result;
     public int ResultAmount;
     [Tooltip("In seconds")]

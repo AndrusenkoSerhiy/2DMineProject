@@ -11,6 +11,7 @@ namespace World {
     [SerializeField] private CellStats cellStats;
     [SerializeField] private SpriteAtlas atlasRef;
     [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private BoxCollider2D boxCollider2D;
     [SerializeField] private ObjectHighlight highlight;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
@@ -39,7 +40,8 @@ namespace World {
       var targetSprite = resourceData.Sprite(neighbourIndex);
       sprite.sprite = atlasRef.GetSprite(targetSprite.name);
       sprite.sortingOrder = resourceData.SortingOrder(neighbourIndex);
-      sprite.transform.localPosition = resourceData.PosOffset(neighbourIndex);
+      boxCollider2D.offset = resourceData.ColOffset();
+      boxCollider2D.size = resourceData.ColSize();
     }
 
     public bool hasTakenDamage {
@@ -58,7 +60,7 @@ namespace World {
         return;
       }
 
-      GameManager.instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage, transform.position);
+      GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage, transform.position);
     }
 
     public float GetHealth() {
@@ -72,10 +74,10 @@ namespace World {
     public void DestroyObject() {
       var pos = transform.position;
       ResetShake();
-      GameManager.instance.ChunkController.TriggerCellDestroyed(this);
-      GameManager.instance.CellObjectsPool.ReturnObject(this);
+      GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
+      GameManager.Instance.CellObjectsPool.ReturnObject(this);
       ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
-      GameManager.instance.TaskManager.DelayAsync(
+      GameManager.Instance.TaskManager.DelayAsync(
         () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
       highlight.ClearHighlight();
     }

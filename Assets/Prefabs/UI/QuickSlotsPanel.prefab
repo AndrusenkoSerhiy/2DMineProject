@@ -77,6 +77,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: b01922b1ac974a342935c3c12a61a08f, type: 2}
   disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
+  fastDropInventory: {fileID: 0}
   preventItemDropIn: 0
   preventDropOnGround: 1
   preventSwapIn: 0
@@ -119,6 +120,7 @@ MonoBehaviour:
       name: 
     amount: 0
     isSelected: 0
+  userInterface: {fileID: 1780339617607901965}
 --- !u!114 &2619697107618083881
 MonoBehaviour:
   m_ObjectHideFlags: 0

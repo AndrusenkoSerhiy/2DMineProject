@@ -237,7 +237,6 @@ GameObject:
   - component: {fileID: 2604715275176370159}
   - component: {fileID: 5909809001358539425}
   - component: {fileID: 6373317976246724459}
-  - component: {fileID: 814025320632039692}
   - component: {fileID: 4132627921803942631}
   - component: {fileID: 6056531623019390537}
   - component: {fileID: 7671600390934060756}
@@ -294,23 +293,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 671400183145923616}
   countText: {fileID: 6595199037459468389}
+  timerText: {fileID: 5711339729289390004}
   timeIcon: {fileID: 3099530179190005760}
   fade: {fileID: 124253625463638011}
-  timer: {fileID: 814025320632039692}
   cancel: {fileID: 8472990321802530600}
---- !u!114 &814025320632039692
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2710105085976991345}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0500346761c33a4eb367c0e2f737cdb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timerText: {fileID: 5711339729289390004}
 --- !u!114 &4132627921803942631
 MonoBehaviour:
   m_ObjectHideFlags: 0

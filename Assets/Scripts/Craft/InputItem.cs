@@ -5,70 +5,60 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Craft {
+  public struct ItemCanceledEventData {
+    public Recipe Recipe;
+    public int Position;
+    public int CountLeft;
+  }
+
   public class InputItem : MonoBehaviour {
-    [SerializeField] private Image icon;
-    [SerializeField] private TextMeshProUGUI countText;
-    [SerializeField] private Image timeIcon;
-    [SerializeField] private Image fade;
-    [SerializeField] private Timer timer;
-    [SerializeField] private Button cancel;
+    [SerializeField] protected Image icon;
+    [SerializeField] protected TextMeshProUGUI countText;
+    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] protected Image timeIcon;
+    [SerializeField] protected Image fade;
+    [SerializeField] protected Button cancel;
 
-    private Recipe recipe;
-    private int countLeft;
-    private int position;
-    private RectTransform rectTransform;
+    protected Recipe recipe;
+    protected int countLeft;
+    protected int position;
+    protected RectTransform rectTransform;
 
-    public event Action<Recipe, int> OnItemCrafted;
-    public event Action OnInputAllCrafted;
-    public event Action<InputItem> OnCanceled;
-    public Timer Timer => timer;
+    public event Action<ItemCanceledEventData> OnCanceled;
     public Recipe Recipe => recipe;
     public int CountLeft => countLeft;
     public int Position => position;
 
-    public void Init(int count, Recipe recipe, int position, DateTime? start = null) {
-      countLeft = count;
-      this.recipe = recipe;
-      this.position = position;
+    public void Awake() {
       rectTransform = GetComponent<RectTransform>();
+    }
+
+    public void SetPosition(int position) {
+      this.position = position;
+    }
+
+    public virtual void Init(int count, Recipe recipe) {
+      this.recipe = recipe;
+      countLeft = count;
 
       SetupUI();
       PrintCount();
+      PrintTime();
 
       cancel.onClick.AddListener(CancelHandler);
-
-      timer.enabled = true;
-      timer.onTimerStop += OnTimerStopHandler;
-      timer.onItemTimerEnd += OnItemTimerEndHandler;
-      timer.InitTimer(count, recipe.CraftingTime, start);
-
-      if (position == 0) {
-        StartCrafting();
-      }
     }
 
-    public void UpdatePosition(int position) {
-      this.position = position;
+    protected void PrintTime() {
+      timerText.text = Helper.SecondsToTimeString(countLeft * recipe.CraftingTime);
     }
 
-    public void StartCrafting() {
-      timer.StartTimer();
-    }
-
-    public void UpdateTransformPosition(Vector3 position) {
-      rectTransform.position = position;
-    }
-
-    public Vector3 GetTransformPosition() {
-      return rectTransform.position;
-    }
-
-    private void CancelHandler() {
-      OnCanceled?.Invoke(this);
+    protected void CancelHandler() {
+      var data = new ItemCanceledEventData { Recipe = Recipe, Position = Position, CountLeft = countLeft };
       ResetInput();
+      OnCanceled?.Invoke(data);
     }
 
-    private void SetupUI() {
+    protected void SetupUI() {
       icon.sprite = recipe.Result.UiDisplay;
       icon.color = new Color(1, 1, 1, 255);
       timeIcon.gameObject.SetActive(true);
@@ -76,30 +66,12 @@ namespace Craft {
       cancel.gameObject.SetActive(true);
     }
 
-    private void PrintCount() {
+    protected void PrintCount() {
       countText.text = countLeft.ToString();
     }
 
-    private void OnTimerStopHandler() {
-      ResetInput();
-
-      OnInputAllCrafted?.Invoke();
-    }
-
-    private void OnItemTimerEndHandler(int count) {
-      OnItemCrafted?.Invoke(recipe, count);
-
-      countLeft -= count;
-      PrintCount();
-    }
-
-    private void ResetInput() {
+    public virtual void ResetInput() {
       cancel.onClick.RemoveAllListeners();
-
-      timer.onTimerStop -= OnTimerStopHandler;
-      timer.onItemTimerEnd -= OnItemTimerEndHandler;
-      timer.enabled = false;
-      timer.Reset();
 
       countLeft = 0;
       recipe = null;

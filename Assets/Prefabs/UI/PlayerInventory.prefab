@@ -464,6 +464,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isShow: 0
+  interfaces:
+  - {fileID: 8949190591791857140}
 --- !u!222 &5456247245013667686
 CanvasRenderer:
   m_ObjectHideFlags: 0

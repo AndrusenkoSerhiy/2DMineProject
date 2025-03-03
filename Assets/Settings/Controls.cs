@@ -498,6 +498,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HandCraft"",
+                    ""type"": ""Button"",
+                    ""id"": ""2c6d490d-72b5-4b95-ba7c-bb343a8ad056"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1006,6 +1015,39 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Ctrl"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c504cf58-3b7e-413d-90d5-18a3baae44ab"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HandCraft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1a55984-bbc6-47d5-89fe-cd1935e86fc7"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HandCraft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""71a98a7c-ca5a-4d8b-956e-3d0b65b3428e"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""HandCraft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1060,6 +1102,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_UI_Craft = m_UI.FindAction("Craft", throwIfNotFound: true);
         m_UI_Shift = m_UI.FindAction("Shift", throwIfNotFound: true);
         m_UI_Ctrl = m_UI.FindAction("Ctrl", throwIfNotFound: true);
+        m_UI_HandCraft = m_UI.FindAction("HandCraft", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -1235,6 +1278,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Craft;
     private readonly InputAction m_UI_Shift;
     private readonly InputAction m_UI_Ctrl;
+    private readonly InputAction m_UI_HandCraft;
     public struct UIActions
     {
         private @Controls m_Wrapper;
@@ -1253,6 +1297,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Craft => m_Wrapper.m_UI_Craft;
         public InputAction @Shift => m_Wrapper.m_UI_Shift;
         public InputAction @Ctrl => m_Wrapper.m_UI_Ctrl;
+        public InputAction @HandCraft => m_Wrapper.m_UI_HandCraft;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1304,6 +1349,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Ctrl.started += instance.OnCtrl;
             @Ctrl.performed += instance.OnCtrl;
             @Ctrl.canceled += instance.OnCtrl;
+            @HandCraft.started += instance.OnHandCraft;
+            @HandCraft.performed += instance.OnHandCraft;
+            @HandCraft.canceled += instance.OnHandCraft;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1350,6 +1398,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Ctrl.started -= instance.OnCtrl;
             @Ctrl.performed -= instance.OnCtrl;
             @Ctrl.canceled -= instance.OnCtrl;
+            @HandCraft.started -= instance.OnHandCraft;
+            @HandCraft.performed -= instance.OnHandCraft;
+            @HandCraft.canceled -= instance.OnHandCraft;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1411,5 +1462,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnCraft(InputAction.CallbackContext context);
         void OnShift(InputAction.CallbackContext context);
         void OnCtrl(InputAction.CallbackContext context);
+        void OnHandCraft(InputAction.CallbackContext context);
     }
 }

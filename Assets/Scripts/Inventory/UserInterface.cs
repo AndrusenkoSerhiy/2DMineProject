@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Scriptables.Inventory;
-using Settings;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Inventory {
   [RequireComponent(typeof(EventTrigger))]
@@ -25,7 +24,10 @@ namespace Inventory {
     private Transform tempDragParent;
     private Dictionary<GameObject, InventorySlot> slotsOnInterface;
 
-    public GameObject[] slotsPrefabs;
+    public event Action OnLoaded;
+
+    // public GameObject[] slotsPrefabs;
+    public SlotDisplay[] slotsPrefabs;
     public InventoryObject Inventory => inventory;
     public Dictionary<GameObject, InventorySlot> SlotsOnInterface => slotsOnInterface;
 
@@ -34,15 +36,18 @@ namespace Inventory {
     public bool PreventSwapIn => preventSwapIn;
     public bool PreventMergeIn => preventMergeIn;
 
+    public void Setup(InventoryObject inventory) {
+      this.inventory = inventory;
+    }
+
     public void Awake() {
-      splitItem = GameManager.instance.SplitItem;
-      tempDragItemObject = GameManager.instance.TempDragItem;
+      splitItem = GameManager.Instance.SplitItem;
+      tempDragItemObject = GameManager.Instance.TempDragItem;
       tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
-      tempDragParent = GameManager.instance.Canvas.transform;
+      tempDragParent = GameManager.Instance.Canvas.transform;
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
 
       CheckSlotsUpdate();
-
       CreateSlots();
     }
 
@@ -55,7 +60,8 @@ namespace Inventory {
       AddSlotsEvents();
 
       UpdateInventoryUI();
-      
+
+      OnLoaded?.Invoke();
       inventory.OnResorted += ResortHandler;
     }
 
@@ -64,7 +70,7 @@ namespace Inventory {
       RemoveAllEvents(gameObject);
 
       RemoveSlotsEvents();
-      
+
       inventory.OnResorted -= ResortHandler;
     }
 
@@ -76,11 +82,12 @@ namespace Inventory {
 
       for (var i = 0; i < slotsPrefabs.Length; i++) {
         if (i > Inventory.GetSlots.Length - 1) {
-          slotsPrefabs[i].GetComponent<Image>().color = disabledSlotColor;
+          // slotsPrefabs[i].GetComponent<Image>().color = disabledSlotColor;
+          slotsPrefabs[i].Background.color = disabledSlotColor;
           continue;
         }
 
-        var obj = slotsPrefabs[i];
+        var obj = slotsPrefabs[i].gameObject;
         var slot = Inventory.GetSlots[i];
 
         slotsOnInterface.Add(obj, slot);
@@ -126,19 +133,14 @@ namespace Inventory {
         var slot = Inventory.GetSlots[i];
         slot.SetParent(this);
         slot.SetSlotDisplay(slotsPrefabs[i]);
-        slotsOnInterface[slotsPrefabs[i]] = slot;
+        slotsOnInterface[slotsPrefabs[i].gameObject] = slot;
       }
     }
 
     public void UpdateInventoryUI() {
       foreach (var slot in Inventory.GetSlots) {
-        UpdateInventorySlotUI(slot);
+        UpdateSlotDisplay(slot);
       }
-    }
-
-    private void UpdateInventorySlotUI(InventorySlot slot) {
-      slot.ResetBackgroundAndText();
-      UpdateSlotDisplay(slot); // Ensure each slot reflects the correct UI state
     }
 
     private void UpdateSlotHandler(SlotUpdateEventData data) {
@@ -146,12 +148,22 @@ namespace Inventory {
     }
 
     public void UpdateSlotDisplay(InventorySlot slot) {
-      var image = slot.Background;
-      var text = slot.Text;
-      if (slot.Item.info == null) {
-        image.sprite = null;
-        image.color = new Color(1, 1, 1, 0);
+      var image = slot.SlotDisplay.Background;
+      var text = slot.SlotDisplay.Text;
+
+      if (slot.Item.info == null || slot.amount <= 0) {
         text.text = string.Empty;
+
+        // If exactly one allowed item, show its sprite as a "ghost" with transparency
+        if (slot.AllowedItem) {
+          var ghostItem = slot.AllowedItem;
+          image.sprite = ghostItem.UiDisplay;
+          image.color = new Color(1, 1, 1, 0.3f);
+        }
+        else {
+          image.sprite = null;
+          image.color = new Color(1, 1, 1, 0);
+        }
       }
       else {
         image.sprite = slot.Item.info.UiDisplay;
@@ -207,7 +219,7 @@ namespace Inventory {
       }
 
       //fast drop item to another inventory
-      if (UserInput.instance.controls.UI.Ctrl.IsPressed() && fastDropInventory) {
+      if (GameManager.Instance.UserInput.controls.UI.Ctrl.IsPressed() && fastDropInventory) {
         var overFlow = fastDropInventory.AddItem(slot.Item, slot.amount);
         if (overFlow > 0) {
           slot.RemoveAmount(slot.amount - overFlow);
@@ -220,7 +232,7 @@ namespace Inventory {
       }
 
       //split
-      if (UserInput.instance.controls.UI.Shift.IsPressed() && !preventSplit) {
+      if (GameManager.Instance.UserInput.controls.UI.Shift.IsPressed() && !preventSplit) {
         splitItem.Show(slot, obj, tempDragParent);
       }
     }
@@ -246,7 +258,7 @@ namespace Inventory {
         return;
       }
 
-      var mousePos = UserInput.instance.GetMousePosition();
+      var mousePos = GameManager.Instance.UserInput.GetMousePosition();
       mousePos.z = 0;
       tempDragItem.UpdatePosition(mousePos);
     }
@@ -319,18 +331,23 @@ namespace Inventory {
         return false;
       }
 
+      if (!targetSlot.IsItemAllowed(slot.Item.info) || !slot.IsItemAllowed(targetSlot.Item.info)) {
+        Debug.Log("Item not allowed");
+        return false;
+      }
+
+      //Add split item
+      if (!dragFull) {
+        inventory.AddItem(slot.Item, dragAmount, targetSlot);
+        Debug.Log("Add split item");
+        return true;
+      }
+
       // Handle merging items
       if (!targetUI.PreventMergeIn && slot.CanMerge(targetSlot)) {
         targetInventory.MergeItems(slot, targetSlot);
 
         Debug.Log("Merging items");
-        return true;
-      }
-
-      //Add split item
-      if (targetSlot.isEmpty && !dragFull) {
-        inventory.AddItem(slot.Item, dragAmount, targetSlot);
-        Debug.Log("Add split item");
         return true;
       }
 

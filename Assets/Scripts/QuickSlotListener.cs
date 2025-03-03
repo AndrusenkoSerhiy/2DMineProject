@@ -1,29 +1,33 @@
 using Inventory;
+using SaveSystem;
 using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class QuickSlotListener : MonoBehaviour {
+public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   [SerializeField] private InventorySlot selectedSlot;
+  [SerializeField] private UserInterface userInterface;
   private InventoryObject quickSlots;
   private InventorySlot[] slots;
   private Item selectedItem;
   private PlayerInventory playerInventory;
 
   private void Awake() {
-    playerInventory = GameManager.instance.PlayerInventory;
+    playerInventory = GameManager.Instance.PlayerInventory;
     quickSlots = playerInventory.quickSlots;
     slots = quickSlots.GetSlots;
 
-    playerInventory.OnQuickSlotLoaded += UpdateQuickSlotsAfterLoad;
+    Load();
+
+    userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
     selectedItem = null;
   }
 
   private void Start() {
-    UserInput.instance.controls.GamePlay.QuickSlots.performed += ChooseSlot;
+    GameManager.Instance.UserInput.controls.GamePlay.QuickSlots.performed += ChooseSlot;
 
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.inventory.OnSlotSwapped += OnSlotUpdateHandler;
@@ -66,7 +70,7 @@ public class QuickSlotListener : MonoBehaviour {
       SelectSlotByIndex(i);
     }
 
-    playerInventory.OnQuickSlotLoaded -= UpdateQuickSlotsAfterLoad;
+    userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
   }
 
   private void ChooseSlot(InputAction.CallbackContext obj) {
@@ -75,7 +79,7 @@ public class QuickSlotListener : MonoBehaviour {
     if (index == -1) {
       index = slots.Length - 1;
     }
-    
+
     SelectSlotByIndex(index);
   }
 
@@ -85,12 +89,13 @@ public class QuickSlotListener : MonoBehaviour {
     if (selectedSlot != slot) {
       return false;
     }
+
     ResetSlot();
     return true;
   }
 
   private void ResetSlot() {
-    GameManager.instance.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
+    GameManager.Instance.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
     selectedSlot.Unselect();
     selectedItem?.info?.Use(selectedSlot);
     selectedSlot = null;
@@ -103,15 +108,16 @@ public class QuickSlotListener : MonoBehaviour {
       if (selectedSlot != null && selectedSlot.Item.info != null) {
         ResetSlot();
       }
+
       return;
     }
-    
+
     if (UnselectSlot(slot)) {
       return;
     }
 
     if (selectedSlot != null && selectedSlot.Item.info != null) {
-      GameManager.instance.PlayerEquipment.OnRemoveItem(selectedSlot);
+      GameManager.Instance.PlayerEquipment.OnRemoveItem(selectedSlot);
       selectedSlot.Unselect();
       selectedItem?.info?.Use(selectedSlot);
     }
@@ -119,7 +125,21 @@ public class QuickSlotListener : MonoBehaviour {
     selectedSlot = slot;
     selectedItem = slot.Item;
     selectedSlot.Select();
-    GameManager.instance.PlayerEquipment.OnEquipItem(selectedSlot);
+    GameManager.Instance.PlayerEquipment.OnEquipItem(selectedSlot);
     selectedSlot.Item.info.Use(selectedSlot);
   }
+
+  #region Save/Load
+
+  public string Id => quickSlots.type.ToString();
+
+  public void Load() {
+    quickSlots.LoadFromGameData();
+  }
+
+  public void Save() {
+    quickSlots.SaveToGameData();
+  }
+
+  #endregion
 }

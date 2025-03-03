@@ -15,7 +15,7 @@ namespace Interaction
     private IInteractable interactable;
     private void Update() {
       //id any window is open don't allow to find items and show interaction message
-      if (GameManager.instance.WindowsController.IsAnyWindowOpen) {
+      if (GameManager.Instance.WindowsController.IsAnyWindowOpen) {
         interactionPromtUI.ShowPrompt(false);
         return; 
       }
@@ -38,7 +38,7 @@ namespace Interaction
         return;
 
       interactionPromtUI.ShowPrompt(true, interactable.InteractionPrompt);
-      if (UserInput.instance.controls.GamePlay.Interact.WasPressedThisFrame()) {
+      if (GameManager.Instance.UserInput.controls.GamePlay.Interact.WasPressedThisFrame()) {
         interactable.Interact(this);
       }
     }

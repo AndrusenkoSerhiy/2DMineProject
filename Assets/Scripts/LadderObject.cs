@@ -30,10 +30,10 @@ public class LadderObject : MonoBehaviour {
   }
 
   private void SetLadderObject(LadderObject ladderObject) {
-    if (GameManager.instance == null)
+    if (GameManager.Instance == null)
       return;
     
-    player = GameManager.instance.PlayerController;
+    player = GameManager.Instance.PlayerController;
     player.LadderMovement.SetLadder(ladderObject);
   }
 }

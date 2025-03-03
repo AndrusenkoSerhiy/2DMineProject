@@ -83,7 +83,7 @@ namespace Pool {
       var fly = (PoolObjectFly)SpawnFromPool("WavyMove", spawnPosition, Quaternion.identity) as PoolObjectFly;
       if (fly != null) {
         fly.SetSprite(item.UiDisplay);
-        fly.SetPosition(spawnPosition, GameManager.instance.PlayerController.transform);
+        fly.SetPosition(spawnPosition, GameManager.Instance.PlayerController.transform);
       }
     }
   }

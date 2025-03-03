@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: Bandage
+  m_EditorClassIdentifier: 
+  RecipeName: Bandage
+  Code: bandage
+  RecipeType: 5
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+    Amount: 10
+  - Material: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
+    Amount: 5
+  Result: {fileID: 11400000, guid: 4b5bd2c0f5f425542b9aa3f52aced800, type: 2}
+  ResultAmount: 1
+  CraftingTime: 10
+  detailImg: {fileID: 0}

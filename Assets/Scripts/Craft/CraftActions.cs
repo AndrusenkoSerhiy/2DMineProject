@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Scriptables.Craft;
-using Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,8 +19,8 @@ namespace Craft {
     private Color buttonsActiveColor;
     private Color buttonsDisabledColor;
 
-    // private PlayerInventory playerInventory;
     private ITotalAmount totalAmount;
+    private IFuelItems fuelItems;
     private Recipe recipe;
     private Workstation station;
 
@@ -32,21 +31,18 @@ namespace Craft {
     public event Action<int> OnCraftRequested;
 
     public void Awake() {
-      var uiSettings = GameManager.instance.UISettings;
+      var uiSettings = GameManager.Instance.UISettings;
       buttonsActiveColor = uiSettings.buttonsActiveColor;
       buttonsDisabledColor = uiSettings.buttonsDisabledColor;
-      
+
       ServiceLocator.For(this).Register<ICraftActions>(this);
 
       station = ServiceLocator.For(this).Get<Workstation>();
-      station.CraftItemsTotal.Clear();
-      station.CraftInputsItemsIds.Clear();
-
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
     }
 
     public void Start() {
-      UserInput.instance.controls.UI.Craft.performed += ctx => OnCraftClickHandler();
+      GameManager.Instance.UserInput.controls.UI.Craft.performed += ctx => OnCraftClickHandler();
     }
 
     public void InitComponent() => AddEvents();
@@ -72,6 +68,14 @@ namespace Craft {
       EnableButton(craftButton, currentCount > 0);
     }
 
+    private IFuelItems GetFuelItems() {
+      if (fuelItems == null) {
+        ServiceLocator.For(this).TryGet(out fuelItems);
+      }
+
+      return fuelItems;
+    }
+
     private void EnableButton(Button button, bool state, Image subimage = null) {
       var color = state ? buttonsActiveColor : buttonsDisabledColor;
       button.enabled = state;
@@ -86,7 +90,6 @@ namespace Craft {
     }
 
     private void AddEvents() {
-      Debug.Log("CraftActions AddEvents");
       countInput.onValueChanged.AddListener(OnCountInputChangeHandler);
       craftButton.onClick.AddListener(OnCraftClickHandler);
       incrementButton.onClick.AddListener(OnIncrementClickHandler);
@@ -96,7 +99,6 @@ namespace Craft {
     }
 
     private void RemoveEvents() {
-      Debug.Log("CraftActions RemoveEvents");
       countInput.onValueChanged.RemoveAllListeners();
       craftButton.onClick.RemoveAllListeners();
       incrementButton.onClick.RemoveAllListeners();
@@ -111,10 +113,6 @@ namespace Craft {
       }
 
       var count = int.Parse(value);
-
-      // if (count == minCount || count == maxCount) {
-      //   return;
-      // }
 
       count = Math.Clamp(count, 0, maxCount);
 
@@ -162,7 +160,34 @@ namespace Craft {
     private void CalculateMaxCount() {
       var maxCountByInputOutput = CalculateMaxCountByCurrentCraftingAndOutput();
       var maxCountByResources = CalculateMaxCountByResources();
-      maxCount = Math.Min(maxCountByInputOutput, maxCountByResources);
+      var maxCountByFuel = CalculateMaxCountByFuel();
+
+      maxCount = maxCountByFuel > -1
+        ? Math.Min(maxCountByInputOutput, Math.Min(maxCountByResources, maxCountByFuel))
+        : Math.Min(maxCountByInputOutput, maxCountByResources);
+
+      RunFuelEffect(maxCountByFuel);
+    }
+
+    private void RunFuelEffect(int maxCountByFuel) {
+      if (GetFuelItems() == null) {
+        return;
+      }
+
+      if (maxCountByFuel == 0) {
+        GetFuelItems().StartBlink();
+      }
+      else {
+        GetFuelItems().StopBlink();
+      }
+    }
+
+    private int CalculateMaxCountByFuel() {
+      if (station.FuelInventory == null || recipe.Fuel == null) {
+        return -1;
+      }
+
+      return station.FuelInventory.GetTotalCount() / recipe.Fuel.Amount;
     }
 
     private int CalculateMaxCountByResources() {
@@ -179,7 +204,7 @@ namespace Craft {
 
     private int CalculateMaxCountByCurrentCraftingAndOutput() {
       var freeOutputSlotsCount = station.OutputInventory.GetFreeSlotsCount();
-      var freeInputSlotsCount = station.OutputSlotsAmount - station.CraftInputsItemsIds.Count;
+      var freeInputSlotsCount = station.OutputSlotsAmount - station.Inputs.Count;
 
       if (freeInputSlotsCount <= 0) {
         return 0;
@@ -190,20 +215,23 @@ namespace Craft {
 
       var maxStackSize = recipe.Result.MaxStackSize;
       var outputSlotsCount = station.OutputInventory.CalculateTotalCounts();
-      var inputItemsIds = station.CraftItemsTotal.Keys.Select(x => x.Id).ToList();
+      // var inputItemsIds = station.CraftItemsTotal.Keys.Select(x => x.Id).ToList();
+      var inputItemsIds = station.Inputs.Select(x => x.Recipe.Result.Id).ToList();
 
       // Count used slots and check crafting progress
-      foreach (var (item, count) in station.CraftItemsTotal) {
-        var outputCount = outputSlotsCount.ContainsKey(item.Id) ? outputSlotsCount[item.Id] : 0;
-        var inputOutputCount = count + outputCount;
+      foreach (var input in station.Inputs) {
+        var id = input.Recipe.Result.Id;
+        var inputMaxStackSize = input.Recipe.Result.MaxStackSize;
+        var outputCount = outputSlotsCount.ContainsKey(id) ? outputSlotsCount[id] : 0;
+        var inputOutputCount = input.Count + outputCount;
 
-        usedSlotsByCrafting += (inputOutputCount + item.MaxStackSize - 1) / item.MaxStackSize;
+        usedSlotsByCrafting += (inputOutputCount + inputMaxStackSize - 1) / inputMaxStackSize;
 
         if (outputCount > 0) {
-          usedSlotsByCrafting -= (outputCount + item.MaxStackSize - 1) / item.MaxStackSize;
+          usedSlotsByCrafting -= (outputCount + inputMaxStackSize - 1) / inputMaxStackSize;
         }
 
-        if (item.Id == recipe.Result.Id) {
+        if (id == recipe.Result.Id) {
           var left = inputOutputCount % maxStackSize;
           leftCount += (left == 0) ? 0 : maxStackSize - (left);
         }

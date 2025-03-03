@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e214a199223d5de418ffb2f2504c2580, type: 3}
   m_Name: WorkbenchOutput
   m_EditorClassIdentifier: 
-  savePath: /workbench.save
   database: {fileID: 11400000, guid: b81f813bb56bb4942a967fdd3bd03ac0, type: 2}
-  slotsCount: 24
-  type: 4
+  slotsCount: 5
+  type: 5
   Container:
     Slots:
     - Item:

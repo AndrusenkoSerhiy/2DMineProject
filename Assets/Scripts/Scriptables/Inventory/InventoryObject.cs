@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using Inventory;
 using Items;
+using SaveSystem;
 using Scriptables.Items;
 using UnityEngine;
 
@@ -22,12 +20,15 @@ namespace Scriptables.Inventory {
 
   [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
   public class InventoryObject : ScriptableObject {
-    public string savePath;
+    // public string savePath;
     public ItemDatabaseObject database;
     public int slotsCount = 24;
 
     public InventoryType type;
+
     public event Action<SlotSwappedEventData> OnSlotSwapped;
+
+    // public event Action OnLoaded;
     public event Action OnResorted;
 
     //public int MAX_ITEMS;
@@ -36,6 +37,12 @@ namespace Scriptables.Inventory {
     private InventoryContainer Container;
 
     public InventorySlot[] GetSlots => Container.Slots;
+    private bool loaded;
+
+    public void OnEnable() {
+      Debug.Log("InventoryObject OnEnable");
+      loaded = false;
+    }
 
     public InventoryObject() {
       Container = new InventoryContainer(slotsCount);
@@ -128,7 +135,7 @@ namespace Scriptables.Inventory {
 
       var remainingAmount = amount;
 
-      for (var i = 0; i < GetSlots.Length - 1 && remainingAmount > 0; i++) {
+      for (var i = 0; i < GetSlots.Length && remainingAmount > 0; i++) {
         var slot = GetSlots[i];
 
         if (slot.isEmpty || slot.Item.info.Id != id) {
@@ -241,6 +248,20 @@ namespace Scriptables.Inventory {
       return count;
     }
 
+    public int GetTotalCount() {
+      var count = 0;
+
+      foreach (var slot in GetSlots) {
+        if (slot.isEmpty) {
+          continue;
+        }
+
+        count += slot.amount;
+      }
+
+      return count;
+    }
+
     public void AddDefaultItem(ItemObject defaultItem) {
       if (!isEmpty()) {
         return;
@@ -284,7 +305,7 @@ namespace Scriptables.Inventory {
 
       //spawn higher in y pos because need TO DO pick up on action not the trigger enter
       var newObj = Instantiate(item.info.spawnPrefab,
-        GameManager.instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
+        GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = amount;
     }
@@ -347,47 +368,53 @@ namespace Scriptables.Inventory {
       return null;
     }
 
-    [ContextMenu("Save")]
-    public void Save() {
-      IFormatter formatter = new BinaryFormatter();
-      Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Create,
-        FileAccess.Write);
-      formatter.Serialize(stream, Container);
-      stream.Close();
-    }
-
-    [ContextMenu("Load")]
-    public void Load() {
-      //Debug.Log("Load " + Application.persistentDataPath);
-      if (!File.Exists(string.Concat(Application.persistentDataPath, savePath))) {
-        return;
-      }
-
-      IFormatter formatter = new BinaryFormatter();
-      Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Open,
-        FileAccess.Read);
-      var newContainer = (InventoryContainer)formatter.Deserialize(stream);
-
-      for (var i = 0; i < GetSlots.Length; i++) {
-        var newSlot = newContainer.Slots[i];
-
-        newSlot.Item.RestoreItemObject(database.ItemObjects);
-
-        GetSlots[i].UpdateSlotBySlot(newSlot);
-      }
-
-      stream.Close();
-    }
-
     [ContextMenu("Clear")]
     public void Clear() {
       Container.Clear();
     }
 
-    [ContextMenu("Clear and Save", false, 0)]
-    public void ClearAndSave() {
+    public void SaveToGameData() {
+      var saveId = type.ToString();
+      SaveLoadSystem.Instance.gameData.Inventories[saveId] = new InventoryData {
+        Id = saveId,
+        Slots = GetSlots
+      };
+    }
+
+    public void LoadFromGameData() {
       Clear();
-      Save();
+
+      var saveId = type.ToString();
+      if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(saveId, out var data)) {
+        return;
+      }
+
+      var isNew = data.Slots == null || data.Slots.Length == 0;
+      if (isNew) {
+        return;
+      }
+
+      Load(data.Slots);
+    }
+
+    private void Load(InventorySlot[] slots) {
+      if (loaded) {
+        return;
+      }
+
+      for (var i = 0; i < slots.Length; i++) {
+        var slotData = slots[i];
+        if (slotData.Item.id == string.Empty) {
+          continue;
+        }
+
+        slotData.Item.RestoreItemObject(database.ItemObjects);
+
+        GetSlots[i].UpdateSlotBySlot(slotData);
+      }
+
+      loaded = true;
+      // OnLoaded?.Invoke();
     }
   }
 }

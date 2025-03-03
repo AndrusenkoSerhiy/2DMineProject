@@ -15,8 +15,8 @@ namespace Tools {
     private MiningRobotController miningRobotController;
 
     private void Start() {
-      playerController = GameManager.instance.PlayerController;
-      miningRobotController = GameManager.instance.MiningRobotController;
+      playerController = GameManager.Instance.PlayerController;
+      miningRobotController = GameManager.Instance.MiningRobotController;
     }
     public string InteractionPrompt => isPlayerInside ? $"{interactExitName}" : $"{interactEnterName}";
 
@@ -44,7 +44,7 @@ namespace Tools {
       miningRobotController.SetLockHighlight(false);
       
       SetPlayerPosition(playerTransform, Vector3.zero);
-      GameManager.instance.CurrPlayerController = miningRobotController;
+      GameManager.Instance.CurrPlayerController = miningRobotController;
     }
 
     private void ExitFromRobot() {
@@ -54,7 +54,7 @@ namespace Tools {
       playerController.EnableController(true);
       playerController.SetLockHighlight(false);
       miningRobotController.SetLockHighlight(true);
-      GameManager.instance.CurrPlayerController = playerController;
+      GameManager.Instance.CurrPlayerController = playerController;
     }
 
     private void SetPlayerPosition(Transform tr, Vector3 pos) {

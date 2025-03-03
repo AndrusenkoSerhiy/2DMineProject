@@ -30,7 +30,7 @@ namespace Inventory {
     public InventorySlot Slot => slot;
 
     public void Awake() {
-      var uiSettings = GameManager.instance.UISettings;
+      var uiSettings = GameManager.Instance.UISettings;
       buttonsActiveColor = uiSettings.buttonsActiveColor;
       buttonsDisabledColor = uiSettings.buttonsDisabledColor;
     }
@@ -45,11 +45,11 @@ namespace Inventory {
 
     public void Update() {
       if (active) {
-        var mousePos = UserInput.instance.GetMousePosition();
+        var mousePos = GameManager.Instance.UserInput.GetMousePosition();
         tempDragItem.UpdatePosition(mousePos);
       }
       else {
-        if (UserInput.instance.controls.UI.Cancel.triggered
+        if (GameManager.Instance.UserInput.controls.UI.Cancel.triggered
             || Input.GetMouseButtonDown(0) && !IsPointerOverUIObject()) {
           Cancel();
         }

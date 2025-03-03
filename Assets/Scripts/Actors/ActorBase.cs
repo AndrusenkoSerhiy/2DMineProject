@@ -14,7 +14,7 @@ namespace Actors {
     private void Awake() {
       _currHP = _maxHP;
       unitHealth = new UnitHealth(_currHP);
-      animParam = GameManager.instance.AnimatorParameters;
+      animParam = GameManager.Instance.AnimatorParameters;
     }
 
     public bool hasTakenDamage {

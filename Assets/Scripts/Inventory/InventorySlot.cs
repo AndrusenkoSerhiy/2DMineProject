@@ -1,22 +1,21 @@
 ﻿using System;
 using Scriptables.Inventory;
 using Scriptables.Items;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Inventory {
   [Serializable]
   public class InventorySlot {
     [NonSerialized] public IInventoryUI Parent;
-    [NonSerialized] public GameObject SlotDisplay;
+    [NonSerialized] public SlotDisplay SlotDisplay;
     [field: NonSerialized] public event Action<SlotUpdateEventData> OnAfterUpdated;
     [field: NonSerialized] public event Action<InventorySlot> OnBeforeUpdated;
+    public ItemObject AllowedItem;
 
     // [NonSerialized] public Action<string, int> OnAmountUpdate;
-    [NonSerialized] private GameObject outline;
-    [NonSerialized] private Image background;
-    [NonSerialized] private TextMeshProUGUI text;
+    // [NonSerialized] private GameObject outline;
+    // [NonSerialized] private Image background;
+    // [NonSerialized] private TextMeshProUGUI text;
 
     public Item Item;
     public int amount;
@@ -27,8 +26,8 @@ namespace Inventory {
     public int ContainerIndex { get; private set; } = 0;
 
     public bool isSelected;
-    public Image Background => GetBackground();
-    public TextMeshProUGUI Text => GetText();
+    /*public Image Background => GetBackground();
+    public TextMeshProUGUI Text => GetText();*/
 
     private bool preventEvents = false;
 
@@ -52,7 +51,11 @@ namespace Inventory {
       InventoryType = parent.Inventory.type;
     }
 
-    public void SetSlotDisplay(GameObject display) {
+    public bool IsItemAllowed(ItemObject item) {
+      return AllowedItem == null || AllowedItem == item || item == null;
+    }
+
+    public void SetSlotDisplay(SlotDisplay display) {
       if (display == null) {
         return;
       }
@@ -106,7 +109,8 @@ namespace Inventory {
       itemValue ??= Item;
       var maxStack = itemValue.info ? itemValue.info.MaxStackSize : 0;
       var newAmount = Mathf.Min(amountValue, maxStack);
-      var overFlow = Mathf.Max(0, newAmount - maxStack);
+      var overFlow = Mathf.Max(0, amountValue - maxStack);
+      isSelected = formSlot?.isSelected ?? isSelected;
 
       Item = itemValue;
       amount = newAmount;
@@ -150,33 +154,33 @@ namespace Inventory {
     }
 
     public void Select() {
-      ActivateOutline();
+      SlotDisplay.ActivateOutline();
       isSelected = true;
     }
 
     public void Unselect() {
-      DeactivateOutline();
+      SlotDisplay.DeactivateOutline();
       isSelected = false;
     }
 
     public void CheckSelectedUi() {
       if (isSelected) {
-        ActivateOutline();
+        SlotDisplay.ActivateOutline();
       }
       else {
-        DeactivateOutline();
+        SlotDisplay.DeactivateOutline();
       }
     }
 
-    private void ActivateOutline() {
+    /*private void ActivateOutline() {
       GetOutline().SetActive(true);
     }
 
     private void DeactivateOutline() {
       GetOutline().SetActive(false);
-    }
+    }*/
 
-    private GameObject GetOutline() {
+    /*private GameObject GetOutline() {
       if (!outline) {
         outline = SlotDisplay.transform.GetChild(0).gameObject;
       }
@@ -203,6 +207,6 @@ namespace Inventory {
     public void ResetBackgroundAndText() {
       background = null;
       text = null;
-    }
+    }*/
   }
 }

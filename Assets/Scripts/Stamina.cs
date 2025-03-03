@@ -11,7 +11,10 @@ namespace DefaultNamespace {
     [SerializeField] private float currentStamina;
     [SerializeField] private float staminaDrain = 20f;
     [SerializeField] private float staminaRecovery = 10f;
-    [Tooltip("min amount of stamina when we can start sprinting")][SerializeField] private float minStamina = 10f;
+
+    [Tooltip("min amount of stamina when we can start sprinting")] [SerializeField]
+    private float minStamina = 10f;
+
     [SerializeField] private bool isSprinting;
     private PlayerController playerController;
     private float previousStamina;
@@ -21,11 +24,11 @@ namespace DefaultNamespace {
     private void Start() {
       currentStamina = maxStamina;
       staminaBar.SetMaxStamina(maxStamina);
-      UserInput.instance.controls.GamePlay.Sprint.performed += SprintPerformed;
-      UserInput.instance.controls.GamePlay.Sprint.canceled += SprintCanceled;
-      playerController = GameManager.instance.PlayerController;
+      GameManager.Instance.UserInput.controls.GamePlay.Sprint.performed += SprintPerformed;
+      GameManager.Instance.UserInput.controls.GamePlay.Sprint.canceled += SprintCanceled;
+      playerController = GameManager.Instance.PlayerController;
     }
-    
+
     private void SprintPerformed(InputAction.CallbackContext context) {
       SetSprinting(true);
     }
@@ -37,11 +40,11 @@ namespace DefaultNamespace {
     private void SetSprinting(bool value) {
       //block use stamina if she not enough 
       if (value && (currentStamina < minStamina || Mathf.Sign(playerController.GetMoveForward()) < 0) ||
-          UserInput.instance.GetMovement().Equals(Vector2.zero) ||
+          GameManager.Instance.UserInput.GetMovement().Equals(Vector2.zero) ||
           !playerController.Grounded && !playerController.WasSprintingOnJump)
-        
+
         return;
-      
+
       isSprinting = value;
     }
 
@@ -58,11 +61,13 @@ namespace DefaultNamespace {
       else {
         currentStamina += staminaRecovery * Time.deltaTime;
       }
+
       currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
       if (currentStamina <= 0) {
         SetSprinting(false);
       }
     }
+
     private void UpdateStaminaUI() {
       if (!Mathf.Approximately(previousStamina, currentStamina)) {
         staminaBar.SetStamina(currentStamina);
@@ -70,8 +75,12 @@ namespace DefaultNamespace {
     }
 
     private void OnDestroy() {
-      UserInput.instance.controls.GamePlay.Sprint.performed -= SprintPerformed;
-      UserInput.instance.controls.GamePlay.Sprint.canceled -= SprintCanceled;
+      if (!GameManager.HasInstance) {
+        return;
+      }
+
+      GameManager.Instance.UserInput.controls.GamePlay.Sprint.performed -= SprintPerformed;
+      GameManager.Instance.UserInput.controls.GamePlay.Sprint.canceled -= SprintCanceled;
     }
   }
 }

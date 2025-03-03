@@ -6,7 +6,7 @@ namespace Player {
 
     protected override void Awake() {
       base.Awake();
-      GameManager.instance.MiningRobotController = this;
+      GameManager.Instance.MiningRobotController = this;
       EnableController(false);
     }
 

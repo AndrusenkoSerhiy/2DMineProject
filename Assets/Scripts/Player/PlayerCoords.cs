@@ -28,7 +28,7 @@ namespace Player {
       var coords = CoordsTransformer.WorldToGrid(trForGrid.position);
       Coords.X = coords.X;
       Coords.Y = coords.Y;
-      GameManager.instance.ChunkController.CheckArea();
+      GameManager.Instance.ChunkController.CheckArea();
     }
   }
 }

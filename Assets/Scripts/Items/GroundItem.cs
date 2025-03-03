@@ -22,7 +22,7 @@ namespace Items {
         return true;
       }
 
-      var inventory = GameManager.instance.PlayerInventory.inventory;
+      var inventory = GameManager.Instance.PlayerInventory.inventory;
       inventory.AddItem(new Item(item), Count, null, this);
       isPicked = true;
       Destroy(gameObject);

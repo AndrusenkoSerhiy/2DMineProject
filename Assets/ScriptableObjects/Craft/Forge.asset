@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c790fc7afd8b62a4bac7524e9e72ef23, type: 3}
+  m_Name: Forge
+  m_EditorClassIdentifier: 
+  id: 1cee76d2-bca6-4314-a260-682d224580e1
+  RecipeType: 3
+  Title: Forge
+  Description: 
+  OutputSlotsAmount: 5
+  recipes:
+  - {fileID: 11400000, guid: 0b2da3a7f7f714942853f3a6f27f2027, type: 2}
+  OutputInventory: {fileID: 11400000, guid: aabd5fa6752b5304799d43821d5b2d40, type: 2}
+  FuelInventory: {fileID: 11400000, guid: 46993ac525d8ba142963101e4c5421a8, type: 2}
+  PlayEffectsWhenOpened: 0
+  PlayEffectsWhenClosed: 1
+  CraftStartTimeString: 
+  SecondsLeft: 0
+  CraftingTasks: []
+  Inputs: []

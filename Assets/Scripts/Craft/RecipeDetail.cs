@@ -10,12 +10,11 @@ namespace Craft {
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI craftTime;
-    [SerializeField] private GameObject rowPrefab;
-    [SerializeField] private GameObject rowEmptyPrefab;
     [SerializeField] private GameObject listContainer;
-    [SerializeField] private List<GameObject> rows;
+    [SerializeField] private List<RecipeDetailRow> rows;
+    // [SerializeField] private List<RecipeDetailRow> fuelRows;
 
-    private Recipe currentRecipe;
+    protected Recipe currentRecipe;
     private string[] recipeIngredientsIds;
     private ITotalAmount totalAmount;
 
@@ -41,12 +40,22 @@ namespace Craft {
     }
 
     public void PrintList() {
-      var rowIndex = 0;
-      recipeIngredientsIds = new string[currentRecipe.RequiredMaterials.Count];
+      PrintList(rows, currentRecipe.RequiredMaterials);
 
-      foreach (var resource in currentRecipe.RequiredMaterials) {
-        var row = rows[rowIndex++];
-        var recipeDetailRow = row.GetComponent<RecipeDetailRow>();
+      /*if (currentRecipe.Fuel == null || fuelRows.Count <= 0) {
+        return;
+      }
+
+      var fuels = new List<Recipe.CraftingMaterial> { currentRecipe.Fuel };
+      PrintList(fuelRows, fuels);*/
+    }
+
+    protected void PrintList(List<RecipeDetailRow> rows, List<Recipe.CraftingMaterial> materials) {
+      var rowIndex = 0;
+      recipeIngredientsIds = new string[materials.Count];
+
+      foreach (var resource in materials) {
+        var recipeDetailRow = rows[rowIndex++];
         var totalAmountValue = totalAmount.GetResourceTotalAmount(resource.Material.Id);
         recipeDetailRow.SetRow(resource, totalAmountValue);
 
@@ -54,8 +63,7 @@ namespace Craft {
       }
 
       while (rowIndex + 1 < rows.Count) {
-        var row = rows[rowIndex++];
-        var recipeDetailRow = row.GetComponent<RecipeDetailRow>();
+        var recipeDetailRow = rows[rowIndex++];
         recipeDetailRow.ClearRow();
       }
     }

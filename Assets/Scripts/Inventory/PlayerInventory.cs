@@ -3,47 +3,36 @@ using Scriptables.Inventory;
 using Scriptables.Items;
 using Settings;
 using UnityEngine;
-using System;
 using Pool;
+using SaveSystem;
 
 namespace Inventory {
-  public class PlayerInventory : MonoBehaviour, IPlayerInventory {
+  public class PlayerInventory : MonoBehaviour, IPlayerInventory, ISaveLoad {
     public InventoryObject inventory;
     public InventoryObject quickSlots;
 
     [SerializeField] private ItemObject defaultItem;
 
-    public Action OnQuickSlotLoaded;
+    // public Action OnQuickSlotLoaded;
 
     private PlayerInventoryWindow inventoryWindow;
 
+    public void Awake() {
+      Load();
+    }
+
     public void Start() {
-      inventoryWindow = GameManager.instance.WindowsController.GetWindow<PlayerInventoryWindow>();
-      inventory.Load();
-
-      quickSlots.Load();
-      OnQuickSlotLoaded?.Invoke();
+      inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
+      GameManager.Instance.UserInput.controls.UI.Inventory.performed += ctx => ShowInventory();
     }
 
-    public void Update() {
-      if (UserInput.instance.controls.UI.Inventory.triggered) {
-        // InitInventoryWindow();
-        // UserInput.instance.EnableUIControls(!inventoryWindow.IsShow);
-        if (inventoryWindow.IsShow) {
-          inventoryWindow.Hide();
-        }
-        else {
-          inventoryWindow.Show();
-        }
+    private void ShowInventory() {
+      if (inventoryWindow.IsShow) {
+        inventoryWindow.Hide();
       }
-    }
-
-    public void OnApplicationQuit() {
-      inventory.Save();
-      quickSlots.Save();
-
-      inventory.Clear();
-      quickSlots.Clear();
+      else {
+        inventoryWindow.Show();
+      }
     }
 
     public void AddItemToInventory(ItemObject item, int count, Vector3 cellPos) {
@@ -69,5 +58,19 @@ namespace Inventory {
         ObjectPooler.Instance.SpawnFlyEffect(list[i].item, cellPos);
       }
     }
+
+    #region Save/Load
+
+    public string Id => inventory.type.ToString();
+
+    public void Load() {
+      inventory.LoadFromGameData();
+    }
+
+    public void Save() {
+      inventory.SaveToGameData();
+    }
+
+    #endregion
   }
 }

@@ -11,14 +11,15 @@ namespace Scriptables {
     [SerializeField] private int sortingOrder;
     [SerializeField] private ItemObject itemData;
     [SerializeField] private Color mapColor;
-
+    [SerializeField] private Vector2 colliderOffset = Vector2.zero;
+    [SerializeField] private Vector2 colliderSize = new Vector2(3.44f, 3.44f);
 
     public Sprite Sprite(int index) => tileDatas[index].Sprite;
     public int SortingOrder(int index) => sortingOrder + tileDatas[index].OffsetSorting;
     public int SortingOrder() => sortingOrder;
 
-    public Vector3 PosOffset(int index) => tileDatas[index].OffsetPosition;
-    public Vector3 ColOffset(int index) => tileDatas[index].OffsetCollider;
+    public Vector3 ColSize() => colliderSize;
+    public Vector3 ColOffset() => colliderOffset;
 
     public ItemObject ItemData => itemData;
     public Color Color => mapColor;

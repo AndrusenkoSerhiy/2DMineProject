@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c790fc7afd8b62a4bac7524e9e72ef23, type: 3}
+  m_Name: Handcraft
+  m_EditorClassIdentifier: 
+  id: b2c7e5b9-5700-490a-a2d8-04268b451aaa
+  RecipeType: 0
+  Title: Handcraft
+  Description: Workbench desc
+  OutputSlotsAmount: 2
+  recipes:
+  - {fileID: 11400000, guid: fd7a86ae24964e94aa4f8b3186514b03, type: 2}
+  OutputInventory: {fileID: 11400000, guid: da5057e9594d23f4b9817b37e3db467e, type: 2}
+  PlayEffectsWhenOpened: 0
+  PlayEffectsWhenClosed: 1
+  CraftStartTimeString: 
+  SecondsLeft: 0
+  CraftingTasks: []
+  Inputs: []

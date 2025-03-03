@@ -3,17 +3,11 @@ using UnityEngine;
 
 namespace Scriptables {
   public abstract class BaseScriptableObject : ScriptableObject {
-    [SerializeField, HideInInspector] private string id = Guid.NewGuid().ToString();
+    [SerializeField, HideInInspector] private string id;
     public string Id => id;
 
     public void RegenerateId() {
       id = Guid.NewGuid().ToString();
-    }
-
-    private void OnValidate() {
-      if (string.IsNullOrEmpty(id)) {
-        id = Guid.NewGuid().ToString();
-      }
     }
   }
 }

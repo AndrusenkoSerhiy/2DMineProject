@@ -56,7 +56,7 @@ namespace Windows {
 
     //try to hide active window
     private void HandleEsc() {
-      if (UserInput.instance.controls.UI.Cancel.triggered) {
+      if (GameManager.Instance.UserInput.controls.UI.Cancel.triggered) {
         var window = windowsList.Find(e => e.IsShow);
         if (window) {
           window.Hide();

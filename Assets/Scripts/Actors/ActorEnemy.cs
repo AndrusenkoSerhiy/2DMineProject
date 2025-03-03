@@ -24,7 +24,7 @@ namespace Actors {
       if (_animator.GetBool(animParam.IsDeadHash))
         return;
 
-      currentTarget = GameManager.instance.PlayerController.GetComponent<IDamageable>();
+      currentTarget = GameManager.Instance.PlayerController.GetComponent<IDamageable>();
       if (currentTarget.GetHealth() <= 0)
         return;
 

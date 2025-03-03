@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Inventory;
 using Scriptables.Craft;
@@ -9,23 +8,30 @@ using UnityServiceLocator;
 
 namespace Craft {
   public class CraftManager : MonoBehaviour, IInventoryDropZoneUI {
-    [SerializeField] private Workstation station;
     [SerializeField] private Button takeAllButton;
     [SerializeField] private bool preventItemDrop;
+    [SerializeField] private UserInterface outputInterface;
 
-    private IRecipesManager recipesManager;
+    private Workstation station;
+    private IRecipesList recipesList;
     private IRecipeDetail detail;
     private ICraftActions craftActions;
     private PlayerInventory playerInventory;
     private IInputItems inputItems;
     private ITotalAmount totalAmount;
+    private IFuelItems fuelItems;
 
     private bool started;
 
     public bool PreventItemDropIn => preventItemDrop;
 
+    public void Setup(Workstation station) {
+      this.station = station;
+      outputInterface.Setup(station.OutputInventory);
+    }
+
     public void Awake() {
-      ServiceLocator.For(this).Register<Workstation>(station);
+      ServiceLocator.For(this).Register(station);
     }
 
     public void Start() {
@@ -43,8 +49,11 @@ namespace Craft {
 
     private void OnDisable() {
       craftActions.ClearComponent();
-      recipesManager.ClearComponent();
+      recipesList.ClearComponent();
       totalAmount.ClearComponent();
+      inputItems.ClearComponent();
+      fuelItems?.ClearComponent();
+
       RemoveEvents();
     }
 
@@ -52,8 +61,13 @@ namespace Craft {
       InitReferences();
       AddEvents();
       totalAmount.InitComponent();
-      recipesManager.InitComponent();
+      recipesList.InitComponent();
       craftActions.InitComponent();
+      inputItems.InitComponent();
+
+      Load();
+
+      fuelItems?.InitComponent();
     }
 
     private void InitReferences() {
@@ -61,20 +75,44 @@ namespace Craft {
         return;
       }
 
-      playerInventory = GameManager.instance.PlayerInventory;
+      playerInventory = GameManager.Instance.PlayerInventory;
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
       detail = ServiceLocator.For(this).Get<IRecipeDetail>();
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
-      recipesManager = ServiceLocator.For(this).Get<IRecipesManager>();
+      recipesList = ServiceLocator.For(this).Get<IRecipesList>();
+
+      ServiceLocator.For(this).TryGet(out fuelItems);
+    }
+
+    private void Load() {
+      ProcessCraftedInputs();
+    }
+
+    private void ProcessCraftedInputs() {
+      station.ProcessCraftedInputs();
+
+      var inputs = station.Inputs;
+      if (inputs.Count == 0) {
+        return;
+      }
+
+      foreach (var input in inputs) {
+        if (inputItems.InputInProgress == 0) {
+          station.SecondsLeft = station.CalculateTimeLeft(input);
+        }
+
+        inputItems.SetRecipe(input.Count, input.Recipe);
+      }
     }
 
     private void AddEvents() {
-      Debug.Log("CraftManager AddEvents");
       //recipes list
-      recipesManager.OnSelected += OnRecipeSelectedHandler;
+      recipesList.OnSelected += OnRecipeSelectedHandler;
       //inventory slots
       AddSlotsUpdateEvents();
+      //Fuel slots
+      AddFuelUpdateEvents();
       //craft input actions
       craftActions.OnCraftRequested += OnCraftRequestedHandler;
       //craft input slots
@@ -85,7 +123,6 @@ namespace Craft {
     }
 
     private void RemoveEvents() {
-      Debug.Log("CraftManager RemoveEvents");
       //craft output slots
       takeAllButton.onClick.RemoveAllListeners();
       RemoveOutputUpdateEvents();
@@ -93,25 +130,25 @@ namespace Craft {
       RemoveInputEvents();
       //craft input actions
       craftActions.OnCraftRequested -= OnCraftRequestedHandler;
+      //Fuel slots
+      RemoveFuelUpdateEvents();
       //inventory slots
       RemoveSlotsUpdateEvents();
       //recipes list
-      recipesManager.OnSelected -= OnRecipeSelectedHandler;
+      recipesList.OnSelected -= OnRecipeSelectedHandler;
     }
 
     private void OnCraftRequestedHandler(int count) {
-      var recipe = recipesManager.Recipe;
+      var recipe = recipesList.Recipe;
 
       //remove resources from inventory
       foreach (var item in recipe.RequiredMaterials) {
         var totalCount = count * item.Amount;
-        //playerInventory.inventory.RemoveItem(item.Material.Id, totalCount);
         totalAmount.RemoveFromInventoriesPool(item.Material.Id, totalCount);
       }
 
       inputItems.SetRecipe(count, recipe);
-      station.AddItemToCraftTotal(recipe.Result, count);
-      station.AddToCraftInputsItemsIds(recipe.Result.Id);
+      station.AddItemToInputs(recipe, count);
 
       craftActions.UpdateAndPrintInputCount();
     }
@@ -121,6 +158,8 @@ namespace Craft {
 
       craftActions.SetRecipe(recipe);
       craftActions.UpdateAndPrintInputCount(true);
+
+      fuelItems?.UpdateInterface(recipe);
     }
 
     private void AddSlotsUpdateEvents() {
@@ -146,48 +185,50 @@ namespace Craft {
 
     private void AddInputEvents() {
       foreach (var input in inputItems.Items) {
-        input.OnItemCrafted += AddCraftedItemToOutput;
-        input.OnInputAllCrafted += OnInputAllCraftedHandler;
         input.OnCanceled += OnInputCanceledHandler;
       }
+
+      var craftInput = inputItems.CraftInput;
+      craftInput.OnItemCrafted += AddCraftedItemToOutput;
+      craftInput.OnInputAllCrafted += OnInputAllCraftedHandler;
     }
 
     private void RemoveInputEvents() {
       foreach (var input in inputItems.Items) {
-        input.OnInputAllCrafted -= OnInputAllCraftedHandler;
-        input.OnItemCrafted -= AddCraftedItemToOutput;
         input.OnCanceled -= OnInputCanceledHandler;
       }
+
+      var craftInput = inputItems.CraftInput;
+      craftInput.OnInputAllCrafted -= OnInputAllCraftedHandler;
+      craftInput.OnItemCrafted -= AddCraftedItemToOutput;
     }
 
-    private void AddCraftedItemToOutput(Recipe recipe, int count) {
-      station.RemoveCountFromCraftTotal(recipe.Result, count);
+    private void AddCraftedItemToOutput(ItemCraftedEventData data) {
+      station.RemoveInputCountFromInputs(data.Count);
 
       var outputInventory = station.OutputInventory;
-      var item = new Item(recipe.Result);
+      var item = new Item(data.Recipe.Result);
 
-      outputInventory.AddItem(item, count);
+      fuelItems?.ConsumeFuel(data.Recipe, data.Count);
+      outputInventory.AddItem(item, data.Count);
     }
 
     private void OnInputAllCraftedHandler() {
-      station.RemoveFromCraftInputsItemsIds();
       inputItems.UpdateWaitInputs();
       craftActions.UpdateAndPrintInputCount();
     }
 
-    private void OnInputCanceledHandler(InputItem inputItem) {
-      station.RemoveCountFromCraftTotal(inputItem.Recipe.Result, inputItem.CountLeft);
-      station.RemoveFromCraftInputsItemsIds(inputItem.Position);
-
-      inputItems.UpdateTimersStartTimes(inputItem);
-      inputItems.UpdateWaitInputs(inputItem.Position);
+    private void OnInputCanceledHandler(ItemCanceledEventData data) {
+      station.RemoveInputFromInputs(data.Position);
 
       //remove resources from inventory
-      foreach (var item in inputItem.Recipe.RequiredMaterials) {
-        var totalCount = inputItem.CountLeft * item.Amount;
+      foreach (var item in data.Recipe.RequiredMaterials) {
+        var totalCount = data.CountLeft * item.Amount;
         var addItem = new Item(item.Material);
         playerInventory.inventory.AddItem(addItem, totalCount);
       }
+
+      inputItems.UpdateWaitInputs(data.Position);
     }
 
     private void AddOutputUpdateEvents() {
@@ -210,6 +251,30 @@ namespace Craft {
 
     private void OnTakeAllButtonClickHandler() {
       station.OutputInventory.MoveAllItemsTo(playerInventory.inventory);
+    }
+
+    private void AddFuelUpdateEvents() {
+      if (station.FuelInventory == null) {
+        return;
+      }
+
+      foreach (var slot in station.FuelInventory.GetSlots) {
+        slot.OnAfterUpdated += FuelSlotUpdateHandler;
+      }
+    }
+
+    private void RemoveFuelUpdateEvents() {
+      if (station.FuelInventory == null) {
+        return;
+      }
+
+      foreach (var slot in station.FuelInventory.GetSlots) {
+        slot.OnAfterUpdated -= FuelSlotUpdateHandler;
+      }
+    }
+
+    private void FuelSlotUpdateHandler(SlotUpdateEventData data) {
+      craftActions.UpdateAndPrintInputCount();
     }
   }
 }

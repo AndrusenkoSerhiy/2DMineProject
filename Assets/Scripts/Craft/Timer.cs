@@ -1,12 +1,15 @@
 using System;
+using Scriptables.Craft;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityServiceLocator;
 
 namespace Craft {
   public class Timer : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI timerText;
-    private DateTime startTime;
-    private DateTime endTime;
+
+    private Workstation station;
     private int timeForOne;
     private int totalItems;
     private int itemsLeft;
@@ -14,47 +17,57 @@ namespace Craft {
     private float timeLeft;
     private float lastCheckTime;
     private bool isStarted;
+    private bool isPaused;
 
     public Action onTimerStop;
     public Action<int> onItemTimerEnd;
     public bool IsStarted => isStarted;
 
-    public void OnEnable() {
-      UpdateTimer();
-    }
-
-    private void UpdateTimer() {
-      var currentTime = DateTime.Now.ToUniversalTime();
-      var elapsedTime = (float)(currentTime - startTime).TotalSeconds;
-      timeLeft = totalTime - elapsedTime;
+    public void Awake() {
+      station = ServiceLocator.For(this).Get<Workstation>();
     }
 
     public void Update() {
-      if (!isStarted) {
+      if (!isStarted || isPaused) {
         return;
       }
 
       TimerTick();
     }
 
-    public void InitTimer(int count, int time, DateTime? start = null) {
-      startTime = start ?? DateTime.Now.ToUniversalTime();
+    public void InitTimer(int count, int time) {
       totalItems = count;
       timeForOne = time;
       totalTime = count * time;
       itemsLeft = totalItems;
-      timeLeft = totalTime;
       lastCheckTime = totalTime;
-      endTime = startTime.AddSeconds(totalTime);
+
+      if (station.SecondsLeft > 0) {
+        timeLeft = Mathf.Clamp(station.SecondsLeft, 0, totalTime);
+        station.SecondsLeft = 0;
+      }
+      else {
+        timeLeft = totalTime;
+      }
 
       PrintTime();
     }
 
-    public DateTime GetEndTime() => endTime;
-    public DateTime GetStartTime() => startTime;
+    public void Pause() => isPaused = true;
 
     public void StartTimer() {
       isStarted = true;
+      var currentTime = Helper.GetCurrentTime();
+      var timePassed = totalTime - timeLeft;
+      station.CraftStartTime = timePassed <= 0 ? currentTime : currentTime.AddSeconds(-timePassed);
+
+      var timeLeftForCurrent = Mathf.Min(timeLeft, timeForOne);
+      station.SetProgress(timeForOne, timeLeftForCurrent);
+    }
+
+    public void Reset() {
+      isStarted = false;
+      timerText.text = string.Empty;
     }
 
     private void CheckItemCompletion() {
@@ -78,22 +91,20 @@ namespace Craft {
     private void TimerTick() {
       timeLeft -= Time.deltaTime;
 
+      var timeLeftForCurrent = timeLeft - ((itemsLeft - 1) * timeForOne);
+      station.UpdateProgress(timeLeftForCurrent);
+
       CheckItemCompletion();
       PrintTime();
 
       if (timeLeft <= 0) {
         StopTimer();
       }
-
     }
 
     private void StopTimer() {
+      station.ResetProgress();
       onTimerStop?.Invoke();
-    }
-
-    public void Reset() {
-      isStarted = false;
-      timerText.text = string.Empty;
     }
   }
 }

@@ -17,7 +17,7 @@ namespace Movement {
     public bool IsOnLadder => isOnLadder;
 
     private void Start() {
-      playerController = GameManager.instance.PlayerController;
+      playerController = GameManager.Instance.PlayerController;
       playerController.GroundedChanged += ChangeGround;
     }
     
@@ -60,7 +60,7 @@ namespace Movement {
       if (!isOnLadder) 
         return;
       
-      movement = UserInput.instance.GetMovement();
+      movement = GameManager.Instance.UserInput.GetMovement();
       if (movement.magnitude > 0) {
         SetIsClimbing(true);
         rb.linearVelocity = new Vector2(movement.x * climbSpeed, movement.y * climbSpeed);

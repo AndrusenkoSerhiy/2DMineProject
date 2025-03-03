@@ -79,7 +79,7 @@ namespace Player {
       isFlipped = false;
       rotationCoef = 1f;
       AnimationEventManager.onFootstep += SpawnFootstepEffect;
-      animParam = GameManager.instance.AnimatorParameters;
+      animParam = GameManager.Instance.AnimatorParameters;
     }
 
 
@@ -120,9 +120,9 @@ namespace Player {
 
     private void GatherInput() {
       _frameInput = new FrameInput {
-        JumpDown = UserInput.instance.controls.GamePlay.Jump.WasPerformedThisFrame(), //Input.GetButtonDown("Jump"),
-        JumpHeld = UserInput.instance.controls.GamePlay.Jump.IsPressed(), //Input.GetButton("Jump"),
-        Move = UserInput.instance.GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+        JumpDown = GameManager.Instance.UserInput.controls.GamePlay.Jump.WasPerformedThisFrame(), //Input.GetButtonDown("Jump"),
+        JumpHeld = GameManager.Instance.UserInput.controls.GamePlay.Jump.IsPressed(), //Input.GetButton("Jump"),
+        Move = GameManager.Instance.UserInput.GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
       };
 
       if (_stats.SnapInput) {

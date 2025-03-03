@@ -21,8 +21,8 @@ public class PlaceCell : MonoBehaviour {
   private PlayerControllerBase playerController;
 
   private void Start() {
-    playerCoords = GameManager.instance.PlayerController.PlayerCoords.GetCoords();
-    playerController = GameManager.instance.CurrPlayerController;
+    playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+    playerController = GameManager.Instance.CurrPlayerController;
   }
   public void ActivateBuildMode(InventorySlot slot, ResourceData rData) {
     if (currSlot == null) {
@@ -100,13 +100,13 @@ public class PlaceCell : MonoBehaviour {
     var actionName = "Attack";
     var reason = "PlaceCell";
     if (value) {
-      UserInput.instance.BlockAction(actionName, reason);
+      GameManager.Instance.UserInput.BlockAction(actionName, reason);
     }
-    else UserInput.instance.UnblockAction(actionName, reason);
+    else GameManager.Instance.UserInput.UnblockAction(actionName, reason);
   }
 
   private void Update() {
-    if (UserInput.instance.controls.UI.Click.WasPressedThisFrame()) {
+    if (GameManager.Instance.UserInput.controls.UI.Click.WasPressedThisFrame()) {
       UIInput_OnUIClick();
     }
 
@@ -136,8 +136,8 @@ public class PlaceCell : MonoBehaviour {
 
   private bool ShouldUseBlockColor(Vector3 worldPosition) {
     var grid = CoordsTransformer.WorldToGrid(worldPosition);
-    var hasCell = GameManager.instance.ChunkController.GetCell(grid.X, grid.Y) != null;
-    var isPlayerOnGrid = GameManager.instance.PlayerController.PlayerCoords.GetCoords().Equals(grid);
+    var hasCell = GameManager.Instance.ChunkController.GetCell(grid.X, grid.Y) != null;
+    var isPlayerOnGrid = GameManager.Instance.PlayerController.PlayerCoords.GetCoords().Equals(grid);
     return hasCell || isPlayerOnGrid;
   }
 
@@ -155,8 +155,8 @@ public class PlaceCell : MonoBehaviour {
 
   private void PlaceCellOnScene() {
     var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
-    GameManager.instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-    GameManager.instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
+    GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+    GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
     currSlot.AddAmount(-1);
     ClearSLot();
   }
@@ -172,7 +172,7 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private Vector3 GetMousePosition() {
-    var mousePosition = GameManager.instance.MainCamera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+    var mousePosition = GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
     mousePosition.z = 0;
     return mousePosition;
   }

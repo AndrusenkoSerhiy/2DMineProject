@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: Mace
+  m_EditorClassIdentifier: 
+  RecipeName: Mace
+  Code: mace
+  RecipeType: 2
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    Amount: 10
+  - Material: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
+    Amount: 5
+  - Material: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
+    Amount: 20
+  Result: {fileID: 11400000, guid: b842459342758864ea8fd5dd1fc317ac, type: 2}
+  ResultAmount: 1
+  CraftingTime: 70
+  detailImg: {fileID: 0}

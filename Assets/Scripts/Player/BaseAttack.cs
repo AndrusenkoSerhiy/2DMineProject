@@ -54,6 +54,7 @@ namespace Player {
       else {
         attackCollider.size = originalSize;
       }
+      objectHighlighter.EnableCrosshair(!state);
     }
 
     protected virtual void PrepareAttackParams() { }

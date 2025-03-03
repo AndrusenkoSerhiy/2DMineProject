@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Interaction;
 using Player;
@@ -13,6 +14,8 @@ namespace Tools {
     
     private PlayerController playerController;
     private MiningRobotController miningRobotController;
+    
+    public static event Action OnPlayerEnteredRobot;
 
     private void Start() {
       playerController = GameManager.Instance.PlayerController;
@@ -40,11 +43,15 @@ namespace Tools {
       playerController.EnableController(false);
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
+      playerController.ResetHeadPos();
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
       
       SetPlayerPosition(playerTransform, Vector3.zero);
       GameManager.Instance.CurrPlayerController = miningRobotController;
+      
+      playerController.ResetLocalScale();
+      OnPlayerEnteredRobot?.Invoke();
     }
 
     private void ExitFromRobot() {

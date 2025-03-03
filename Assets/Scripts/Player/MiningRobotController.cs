@@ -28,8 +28,8 @@ namespace Player {
 
       if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone) {
         // Flip player
-        Vector3 localScale = transform.localScale;
-        localScale.x = Mathf.Sign(-direction.x);
+        var localScale = transform.localScale;
+        localScale.x = Mathf.Sign(direction.x);
         transform.localScale = localScale;
 
         rotationCoef = isFlipped ? -1f : 1f;

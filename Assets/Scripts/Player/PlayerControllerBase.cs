@@ -286,6 +286,15 @@ namespace Player {
       _col.enabled = state;
     }
 
+    //reset flip when we sit in robot
+    public void ResetLocalScale() {
+      transform.localScale = Vector3.one;
+    }
+
+    public void ResetHeadPos() {
+      Head.localEulerAngles = new Vector3(0f, 0f, 0f);
+    }
+
     #endregion
 
     #region Gravity

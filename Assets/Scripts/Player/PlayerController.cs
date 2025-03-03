@@ -1,3 +1,4 @@
+using Settings;
 using UnityEngine;
 
 namespace Player {
@@ -23,7 +24,7 @@ namespace Player {
       }
       base.LookAtMouse();
       
-      var dir = ((Vector2)_camera.ScreenToWorldPoint(Input.mousePosition) - (Vector2)Head.position);
+      var dir = ((Vector2)_camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition()) - (Vector2)Head.position);
       dir.x *= Mathf.Sign(transform.localScale.x);
       // Calculate the target angle based on the direction
       float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

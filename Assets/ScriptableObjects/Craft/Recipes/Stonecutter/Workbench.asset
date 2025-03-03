@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
   m_Name: Workbench
   m_EditorClassIdentifier: 
+  id: 990ac55f-3d73-4dcc-882f-284026f76c76
   RecipeName: Workbench
   Code: workbench
   RecipeType: 1
@@ -20,6 +21,9 @@ MonoBehaviour:
     Amount: 20
   - Material: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
     Amount: 10
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
   Result: {fileID: 11400000, guid: 04f03a73700b35a4da4840f9a2f14a71, type: 2}
   ResultAmount: 1
   CraftingTime: 20

@@ -10,8 +10,10 @@ namespace SaveSystem {
   public class GameData {
     public string FileName;
     public string Name;
+    public bool DefaultItemAdded;
     public SerializedDictionary<string, InventoryData> Inventories;
     public SerializedDictionary<string, WorkstationsData> Workstations;
+    public RecipesData Recipes;
   }
 
   public interface ISaveable {
@@ -27,8 +29,9 @@ namespace SaveSystem {
   public class SaveLoadSystem : PersistentSingleton<SaveLoadSystem> {
     [SerializeField] public GameData gameData;
     [SerializeField] private int maxSaveFiles = 3;
-    [Tooltip("Time in seconds")]
-    [SerializeField] private float autosaveInterval = 300f;
+
+    [Tooltip("Time in seconds")] [SerializeField]
+    private float autosaveInterval = 300f;
 
     private float autosaveTimer = 0f;
     private IDataService dataService;
@@ -88,8 +91,10 @@ namespace SaveSystem {
         // FileName = $"Game_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}",
         FileName = "Game",
         Name = $"Game {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
+        DefaultItemAdded = false,
         Inventories = new SerializedDictionary<string, InventoryData>(),
-        Workstations = new SerializedDictionary<string, WorkstationsData>()
+        Workstations = new SerializedDictionary<string, WorkstationsData>(),
+        Recipes = new RecipesData()
       };
     }
 

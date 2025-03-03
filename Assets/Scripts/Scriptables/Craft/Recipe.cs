@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Scriptables.Craft {
   [CreateAssetMenu(menuName = "Crafting System/Recipe", fileName = "New Recipe")]
-  public class Recipe : ScriptableObject {
+  public class Recipe : BaseScriptableObject {
     public string RecipeName;
     public string Code;
     public RecipeType RecipeType;
@@ -13,8 +13,7 @@ namespace Scriptables.Craft {
     public CraftingMaterial Fuel;
     public ItemObject Result;
     public int ResultAmount;
-    [Tooltip("In seconds")]
-    public int CraftingTime;
+    [Tooltip("In seconds")] public int CraftingTime;
     public Sprite detailImg;
 
     [Serializable]

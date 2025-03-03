@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SaveSystem;
 using Scriptables.Craft;
 using Scriptables.Items;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Craft.Recipes {
   public class RecipesManager : MonoBehaviour, ISaveLoad {
-    [SerializeField] private List<Recipe> allRecipes = new();
-    [SerializeField] private List<Recipe> defaultUnlockedRecipes = new();
+    [SerializeField] private RecipesDatabaseObject recipesDB;
 
-    private Dictionary<Recipe, RecipeState> recipeStates = new();
+    [Header("Debug Options")] [SerializeField]
+    private bool unlockAllRecipes = false;
+
+    private SerializedDictionary<string, RecipeState> recipeStates = new();
     private HashSet<string> discoveredMaterials = new();
     private HashSet<RecipeType> unlockedStations = new();
     private HashSet<RecipeType> fullyUnlockedStations = new();
@@ -28,12 +30,12 @@ namespace Craft.Recipes {
         return;
       }
 
-      foreach (var recipe in allRecipes) {
-        recipeStates[recipe] = RecipeState.Locked;
+      foreach (var recipe in recipesDB.ItemObjects) {
+        recipeStates[recipe.Id] = RecipeState.Locked;
       }
 
-      foreach (var recipe in defaultUnlockedRecipes) {
-        recipeStates[recipe] = RecipeState.Unlocked;
+      foreach (var recipe in recipesDB.DefaultUnlockedRecipes) {
+        recipeStates[recipe.Id] = RecipeState.Unlocked;
       }
     }
 
@@ -41,7 +43,7 @@ namespace Craft.Recipes {
     /// Call when player picked up new material.
     /// </summary>
     public void DiscoverMaterial(ItemObject material) {
-      if (discoveredMaterials.Contains(material.Id)) {
+      if (material.Id == string.Empty || discoveredMaterials.Contains(material.Id)) {
         return;
       }
 
@@ -59,6 +61,64 @@ namespace Craft.Recipes {
 
       unlockedStations.Add(stationType);
       RecheckRecipesForStation(stationType);
+    }
+
+    /// <summary>
+    /// Returns recipe state.
+    /// </summary>
+    public RecipeState GetRecipeState(string id) {
+      if (unlockAllRecipes) {
+        return RecipeState.Unlocked;
+      }
+
+      return recipeStates.TryGetValue(id, out var state) ? state : RecipeState.Locked;
+    }
+
+    /// <summary>
+    /// Returns all recipes for specific station.
+    /// </summary>
+    public List<Recipe> GetRecipesForStation(RecipeType stationType, bool onlyUnlocked = true) {
+      if (unlockAllRecipes) {
+        return GetAllStationRecipes(stationType);
+      }
+
+      var recipes = new List<Recipe>();
+      if (!unlockedStations.Contains(stationType)) {
+        return recipes;
+      }
+
+      foreach (var (recipeId, state) in recipeStates) {
+        var recipe = recipesDB.RecipesMap[recipeId];
+
+        if (recipe.RecipeType != stationType) {
+          continue;
+        }
+
+        if (onlyUnlocked && state != RecipeState.Unlocked) {
+          continue;
+        }
+
+        recipes.Add(recipe);
+      }
+
+      return recipes;
+    }
+
+    public Recipe GetByID(string id) {
+      return recipesDB.RecipesMap[id];
+    }
+
+    private List<Recipe> GetAllStationRecipes(RecipeType stationType) {
+      var recipes = new List<Recipe>();
+      foreach (var (id, recipe) in recipesDB.RecipesMap) {
+        if (recipe.RecipeType != stationType) {
+          continue;
+        }
+
+        recipes.Add(recipe);
+      }
+
+      return recipes;
     }
 
     /// <summary>
@@ -82,13 +142,14 @@ namespace Craft.Recipes {
       var allUnlocked = true;
 
       foreach (var kvp in recipeStates) {
-        var recipe = kvp.Key;
+        var recipeId = kvp.Key;
+        var recipe = recipesDB.RecipesMap[recipeId];
 
         if (recipe.RecipeType != stationType) {
           continue;
         }
 
-        if (recipeStates[recipe] == RecipeState.Unlocked) {
+        if (recipeStates[recipeId] == RecipeState.Unlocked) {
           continue;
         }
 
@@ -116,58 +177,34 @@ namespace Craft.Recipes {
     }
 
     private void UnlockRecipe(Recipe recipe) {
-      recipeStates[recipe] = RecipeState.Unlocked;
+      recipeStates[recipe.Id] = RecipeState.Unlocked;
       OnRecipeUnlocked?.Invoke(recipe);
-      Debug.Log($"Рецепт відкрито: {recipe.RecipeName}");
-    }
-
-    /// <summary>
-    /// Returns recipe state.
-    /// </summary>
-    public RecipeState GetRecipeState(Recipe recipe) {
-      return recipeStates.TryGetValue(recipe, out var state) ? state : RecipeState.Locked;
-    }
-
-    /// <summary>
-    /// Returns all recipes for specific station.
-    /// </summary>
-    public List<Recipe> GetRecipesForStation(RecipeType stationType, bool onlyUnlocked) {
-      return recipeStates
-        .Where(kvp => kvp.Key.RecipeType == stationType && (!onlyUnlocked || kvp.Value == RecipeState.Unlocked))
-        .Select(kvp => kvp.Key)
-        .ToList();
-    }
-
-    /// <summary>
-    /// Are all recipes for specific station unlocked.
-    /// </summary>
-    public bool AreAllStationRecipesUnlocked(RecipeType stationType) {
-      if (fullyUnlockedStations.Contains(stationType)) {
-        return true;
-      }
-
-      foreach (var kvp in recipeStates) {
-        if (kvp.Key.RecipeType != stationType) {
-          continue;
-        }
-
-        if (kvp.Value != RecipeState.Unlocked) {
-          return false;
-        }
-      }
-
-      fullyUnlockedStations.Add(stationType);
-      return true;
+      Debug.Log($"Recipe unlocked: {recipe.RecipeName}");
     }
 
     public string Id => "RecipesManager";
 
     public void Save() {
-      // throw new NotImplementedException();
+      var data = new RecipesData {
+        RecipeStates = recipeStates,
+        UnlockedStations = unlockedStations,
+        DiscoveredMaterials = discoveredMaterials,
+        FullyUnlockedStations = fullyUnlockedStations
+      };
+
+      SaveLoadSystem.Instance.gameData.Recipes = data;
     }
 
     public void Load() {
-      // throw new NotImplementedException();
+      var data = SaveLoadSystem.Instance.gameData.Recipes;
+      if (data == null) {
+        return;
+      }
+
+      recipeStates = data.RecipeStates;
+      unlockedStations = data.UnlockedStations;
+      discoveredMaterials = data.DiscoveredMaterials;
+      fullyUnlockedStations = data.FullyUnlockedStations;
     }
   }
 }

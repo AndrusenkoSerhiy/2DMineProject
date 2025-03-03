@@ -38,7 +38,14 @@ namespace Craft {
         return;
       }
 
-      foreach (var recipe in station.recipes) {
+      var recipes = GameManager.Instance.RecipesManager.GetRecipesForStation(station.RecipeType);
+
+      if (recipes.Count == 0) {
+        Debug.LogError($"No recipes for station - {station.RecipeType}");
+        return;
+      }
+
+      foreach (var recipe in recipes) {
         var listItem = Instantiate<Button>(recipesListItemPrefab, recipesListContainerPrefab.transform);
 
         var recipeListItem = listItem.GetComponent<RecipeListItem>();
@@ -67,6 +74,10 @@ namespace Craft {
     }
 
     private void SelectFirst() {
+      if (recipesListButtons.Count == 0) {
+        return;
+      }
+
       Select(recipesListButtons[0], true);
     }
 

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
   m_Name: FoodStation
   m_EditorClassIdentifier: 
+  id: 123fa6da-2ba4-491a-b65f-1b9498e07fa4
   RecipeName: Food station
   Code: foodstation
   RecipeType: 1
@@ -22,6 +23,9 @@ MonoBehaviour:
     Amount: 10
   - Material: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
     Amount: 10
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
   Result: {fileID: 11400000, guid: a377d8219d82555468a6ecbd4b5d0de6, type: 2}
   ResultAmount: 1
   CraftingTime: 20

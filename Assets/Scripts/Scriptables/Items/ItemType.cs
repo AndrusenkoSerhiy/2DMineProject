@@ -1,15 +1,15 @@
 namespace Scriptables.Items {
   public enum ItemType {
-    Resource,
-    Food,
-    Tool,
-    Weapon,
-    Helmet,
-    Chest,
-    Pants,
-    Boots,
-    Shield,
-    Gloves,
-    BuildingBlock,
+    Resource = 0,
+    Food = 1,
+    Tool = 2,
+    Weapon = 3,
+    Helmet = 4,
+    Chest = 5,
+    Pants = 6,
+    Boots = 7,
+    Shield = 8,
+    Gloves = 9,
+    BuildingBlock = 10,
   }
 }

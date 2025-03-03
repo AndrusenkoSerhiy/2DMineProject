@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
   m_Name: Mace
   m_EditorClassIdentifier: 
+  id: 7f927a28-4384-4eec-a108-5803d8f11ad0
   RecipeName: Mace
   Code: mace
   RecipeType: 2
@@ -22,6 +23,9 @@ MonoBehaviour:
     Amount: 5
   - Material: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
     Amount: 20
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
   Result: {fileID: 11400000, guid: b842459342758864ea8fd5dd1fc317ac, type: 2}
   ResultAmount: 1
   CraftingTime: 70

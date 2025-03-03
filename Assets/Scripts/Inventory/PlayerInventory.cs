@@ -1,7 +1,6 @@
 ﻿using Windows;
 using Scriptables.Inventory;
 using Scriptables.Items;
-using Settings;
 using UnityEngine;
 using Pool;
 using SaveSystem;
@@ -10,10 +9,6 @@ namespace Inventory {
   public class PlayerInventory : MonoBehaviour, IPlayerInventory, ISaveLoad {
     public InventoryObject inventory;
     public InventoryObject quickSlots;
-
-    [SerializeField] private ItemObject defaultItem;
-
-    // public Action OnQuickSlotLoaded;
 
     private PlayerInventoryWindow inventoryWindow;
 
@@ -24,6 +19,23 @@ namespace Inventory {
     public void Start() {
       inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
       GameManager.Instance.UserInput.controls.UI.Inventory.performed += ctx => ShowInventory();
+
+      AddDefaultItemOnFirstStart();
+    }
+
+    private void AddDefaultItemOnFirstStart() {
+      var itemAlreadyAdded = SaveLoadSystem.Instance.gameData.DefaultItemAdded;
+      var defaultItems = inventory.database.DefaultItemsOnStart;
+
+      if (itemAlreadyAdded || defaultItems.Count == 0) {
+        return;
+      }
+
+      foreach (var item in defaultItems) {
+        inventory.AddItem(new Item(item), 1);
+      }
+
+      SaveLoadSystem.Instance.gameData.DefaultItemAdded = true;
     }
 
     private void ShowInventory() {

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
+  id: 33aac404-ce8e-4008-9a98-a8068b978f04
   RecipeName: Pickaxe
   Code: pickaxe
   RecipeType: 2
@@ -20,6 +21,9 @@ MonoBehaviour:
     Amount: 5
   - Material: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
     Amount: 5
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
   Result: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
   ResultAmount: 1
   CraftingTime: 20

@@ -104,7 +104,7 @@ namespace Player {
     }
 
     protected virtual void FlipX() {
-      Vector2 mousePosition = _camera.ScreenToWorldPoint(UserInput.instance.GetMousePosition());
+      Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
       var direction = (mousePosition - (Vector2)Head.position).normalized;
 
       if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone) {

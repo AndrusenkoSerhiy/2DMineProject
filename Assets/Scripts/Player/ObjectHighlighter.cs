@@ -8,11 +8,16 @@ namespace Player {
     [SerializeField] private int maxHighlights = 1;
     [SerializeField] private List<ObjectHighlight> highlights = new();
     [SerializeField] private List<ObjectHighlight> possibleHighlights = new();
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     public List<ObjectHighlight> Highlights => highlights;
 
     public void SetMaxHighlights(int highlightCount) {
       maxHighlights = highlightCount;
+    }
+
+    public void EnableCrosshair(bool state) {
+      spriteRenderer.enabled = state;
     }
 
     public void OnTriggerEnter2D(Collider2D other) {

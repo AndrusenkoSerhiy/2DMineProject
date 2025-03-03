@@ -3,14 +3,16 @@ using Settings;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.UI;
 
 public class VirtualMouseUI : MonoBehaviour {
   private VirtualMouseInput _virtualMouseInput;
 
   public Vector3 VirtualMousePos;
-
+  [SerializeField] private Image image;
   private void Awake() {
     _virtualMouseInput = GetComponent<VirtualMouseInput>();
+    Hide();
   }
 
   private void Start() {
@@ -40,10 +42,10 @@ public class VirtualMouseUI : MonoBehaviour {
   }
 
   private void Show() {
-    gameObject.SetActive(true);
+    image.enabled = true;
   }
 
   private void Hide() {
-    gameObject.SetActive(false);
+    image.enabled = false;
   }
 }

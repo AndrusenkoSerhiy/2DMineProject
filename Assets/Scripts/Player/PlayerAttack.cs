@@ -14,6 +14,8 @@ namespace Player {
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
       playerEquipment.OnUnequippedWeapon += SetParamsFromPlayerStats;
       playerEquipment = GetComponent<PlayerEquipment>();
+      //equipped item init before this awake, and we need to update param from this item
+      UpdateAttackParam();
     }
 
     private void SetDefaultAttackParam() {
@@ -45,10 +47,17 @@ namespace Player {
     private void UpdateAttackParam() {
       SetAttackParamsFromEquipment();
       //try to activate tool
-      var tool = playerEquipment.ItemInHand.GetComponent<ToolBase>();
-      tool?.Activate();
+      TryActivateTool();
       UpdateParams(.5f, attackRange, colliderSize.x, colliderSize.y);
       objectHighlighter.SetMaxHighlights(maxTargets);
+    }
+
+    private void TryActivateTool() {
+      if(playerEquipment.ItemInHand == null)
+        return;
+      
+      var tool = playerEquipment.ItemInHand.GetComponent<ToolBase>();
+      tool?.Activate();
     }
 
     private bool SetAttackParamsFromEquipment() {

@@ -68,7 +68,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: -0.1, y: 0.6310303}
-  m_Size: {x: 7.0101466, y: 7.0101466}
+  m_Size: {x: 5.81, y: 0.0001}
   m_Direction: 0
 --- !u!114 &3113437899940471141
 MonoBehaviour:
@@ -475,6 +475,7 @@ MonoBehaviour:
   maxHighlights: 6
   highlights: []
   possibleHighlights: []
+  spriteRenderer: {fileID: 4351746821152794698}
 --- !u!1 &4267357733827273720
 GameObject:
   m_ObjectHideFlags: 0

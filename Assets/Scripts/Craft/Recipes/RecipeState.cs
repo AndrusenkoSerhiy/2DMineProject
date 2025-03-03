@@ -1,6 +1,6 @@
 ﻿namespace Craft.Recipes {
   public enum RecipeState {
-    Locked,
-    Unlocked
+    Locked = 0,
+    Unlocked = 1
   }
 }

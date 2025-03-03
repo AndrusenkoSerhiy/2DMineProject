@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
   m_Name: StoneBuildingBlock
   m_EditorClassIdentifier: 
+  id: 9eb870c7-ee18-48cd-8bbf-1df5df6cb0ba
   RecipeName: Stone Building Block
   Code: 
   RecipeType: 1
@@ -20,6 +21,9 @@ MonoBehaviour:
     Amount: 1
   - Material: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
     Amount: 3
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
   Result: {fileID: 11400000, guid: c4186f33ab9ebdd4fbc48c6d99586791, type: 2}
   ResultAmount: 1
   CraftingTime: 3

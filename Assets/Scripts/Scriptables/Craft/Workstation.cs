@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Craft;
 using SaveSystem;
 using Scriptables.Inventory;
@@ -26,7 +25,7 @@ namespace Scriptables.Craft {
     public string Title;
     [TextArea(15, 20)] public string Description;
     public int OutputSlotsAmount;
-    public List<Recipe> recipes = new();
+    // public List<Recipe> recipes = new();
     public InventoryObject OutputInventory;
     public InventoryObject FuelInventory;
     public bool PlayEffectsWhenOpened;
@@ -66,6 +65,7 @@ namespace Scriptables.Craft {
       }
 
       var inputs = data.Inputs;
+      var recipesManager = GameManager.Instance.RecipesManager;
 
       CraftStartTime = Helper.GetCurrentTime();
       var currentDateTime = CraftStartTime;
@@ -73,8 +73,7 @@ namespace Scriptables.Craft {
       var secondsLeft = data.SecondsLeft;
 
       foreach (var input in inputs) {
-        //TODO refactor, need function to get by ID
-        var recipe = recipes.First(x => x.Result.Id == input.ItemId);
+        var recipe = recipesManager.GetByID(input.ItemId);
         var inputTotalCraftTime = input.Count * recipe.CraftingTime;
 
         if (secondsLeft > 0) {

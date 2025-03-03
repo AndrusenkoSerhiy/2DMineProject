@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
   m_Name: Stonecutter
   m_EditorClassIdentifier: 
+  id: f5c2f66e-6c61-4a18-b779-32b49152f75d
   RecipeName: Stonecutter
   Code: stonecutter
   RecipeType: 0
@@ -20,6 +21,9 @@ MonoBehaviour:
     Amount: 1
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 10
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
   Result: {fileID: 11400000, guid: ed9ccb5b17204e642be25817d0a55a99, type: 2}
   ResultAmount: 1
   CraftingTime: 20

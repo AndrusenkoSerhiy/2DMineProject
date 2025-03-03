@@ -12,12 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
   m_Name: MushroomStew
   m_EditorClassIdentifier: 
+  id: c994b5ac-305a-4a21-9f25-497303661ed1
   RecipeName: Mushroom Stew
   Code: mushroomstew
   RecipeType: 4
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: 7684243e236b60b4dac023d5e8cdd7f6, type: 2}
     Amount: 2
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
   Result: {fileID: 11400000, guid: 6313de26ee526784197208c35fc1ff4a, type: 2}
   ResultAmount: 1
   CraftingTime: 10

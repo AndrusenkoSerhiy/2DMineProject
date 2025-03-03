@@ -12,12 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
   m_Name: BakedWorm
   m_EditorClassIdentifier: 
+  id: a9cdc917-f618-4f58-900a-c9f01796533c
   RecipeName: Baked worm
   Code: bakedworm
   RecipeType: 4
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: 4b1b5842d64acf64bb321781def6db1e, type: 2}
     Amount: 1
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
   Result: {fileID: 11400000, guid: 8061b28efb8c15f499dd8dcc93297e3e, type: 2}
   ResultAmount: 1
   CraftingTime: 10

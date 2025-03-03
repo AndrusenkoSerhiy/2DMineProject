@@ -15,7 +15,7 @@ namespace Settings {
     private bool attacking;
     [SerializeField] private PlayerStats _stats;
     [SerializeField] private VirtualMouseUI _virtualMouse;
-    private Dictionary<string, List<string>> blockedActions = new Dictionary<string, List<string>>();
+    private Dictionary<string, List<string>> blockedActions = new ();
 
     public enum GameDevice {
       KeyboardAndMouse = 0,

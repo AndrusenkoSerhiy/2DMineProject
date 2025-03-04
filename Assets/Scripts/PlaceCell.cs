@@ -17,12 +17,16 @@ public class PlaceCell : MonoBehaviour {
   private InventorySlot currSlot;
   private SpriteRenderer renderer;
   [SerializeField] private int radius = 1;
-  private Coords playerCoords;
+  //private Coords playerCoords;
   private PlayerControllerBase playerController;
 
   private void Start() {
-    playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+    GetPlayerCoords();
     playerController = GameManager.Instance.CurrPlayerController;
+  }
+
+  private Coords GetPlayerCoords() {
+    return GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
   }
   public void ActivateBuildMode(InventorySlot slot, ResourceData rData) {
     if (currSlot == null) {
@@ -116,8 +120,9 @@ public class PlaceCell : MonoBehaviour {
   private void UpdatePreviewPosition() {
     if (!isPreviewing || previewInstance == null)
       return;
-
+    
     var snappedPosition = GetSnappedWorldPosition();
+    
     previewInstance.transform.position = snappedPosition;
 
     SetPreviewColor(ShouldUseBlockColor(snappedPosition) ? blockColor : previewColor);
@@ -127,8 +132,9 @@ public class PlaceCell : MonoBehaviour {
     var worldPosition = GetMousePosition();
     var grid = CoordsTransformer.WorldToGrid(worldPosition);
     var clampedPosition = grid;
-    clampedPosition.X = Mathf.Clamp(grid.X, playerCoords.X - radius, playerCoords.X + radius);
-    clampedPosition.Y = Mathf.Clamp(grid.Y, playerCoords.Y - radius, playerCoords.Y + radius);
+    var coords = GetPlayerCoords();
+    clampedPosition.X = Mathf.Clamp(grid.X, coords.X - radius, coords.X + radius);
+    clampedPosition.Y = Mathf.Clamp(grid.Y, coords.Y - radius, coords.Y + radius);
     var world = CoordsTransformer.GridToWorld(clampedPosition.X, clampedPosition.Y);
 
     return new Vector3(world.x, world.y, 0f);
@@ -137,7 +143,7 @@ public class PlaceCell : MonoBehaviour {
   private bool ShouldUseBlockColor(Vector3 worldPosition) {
     var grid = CoordsTransformer.WorldToGrid(worldPosition);
     var hasCell = GameManager.Instance.ChunkController.GetCell(grid.X, grid.Y) != null;
-    var isPlayerOnGrid = GameManager.Instance.PlayerController.PlayerCoords.GetCoords().Equals(grid);
+    var isPlayerOnGrid = GetPlayerCoords().Equals(grid);
     return hasCell || isPlayerOnGrid;
   }
 

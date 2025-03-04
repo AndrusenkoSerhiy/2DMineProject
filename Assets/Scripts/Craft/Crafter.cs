@@ -82,6 +82,8 @@ namespace Craft {
       }
 
       Debug.Log($"{station.name} RunEffect itemId {itemId}");
+      var item = station.OutputInventory.database.ItemsMap[itemId];
+      GameManager.Instance.MessagesManager.ShowCraftMessage(item, 1);
     }
 
     protected void Init() {
@@ -103,6 +105,11 @@ namespace Craft {
 
     protected void CheckInteract() {
       Init();
+
+      if (!GameManager.Instance.RecipesManager.HasUnlockedRecipesForStation(station.RecipeType)) {
+        GameManager.Instance.MessagesManager.ShowSimpleMessage("You don't have any recipes yet.");
+        return;
+      }
 
       if (craftWindow.IsShow) {
         craftWindow.Hide();

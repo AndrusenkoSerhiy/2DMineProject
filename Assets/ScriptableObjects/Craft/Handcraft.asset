@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: b2c7e5b9-5700-490a-a2d8-04268b451aaa
   RecipeType: 0
+  RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Handcraft
   Description: Workbench desc
   OutputSlotsAmount: 2
-  recipes:
-  - {fileID: 11400000, guid: fd7a86ae24964e94aa4f8b3186514b03, type: 2}
   OutputInventory: {fileID: 11400000, guid: da5057e9594d23f4b9817b37e3db467e, type: 2}
+  FuelInventory: {fileID: 0}
   PlayEffectsWhenOpened: 0
   PlayEffectsWhenClosed: 1
   CraftStartTimeString: 

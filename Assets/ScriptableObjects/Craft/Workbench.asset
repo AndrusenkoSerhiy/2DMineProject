@@ -14,41 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 9ccf6022-ce17-4285-b32f-d0ac4c3a179c
   RecipeType: 2
+  RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Workbench
   Description: Workbench desc
   OutputSlotsAmount: 5
-  recipes:
-  - {fileID: 11400000, guid: d6f6dfbe05db8a84690f901a44d4b532, type: 2}
-  - {fileID: 11400000, guid: 56a787a1235cd534db7c96a9994b227c, type: 2}
-  - {fileID: 11400000, guid: 5eecbe3007d122b4e8bcca346df1e343, type: 2}
-  - {fileID: 11400000, guid: 1a92d056579142c4e87fac569368ea01, type: 2}
-  - {fileID: 11400000, guid: c0485cbe71c0c3d4f8feb3310413b304, type: 2}
   OutputInventory: {fileID: 11400000, guid: de56972b4dfd2b34bbd671af5c76ec01, type: 2}
+  FuelInventory: {fileID: 0}
   PlayEffectsWhenOpened: 1
   PlayEffectsWhenClosed: 1
-  CraftingTasks:
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:14.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:19.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:24.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:29.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:34.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:39.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:44.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:49.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:54.3260702Z
-  - ItemId: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-    FinishTimeString: 2025-02-26T17:49:59.3260702Z
-  Inputs:
-  - Count: 2
-    Recipe: {fileID: 11400000, guid: 1a92d056579142c4e87fac569368ea01, type: 2}
-  - Count: 2
-    Recipe: {fileID: 11400000, guid: 1a92d056579142c4e87fac569368ea01, type: 2}
+  CraftStartTimeString: 
+  SecondsLeft: 0
+  CraftingTasks: []
+  Inputs: []

@@ -17,122 +17,146 @@ MonoBehaviour:
   type: 1
   Container:
     Slots:
-    - Item:
-        id: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
-        name: Nails
-      amount: 6
-      isSelected: 0
-    - Item:
-        id: 00eb9c97-48c6-4d62-849b-f6b3137e2448
-        name: IronParts
-      amount: 100
-      isSelected: 0
-    - Item:
-        id: 00eb9c97-48c6-4d62-849b-f6b3137e2448
-        name: IronParts
-      amount: 100
-      isSelected: 0
-    - Item:
-        id: 00eb9c97-48c6-4d62-849b-f6b3137e2448
-        name: IronParts
-      amount: 100
-      isSelected: 0
-    - Item:
-        id: 00eb9c97-48c6-4d62-849b-f6b3137e2448
-        name: IronParts
-      amount: 20
-      isSelected: 0
-    - Item:
-        id: 9c01dc7d-6747-457e-885f-4ab29497ac97
-        name: Wood
-      amount: 999
-      isSelected: 0
-    - Item:
-        id: d23fc706-03b8-4ca0-b5a7-c8c3eb3ef4ce
-        name: Stone
-      amount: 999
-      isSelected: 0
-    - Item:
-        id: bf157576-9586-4dc2-9f15-a42c10014e6a
-        name: Iron
-      amount: 999
-      isSelected: 0
-    - Item:
-        id: b86ffa60-fb4f-4492-80a1-8759a168162f
-        name: Coal
-      amount: 999
-      isSelected: 0
-    - Item:
-        id: b86ffa60-fb4f-4492-80a1-8759a168162f
-        name: Coal
-      amount: 27
-      isSelected: 0
-    - Item:
-        id: d23fc706-03b8-4ca0-b5a7-c8c3eb3ef4ce
-        name: Stone
-      amount: 60
-      isSelected: 0
-    - Item:
-        id: 0c99087e-cddc-4d92-abef-509970d2662b
-        name: Dirt
-      amount: 80
-      isSelected: 0
-    - Item:
-        id: 8748cebb-47a1-48df-8494-f455fb2fb602
-        name: Worms
-      amount: 3
-      isSelected: 0
-    - Item:
-        id: 71b1d71f-aa8f-4218-ba22-44a0f40cf77f
-        name: Mushrooms
-      amount: 2
-      isSelected: 0
-    - Item:
-        id: ca6339c2-53ce-4630-b033-df41df0b0c04
-        name: Moss
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 6084d3f8-7b50-4fe8-b1e4-fae015c21f56
+        name: Hammer
       amount: 1
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 9c01dc7d-6747-457e-885f-4ab29497ac97
+        name: Wood
+      amount: 100
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0
       isSelected: 0
-    - Item:
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
+        id: 
+        name: 
+      amount: 0
+      isSelected: 0
+    - AllowedItem: {fileID: 0}
+      Item:
         id: 
         name: 
       amount: 0

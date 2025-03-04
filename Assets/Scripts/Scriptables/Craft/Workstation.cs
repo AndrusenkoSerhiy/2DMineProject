@@ -22,6 +22,7 @@ namespace Scriptables.Craft {
   [CreateAssetMenu(menuName = "Crafting System/Workstation", fileName = "New Workstation")]
   public class Workstation : BaseScriptableObject {
     public RecipeType RecipeType;
+    public RecipesDatabaseObject RecipeDB;
     public string Title;
     [TextArea(15, 20)] public string Description;
     public int OutputSlotsAmount;
@@ -65,7 +66,6 @@ namespace Scriptables.Craft {
       }
 
       var inputs = data.Inputs;
-      var recipesManager = GameManager.Instance.RecipesManager;
 
       CraftStartTime = Helper.GetCurrentTime();
       var currentDateTime = CraftStartTime;
@@ -73,7 +73,7 @@ namespace Scriptables.Craft {
       var secondsLeft = data.SecondsLeft;
 
       foreach (var input in inputs) {
-        var recipe = recipesManager.GetByID(input.ItemId);
+        var recipe = RecipeDB.ItemsMap[input.ItemId];
         var inputTotalCraftTime = input.Count * recipe.CraftingTime;
 
         if (secondsLeft > 0) {

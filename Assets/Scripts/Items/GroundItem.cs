@@ -24,6 +24,10 @@ namespace Items {
 
       var inventory = GameManager.Instance.PlayerInventory.inventory;
       inventory.AddItem(new Item(item), Count, null, this);
+      
+      GameManager.Instance.RecipesManager.DiscoverMaterial(item);
+      GameManager.Instance.MessagesManager.ShowPickupResourceMessage(item, Count);
+      
       isPicked = true;
       Destroy(gameObject);
 

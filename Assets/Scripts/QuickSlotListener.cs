@@ -21,7 +21,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
 
     Load();
 
-    userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
+    //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
     selectedItem = null;
     //
@@ -37,6 +37,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
 
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.inventory.OnSlotSwapped += OnSlotUpdateHandler;
+    UpdateQuickSlotsAfterLoad();
   }
 
   private void OnSlotUpdateHandler(SlotSwappedEventData data) {
@@ -71,12 +72,12 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
       if (slot.isEmpty || !slot.isSelected) {
         continue;
       }
-
+      
       slot.Item.info.Use(slots[i]);
       SelectSlotByIndex(i);
     }
 
-    userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
+    //userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
   }
 
   private void ChooseSlot(InputAction.CallbackContext obj) {
@@ -89,7 +90,9 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     SelectSlotByIndex(index);
   }
 
-  private void SelectSlotByIndex(int index) => SelectSlot(slots[index]);
+  private void SelectSlotByIndex(int index) {
+    SelectSlot(slots[index]);
+  }
 
   private bool UnselectSlot(InventorySlot slot) {
     if (selectedSlot == null || selectedSlot != slot) {

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5920990081694636435}
   - component: {fileID: 1532416506178691415}
   - component: {fileID: 8373353163446511298}
-  - component: {fileID: 2452879619398602571}
   - component: {fileID: 4823139061779360901}
+  - component: {fileID: 7264757973071991012}
   m_Layer: 3
   m_Name: FoodStation
   m_TagString: Untagged
@@ -74,7 +74,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -90,33 +90,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.1273932, y: 2.0204163}
   m_EdgeRadius: 0
---- !u!50 &2452879619398602571
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4470986188835931539}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 10000
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 4
 --- !u!114 &4823139061779360901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,10 +102,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78dcfcae80466334797e4b7713750e5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactText: Craft
-  overlayPrefab: {fileID: 0}
   interfacePrefab: {fileID: 1208913450436918581, guid: abbc60578dfa33f41b51b3768e65e5e7, type: 3}
   station: {fileID: 11400000, guid: 94252aade6eb85842b9b04735ee5edad, type: 2}
+  interactText: Craft
+--- !u!114 &7264757973071991012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4470986188835931539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e6f369da1b4ceca204d884cd707fb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsActive: 0
+  cellStats: {fileID: 11400000, guid: fa1f1480960c2b74f8aced5eacbdddb9, type: 2}
+  atlasRef: {fileID: 100100200, guid: 9d027d435f30db14aa6a42b0ffda83e6, type: 3}
+  sprite: {fileID: 4423727987069519656}
+  boxCollider2D: {fileID: 8373353163446511298}
+  highlight: {fileID: 0}
+  damageOverlay: {fileID: 0}
+  damageOverlays: []
+  resourceData: {fileID: 0}
+  _cellData:
+    x: 0
+    y: 0
+    perlin: 0
 --- !u!1 &6834258844564947058
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,7 +194,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5902d7692f41133429cfc0f22e54a4ec, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

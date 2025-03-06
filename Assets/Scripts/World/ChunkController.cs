@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Pool;
 using Scriptables;
 using Scriptables.POI;
 using UnityEngine;
@@ -19,7 +20,8 @@ namespace World {
     private ChunkData chunkData;
     public ChunkData ChunkData => chunkData;
     private bool isInited = false;
-
+    
+    [SerializeField] private ObjectPooler testPool;
     private void Awake() {
       getCellObjectsPool().Init();
       _chunkGenerator.Init();
@@ -93,39 +95,43 @@ namespace World {
           if (chunkData.CellFillDatas[i, j] == 0) {
             continue;
           }
-
-          var pos = CoordsTransformer.GridToWorld(i, j);
-          var cell = getCellObjectsPool().Get(pos);
-          if (!cell) {
-            continue;
-          }
-
           var cellData = chunkData.GetCellData(i, j);
           var data = _resourceDataLib.GetData(cellData.perlin);
-          cell.Init(cellData, data);
-          cell.InitSprite();
-          _activeCellObjects[_proxyCoords] = cell;
+          if (!data.IsBuilding) {
+            var pos = CoordsTransformer.GridToWorld(i, j);
+            var cell = getCellObjectsPool().Get(pos);
+            if (!cell) {
+              continue;
+            }
+            cell.Init(cellData, data);
+            cell.InitSprite();
+            _activeCellObjects[_proxyCoords] = cell;
+          }
+          //use to place building
+          else {
+            var cell = (CellObject)testPool.SpawnFromPool(data.name, Vector3.zero, Quaternion.identity);
+            if (!cell) {
+              continue;
+            }
+            cell.gameObject.SetActive(true);
+            cell.Init(cellData, data);
+            cell.transform.position = CoordsTransformer.GridToWorld(i, j);
+            //cell.InitSprite();
+            _activeCellObjects[_proxyCoords] = cell;
+          }
         }
       }
 
 
       isInited = true;
     }
-
-    //player place this cell
-    public void SpawnCell(Coords coords, ResourceData resourceData) {
-      //if cell already exist don't spawn another
-      if (GetCell(coords.X, coords.Y))
-        return;
-
-      var pos = CoordsTransformer.GridToWorld(coords.X, coords.Y);
-      var cell = getCellObjectsPool().Get(pos);
-      if (!cell)
-        return;
-
+    
+    //get building from another pool
+    public void SpawnBuild(Coords coords, ResourceData resourceData) {
+      var cell = (CellObject)testPool.SpawnFromPool(resourceData.name, Vector3.zero, Quaternion.identity);
+      cell.transform.position = CoordsTransformer.GridToWorld(coords.X, coords.Y);
       var cellData = chunkData.GetCellData(coords.X, coords.Y);
       cell.Init(cellData, resourceData);
-      cell.InitSprite();
       _activeCellObjects[new Coords(coords.X, coords.Y)] = cell;
     }
 
@@ -139,7 +145,9 @@ namespace World {
       foreach (var coord in _activeCellObjects.Keys) {
         if (Mathf.Abs(playerCoords.X - coord.X) > visionOffsetX ||
             Mathf.Abs(playerCoords.Y - coord.Y) > visionOffsetY) {
-          getCellObjectsPool().ReturnObject(_activeCellObjects[coord]);
+          if(!_activeCellObjects[coord].resourceData.IsBuilding)
+            getCellObjectsPool().ReturnObject(_activeCellObjects[coord]);
+          else _activeCellObjects[coord].ReturnToPool();
           clearList.Add(coord);
         }
       }

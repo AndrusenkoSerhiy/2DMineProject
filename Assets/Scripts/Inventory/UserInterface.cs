@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Scriptables.Inventory;
-using UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -9,16 +7,20 @@ using UnityEngine.EventSystems;
 namespace Inventory {
   [RequireComponent(typeof(EventTrigger))]
   public class UserInterface : MonoBehaviour, IInventoryUI {
-    [SerializeField] private InventoryObject inventory;
-    [SerializeField] private Color disabledSlotColor;
+    [SerializeField] private InventoryType inventoryType;
+    [SerializeField] private InventoryType fastDropInventoryType;
 
-    [SerializeField] private InventoryObject fastDropInventory;
+    [SerializeField] private Color disabledSlotColor;
     [SerializeField] private bool preventItemDropIn;
     [SerializeField] private bool preventDropOnGround;
     [SerializeField] private bool preventSwapIn;
     [SerializeField] private bool preventMergeIn;
     [SerializeField] private bool preventSplit;
     [SerializeField] private bool showTooltips;
+
+    private GameManager gameManager;
+    private InventoryObject inventory;
+    private InventoryObject fastDropInventory;
 
     private SplitItem splitItem;
     private GameObject tempDragItemObject;
@@ -38,15 +40,25 @@ namespace Inventory {
     public bool PreventSwapIn => preventSwapIn;
     public bool PreventMergeIn => preventMergeIn;
 
-    public void Setup(InventoryObject inventory) {
-      this.inventory = inventory;
+    public void Setup(InventoryType type) {
+      inventoryType = type;
     }
 
     public void Awake() {
-      splitItem = GameManager.Instance.SplitItem;
-      tempDragItemObject = GameManager.Instance.TempDragItem;
+      if(inventoryType == InventoryType.None) {
+        Debug.LogError("Inventory type is none");
+        return;
+      }
+      
+      gameManager = GameManager.Instance;
+      var playerInventory = gameManager.PlayerInventory;
+      inventory = playerInventory.GetInventoryByType(inventoryType);
+      fastDropInventory = playerInventory.GetInventoryByType(fastDropInventoryType);
+      
+      splitItem = gameManager.SplitItem;
+      tempDragItemObject = gameManager.TempDragItem;
       tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
-      tempDragParent = GameManager.Instance.Canvas.transform;
+      tempDragParent = gameManager.Canvas.transform;
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
 
       CheckSlotsUpdate();
@@ -222,7 +234,7 @@ namespace Inventory {
       }
 
       //fast drop item to another inventory
-      if (GameManager.Instance.UserInput.controls.UI.Ctrl.IsPressed() && fastDropInventory) {
+      if (gameManager.UserInput.controls.UI.Ctrl.IsPressed() && fastDropInventory != null) {
         var overFlow = fastDropInventory.AddItem(slot.Item, slot.amount);
         if (overFlow > 0) {
           slot.RemoveAmount(slot.amount - overFlow);
@@ -235,7 +247,7 @@ namespace Inventory {
       }
 
       //split
-      if (GameManager.Instance.UserInput.controls.UI.Shift.IsPressed() && !preventSplit) {
+      if (gameManager.UserInput.controls.UI.Shift.IsPressed() && !preventSplit) {
         splitItem.Show(slot, obj, tempDragParent);
         HideTooltip();
       }
@@ -271,12 +283,12 @@ namespace Inventory {
         return;
       }
 
-      GameManager.Instance.TooltipManager.Show(slot.Item.info.Description, slot.Item.info.Name);
+      gameManager.TooltipManager.Show(slot.Item.info.Description, slot.Item.info.Name);
     }
 
     private void HideTooltip() {
       if (showTooltips) {
-        GameManager.Instance.TooltipManager.Hide();
+        gameManager.TooltipManager.Hide();
       }
     }
 
@@ -285,7 +297,7 @@ namespace Inventory {
         return;
       }
 
-      var mousePos = GameManager.Instance.UserInput.GetMousePosition();
+      var mousePos = gameManager.UserInput.GetMousePosition();
       mousePos.z = 0;
       tempDragItem.UpdatePosition(mousePos);
     }
@@ -322,7 +334,7 @@ namespace Inventory {
       // Handle item drop on the ground
       if (MouseData.interfaceMouseIsOver == null) {
         if (!PreventDropOnGround) {
-          inventory.SpawnItem(slot.Item, slot.amount);
+          gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount);
           slot.RemoveItem();
 
           Debug.Log("Dropping item on the ground");

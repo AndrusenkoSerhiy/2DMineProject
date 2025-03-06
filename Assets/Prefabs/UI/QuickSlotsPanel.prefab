@@ -75,14 +75,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f7905586725f7459b39caf7bcd63bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 11400000, guid: b01922b1ac974a342935c3c12a61a08f, type: 2}
+  inventoryType: 3
+  fastDropInventoryType: 0
   disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
-  fastDropInventory: {fileID: 0}
   preventItemDropIn: 0
   preventDropOnGround: 1
   preventSwapIn: 0
   preventMergeIn: 0
   preventSplit: 1
+  showTooltips: 0
   slotsPrefabs:
   - {fileID: 3831997747263423562}
   - {fileID: 3075356050075440887}

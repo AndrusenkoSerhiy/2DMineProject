@@ -14,6 +14,7 @@ using Settings;
 using UI;
 using Utility;
 
+[DefaultExecutionOrder(-5)]
 public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private UserInput userInput;
   [SerializeField] private TaskManager taskManagerRef;
@@ -79,6 +80,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   }
 
   protected override void Awake() {
+    Debug.Log("Game manager awake");
     base.Awake();
 
     DOTween.Init();

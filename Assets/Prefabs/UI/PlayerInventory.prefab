@@ -372,9 +372,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f7905586725f7459b39caf7bcd63bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
+  inventoryType: 1
+  fastDropInventoryType: 0
   disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
-  fastDropInventory: {fileID: 0}
   preventItemDropIn: 0
   preventDropOnGround: 0
   preventSwapIn: 0
@@ -3891,6 +3891,10 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
+    - target: {fileID: 4524462168228969518, guid: 8d9aebfbbbe011143bea5b84076ab940, type: 3}
+      propertyPath: inventoryType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5211613648874273032, guid: 8d9aebfbbbe011143bea5b84076ab940, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

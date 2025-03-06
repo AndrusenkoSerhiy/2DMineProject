@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Craft;
+using Inventory;
 using SaveSystem;
-using Scriptables.Inventory;
 using Scriptables.Items;
 using UnityEngine;
 
@@ -22,12 +22,11 @@ namespace Scriptables.Craft {
   [CreateAssetMenu(menuName = "Crafting System/Workstation", fileName = "New Workstation")]
   public class Workstation : BaseScriptableObject {
     public RecipeType RecipeType;
+    public InventoryType OutputInventoryType;
+    public InventoryType FuelInventoryType;
     public RecipesDatabaseObject RecipeDB;
     public string Title;
     [TextArea(15, 20)] public string Description;
-    public int OutputSlotsAmount;
-    public InventoryObject OutputInventory;
-    public InventoryObject FuelInventory;
     public bool PlayEffectsWhenOpened;
     public bool PlayEffectsWhenClosed = true;
 
@@ -47,6 +46,32 @@ namespace Scriptables.Craft {
 
     //For Save/Load
     public List<Input> Inputs = new();
+
+    private InventoryObject outputInventory;
+    private InventoryObject fuelInventory;
+    private int outputSlotsAmount;
+    private int fuelSlotsAmount;
+
+    public InventoryObject OutputInventory => outputInventory;
+    public InventoryObject FuelInventory => fuelInventory;
+    public int OutputSlotsAmount => outputSlotsAmount;
+    public int FuelSlotsAmount => fuelSlotsAmount;
+
+    public void InitInventories() {
+      var playerInventory = GameManager.Instance.PlayerInventory;
+
+      outputInventory = new InventoryObject(OutputInventoryType);
+      outputSlotsAmount = playerInventory.GetInventorySizeByType(OutputInventoryType);
+      playerInventory.SetInventoryByType(OutputInventoryType, outputInventory);
+
+      if (FuelInventoryType == InventoryType.None) {
+        return;
+      }
+
+      fuelInventory = new InventoryObject(FuelInventoryType);
+      fuelSlotsAmount = playerInventory.GetInventorySizeByType(FuelInventoryType);
+      playerInventory.SetInventoryByType(FuelInventoryType, fuelInventory);
+    }
 
     public void Clear() {
       Inputs.Clear();

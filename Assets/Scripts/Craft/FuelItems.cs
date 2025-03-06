@@ -21,7 +21,7 @@ namespace Craft {
         return;
       }
 
-      fuelInterface.Setup(station.FuelInventory);
+      fuelInterface.Setup(InventoryType.ForgeFuel);
       ServiceLocator.For(this).Register<IFuelItems>(this);
     }
 
@@ -35,7 +35,7 @@ namespace Craft {
         return;
       }
 
-      fuelInventory.MoveAllItemsTo(GameManager.Instance.PlayerInventory.inventory);
+      fuelInventory.MoveAllItemsTo(GameManager.Instance.PlayerInventory.GetInventory());
 
       foreach (var slot in fuelSlots) {
         slot.AllowedItem = currentFuel;

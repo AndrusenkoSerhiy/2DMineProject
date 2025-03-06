@@ -1,5 +1,4 @@
 ﻿using System;
-using Scriptables.Inventory;
 using Scriptables.Items;
 using UnityEngine;
 
@@ -32,7 +31,7 @@ namespace Inventory {
     }
 
     private void Start() {
-      quickSlots = GameManager.Instance.PlayerInventory.quickSlots;
+      quickSlots = GameManager.Instance.PlayerInventory.GetQuickSlots();
       /*for (int i = 0; i < quickSlots.GetSlots.Length; i++) {
         if (quickSlots.GetSlots[i].IsSelected) {
           OnEquipItem(quickSlots.GetSlots[i]);

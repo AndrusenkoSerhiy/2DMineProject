@@ -14,15 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: f67712f8-d9db-4a13-8bae-6ce49e301e15
   RecipeType: 4
+  OutputInventoryType: 7
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Food Station
   Description: Workbench desc
   OutputSlotsAmount: 5
-  OutputInventory: {fileID: 11400000, guid: bb22dc2148cb4be4e80c6151f7b96f6d, type: 2}
-  FuelInventory: {fileID: 0}
   PlayEffectsWhenOpened: 0
   PlayEffectsWhenClosed: 1
-  CraftStartTimeString: 
-  SecondsLeft: 0
+  CraftStartTimestampMillis: 0
+  MillisecondsLeft: 0
   CraftingTasks: []
   Inputs: []

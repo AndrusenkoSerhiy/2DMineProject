@@ -1,6 +1,5 @@
 using Inventory;
 using SaveSystem;
-using Scriptables.Inventory;
 using Scriptables.Items;
 using Tools;
 using UnityEngine;
@@ -15,8 +14,9 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   private PlayerInventory playerInventory;
 
   private void Awake() {
+    Debug.Log("QuickSlotListener Awake");
     playerInventory = GameManager.Instance.PlayerInventory;
-    quickSlots = playerInventory.quickSlots;
+    quickSlots = playerInventory.GetQuickSlots();
     slots = quickSlots.GetSlots;
 
     Load();
@@ -36,7 +36,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     GameManager.Instance.UserInput.controls.GamePlay.QuickSlots.performed += ChooseSlot;
 
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
-    playerInventory.inventory.OnSlotSwapped += OnSlotUpdateHandler;
+    playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
   }
 
   private void OnSlotUpdateHandler(SlotSwappedEventData data) {

@@ -1,18 +1,37 @@
-﻿using Windows;
-using Scriptables.Inventory;
+﻿using System.Collections.Generic;
+using Windows;
+using Items;
 using Scriptables.Items;
 using UnityEngine;
 using Pool;
 using SaveSystem;
+using UnityEngine.Rendering;
 
 namespace Inventory {
+  [DefaultExecutionOrder(-1)]
   public class PlayerInventory : MonoBehaviour, IPlayerInventory, ISaveLoad {
-    public InventoryObject inventory;
-    public InventoryObject quickSlots;
+    [SerializeField] private SerializedDictionary<InventoryType, int> inventoriesSizes = new() {
+      { InventoryType.Inventory, 24 },
+      { InventoryType.QuickSlots, 10 },
+      { InventoryType.HandCraftOutput, 5 },
+      { InventoryType.WorkbenchOutput, 5 },
+      { InventoryType.StoneCutterOutput, 5 },
+      { InventoryType.FoodStationOutput, 5 },
+      { InventoryType.ChemicalStationOutput, 5 },
+      { InventoryType.ForgeOutput, 5 },
+      { InventoryType.ForgeFuel, 3 },
+    };
 
     private PlayerInventoryWindow inventoryWindow;
+    private Dictionary<InventoryType, InventoryObject> inventories = new();
+    private Dictionary<string, InventoryObject> cases = new();
 
     public void Awake() {
+      Debug.Log("Player inventory awake");
+
+      SetInventoryByType(InventoryType.Inventory, new InventoryObject(InventoryType.Inventory));
+      SetInventoryByType(InventoryType.QuickSlots, new InventoryObject(InventoryType.QuickSlots));
+
       Load();
     }
 
@@ -23,9 +42,40 @@ namespace Inventory {
       AddDefaultItemOnFirstStart();
     }
 
+    public InventoryObject GetInventoryByType(InventoryType type) {
+      if (type == InventoryType.None || !inventories.ContainsKey(type)) {
+        return null;
+      }
+
+      return inventories[type];
+    }
+
+    public int GetInventorySizeByType(InventoryType type) => inventoriesSizes[type];
+
+    public InventoryObject GetQuickSlots() => inventories[InventoryType.QuickSlots];
+    public InventoryObject GetInventory() => inventories[InventoryType.Inventory];
+
+    public void SetInventoryByType(InventoryType type, InventoryObject inventory) {
+      if (type == InventoryType.None) {
+        Debug.LogError("Inventory type is none");
+        return;
+      }
+
+      if (type == InventoryType.Case) {
+        Debug.LogError("Set cases to \"cases\"");
+        return;
+      }
+
+      if (inventories.ContainsKey(type)) {
+        return;
+      }
+
+      inventories.Add(type, inventory);
+    }
+
     private void AddDefaultItemOnFirstStart() {
       var itemAlreadyAdded = SaveLoadSystem.Instance.gameData.DefaultItemAdded;
-      var defaultItems = inventory.database.DefaultItemsOnStart;
+      var defaultItems = GetInventory().database.DefaultItemsOnStart;
 
       if (itemAlreadyAdded || defaultItems.Count == 0) {
         return;
@@ -33,7 +83,7 @@ namespace Inventory {
 
       foreach (var item in defaultItems) {
         const int count = 1;
-        inventory.AddItem(new Item(item), count);
+        GetInventory().AddItem(new Item(item), count);
         GameManager.Instance.RecipesManager.DiscoverMaterial(item);
         GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
       }
@@ -51,11 +101,11 @@ namespace Inventory {
     }
 
     public void AddItemToInventory(ItemObject item, int count, Vector3 cellPos) {
-      inventory.AddItem(new Item(item), count);
-      
+      GetInventory().AddItem(new Item(item), count);
+
       GameManager.Instance.RecipesManager.DiscoverMaterial(item);
       GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
-      
+
       ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
       AddAdditionalItem(item, cellPos);
     }
@@ -75,25 +125,37 @@ namespace Inventory {
         }
 
         var count = Random.Range((int)currentResource.rndCount.x, (int)currentResource.rndCount.y);
-        inventory.AddItem(new Item(currentResource.item), count);
-        
+        GetInventory().AddItem(new Item(currentResource.item), count);
+
         GameManager.Instance.RecipesManager.DiscoverMaterial(currentResource.item);
         GameManager.Instance.MessagesManager.ShowAddResourceMessage(currentResource.item, count);
-        
+
         ObjectPooler.Instance.SpawnFlyEffect(currentResource.item, cellPos);
       }
     }
 
+    public void SpawnItem(Item item, int amount) {
+      if (item == null) {
+        return;
+      }
+
+      //spawn higher in y pos because need TO DO pick up on action not the trigger enter
+      var newObj = Instantiate(item.info.spawnPrefab,
+        GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
+      var groundObj = newObj.GetComponent<GroundItem>();
+      groundObj.Count = amount;
+    }
+
     #region Save/Load
 
-    public string Id => inventory.type.ToString();
+    public string Id => GetInventory().type.ToString();
 
     public void Load() {
-      inventory.LoadFromGameData();
+      GetInventory().LoadFromGameData();
     }
 
     public void Save() {
-      inventory.SaveToGameData();
+      GetInventory().SaveToGameData();
     }
 
     #endregion

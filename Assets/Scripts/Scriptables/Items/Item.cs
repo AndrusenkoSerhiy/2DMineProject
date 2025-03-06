@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Scriptables.Inventory;
 
 namespace Scriptables.Items {
   [Serializable]

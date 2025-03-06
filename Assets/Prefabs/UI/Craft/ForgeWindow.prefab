@@ -870,9 +870,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95489154ccf14ab4b973d03c8b24f46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  checkInventories:
-  - {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
-  - {fileID: 11400000, guid: b01922b1ac974a342935c3c12a61a08f, type: 2}
 --- !u!1 &1346737500725256781
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,9 +1782,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f7905586725f7459b39caf7bcd63bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
+  inventoryType: 1
+  fastDropInventoryType: 0
   disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
-  fastDropInventory: {fileID: 0}
   preventItemDropIn: 0
   preventDropOnGround: 1
   preventSwapIn: 0
@@ -4747,9 +4744,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f7905586725f7459b39caf7bcd63bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 0}
+  inventoryType: 0
+  fastDropInventoryType: 1
   disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
-  fastDropInventory: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
   preventItemDropIn: 1
   preventDropOnGround: 1
   preventSwapIn: 1
@@ -5010,9 +5007,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f7905586725f7459b39caf7bcd63bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 0}
+  inventoryType: 0
+  fastDropInventoryType: 1
   disabledSlotColor: {r: 0.3529412, g: 0.3529412, b: 0.3529412, a: 1}
-  fastDropInventory: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
   preventItemDropIn: 0
   preventDropOnGround: 1
   preventSwapIn: 0

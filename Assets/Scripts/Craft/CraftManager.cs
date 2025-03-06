@@ -27,7 +27,8 @@ namespace Craft {
 
     public void Setup(Workstation station) {
       this.station = station;
-      outputInterface.Setup(station.OutputInventory);
+      station.InitInventories();
+      outputInterface.Setup(station.OutputInventoryType);
     }
 
     public void Awake() {
@@ -226,7 +227,7 @@ namespace Craft {
       foreach (var item in data.Recipe.RequiredMaterials) {
         var totalCount = data.CountLeft * item.Amount;
         var addItem = new Item(item.Material);
-        playerInventory.inventory.AddItem(addItem, totalCount);
+        playerInventory.GetInventory().AddItem(addItem, totalCount);
       }
 
       inputItems.UpdateWaitInputs(data.Position);
@@ -251,7 +252,7 @@ namespace Craft {
     }
 
     private void OnTakeAllButtonClickHandler() {
-      station.OutputInventory.MoveAllItemsTo(playerInventory.inventory);
+      station.OutputInventory.MoveAllItemsTo(playerInventory.GetInventory());
     }
 
     private void AddFuelUpdateEvents() {

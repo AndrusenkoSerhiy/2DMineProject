@@ -1,5 +1,4 @@
 ﻿using System;
-using Scriptables.Inventory;
 using Scriptables.Items;
 
 namespace Inventory {
@@ -9,6 +8,10 @@ namespace Inventory {
 
     public InventoryContainer(int size) {
       Slots = new InventorySlot[size];
+
+      for (var i = 0; i < Slots.Length; i++) {
+        Slots[i] = new InventorySlot();
+      }
     }
 
     public void Clear() {

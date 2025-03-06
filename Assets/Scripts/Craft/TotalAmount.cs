@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using Inventory;
-using Scriptables.Inventory;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityServiceLocator;
 
 namespace Craft {
   public class TotalAmount : MonoBehaviour, ITotalAmount {
-    [SerializeField] private List<InventoryObject> checkInventories = new();
+    private List<InventoryObject> checkInventories = new();
 
     private SerializedDictionary<string, int> resourcesTotal = new();
     public event Action<string> onResourcesTotalUpdate;
 
     public void Awake() {
       ServiceLocator.For(this).Register<ITotalAmount>(this);
+
+      InitInventories();
     }
 
     public void InitComponent() {
@@ -43,6 +44,12 @@ namespace Craft {
           break;
         }
       }
+    }
+
+    private void InitInventories() {
+      var playerInventory = GameManager.Instance.PlayerInventory;
+      checkInventories.Add(playerInventory.GetInventory());
+      checkInventories.Add(playerInventory.GetQuickSlots());
     }
 
     private void CalculateResourcesTotal() {

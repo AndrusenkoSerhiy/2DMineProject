@@ -25,7 +25,7 @@ namespace SaveSystem {
     void Load();
   }
 
-  [DefaultExecutionOrder(-1)]
+  [DefaultExecutionOrder(-10)]
   public class SaveLoadSystem : PersistentSingleton<SaveLoadSystem> {
     [SerializeField] public GameData gameData;
     [SerializeField] private int maxSaveFiles = 3;

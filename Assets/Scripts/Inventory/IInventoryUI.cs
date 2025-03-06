@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Scriptables.Inventory;
 using UnityEngine;
 
 namespace Inventory {

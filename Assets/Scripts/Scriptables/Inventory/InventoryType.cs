@@ -1,4 +1,4 @@
-﻿namespace Scriptables.Inventory {
+﻿/*namespace Scriptables.Inventory {
   public enum InventoryType {
     None = 0,
     Inventory = 1,
@@ -12,4 +12,4 @@
     ForgeOutput = 9,
     ForgeFuel = 10,
   }
-}
+}*/

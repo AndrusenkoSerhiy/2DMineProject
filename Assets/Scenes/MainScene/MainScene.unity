@@ -1639,6 +1639,7 @@ Transform:
   - {fileID: 422886890}
   - {fileID: 466087909}
   - {fileID: 1940528086}
+  - {fileID: 1944342542}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1049248126
@@ -3226,6 +3227,53 @@ MonoBehaviour:
     m_Values: 
   checkCoroutines:
     m_Keys: []
+--- !u!1 &1944342541
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1944342542}
+  - component: {fileID: 1944342543}
+  m_Layer: 0
+  m_Name: PlayerInventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1944342542
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944342541}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1040991176}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1944342543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944342541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8fbed0a15cbbe4582206c75914aa28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoriesSizes:
+    m_Keys: 01000000030000000400000005000000060000000700000008000000090000000a000000
+    m_Values: 180000000800000005000000050000000500000005000000050000000500000003000000
 --- !u!1001 &2019439808
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4059,6 +4107,10 @@ PrefabInstance:
       propertyPath: playerEquipment
       value: 
       objectReference: {fileID: 1620547677}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: playerInventory
+      value: 
+      objectReference: {fileID: 1944342543}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: windowsController
       value: 

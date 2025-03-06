@@ -1,18 +1,22 @@
-﻿using Scriptables.Inventory;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Image = UnityEngine.UI.Image;
 
 namespace Inventory {
   public class SortInventory : MonoBehaviour {
-    [SerializeField] private InventoryObject inventory;
+    [SerializeField] private InventoryType inventoryType;
     [SerializeField] private Image image;
     [SerializeField] private Button button;
     [SerializeField] private Sprite ascImg;
     [SerializeField] private Sprite descImg;
     [SerializeField] private bool defaultSortAsc;
 
+    private InventoryObject inventory;
     private bool ascending;
+
+    private void Awake() {
+      inventory = GameManager.Instance.PlayerInventory.GetInventoryByType(inventoryType);
+    }
 
     private void OnEnable() {
       ascending = defaultSortAsc;

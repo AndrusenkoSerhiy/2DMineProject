@@ -116,9 +116,16 @@ namespace Craft {
 
     public void Load() {
       SetStationsFromLoadData();
+      InitInventories();
       LoadFuelInventory();
       LoadOutputInventory();
       LoadInputs();
+    }
+
+    private void InitInventories() {
+      foreach (var (id, station) in allStationsMap) {
+        station.InitInventories();
+      }
     }
 
     private void SetStationsFromLoadData() {
@@ -224,7 +231,7 @@ namespace Craft {
 
       var stationId = station.Id;
       var resourcePath = AssetDatabase.GetAssetPath(station);
-      
+
       if (station.Inputs.Count == 0) {
         SaveLoadSystem.Instance.gameData.Workstations[stationId] =
           new WorkstationsData { Id = stationId, Inputs = inputs, ResourcePath = resourcePath };

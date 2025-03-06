@@ -1,5 +1,4 @@
 ﻿using System;
-using Scriptables.Inventory;
 using Scriptables.Items;
 using UnityEngine;
 

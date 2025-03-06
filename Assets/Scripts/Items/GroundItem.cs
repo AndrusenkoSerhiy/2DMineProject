@@ -22,7 +22,7 @@ namespace Items {
         return true;
       }
 
-      var inventory = GameManager.Instance.PlayerInventory.inventory;
+      var inventory = GameManager.Instance.PlayerInventory.GetInventory();
       inventory.AddItem(new Item(item), Count, null, this);
       
       GameManager.Instance.RecipesManager.DiscoverMaterial(item);

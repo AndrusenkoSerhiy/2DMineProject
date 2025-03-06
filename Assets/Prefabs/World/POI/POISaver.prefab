@@ -46,10 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: SmallWood
-  sizeX: 1
-  sizeY: 1
   targetCellObjects:
-  - {fileID: 696732077211395264}
+  - {fileID: 5183946935866341572}
 --- !u!1 &2494809720893064371
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,6 +235,7 @@ GameObject:
   - component: {fileID: 696732077211395264}
   - component: {fileID: 2748443658519611254}
   - component: {fileID: 182350133320122090}
+  - component: {fileID: 5183946935866341572}
   m_Layer: 8
   m_Name: CellObject
   m_TagString: Untagged
@@ -276,13 +275,14 @@ MonoBehaviour:
   cellStats: {fileID: 11400000, guid: fa1f1480960c2b74f8aced5eacbdddb9, type: 2}
   atlasRef: {fileID: 100100200, guid: 9d027d435f30db14aa6a42b0ffda83e6, type: 3}
   sprite: {fileID: 6949344803667618526}
+  boxCollider2D: {fileID: 0}
   highlight: {fileID: 182350133320122090}
   damageOverlay: {fileID: 769953440024812086}
   damageOverlays:
   - {fileID: 21300000, guid: e768225854e68e14f9da3b46364a36c9, type: 3}
   - {fileID: 21300000, guid: 689b51b309b13b3419e90e305bc6dd2a, type: 3}
   - {fileID: 21300000, guid: 2869452fec04e9c44a2aa46407663e28, type: 3}
-  resourceData: {fileID: 11400000, guid: 9eab1bfaf412bdf46bbf50b7aa5d5e17, type: 2}
+  resourceData: {fileID: 11400000, guid: 7ef307feef49e384db3844248a66a7ad, type: 2}
   _cellData:
     x: 0
     y: 0
@@ -346,3 +346,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRendererRef: {fileID: 6949344803667618526}
+--- !u!114 &5183946935866341572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5575247810153485899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39b97b985fa54107929224673b01a6cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LocalX: 0
+  LocalY: 0
+  CellObject: {fileID: 696732077211395264}

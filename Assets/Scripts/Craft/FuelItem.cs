@@ -15,7 +15,7 @@ namespace Craft {
     private GameObject blockFadeGameObject;
     private GameObject progressFadeGameObject;
     private EventTrigger trigger;
-    private bool blocked;
+    // private bool blocked;
     private bool current;
     private Color defaultBgColor;
     private Coroutine blinkCoroutine;
@@ -40,7 +40,7 @@ namespace Craft {
     public void Block() {
       GetTrigger().enabled = false;
       GetFadeGameObject().SetActive(true);
-      blocked = true;
+      // blocked = true;
     }
 
     public void UnBlock() {
@@ -48,7 +48,7 @@ namespace Craft {
       GetFadeGameObject().SetActive(false);
       GetProgressGameObject().SetActive(false);
       ResetFill();
-      blocked = false;
+      // blocked = false;
       current = false;
     }
 
@@ -85,13 +85,13 @@ namespace Craft {
     }
 
     private void Progress() {
-      var totalTime = station.GetProgressCraftTime();
-      var currentTime = station.GetProgressTime();
-      if (totalTime <= 0) {
+      var totalTimeInMilliseconds = station.GetProgressCraftTimeInMilliseconds();
+      var currentTimeInMillisecond = station.GetProgressTimeInMilliseconds();
+      if (totalTimeInMilliseconds <= 0) {
         return;
       }
 
-      UpdateFill(currentTime / totalTime);
+      UpdateFill(currentTimeInMillisecond / totalTimeInMilliseconds);
     }
 
     private void UpdateFill(float fill) {

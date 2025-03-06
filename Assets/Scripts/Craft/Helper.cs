@@ -9,19 +9,14 @@ namespace Craft {
       var seconds = (int)(totalSeconds % 60);
       return hours > 0 ? $"{hours:D2}:{minutes:D2}:{seconds:D2}" : $"{minutes:D2}:{seconds:D2}";
     }
-
-    // Always return the current time in UTC
-    public static DateTime GetCurrentTime() {
-      return DateTime.UtcNow;
+    
+    public static long GetCurrentTimestampMillis() {
+      return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     }
     
-    public static string FormatDate(DateTime date) {
-      return date.ToString("O");
-    }
-
-    // Always parse expecting UTC
-    public static DateTime ParseDate(string date) {
-      return DateTime.Parse(date, null, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+    public static string FormatTimestamp(long timestampMillis) {
+      var date = DateTimeOffset.FromUnixTimeMilliseconds(timestampMillis).UtcDateTime;
+      return date.ToString("O"); // or any other format
     }
   }
 }

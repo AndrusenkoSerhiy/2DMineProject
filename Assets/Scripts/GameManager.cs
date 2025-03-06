@@ -1,5 +1,6 @@
 using Windows;
 using Audio;
+using Craft;
 using Craft.Recipes;
 using DG.Tweening;
 using Player;
@@ -20,6 +21,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private MessagesManager messagesManager;
   [SerializeField] private RecipesManager recipesManager;
   [SerializeField] private TooltipManager tooltipManager;
+  [SerializeField] private CraftTasks craftTasks;
   [SerializeField] private GameConfig gameConfigRef;
   [SerializeField] private ChunkController chunkController;
   [SerializeField] private CellObjectsPool cellObjectsPool;
@@ -44,6 +46,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public MessagesManager MessagesManager => messagesManager;
   public RecipesManager RecipesManager => recipesManager;
   public TooltipManager TooltipManager => tooltipManager;
+  public CraftTasks CraftTasks => craftTasks;
   public ChunkController ChunkController => chunkController;
   public UISettings UISettings => uiSettings;
   public SplitItem SplitItem => splitItem;

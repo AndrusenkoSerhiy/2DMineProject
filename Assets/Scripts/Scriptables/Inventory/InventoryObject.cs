@@ -40,7 +40,6 @@ namespace Scriptables.Inventory {
     private bool loaded;
 
     public void OnEnable() {
-      Debug.Log("InventoryObject OnEnable");
       loaded = false;
     }
 

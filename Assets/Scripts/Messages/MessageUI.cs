@@ -16,7 +16,7 @@ namespace Messages {
     private Action<MessageUI> onHide;
 
     private string template;
-    private string name;
+    private string msgName;
     [CanBeNull] private string entityId;
     private int? currentAmount;
     [CanBeNull] private Sprite icon;
@@ -34,7 +34,7 @@ namespace Messages {
     }
 
     public MessageUI SetName(string name) {
-      this.name = name;
+      msgName = name;
 
       return this;
     }
@@ -125,8 +125,8 @@ namespace Messages {
     }
 
     private string ApplyTemplate() {
-      if (!string.IsNullOrEmpty(name)) {
-        template = template.Replace($"{MessageTemplateVariables.name}", name);
+      if (!string.IsNullOrEmpty(msgName)) {
+        template = template.Replace($"{MessageTemplateVariables.name}", msgName);
       }
 
       if (currentAmount != null) {

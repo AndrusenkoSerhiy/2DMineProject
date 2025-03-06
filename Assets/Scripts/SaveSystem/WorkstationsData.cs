@@ -7,6 +7,7 @@ namespace SaveSystem {
   public class WorkstationsData : ISaveable {
     [field: SerializeField] public string Id { get; set; }
     public List<CraftInputData> Inputs;
-    public float SecondsLeft;
+    public long MillisecondsLeft;
+    public string ResourcePath;
   }
 }

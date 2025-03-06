@@ -284,7 +284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipesDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   defaultUnlockedStations: 00000000
-  unlockAllRecipes: 0
+  unlockAllRecipes: 1
 --- !u!1001 &425212836
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -604,6 +604,7 @@ MonoBehaviour:
   tooltip: {fileID: 1686363434}
   canvasGroup: {fileID: 1686363438}
   delay: 0.5
+  fadeDelay: 0.3
 --- !u!4 &474629191 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4355495910406124574, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
@@ -672,7 +673,7 @@ MonoBehaviour:
       UnlockedStations: 
       FullyUnlockedStations: 
   maxSaveFiles: 3
-  autosaveInterval: 60
+  autosaveInterval: 600
 --- !u!4 &571619246 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7350801830675298503, guid: 17fd64f75c8b54b44b43cebdd43f2406, type: 3}
@@ -1519,7 +1520,7 @@ Transform:
   m_GameObject: {fileID: 1036104625}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 23.69, y: 5.18, z: -10}
+  m_LocalPosition: {x: 23.43, y: 5.72, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1637,6 +1638,7 @@ Transform:
   - {fileID: 757024617}
   - {fileID: 422886890}
   - {fileID: 466087909}
+  - {fileID: 1940528086}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1049248126
@@ -2782,7 +2784,7 @@ Transform:
   m_GameObject: {fileID: 1770018253}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 23.69, y: 5.18, z: -10}
+  m_LocalPosition: {x: 23.43, y: 5.72, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3168,6 +3170,62 @@ MonoBehaviour:
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
   m_ScrollDeltaPerTick: 6
+--- !u!1 &1940528085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1940528086}
+  - component: {fileID: 1940528087}
+  m_Layer: 0
+  m_Name: CraftManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1940528086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940528085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1040991176}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1940528087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940528085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eda531d48104574bd9a6f431979f80f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allStationsMap:
+    m_Keys: []
+    m_Values: []
+  stations: []
+  windowOpenStates:
+    m_Keys: []
+    m_Values: 
+  saving:
+    m_Keys: []
+    m_Values: 
+  checkCoroutines:
+    m_Keys: []
 --- !u!1001 &2019439808
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3247,11 +3305,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4355495910406124574, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 23.69
+      value: 23.43
       objectReference: {fileID: 0}
     - target: {fileID: 4355495910406124574, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.18
+      value: 5.72
       objectReference: {fileID: 0}
     - target: {fileID: 4355495910406124574, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3969,6 +4027,10 @@ PrefabInstance:
       propertyPath: userInput
       value: 
       objectReference: {fileID: 1891725224}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: craftTasks
+      value: 
+      objectReference: {fileID: 1940528087}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: mainCamera
       value: 

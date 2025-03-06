@@ -187,7 +187,10 @@ namespace Craft {
         return -1;
       }
 
-      return station.FuelInventory.GetTotalCount() / recipe.Fuel.Amount;
+      var total = station.FuelInventory.GetTotalCount() / recipe.Fuel.Amount;
+      var inUse = station.Inputs.Sum(x => x.Count * x.Recipe.Fuel.Amount);
+
+      return (total - inUse);
     }
 
     private int CalculateMaxCountByResources() {

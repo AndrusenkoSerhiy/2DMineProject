@@ -3,7 +3,6 @@ using Windows;
 using Items;
 using Scriptables.Items;
 using UnityEngine;
-using Pool;
 using SaveSystem;
 using UnityEngine.Rendering;
 
@@ -105,8 +104,9 @@ namespace Inventory {
 
       GameManager.Instance.RecipesManager.DiscoverMaterial(item);
       GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
-
-      ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
+      
+      //ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
+      GameManager.Instance.PoolEffects.SpawnFlyEffect(item, cellPos);
       AddAdditionalItem(item, cellPos);
     }
 
@@ -129,8 +129,9 @@ namespace Inventory {
 
         GameManager.Instance.RecipesManager.DiscoverMaterial(currentResource.item);
         GameManager.Instance.MessagesManager.ShowAddResourceMessage(currentResource.item, count);
-
-        ObjectPooler.Instance.SpawnFlyEffect(currentResource.item, cellPos);
+        
+        //ObjectPooler.Instance.SpawnFlyEffect(currentResource.item, cellPos);
+        GameManager.Instance.PoolEffects.SpawnFlyEffect(currentResource.item, cellPos);
       }
     }
 

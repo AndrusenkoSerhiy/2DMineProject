@@ -10,6 +10,7 @@ using UnityEngine;
 using World;
 using Inventory;
 using Messages;
+using Pool;
 using Settings;
 using UI;
 using Utility;
@@ -37,6 +38,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private UISettings uiSettings;
   [SerializeField] private SplitItem splitItem;
   [SerializeField] private GameObject tempDragItem;
+  [SerializeField] private ObjectPooler poolEffects;
 
   private PlayerController playerController;
   private PlayerControllerBase currPlayerController;
@@ -63,6 +65,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public WindowsController WindowsController => windowsController;
   public PlaceCell PlaceCell => placeCell;
   public AnimatorParameters AnimatorParameters => animatorParameters;
+  public ObjectPooler PoolEffects => poolEffects;
 
   public PlayerController PlayerController {
     set => playerController = value;

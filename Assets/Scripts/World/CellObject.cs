@@ -6,7 +6,7 @@ using Pool;
 using UnityEngine.U2D;
 
 namespace World {
-  public class CellObject : MonoBehaviour, IDamageable {
+  public class CellObject : PoolObjectBase, IDamageable {
     public bool IsActive = false;
     [SerializeField] private CellStats cellStats;
     [SerializeField] private SpriteAtlas atlasRef;
@@ -36,8 +36,11 @@ namespace World {
     }
 
     public void InitSprite() {
+      if(resourceData.IsBuilding)
+        return;
+      
       var neighbourIndex = _cellData.NeighboursIndex;
-      var targetSprite = resourceData.Sprite(neighbourIndex);
+      var targetSprite = resourceData.Sprite(neighbourIndex); 
       sprite.sprite = atlasRef.GetSprite(targetSprite.name);
       sprite.sortingOrder = resourceData.SortingOrder(neighbourIndex);
       boxCollider2D.offset = resourceData.ColOffset();
@@ -76,9 +79,9 @@ namespace World {
       ResetShake();
       GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
       GameManager.Instance.CellObjectsPool.ReturnObject(this);
-      ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
+      GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
       GameManager.Instance.TaskManager.DelayAsync(
-        () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
+        () => GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
       highlight.ClearHighlight();
     }
 

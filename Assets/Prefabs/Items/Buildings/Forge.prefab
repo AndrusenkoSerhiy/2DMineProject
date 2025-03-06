@@ -64,7 +64,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5902d7692f41133429cfc0f22e54a4ec, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,8 +107,8 @@ GameObject:
   - component: {fileID: 7109419808658283231}
   - component: {fileID: 6668474803497008179}
   - component: {fileID: 2292073947769524504}
-  - component: {fileID: 774638107267072334}
   - component: {fileID: 3773624294396459548}
+  - component: {fileID: 1084987504351908000}
   m_Layer: 3
   m_Name: Forge
   m_TagString: Untagged
@@ -170,7 +170,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -186,33 +186,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 5.099884, y: 5.1519785}
   m_EdgeRadius: 0
---- !u!50 &774638107267072334
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5121348168510077464}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 10000
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 4
 --- !u!114 &3773624294396459548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,7 +198,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78dcfcae80466334797e4b7713750e5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactText: Craft
-  overlayPrefab: {fileID: 0}
   interfacePrefab: {fileID: 1208913450436918581, guid: e73402fd722c5c741bee34ac848b61ac, type: 3}
   station: {fileID: 11400000, guid: 43c0c4c50d7cc5a4da0d15bc6e03fa14, type: 2}
+  interactText: Craft
+--- !u!114 &1084987504351908000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5121348168510077464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e6f369da1b4ceca204d884cd707fb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsActive: 0
+  cellStats: {fileID: 11400000, guid: fa1f1480960c2b74f8aced5eacbdddb9, type: 2}
+  atlasRef: {fileID: 100100200, guid: 9d027d435f30db14aa6a42b0ffda83e6, type: 3}
+  sprite: {fileID: 7892092391370634825}
+  boxCollider2D: {fileID: 2292073947769524504}
+  highlight: {fileID: 0}
+  damageOverlay: {fileID: 0}
+  damageOverlays: []
+  resourceData: {fileID: 11400000, guid: d247485ea928eba42851805c562eb60e, type: 2}
+  _cellData:
+    x: 0
+    y: 0
+    perlin: 0

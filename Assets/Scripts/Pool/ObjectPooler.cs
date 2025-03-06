@@ -14,10 +14,10 @@ namespace Pool {
     public List<Pool> pools;
     private Dictionary<string, Queue<PoolObjectBase>> poolDictionary;
 
-    public static ObjectPooler Instance;
+    //public static ObjectPooler Instance;
 
     private void Awake() {
-      Instance = this;
+      //Instance = this;
     }
 
     void Start() {
@@ -38,7 +38,7 @@ namespace Pool {
 
     public PoolObjectBase SpawnFromPool(string tag, Vector3 position, Quaternion rotation) {
       if (!poolDictionary.ContainsKey(tag)) {
-        Debug.LogWarning("Pool with tag " + tag + " doesn't exist.");
+        Debug.LogError("Pool with tag " + tag + " doesn't exist.");
         return null;
       }
 

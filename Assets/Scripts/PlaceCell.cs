@@ -19,16 +19,18 @@ public class PlaceCell : MonoBehaviour {
   [SerializeField] private int radius = 1;
   //private Coords playerCoords;
   private PlayerControllerBase playerController;
+  private GameObject spawnPrefab;
 
   private void Start() {
-    GetPlayerCoords();
     playerController = GameManager.Instance.CurrPlayerController;
   }
 
   private Coords GetPlayerCoords() {
     return GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
   }
-  public void ActivateBuildMode(InventorySlot slot, ResourceData rData) {
+  public void ActivateBuildMode(InventorySlot slot, ResourceData rData, GameObject sPrefab) {
+    //Debug.LogError($"ActivateBuildMode {currSlot} | {slot.Item.name}");
+    spawnPrefab = sPrefab;
     if (currSlot == null) {
       EnableBuildMode(slot, rData);
     }
@@ -44,6 +46,7 @@ public class PlaceCell : MonoBehaviour {
     currSlot = slot;
     resourceData = rData;
     SetEnabled(true);
+    UpdatePreview();
   }
 
   private void DisableBuildMode() {
@@ -63,7 +66,7 @@ public class PlaceCell : MonoBehaviour {
       return;
 
     isPreviewing = true;
-    previewInstance = Instantiate(prefab);
+    previewInstance = Instantiate(spawnPrefab);//prefab
     UpdatePreview();
 
     SetPreviewColor(previewColor);
@@ -71,8 +74,12 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void UpdatePreview() {
-    renderer = previewInstance.GetComponent<SpriteRenderer>();
-    renderer.sprite = resourceData.Sprite(0);
+    if (previewInstance != null && !previewInstance.name.Equals(spawnPrefab.name)) {
+      Destroy(previewInstance);
+      previewInstance = Instantiate(spawnPrefab);
+    }
+    renderer = previewInstance.GetComponentInChildren<SpriteRenderer>();
+    //renderer.sprite = resourceData.Sprite(0);
   }
 
   private void SetPreviewColor(Color col) {
@@ -160,11 +167,21 @@ public class PlaceCell : MonoBehaviour {
   }*/
 
   private void PlaceCellOnScene() {
+    //var test = Instantiate(spawnPrefab);
+    //var cellObj = test.GetComponent<CellObject>();
     var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
+    //test.transform.position = CoordsTransformer.GridToWorld(coords.X, coords.Y);
+    
     GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-    GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
+    GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
+    //var cellObj = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y);
+    //Debug.LogError($"resourceData {cellObj}");
+    //test.transform.parent = cellObj.transform;
     currSlot.AddAmount(-1);
     ClearSLot();
+    return;
+    GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+    GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
   }
 
   private void ClearSLot() {

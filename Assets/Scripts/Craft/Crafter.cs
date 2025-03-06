@@ -4,7 +4,6 @@ using Scriptables.Craft;
 
 namespace Craft {
   public class Crafter : MonoBehaviour {
-    [SerializeField] private GameObject overlayPrefab;
     [SerializeField] private GameObject interfacePrefab;
     [SerializeField] protected Workstation station;
 
@@ -16,7 +15,7 @@ namespace Craft {
         return;
       }
 
-      var craftWindowObj = Instantiate(interfacePrefab, overlayPrefab.transform);
+      var craftWindowObj = Instantiate(interfacePrefab, GameManager.Instance.Canvas.transform);
       craftManager = craftWindowObj.GetComponent<CraftManager>();
       craftManager.Setup(station);
 

@@ -7,7 +7,7 @@ namespace Scriptables.Items {
     public ResourceData ResourceData;
     public override void Use(InventorySlot slot) {
       //Debug.LogError($"use {ResourceData.ItemData.name}");
-      GameManager.Instance.PlaceCell.ActivateBuildMode(slot, ResourceData);
+      GameManager.Instance.PlaceCell.ActivateBuildMode(slot, ResourceData, spawnPrefab);
       //GameManager.instance.PlayerEquipment.OnEquipItem();
     }
   }

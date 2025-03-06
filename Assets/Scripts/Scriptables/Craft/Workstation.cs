@@ -15,38 +15,32 @@ namespace Scriptables.Craft {
 
   [Serializable]
   public struct CurrentProgress {
-    public int CraftTime;
-    public float CurrentTime;
+    public int CraftTimeInMilliseconds;
+    public float CurrentTimeInMilliseconds;
   }
 
   [CreateAssetMenu(menuName = "Crafting System/Workstation", fileName = "New Workstation")]
   public class Workstation : BaseScriptableObject {
     public RecipeType RecipeType;
+    public RecipesDatabaseObject RecipeDB;
     public string Title;
     [TextArea(15, 20)] public string Description;
     public int OutputSlotsAmount;
-    // public List<Recipe> recipes = new();
     public InventoryObject OutputInventory;
     public InventoryObject FuelInventory;
     public bool PlayEffectsWhenOpened;
     public bool PlayEffectsWhenClosed = true;
 
-    [SerializeField] private string CraftStartTimeString;
-
-    public DateTime CraftStartTime {
-      get => string.IsNullOrEmpty(CraftStartTimeString)
-        ? DateTime.MinValue
-        : Helper.ParseDate(CraftStartTimeString);
-      set => CraftStartTimeString = Helper.FormatDate(value);
-    }
+    public long CraftStartTimestampMillis;
 
     //Current Progress
     private CurrentProgress CurrentProgress = new();
     public event Action OnCraftStarted;
+
     public event Action OnCraftStopped;
 
     //For loaded inputs
-    public float SecondsLeft = 0;
+    public long MillisecondsLeft = 0;
 
     //For effects
     public List<CraftingTask> CraftingTasks = new();
@@ -57,77 +51,92 @@ namespace Scriptables.Craft {
     public void Clear() {
       Inputs.Clear();
       CraftingTasks.Clear();
+      ResetMillisecondsLeft();
+      CraftStartTimestampMillis = 0;
     }
 
     public void Load(WorkstationsData data) {
+      Clear();
+
       if (data.Inputs.Count <= 0) {
         return;
       }
 
       var inputs = data.Inputs;
-      var recipesManager = GameManager.Instance.RecipesManager;
 
-      CraftStartTime = Helper.GetCurrentTime();
-      var currentDateTime = CraftStartTime;
+      CraftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
+      var currentCraftStartTimestampMillis = CraftStartTimestampMillis;
       //only for first input
-      var secondsLeft = data.SecondsLeft;
+      var millisecondsLeft = data.MillisecondsLeft;
 
       foreach (var input in inputs) {
-        var recipe = recipesManager.GetByID(input.ItemId);
-        var inputTotalCraftTime = input.Count * recipe.CraftingTime;
+        var recipe = RecipeDB.ItemsMap[input.RecipeId];
+        var inputTotalCraftMillis = (long)input.Count * recipe.CraftingTime * 1000;
 
-        if (secondsLeft > 0) {
-          var timePassed = inputTotalCraftTime - secondsLeft;
-          CraftStartTime = currentDateTime.AddSeconds(-timePassed);
-          currentDateTime = CraftStartTime;
-          secondsLeft = 0;
+        if (millisecondsLeft > 0) {
+          var millisecondsPassed = inputTotalCraftMillis - millisecondsLeft;
+          CraftStartTimestampMillis = currentCraftStartTimestampMillis - millisecondsPassed;
+          currentCraftStartTimestampMillis = CraftStartTimestampMillis;
+          millisecondsLeft = 0;
         }
 
         Inputs.Add(new Input { Recipe = recipe, Count = input.Count });
-        AddCraftingTask(input.ItemId, recipe.CraftingTime, input.Count, currentDateTime);
+        AddCraftingTask(recipe.Result.Id, recipe.CraftingTime, input.Count, currentCraftStartTimestampMillis);
 
-        currentDateTime = currentDateTime.AddSeconds(input.Count * recipe.CraftingTime);
+        currentCraftStartTimestampMillis += inputTotalCraftMillis;
       }
     }
 
     public void ProcessCraftedInputs() {
-      var inputs = Inputs;
-      if (inputs.Count == 0) {
+      if (Inputs.Count == 0) {
         return;
       }
 
-      var haveCraftingItems = false;
-      var startTime = CraftStartTime;
+      var currentTimeInMilliseconds = Helper.GetCurrentTimestampMillis();
+      var currentCraftStartTimestampMillis = CraftStartTimestampMillis;
 
-      for (var i = 0; i < inputs.Count; i++) {
-        var input = inputs[i];
+      for (var i = 0; i < Inputs.Count; i++) {
+        var input = Inputs[i];
+        var recipe = input.Recipe;
         var craftedCount = 0;
 
-        while (!haveCraftingItems && craftedCount < input.Count) {
-          var endCraftTime = startTime.AddSeconds(input.Recipe.CraftingTime);
-          startTime = endCraftTime;
-          if (Helper.GetCurrentTime() >= endCraftTime) {
+        for (var j = 0; j < input.Count; j++) {
+          var itemEndTimeInMilliseconds = currentCraftStartTimestampMillis + (recipe.CraftingTime * 1000);
+
+          if (currentTimeInMilliseconds >= itemEndTimeInMilliseconds) {
             craftedCount++;
+            currentCraftStartTimestampMillis = itemEndTimeInMilliseconds; // Move to next item's start
           }
           else {
-            haveCraftingItems = true;
+            // Stop processing further — this item isn't done yet
             break;
           }
         }
 
+        // Process fully crafted items
         if (craftedCount > 0) {
-          OutputInventory.AddItem(new Item(input.Recipe.Result), craftedCount);
-          ConsumeFuel(input.Recipe, craftedCount);
+          OutputInventory.AddItem(new Item(recipe.Result), craftedCount);
+          ConsumeFuel(recipe, craftedCount);
         }
 
+        // Fully crafted this input, remove it
         if (craftedCount >= input.Count) {
-          inputs.RemoveAt(i--);
+          Inputs.RemoveAt(i--);
           continue;
         }
 
+        // Partial progress, update count
         input.Count -= craftedCount;
-        inputs[i] = input;
+        Inputs[i] = input;
+
+        // If we broke early (some items still crafting), the next item should start right after this one
+        if (craftedCount < input.Count) {
+          break;
+        }
       }
+
+      // Update CraftStartTime for next session
+      CraftStartTimestampMillis = currentCraftStartTimestampMillis;
     }
 
     public void ConsumeFuel(Recipe recipe, int count) {
@@ -140,11 +149,20 @@ namespace Scriptables.Craft {
       FuelInventory.RemoveItem(recipe.Fuel.Material.Id, totalCount);
     }
 
-    public float CalculateTimeLeft(Input input) {
-      var currentTime = Helper.GetCurrentTime();
-      var elapsedTime = (float)(currentTime - CraftStartTime).TotalSeconds;
-      var totalTime = input.Count * input.Recipe.CraftingTime;
-      return Mathf.Clamp((totalTime - elapsedTime), 0, totalTime);
+    public long CalculateTimeLeftInMilliseconds(Input input) {
+      var currentTimeInMilliseconds = Helper.GetCurrentTimestampMillis();
+      var elapsedTimeInMilliseconds = currentTimeInMilliseconds - CraftStartTimestampMillis;
+      var totalTimeInMilliseconds = (long)input.Count * input.Recipe.CraftingTime * 1000;
+      return Math.Clamp((totalTimeInMilliseconds - elapsedTimeInMilliseconds), 0, totalTimeInMilliseconds);
+    }
+
+    public void UpdateMillisecondsLeftByInput(Input input) {
+      MillisecondsLeft = CalculateTimeLeftInMilliseconds(input);
+      Debug.Log($"UpdateMillisecondsLeft MillisecondsLeft {MillisecondsLeft}");
+    }
+
+    public void ResetMillisecondsLeft() {
+      MillisecondsLeft = 0;
     }
 
     public void UpdateCraftingTasks() {
@@ -153,16 +171,16 @@ namespace Scriptables.Craft {
         return;
       }
 
-      var currentDateTime = CraftStartTime;
+      var currentDateTimestampMillis = CraftStartTimestampMillis;
       foreach (var input in Inputs) {
-        AddCraftingTask(input.Recipe.Result.Id, input.Recipe.CraftingTime, input.Count, currentDateTime);
-        currentDateTime = currentDateTime.AddSeconds(input.Count * input.Recipe.CraftingTime);
+        AddCraftingTask(input.Recipe.Result.Id, input.Recipe.CraftingTime, input.Count, currentDateTimestampMillis);
+        currentDateTimestampMillis += input.Count * input.Recipe.CraftingTime * 1000;
       }
     }
 
-    private void AddCraftingTask(string id, int craftTime, int count, DateTime start) {
+    private void AddCraftingTask(string id, int craftTime, int count, long startInMilliseconds) {
       for (var i = 1; i <= count; i++) {
-        var endTime = start.AddSeconds(craftTime * i);
+        var endTime = startInMilliseconds + (craftTime * i * 1000);
         CraftingTasks.Add(new CraftingTask(id, endTime));
       }
     }
@@ -172,9 +190,9 @@ namespace Scriptables.Craft {
         return null;
       }
 
-      var currentTime = Helper.GetCurrentTime();
+      var currentDateTimestampMillis = Helper.GetCurrentTimestampMillis();
       var firstTask = CraftingTasks[0];
-      if (firstTask.FinishTime > currentTime) {
+      if (firstTask.FinishTimeMilliseconds > currentDateTimestampMillis) {
         return null;
       }
 
@@ -226,21 +244,21 @@ namespace Scriptables.Craft {
       return position >= 0 && position < Inputs.Count;
     }
 
-    public void SetProgress(int craftTime, float currentTime) {
-      CurrentProgress.CraftTime = craftTime;
-      CurrentProgress.CurrentTime = currentTime;
+    public void SetProgress(int craftTimeInMilliseconds, float currentTimeInMilliseconds) {
+      CurrentProgress.CraftTimeInMilliseconds = craftTimeInMilliseconds;
+      CurrentProgress.CurrentTimeInMilliseconds = currentTimeInMilliseconds;
     }
 
-    public void UpdateProgress(float currentTime) {
-      CurrentProgress.CurrentTime = currentTime;
+    public void UpdateProgress(float currentTimeInMilliseconds) {
+      CurrentProgress.CurrentTimeInMilliseconds = currentTimeInMilliseconds;
     }
 
     public void ResetProgress() {
-      CurrentProgress.CraftTime = 0;
-      CurrentProgress.CurrentTime = 0;
+      CurrentProgress.CraftTimeInMilliseconds = 0;
+      CurrentProgress.CurrentTimeInMilliseconds = 0;
     }
 
-    public float GetProgressTime() => CurrentProgress.CurrentTime;
-    public int GetProgressCraftTime() => CurrentProgress.CraftTime;
+    public float GetProgressTimeInMilliseconds() => CurrentProgress.CurrentTimeInMilliseconds;
+    public int GetProgressCraftTimeInMilliseconds() => CurrentProgress.CraftTimeInMilliseconds;
   }
 }

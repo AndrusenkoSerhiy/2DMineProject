@@ -9,14 +9,15 @@ using UnityEngine.Rendering;
 namespace Craft.Recipes {
   public class RecipesManager : MonoBehaviour, ISaveLoad {
     [SerializeField] private RecipesDatabaseObject recipesDB;
+    [SerializeField] private List<RecipeType> defaultUnlockedStations;
 
     [Header("Debug Options")] [SerializeField]
     private bool unlockAllRecipes = false;
 
     private SerializedDictionary<string, RecipeState> recipeStates = new();
-    private HashSet<string> discoveredMaterials = new();
-    private HashSet<RecipeType> unlockedStations = new();
-    private HashSet<RecipeType> fullyUnlockedStations = new();
+    private List<string> discoveredMaterials = new();
+    private List<RecipeType> unlockedStations = new();
+    private List<RecipeType> fullyUnlockedStations = new();
 
     public event Action<Recipe> OnRecipeUnlocked;
 
@@ -31,11 +32,15 @@ namespace Craft.Recipes {
       }
 
       foreach (var recipe in recipesDB.ItemObjects) {
-        recipeStates[recipe.Id] = RecipeState.Locked;
+        recipeStates.Add(recipe.Id, RecipeState.Locked);
       }
 
-      foreach (var recipe in recipesDB.DefaultUnlockedRecipes) {
+      /*foreach (var recipe in recipesDB.DefaultUnlockedRecipes) {
         recipeStates[recipe.Id] = RecipeState.Unlocked;
+      }*/
+
+      foreach (var station in defaultUnlockedStations) {
+        UnlockStation(station);
       }
     }
 
@@ -88,7 +93,7 @@ namespace Craft.Recipes {
       }
 
       foreach (var (recipeId, state) in recipeStates) {
-        var recipe = recipesDB.RecipesMap[recipeId];
+        var recipe = recipesDB.ItemsMap[recipeId];
 
         if (recipe.RecipeType != stationType) {
           continue;
@@ -104,13 +109,33 @@ namespace Craft.Recipes {
       return recipes;
     }
 
+    public bool HasUnlockedRecipesForStation(RecipeType stationType) {
+      if (unlockAllRecipes) {
+        return true;
+      }
+
+      if (!unlockedStations.Contains(stationType)) {
+        return false;
+      }
+
+      foreach (var (recipeId, state) in recipeStates) {
+        var recipe = recipesDB.ItemsMap[recipeId];
+
+        if (recipe.RecipeType == stationType && state == RecipeState.Unlocked) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     public Recipe GetByID(string id) {
-      return recipesDB.RecipesMap[id];
+      return recipesDB.ItemsMap[id];
     }
 
     private List<Recipe> GetAllStationRecipes(RecipeType stationType) {
       var recipes = new List<Recipe>();
-      foreach (var (id, recipe) in recipesDB.RecipesMap) {
+      foreach (var (id, recipe) in recipesDB.ItemsMap) {
         if (recipe.RecipeType != stationType) {
           continue;
         }
@@ -140,25 +165,30 @@ namespace Craft.Recipes {
       }
 
       var allUnlocked = true;
+      var recipesToUnlock = new List<Recipe>();
 
-      foreach (var kvp in recipeStates) {
-        var recipeId = kvp.Key;
-        var recipe = recipesDB.RecipesMap[recipeId];
+      foreach (var (recipeId, state) in recipeStates) {
+        var recipe = recipesDB.ItemsMap[recipeId];
 
         if (recipe.RecipeType != stationType) {
           continue;
         }
 
-        if (recipeStates[recipeId] == RecipeState.Unlocked) {
+        if (state == RecipeState.Unlocked) {
           continue;
         }
 
         if (AreAllMaterialsDiscovered(recipe)) {
-          UnlockRecipe(recipe);
+          recipesToUnlock.Add(recipe);
         }
         else {
           allUnlocked = false;
         }
+      }
+
+      // Unlock after the iteration is complete
+      foreach (var recipe in recipesToUnlock) {
+        UnlockRecipe(recipe);
       }
 
       if (allUnlocked) {
@@ -179,7 +209,7 @@ namespace Craft.Recipes {
     private void UnlockRecipe(Recipe recipe) {
       recipeStates[recipe.Id] = RecipeState.Unlocked;
       OnRecipeUnlocked?.Invoke(recipe);
-      Debug.Log($"Recipe unlocked: {recipe.RecipeName}");
+      GameManager.Instance.MessagesManager.ShowNewRecipeMessage(recipe);
     }
 
     public string Id => "RecipesManager";

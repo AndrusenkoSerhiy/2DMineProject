@@ -99,9 +99,10 @@ namespace Craft {
 
       foreach (var input in inputs) {
         if (inputItems.InputInProgress == 0) {
-          station.SecondsLeft = station.CalculateTimeLeft(input);
+          station.UpdateMillisecondsLeftByInput(input);
         }
-
+        
+        // Debug.Log($"SetRecipe input.Count {input.Count}");
         inputItems.SetRecipe(input.Count, input.Recipe);
       }
     }

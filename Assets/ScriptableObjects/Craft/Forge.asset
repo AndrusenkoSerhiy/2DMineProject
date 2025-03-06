@@ -14,11 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1cee76d2-bca6-4314-a260-682d224580e1
   RecipeType: 3
+  RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Forge
   Description: 
   OutputSlotsAmount: 5
-  recipes:
-  - {fileID: 11400000, guid: 0b2da3a7f7f714942853f3a6f27f2027, type: 2}
   OutputInventory: {fileID: 11400000, guid: aabd5fa6752b5304799d43821d5b2d40, type: 2}
   FuelInventory: {fileID: 11400000, guid: 46993ac525d8ba142963101e4c5421a8, type: 2}
   PlayEffectsWhenOpened: 0

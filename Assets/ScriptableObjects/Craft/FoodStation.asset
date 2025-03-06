@@ -14,14 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: f67712f8-d9db-4a13-8bae-6ce49e301e15
   RecipeType: 4
+  RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Food Station
   Description: Workbench desc
   OutputSlotsAmount: 5
-  recipes:
-  - {fileID: 11400000, guid: 1242243c9034f704d990de345922cfe3, type: 2}
-  - {fileID: 11400000, guid: 127925887c3484f4f843ce0e684f12f1, type: 2}
-  - {fileID: 11400000, guid: c1e9e4ea0655b864db598b29fb7895f0, type: 2}
   OutputInventory: {fileID: 11400000, guid: bb22dc2148cb4be4e80c6151f7b96f6d, type: 2}
+  FuelInventory: {fileID: 0}
   PlayEffectsWhenOpened: 0
   PlayEffectsWhenClosed: 1
   CraftStartTimeString: 

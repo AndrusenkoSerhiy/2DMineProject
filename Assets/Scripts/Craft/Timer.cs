@@ -1,7 +1,6 @@
 using System;
 using Scriptables.Craft;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityServiceLocator;
 
@@ -10,14 +9,12 @@ namespace Craft {
     [SerializeField] private TextMeshProUGUI timerText;
 
     private Workstation station;
-    private int timeForOne;
+    private int timeForOneInMilliseconds;
     private int totalItems;
     private int itemsLeft;
-    private float totalTime;
-    private float timeLeft;
-    private float lastCheckTime;
+    private int totalTimeInMilliseconds;
+
     private bool isStarted;
-    private bool isPaused;
 
     public Action onTimerStop;
     public Action<int> onItemTimerEnd;
@@ -28,7 +25,7 @@ namespace Craft {
     }
 
     public void Update() {
-      if (!isStarted || isPaused) {
+      if (!isStarted) {
         return;
       }
 
@@ -37,73 +34,65 @@ namespace Craft {
 
     public void InitTimer(int count, int time) {
       totalItems = count;
-      timeForOne = time;
-      totalTime = count * time;
+      timeForOneInMilliseconds = time * 1000;
+      totalTimeInMilliseconds = count * time * 1000;
       itemsLeft = totalItems;
-      lastCheckTime = totalTime;
-
-      if (station.SecondsLeft > 0) {
-        timeLeft = Mathf.Clamp(station.SecondsLeft, 0, totalTime);
-        station.SecondsLeft = 0;
-      }
-      else {
-        timeLeft = totalTime;
-      }
 
       PrintTime();
     }
 
-    public void Pause() => isPaused = true;
-
     public void StartTimer() {
       isStarted = true;
-      var currentTime = Helper.GetCurrentTime();
-      var timePassed = totalTime - timeLeft;
-      station.CraftStartTime = timePassed <= 0 ? currentTime : currentTime.AddSeconds(-timePassed);
+      if (station.MillisecondsLeft <= 0) {
+        station.MillisecondsLeft = totalTimeInMilliseconds;
+        station.CraftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
+      }
 
-      var timeLeftForCurrent = Mathf.Min(timeLeft, timeForOne);
-      station.SetProgress(timeForOne, timeLeftForCurrent);
+      var timeLeftForCurrentInMilliseconds = Math.Min(station.MillisecondsLeft, timeForOneInMilliseconds);
+      station.SetProgress(timeForOneInMilliseconds, timeLeftForCurrentInMilliseconds);
     }
 
     public void Reset() {
       isStarted = false;
       timerText.text = string.Empty;
+
+      station.ResetMillisecondsLeft();
+      station.ResetProgress();
     }
 
     private void CheckItemCompletion() {
-      var count = 0;
-      while (itemsLeft > 0 && timeLeft <= (lastCheckTime - timeForOne)) {
-        itemsLeft--;
-        lastCheckTime -= timeForOne;
-        count++;
+      if (itemsLeft <= 0) {
+        return;
       }
 
-      if (count > 0) {
-        onItemTimerEnd?.Invoke(count);
+      var timeLeftWithoutCurrent = (itemsLeft - 1) * timeForOneInMilliseconds;
+
+      if (station.MillisecondsLeft <= timeLeftWithoutCurrent) {
+        itemsLeft--;
+        onItemTimerEnd?.Invoke(1);
       }
     }
 
     private void PrintTime() {
-      var roundedTimeLeft = (float)Math.Round(timeLeft);
+      var roundedTimeLeft = Mathf.Round((float)station.MillisecondsLeft / 1000);
       timerText.text = Helper.SecondsToTimeString(roundedTimeLeft);
     }
 
     private void TimerTick() {
-      timeLeft -= Time.deltaTime;
+      station.MillisecondsLeft -= (long)(Time.deltaTime * 1000);
 
-      var timeLeftForCurrent = timeLeft - ((itemsLeft - 1) * timeForOne);
-      station.UpdateProgress(timeLeftForCurrent);
+      var timeLeftForCurrentInMilliseconds = station.MillisecondsLeft - ((itemsLeft - 1) * timeForOneInMilliseconds);
+      station.UpdateProgress(timeLeftForCurrentInMilliseconds);
 
       CheckItemCompletion();
       PrintTime();
 
-      if (timeLeft <= 0) {
+      if (station.MillisecondsLeft <= 0) {
         StopTimer();
       }
     }
 
     private void StopTimer() {
-      station.ResetProgress();
       onTimerStop?.Invoke();
     }
   }

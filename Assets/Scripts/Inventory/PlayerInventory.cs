@@ -32,7 +32,10 @@ namespace Inventory {
       }
 
       foreach (var item in defaultItems) {
-        inventory.AddItem(new Item(item), 1);
+        const int count = 1;
+        inventory.AddItem(new Item(item), count);
+        GameManager.Instance.RecipesManager.DiscoverMaterial(item);
+        GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
       }
 
       SaveLoadSystem.Instance.gameData.DefaultItemAdded = true;
@@ -49,6 +52,10 @@ namespace Inventory {
 
     public void AddItemToInventory(ItemObject item, int count, Vector3 cellPos) {
       inventory.AddItem(new Item(item), count);
+      
+      GameManager.Instance.RecipesManager.DiscoverMaterial(item);
+      GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
+      
       ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
       AddAdditionalItem(item, cellPos);
     }
@@ -56,18 +63,24 @@ namespace Inventory {
     //get bonus resource when we are mining
     private void AddAdditionalItem(ItemObject item, Vector3 cellPos) {
       var resource = item as Resource;
-      if (resource == null)
+      if (resource == null) {
         return;
+      }
 
       var list = resource.GetBonusResources;
-      for (int i = 0; i < list.Count; i++) {
-        if (UnityEngine.Random.value > list[i].chance)
+      for (var i = 0; i < list.Count; i++) {
+        var currentResource = list[i];
+        if (Random.value > currentResource.chance) {
           return;
+        }
 
-        var count = UnityEngine.Random.Range((int)list[i].rndCount.x, (int)list[i].rndCount.y);
-        //Debug.LogError($"spawn {list[i].item.name} | count {count} ");
-        inventory.AddItem(new Item(list[i].item), count);
-        ObjectPooler.Instance.SpawnFlyEffect(list[i].item, cellPos);
+        var count = Random.Range((int)currentResource.rndCount.x, (int)currentResource.rndCount.y);
+        inventory.AddItem(new Item(currentResource.item), count);
+        
+        GameManager.Instance.RecipesManager.DiscoverMaterial(currentResource.item);
+        GameManager.Instance.MessagesManager.ShowAddResourceMessage(currentResource.item, count);
+        
+        ObjectPooler.Instance.SpawnFlyEffect(currentResource.item, cellPos);
       }
     }
 

@@ -4,12 +4,12 @@ using UnityEngine;
 namespace Scriptables.Items {
   public abstract class Database<T> : ScriptableObject where T : BaseScriptableObject {
     public List<T> ItemObjects = new();
-    public Dictionary<string, T> RecipesMap;
+    public Dictionary<string, T> ItemsMap;
 
     public void OnValidate() => InitializeLookup();
 
     private void InitializeLookup() {
-      RecipesMap = new Dictionary<string, T>();
+      ItemsMap = new Dictionary<string, T>();
 
       foreach (var item in ItemObjects) {
         if (item == null) {
@@ -22,8 +22,8 @@ namespace Scriptables.Items {
           continue;
         }
 
-        if (!RecipesMap.TryGetValue(item.Id, out var find)) {
-          RecipesMap[item.Id] = item;
+        if (!ItemsMap.TryGetValue(item.Id, out var find)) {
+          ItemsMap[item.Id] = item;
         }
         else {
           Debug.LogError($"Database {name} item {item.name} has duplicate ID {item.Id} in {find.name}");

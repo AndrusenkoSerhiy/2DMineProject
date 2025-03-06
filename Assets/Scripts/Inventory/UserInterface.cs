@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Scriptables.Inventory;
+using UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -17,6 +18,7 @@ namespace Inventory {
     [SerializeField] private bool preventSwapIn;
     [SerializeField] private bool preventMergeIn;
     [SerializeField] private bool preventSplit;
+    [SerializeField] private bool showTooltips;
 
     private SplitItem splitItem;
     private GameObject tempDragItemObject;
@@ -138,7 +140,8 @@ namespace Inventory {
     }
 
     public void UpdateInventoryUI() {
-      foreach (var slot in Inventory.GetSlots) {
+      for (var i = 0; i < Inventory.GetSlots.Length; i++) {
+        var slot = Inventory.GetSlots[i];
         UpdateSlotDisplay(slot);
       }
     }
@@ -234,11 +237,14 @@ namespace Inventory {
       //split
       if (GameManager.Instance.UserInput.controls.UI.Shift.IsPressed() && !preventSplit) {
         splitItem.Show(slot, obj, tempDragParent);
+        HideTooltip();
       }
     }
 
     private void OnEnter(GameObject obj) {
       MouseData.slotHoveredOver = obj;
+
+      ShowTooltip(obj);
     }
 
     private void OnEnterInterface(GameObject obj) {
@@ -251,6 +257,27 @@ namespace Inventory {
 
     private void OnExit(GameObject obj) {
       MouseData.slotHoveredOver = null;
+
+      HideTooltip();
+    }
+
+    private void ShowTooltip(GameObject obj) {
+      if (!showTooltips) {
+        return;
+      }
+
+      var slot = slotsOnInterface[obj];
+      if (slot.isEmpty || string.IsNullOrEmpty(slot.Item.info.Description)) {
+        return;
+      }
+
+      GameManager.Instance.TooltipManager.Show(slot.Item.info.Description, slot.Item.info.Name);
+    }
+
+    private void HideTooltip() {
+      if (showTooltips) {
+        GameManager.Instance.TooltipManager.Hide();
+      }
     }
 
     private void OnDrag(GameObject obj) {

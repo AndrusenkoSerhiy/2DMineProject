@@ -4,16 +4,11 @@ namespace Craft {
   [Serializable]
   public struct CraftingTask {
     public string ItemId;
-    public string FinishTimeString;
+    public long FinishTimeMilliseconds;
 
-    public DateTime FinishTime {
-      get => Helper.ParseDate(FinishTimeString);
-      set => FinishTimeString = Helper.FormatDate(value);
-    }
-
-    public CraftingTask(string id, DateTime endTime) {
+    public CraftingTask(string id, long endTimeMillisecondsInMilliseconds) {
       ItemId = id;
-      FinishTimeString = Helper.FormatDate(endTime);
+      FinishTimeMilliseconds = endTimeMillisecondsInMilliseconds;
     }
   }
 }

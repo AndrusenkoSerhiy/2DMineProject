@@ -3,7 +3,7 @@
 namespace SaveSystem {
   [Serializable]
   public struct CraftInputData {
-    public string ItemId;
+    public string RecipeId;
     public int Count;
   }
 }

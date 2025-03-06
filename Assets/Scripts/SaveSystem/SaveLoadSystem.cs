@@ -31,7 +31,9 @@ namespace SaveSystem {
     [SerializeField] private int maxSaveFiles = 3;
 
     [Tooltip("Time in seconds")] [SerializeField]
-    private float autosaveInterval = 300f;
+    private bool saveOnQuit = true;
+    [SerializeField] private bool autosave = true;
+    [SerializeField] private float autosaveInterval = 300f;
 
     private float autosaveTimer = 0f;
     private IDataService dataService;
@@ -46,12 +48,20 @@ namespace SaveSystem {
     }
 
     private void OnApplicationQuit() {
+      if (!saveOnQuit) {
+        return;
+      }
+
       SaveAllEntities();
-      // Debug.Log("OnApplicationQuit SaveGame");
       SaveGame();
     }
 
+    //TODO refactor????
     private void Update() {
+      if (!autosave) {
+        return;
+      }
+
       autosaveTimer += Time.deltaTime;
       if (autosaveTimer >= autosaveInterval) {
         Autosave();

@@ -186,13 +186,13 @@ namespace Player {
     }
 
     private void PlayLandingEffect() {
-      ObjectPooler.Instance.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
+      GameManager.Instance.PoolEffects.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
     }
 
     private void SpawnFootstepEffect() {
       if (Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x))) {
         if (grounded && Mathf.Abs(_rb.linearVelocity.x) > 1)
-          ObjectPooler.Instance.SpawnFromPool("FootstepEffect", transform.position, Quaternion.identity);
+          GameManager.Instance.PoolEffects.SpawnFromPool("FootstepEffect", transform.position, Quaternion.identity);
       }
     }
 

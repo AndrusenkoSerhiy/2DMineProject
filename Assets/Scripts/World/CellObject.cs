@@ -79,9 +79,9 @@ namespace World {
       ResetShake();
       GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
       GameManager.Instance.CellObjectsPool.ReturnObject(this);
-      ObjectPooler.Instance.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
+      GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
       GameManager.Instance.TaskManager.DelayAsync(
-        () => ObjectPooler.Instance.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
+        () => GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
       highlight.ClearHighlight();
     }
 

@@ -30,10 +30,12 @@ namespace SaveSystem {
     [SerializeField] public GameData gameData;
     [SerializeField] private int maxSaveFiles = 3;
 
-    [Tooltip("Time in seconds")] [SerializeField]
-    private bool saveOnQuit = true;
+    [SerializeField] private bool saveOnQuit = true;
+    [SerializeField] private bool loadOnStart = true;
     [SerializeField] private bool autosave = true;
-    [SerializeField] private float autosaveInterval = 300f;
+
+    [Tooltip("Time in seconds")] [SerializeField]
+    private float autosaveInterval = 300f;
 
     private float autosaveTimer = 0f;
     private IDataService dataService;
@@ -42,9 +44,13 @@ namespace SaveSystem {
 
     protected override void Awake() {
       base.Awake();
-      // Debug.Log("SaveLoadSystem Awake()");
       dataService = new FileDataService(new JsonSerializer());
-      LoadOrCreateNew();
+      if (loadOnStart) {
+        LoadOrCreateNew();
+      }
+      else {
+        NewGame();
+      }
     }
 
     private void OnApplicationQuit() {

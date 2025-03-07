@@ -61,6 +61,9 @@ namespace Windows {
         if (window) {
           window.Hide();
         }
+        else {
+          GameManager.Instance.ShowInGameMenu();
+        }
       }
     }
   }

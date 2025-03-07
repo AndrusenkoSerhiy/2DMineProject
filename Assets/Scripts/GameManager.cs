@@ -1,3 +1,4 @@
+using System;
 using Windows;
 using Audio;
 using Craft;
@@ -9,6 +10,7 @@ using Scriptables.Items;
 using UnityEngine;
 using World;
 using Inventory;
+using Menu;
 using Messages;
 using Pool;
 using Settings;
@@ -17,6 +19,9 @@ using Utility;
 
 [DefaultExecutionOrder(-5)]
 public class GameManager : PersistentSingleton<GameManager> {
+  [SerializeField] private StartGameCameraController startGameCameraController;
+  [SerializeField] private MainMenu mainMenu;
+  [SerializeField] private InGameMenu inGameMenu;
   [SerializeField] private UserInput userInput;
   [SerializeField] private TaskManager taskManagerRef;
   [SerializeField] private AudioManager audioManager;
@@ -43,7 +48,11 @@ public class GameManager : PersistentSingleton<GameManager> {
   private PlayerController playerController;
   private PlayerControllerBase currPlayerController;
   private MiningRobotController miningRobotController;
+  private GameStage gameStage = GameStage.MainMenu;
 
+  public StartGameCameraController StartGameCameraController => startGameCameraController;
+  public MainMenu MainMenu => mainMenu;
+  public InGameMenu InGameMenu => inGameMenu;
   public UserInput UserInput => userInput;
   public AudioManager AudioManager => audioManager;
   public MessagesManager MessagesManager => messagesManager;
@@ -82,11 +91,47 @@ public class GameManager : PersistentSingleton<GameManager> {
     get => currPlayerController;
   }
 
+  public bool showMenuOnStart = true;
+
   protected override void Awake() {
     Debug.Log("Game manager awake");
     base.Awake();
 
     DOTween.Init();
     UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
+  }
+
+  private void Start() {
+    if (!showMenuOnStart) {
+      return;
+    }
+
+    startGameCameraController.Init();
+    mainMenu.Show();
+  }
+
+  public void StartNewGame() {
+    mainMenu.Hide();
+    gameStage = GameStage.Game;
+    startGameCameraController.Play();
+  }
+
+  public void ExitGame() {
+    if (Application.isEditor) {
+      UnityEditor.EditorApplication.isPlaying = false;
+    }
+    else {
+      Application.Quit();
+    }
+  }
+
+  public void ExitToMainMenu() {
+    startGameCameraController.Init();
+    inGameMenu.Hide();
+    mainMenu.Show();
+  }
+
+  public void ShowInGameMenu() {
+    inGameMenu.Show();
   }
 }

@@ -16,6 +16,8 @@ namespace Player {
       playerEquipment = GetComponent<PlayerEquipment>();
       //equipped item init before this awake, and we need to update param from this item
       UpdateAttackParam();
+      //init max target count to 1
+      objectHighlighter.SetMaxHighlights(1);
     }
 
     private void SetDefaultAttackParam() {

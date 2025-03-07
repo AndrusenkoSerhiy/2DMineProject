@@ -12,11 +12,13 @@ namespace Craft {
     [SerializeField] private float blinkTime = 1.5f;
 
     private Workstation station;
+    private InventoryObject fuelInventory;
 
     public void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
+      fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
 
-      if (station.FuelInventory == null) {
+      if (fuelInventory == null) {
         Debug.LogError("Set FuelInventory to the station");
         return;
       }
@@ -91,7 +93,7 @@ namespace Craft {
 
       var setCurrent = false;
       for (var i = 0; i < items.Count; i++) {
-        var slot = station.FuelInventory.GetSlots[i];
+        var slot = fuelInventory.GetSlots[i];
         var fuelItem = items[i];
 
         if (slot.isEmpty || fuelAmountNeed <= 0) {

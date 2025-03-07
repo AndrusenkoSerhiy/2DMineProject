@@ -20,6 +20,9 @@ namespace Craft {
     private IInputItems inputItems;
     private ITotalAmount totalAmount;
     private IFuelItems fuelItems;
+    
+    private InventoryObject outputInventory;
+    private InventoryObject fuelInventory;
 
     private bool started;
 
@@ -27,7 +30,6 @@ namespace Craft {
 
     public void Setup(Workstation station) {
       this.station = station;
-      station.InitInventories();
       outputInterface.Setup(station.OutputInventoryType);
     }
 
@@ -82,6 +84,9 @@ namespace Craft {
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
       recipesList = ServiceLocator.For(this).Get<IRecipesList>();
+      
+      outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.OutputInventoryType);
+      fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
 
       ServiceLocator.For(this).TryGet(out fuelItems);
     }
@@ -207,8 +212,7 @@ namespace Craft {
 
     private void AddCraftedItemToOutput(ItemCraftedEventData data) {
       station.RemoveInputCountFromInputs(data.Count);
-
-      var outputInventory = station.OutputInventory;
+      
       var item = new Item(data.Recipe.Result);
 
       fuelItems?.ConsumeFuel(data.Recipe, data.Count);
@@ -234,13 +238,13 @@ namespace Craft {
     }
 
     private void AddOutputUpdateEvents() {
-      foreach (var output in station.OutputInventory.GetSlots) {
+      foreach (var output in outputInventory.GetSlots) {
         output.OnAfterUpdated += OutputUpdateSlotHandler;
       }
     }
 
     private void RemoveOutputUpdateEvents() {
-      foreach (var output in station.OutputInventory.GetSlots) {
+      foreach (var output in outputInventory.GetSlots) {
         output.OnAfterUpdated -= OutputUpdateSlotHandler;
       }
     }
@@ -252,25 +256,25 @@ namespace Craft {
     }
 
     private void OnTakeAllButtonClickHandler() {
-      station.OutputInventory.MoveAllItemsTo(playerInventory.GetInventory());
+      outputInventory.MoveAllItemsTo(playerInventory.GetInventory());
     }
 
     private void AddFuelUpdateEvents() {
-      if (station.FuelInventory == null) {
+      if (fuelInventory == null) {
         return;
       }
 
-      foreach (var slot in station.FuelInventory.GetSlots) {
+      foreach (var slot in fuelInventory.GetSlots) {
         slot.OnAfterUpdated += FuelSlotUpdateHandler;
       }
     }
 
     private void RemoveFuelUpdateEvents() {
-      if (station.FuelInventory == null) {
+      if (fuelInventory == null) {
         return;
       }
 
-      foreach (var slot in station.FuelInventory.GetSlots) {
+      foreach (var slot in fuelInventory.GetSlots) {
         slot.OnAfterUpdated -= FuelSlotUpdateHandler;
       }
     }

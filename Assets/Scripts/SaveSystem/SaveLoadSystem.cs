@@ -20,7 +20,7 @@ namespace SaveSystem {
     string Id { get; }
   }
 
-  public interface ISaveLoad : ISaveable {
+  public interface ISaveLoad {
     void Save();
     void Load();
   }

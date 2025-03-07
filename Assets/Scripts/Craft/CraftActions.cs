@@ -183,11 +183,12 @@ namespace Craft {
     }
 
     private int CalculateMaxCountByFuel() {
-      if (station.FuelInventory == null || recipe.Fuel == null) {
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
+      if (fuelInventory == null || recipe.Fuel == null) {
         return -1;
       }
 
-      var total = station.FuelInventory.GetTotalCount() / recipe.Fuel.Amount;
+      var total = fuelInventory.GetTotalCount() / recipe.Fuel.Amount;
       var inUse = station.Inputs.Sum(x => x.Count * x.Recipe.Fuel.Amount);
 
       return (total - inUse);
@@ -206,8 +207,9 @@ namespace Craft {
     }
 
     private int CalculateMaxCountByCurrentCraftingAndOutput() {
-      var freeOutputSlotsCount = station.OutputInventory.GetFreeSlotsCount();
-      var freeInputSlotsCount = station.OutputSlotsAmount - station.Inputs.Count;
+      var outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.OutputInventoryType);
+      var freeOutputSlotsCount = outputInventory.GetFreeSlotsCount();
+      var freeInputSlotsCount = outputInventory.GetSlots.Length - station.Inputs.Count;
 
       if (freeInputSlotsCount <= 0) {
         return 0;
@@ -217,7 +219,7 @@ namespace Craft {
       var leftCount = 0;
 
       var maxStackSize = recipe.Result.MaxStackSize;
-      var outputSlotsCount = station.OutputInventory.CalculateTotalCounts();
+      var outputSlotsCount = outputInventory.CalculateTotalCounts();
       // var inputItemsIds = station.CraftItemsTotal.Keys.Select(x => x.Id).ToList();
       var inputItemsIds = station.Inputs.Select(x => x.Recipe.Result.Id).ToList();
 

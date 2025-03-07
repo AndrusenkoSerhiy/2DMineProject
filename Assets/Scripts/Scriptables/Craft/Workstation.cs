@@ -52,27 +52,6 @@ namespace Scriptables.Craft {
     private int outputSlotsAmount;
     private int fuelSlotsAmount;
 
-    public InventoryObject OutputInventory => outputInventory;
-    public InventoryObject FuelInventory => fuelInventory;
-    public int OutputSlotsAmount => outputSlotsAmount;
-    public int FuelSlotsAmount => fuelSlotsAmount;
-
-    public void InitInventories() {
-      var playerInventory = GameManager.Instance.PlayerInventory;
-
-      outputInventory = new InventoryObject(OutputInventoryType);
-      outputSlotsAmount = playerInventory.GetInventorySizeByType(OutputInventoryType);
-      playerInventory.SetInventoryByType(OutputInventoryType, outputInventory);
-
-      if (FuelInventoryType == InventoryType.None) {
-        return;
-      }
-
-      fuelInventory = new InventoryObject(FuelInventoryType);
-      fuelSlotsAmount = playerInventory.GetInventorySizeByType(FuelInventoryType);
-      playerInventory.SetInventoryByType(FuelInventoryType, fuelInventory);
-    }
-
     public void Clear() {
       Inputs.Clear();
       CraftingTasks.Clear();
@@ -140,7 +119,8 @@ namespace Scriptables.Craft {
 
         // Process fully crafted items
         if (craftedCount > 0) {
-          OutputInventory.AddItem(new Item(recipe.Result), craftedCount);
+          var outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(OutputInventoryType);
+          outputInventory.AddItem(new Item(recipe.Result), craftedCount);
           ConsumeFuel(recipe, craftedCount);
         }
 
@@ -165,13 +145,14 @@ namespace Scriptables.Craft {
     }
 
     public void ConsumeFuel(Recipe recipe, int count) {
-      if (FuelInventory == null) {
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(FuelInventoryType);
+      if (fuelInventory == null) {
         return;
       }
 
       var totalCount = count * recipe.Fuel.Amount;
 
-      FuelInventory.RemoveItem(recipe.Fuel.Material.Id, totalCount);
+      fuelInventory.RemoveItem(recipe.Fuel.Material.Id, totalCount);
     }
 
     public long CalculateTimeLeftInMilliseconds(Input input) {

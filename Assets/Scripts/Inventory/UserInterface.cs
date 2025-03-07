@@ -22,7 +22,9 @@ namespace Inventory {
     private InventoryObject inventory;
     private InventoryObject fastDropInventory;
     private string storageId;
+    private StorageType storageType;
     private string fastDropStorageId;
+    private StorageType fastDropStorageType;
 
     private SplitItem splitItem;
     private GameObject tempDragItemObject;
@@ -46,12 +48,14 @@ namespace Inventory {
       inventoryType = type;
     }
 
-    public void Setup(string storageId) {
+    public void Setup(string storageId, StorageType storageType) {
       this.storageId = storageId;
+      this.storageType = storageType;
     }
 
-    public void SetupFastDrop(string fastDropStorageId) {
+    public void SetupFastDrop(string fastDropStorageId, StorageType fastDropStorageType) {
       this.fastDropStorageId = fastDropStorageId;
+      this.fastDropStorageType = fastDropStorageType;
     }
 
     public void Awake() {
@@ -64,14 +68,14 @@ namespace Inventory {
       var playerInventory = gameManager.PlayerInventory;
 
       if (inventoryType == InventoryType.Storage && !string.IsNullOrEmpty(storageId)) {
-        inventory = playerInventory.GetStorageById(storageId);
+        inventory = playerInventory.GetStorageById(storageId, storageType);
       }
       else {
         inventory = playerInventory.GetInventoryByType(inventoryType);
       }
 
       if (fastDropInventoryType == InventoryType.Storage && !string.IsNullOrEmpty(fastDropStorageId)) {
-        fastDropInventory = playerInventory.GetStorageById(fastDropStorageId);
+        fastDropInventory = playerInventory.GetStorageById(fastDropStorageId, fastDropStorageType);
       }
       else {
         fastDropInventory = playerInventory.GetInventoryByType(fastDropInventoryType);

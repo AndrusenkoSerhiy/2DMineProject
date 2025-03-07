@@ -388,24 +388,15 @@ namespace Inventory {
       return null;
     }
 
-    /*[ContextMenu("Clear")]
-    public void Clear() {
-      Container.Clear();
-    }*/
-
     public void SaveToGameData() {
-      var saveId = type.ToString();
-      SaveLoadSystem.Instance.gameData.Inventories[saveId] = new InventoryData {
-        Id = saveId,
+      SaveLoadSystem.Instance.gameData.Inventories[Id] = new InventoryData {
+        Id = Id,
         Slots = GetSlots
       };
     }
 
     public void LoadFromGameData() {
-      // Clear();
-
-      var saveId = type.ToString();
-      if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(saveId, out var data)) {
+      if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(Id, out var data)) {
         return;
       }
 

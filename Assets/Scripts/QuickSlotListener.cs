@@ -1,11 +1,10 @@
 using Inventory;
-using SaveSystem;
 using Scriptables.Items;
 using Tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class QuickSlotListener : MonoBehaviour, ISaveLoad {
+public class QuickSlotListener : MonoBehaviour {
   [SerializeField] private InventorySlot selectedSlot;
   [SerializeField] private UserInterface userInterface;
   private InventoryObject quickSlots;
@@ -17,8 +16,6 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     playerInventory = GameManager.Instance.PlayerInventory;
     quickSlots = playerInventory.GetQuickSlots();
     slots = quickSlots.GetSlots;
-
-    Load();
 
     //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
@@ -71,7 +68,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
       if (slot.isEmpty || !slot.isSelected) {
         continue;
       }
-      
+
       slot.Item.info.Use(slots[i]);
       SelectSlotByIndex(i);
     }
@@ -140,18 +137,4 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   private void OnDestroy() {
     MiningRobotTool.OnPlayerEnteredRobot -= UnselectCurrSlot;
   }
-
-  #region Save/Load
-
-  public string Id => quickSlots.type.ToString();
-
-  public void Load() {
-    quickSlots.LoadFromGameData();
-  }
-
-  public void Save() {
-    quickSlots.SaveToGameData();
-  }
-
-  #endregion
 }

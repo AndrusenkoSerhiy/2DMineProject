@@ -33,17 +33,15 @@ namespace Inventory {
       if (storageWindow != null) {
         return;
       }
-
-      var caseInventory = new InventoryObject(InventoryType.Storage, id, storageType);
-      GameManager.Instance.PlayerInventory.SetStorage(caseInventory);
+      
       var storageWindowObj = Instantiate(interfacePrefab, GameManager.Instance.Canvas.transform);
 
       storageWindowObj.transform.SetSiblingIndex(0);
 
       storageWindow = storageWindowObj.GetComponent<StorageWindow>();
       GameManager.Instance.WindowsController.AddWindow(storageWindow);
-      storageWindow.StorageUI.Setup(id);
-      storageWindow.InventoryUI.SetupFastDrop(id);
+      storageWindow.StorageUI.Setup(id, storageType);
+      storageWindow.InventoryUI.SetupFastDrop(id, storageType);
     }
   }
 }

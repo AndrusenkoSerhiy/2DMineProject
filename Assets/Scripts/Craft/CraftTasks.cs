@@ -100,9 +100,8 @@ namespace Craft {
       if (!station.PlayEffectsWhenClosed) {
         return;
       }
-
-      // Debug.Log($"{station.name} RunEffect itemId {itemId}");
-      var item = station.OutputInventory.database.ItemsMap[itemId];
+      
+      var item = GameManager.Instance.ItemDatabaseObject.ItemsMap[itemId];
       GameManager.Instance.MessagesManager.ShowCraftMessage(item, 1);
     }
 
@@ -116,16 +115,7 @@ namespace Craft {
 
     public void Load() {
       SetStationsFromLoadData();
-      InitInventories();
-      LoadFuelInventory();
-      LoadOutputInventory();
       LoadInputs();
-    }
-
-    private void InitInventories() {
-      foreach (var (id, station) in allStationsMap) {
-        station.InitInventories();
-      }
     }
 
     private void SetStationsFromLoadData() {
@@ -134,39 +124,13 @@ namespace Craft {
         if (string.IsNullOrEmpty(stationData.ResourcePath)) {
           return;
         }
-
-        // var station = Resources.Load<Workstation>(stationData.ResourcePath);
+        
         var station = AssetDatabase.LoadAssetAtPath<Workstation>(stationData.ResourcePath);
         if (station == null) {
           return;
         }
 
         SetStation(station);
-      }
-    }
-
-    private void LoadFuelInventory() {
-      foreach (var id in stations) {
-        if (!allStationsMap.ContainsKey(id)) {
-          continue;
-        }
-
-        var station = allStationsMap[id];
-        if (station.FuelInventory == null) {
-          continue;
-        }
-
-        station.FuelInventory.LoadFromGameData();
-      }
-    }
-
-    private void LoadOutputInventory() {
-      foreach (var id in stations) {
-        if (!allStationsMap.ContainsKey(id)) {
-          continue;
-        }
-
-        allStationsMap[id].OutputInventory.LoadFromGameData();
       }
     }
 
@@ -186,16 +150,8 @@ namespace Craft {
         return;
       }
 
-      /*
-      var isNew = data.Inputs == null || data.Inputs.Count == 0;
-      if (isNew) {
-        return;
-      }*/
-
       station.Load(data);
     }
-
-    public string Id { get; }
 
     public void Save() {
       foreach (var id in stations) {
@@ -207,23 +163,9 @@ namespace Craft {
 
         saving[id] = true;
         station.ProcessCraftedInputs();
-        SaveOutputInventory(station);
-        SaveFuelInventory(station);
         SaveWorkstationInputs(station);
         saving[id] = false;
       }
-    }
-
-    private void SaveOutputInventory(Workstation station) {
-      station.OutputInventory.SaveToGameData();
-    }
-
-    private void SaveFuelInventory(Workstation station) {
-      if (station.FuelInventory == null) {
-        return;
-      }
-
-      station.FuelInventory.SaveToGameData();
     }
 
     private void SaveWorkstationInputs(Workstation station) {

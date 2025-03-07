@@ -29,15 +29,6 @@ namespace Inventory {
     private Dictionary<InventoryType, InventoryObject> inventories = new();
     private Dictionary<string, InventoryObject> storages = new();
 
-    public void Awake() {
-      Debug.Log("Player inventory awake");
-
-      SetInventoryByType(InventoryType.Inventory, new InventoryObject(InventoryType.Inventory));
-      SetInventoryByType(InventoryType.QuickSlots, new InventoryObject(InventoryType.QuickSlots));
-
-      Load();
-    }
-
     public void Start() {
       inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
       GameManager.Instance.UserInput.controls.UI.Inventory.performed += ctx => ShowInventory();
@@ -45,59 +36,54 @@ namespace Inventory {
       AddDefaultItemOnFirstStart();
     }
 
+    /// <summary>
+    /// Gets inventory object by type, if null - creates new and try to load data from file
+    /// </summary>
+    /// <param name="type">Inventory type</param>
+    /// <returns>Inventory object</returns>
     public InventoryObject GetInventoryByType(InventoryType type) {
-      if (type == InventoryType.None || !inventories.ContainsKey(type)) {
-        return null;
-      }
-
-      return inventories[type];
-    }
-
-    public int GetInventorySizeByType(InventoryType type) => inventoriesSizes[type];
-
-    public InventoryObject GetQuickSlots() => inventories[InventoryType.QuickSlots];
-    public InventoryObject GetInventory() => inventories[InventoryType.Inventory];
-
-    public void SetInventoryByType(InventoryType type, InventoryObject inventory) {
       if (type == InventoryType.None) {
-        Debug.LogError("Inventory type is none");
-        return;
+        return null;
       }
 
       if (type == InventoryType.Storage) {
         Debug.LogError("Set storage to \"storage\"");
-        return;
+        return null;
       }
 
       if (inventories.ContainsKey(type)) {
-        return;
+        return inventories[type];
       }
 
+      var inventory = new InventoryObject(type);
+      inventory.LoadFromGameData();
       inventories.Add(type, inventory);
+
+      return inventory;
     }
 
-    public InventoryObject GetStorageById(string id) {
-      if (string.IsNullOrEmpty(id) || !storages.ContainsKey(id)) {
+    public int GetInventorySizeByType(InventoryType type) => inventoriesSizes[type];
+
+    public InventoryObject GetQuickSlots() => GetInventoryByType(InventoryType.QuickSlots);
+    public InventoryObject GetInventory() => GetInventoryByType(InventoryType.Inventory);
+
+    public InventoryObject GetStorageById(string id, StorageType storageType) {
+      if (string.IsNullOrEmpty(id)) {
         return null;
       }
+
+      if (storages.ContainsKey(id)) {
+        return storages[id];
+      }
+
+      var inventory = new InventoryObject(InventoryType.Storage, id, storageType);
+      inventory.LoadFromGameData();
+      storages.Add(inventory.Id, inventory);
 
       return storages[id];
     }
 
     public int GetStorageSizeByType(StorageType type) => storagesSizes[type];
-
-    public void SetStorage(InventoryObject inventory) {
-      if (inventory == null || string.IsNullOrEmpty(inventory.Id)) {
-        Debug.LogError("Storage id is empty");
-        return;
-      }
-
-      if (storages.ContainsKey(inventory.Id)) {
-        return;
-      }
-
-      storages.Add(inventory.Id, inventory);
-    }
 
     private void AddDefaultItemOnFirstStart() {
       var itemAlreadyAdded = SaveLoadSystem.Instance.gameData.DefaultItemAdded;
@@ -176,14 +162,18 @@ namespace Inventory {
 
     #region Save/Load
 
-    public string Id => GetInventory().type.ToString();
-
     public void Load() {
-      GetInventory().LoadFromGameData();
+      return;
     }
 
     public void Save() {
-      GetInventory().SaveToGameData();
+      foreach (var (_, inventory) in inventories) {
+        inventory.SaveToGameData();
+      }
+
+      foreach (var (_, storage) in storages) {
+        storage.SaveToGameData();
+      }
     }
 
     #endregion

@@ -21,7 +21,7 @@ namespace Craft {
     public void Awake() {
       ServiceLocator.For(this).Register<IInputItems>(this);
       station = ServiceLocator.For(this).Get<Workstation>();
-      itemsCount = station.OutputSlotsAmount;
+      itemsCount = GameManager.Instance.PlayerInventory.GetInventorySizeByType(station.OutputInventoryType);
 
       InitInputs();
     }

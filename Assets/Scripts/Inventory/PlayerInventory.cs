@@ -21,9 +21,13 @@ namespace Inventory {
       { InventoryType.ForgeFuel, 3 },
     };
 
+    [SerializeField] private SerializedDictionary<StorageType, int> storagesSizes = new() {
+      { StorageType.Small, 18 },
+    };
+
     private PlayerInventoryWindow inventoryWindow;
     private Dictionary<InventoryType, InventoryObject> inventories = new();
-    private Dictionary<string, InventoryObject> cases = new();
+    private Dictionary<string, InventoryObject> storages = new();
 
     public void Awake() {
       Debug.Log("Player inventory awake");
@@ -60,8 +64,8 @@ namespace Inventory {
         return;
       }
 
-      if (type == InventoryType.Case) {
-        Debug.LogError("Set cases to \"cases\"");
+      if (type == InventoryType.Storage) {
+        Debug.LogError("Set storage to \"storage\"");
         return;
       }
 
@@ -70,6 +74,29 @@ namespace Inventory {
       }
 
       inventories.Add(type, inventory);
+    }
+
+    public InventoryObject GetStorageById(string id) {
+      if (string.IsNullOrEmpty(id) || !storages.ContainsKey(id)) {
+        return null;
+      }
+
+      return storages[id];
+    }
+
+    public int GetStorageSizeByType(StorageType type) => storagesSizes[type];
+
+    public void SetStorage(InventoryObject inventory) {
+      if (inventory == null || string.IsNullOrEmpty(inventory.Id)) {
+        Debug.LogError("Storage id is empty");
+        return;
+      }
+
+      if (storages.ContainsKey(inventory.Id)) {
+        return;
+      }
+
+      storages.Add(inventory.Id, inventory);
     }
 
     private void AddDefaultItemOnFirstStart() {
@@ -104,7 +131,7 @@ namespace Inventory {
 
       GameManager.Instance.RecipesManager.DiscoverMaterial(item);
       GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
-      
+
       //ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
       GameManager.Instance.PoolEffects.SpawnFlyEffect(item, cellPos);
       AddAdditionalItem(item, cellPos);
@@ -129,7 +156,7 @@ namespace Inventory {
 
         GameManager.Instance.RecipesManager.DiscoverMaterial(currentResource.item);
         GameManager.Instance.MessagesManager.ShowAddResourceMessage(currentResource.item, count);
-        
+
         //ObjectPooler.Instance.SpawnFlyEffect(currentResource.item, cellPos);
         GameManager.Instance.PoolEffects.SpawnFlyEffect(currentResource.item, cellPos);
       }

@@ -1,4 +1,3 @@
-using Settings;
 using UnityEngine;
 
 namespace Interaction
@@ -37,7 +36,7 @@ namespace Interaction
       if (interactable == null)
         return;
 
-      interactionPromtUI.ShowPrompt(true, interactable.InteractionPrompt);
+      interactionPromtUI.ShowPrompt(true, interactable.InteractionText);
       if (GameManager.Instance.UserInput.controls.GamePlay.Interact.WasPressedThisFrame()) {
         interactable.Interact(this);
       }

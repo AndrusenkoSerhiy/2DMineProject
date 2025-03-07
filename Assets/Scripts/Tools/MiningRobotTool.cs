@@ -10,6 +10,7 @@ namespace Tools {
     [SerializeField] private string interactExitName;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private List<Transform> exitTransforms;
+    [SerializeField] private string interactHeader;
     private bool isPlayerInside;
     
     private PlayerController playerController;
@@ -21,7 +22,9 @@ namespace Tools {
       playerController = GameManager.Instance.PlayerController;
       miningRobotController = GameManager.Instance.MiningRobotController;
     }
-    public string InteractionPrompt => isPlayerInside ? $"{interactExitName}" : $"{interactEnterName}";
+
+    public string InteractionText => isPlayerInside ? $"{interactExitName}" : $"{interactEnterName}";
+    public string InteractionHeader => interactHeader;
 
     public bool Interact(PlayerInteractor playerInteractor) {
       isPlayerInside = !isPlayerInside;

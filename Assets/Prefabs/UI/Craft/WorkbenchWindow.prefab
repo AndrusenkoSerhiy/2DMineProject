@@ -1650,8 +1650,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8279481195026348323}
   - {fileID: 1041024854001123476}
+  - {fileID: 8279481195026348323}
   - {fileID: 162828429968605780}
   m_Father: {fileID: 8413352481143893193}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7019,6 +7019,10 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 11400000, guid: af091aa967f4f854c862bc8ecd6fbf2a, type: 2}
+    - target: {fileID: 4524462168228969518, guid: 8d9aebfbbbe011143bea5b84076ab940, type: 3}
+      propertyPath: inventoryUI
+      value: 
+      objectReference: {fileID: 2358964767244593094}
     - target: {fileID: 4524462168228969518, guid: 8d9aebfbbbe011143bea5b84076ab940, type: 3}
       propertyPath: inventoryType
       value: 1

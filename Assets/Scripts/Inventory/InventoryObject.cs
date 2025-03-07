@@ -23,6 +23,7 @@ namespace Inventory {
     // public int slotsCount = 24;
 
     public InventoryType type;
+    public string Id => !string.IsNullOrEmpty(id) ? id : type.ToString();
 
     public event Action<SlotSwappedEventData> OnSlotSwapped;
 
@@ -34,12 +35,24 @@ namespace Inventory {
 
     public InventorySlot[] GetSlots => Container.Slots;
     private bool loaded;
+    private string id;
+    private StorageType storageType;
 
-    public InventoryObject(InventoryType type) {
+    public InventoryObject(InventoryType type, string inventoryId, StorageType storageType) {
+      Init(type);
+      id = inventoryId;
+      this.storageType = storageType;
+    }
+
+    public InventoryObject(InventoryType type) => Init(type);
+
+    private void Init(InventoryType inventoryType) {
       var db = GameManager.Instance.ItemDatabaseObject;
-      this.type = type;
+      type = inventoryType;
       database = db;
-      var size = GameManager.Instance.PlayerInventory.GetInventorySizeByType(type);
+      var size = type == InventoryType.Storage
+        ? GameManager.Instance.PlayerInventory.GetStorageSizeByType(storageType)
+        : GameManager.Instance.PlayerInventory.GetInventorySizeByType(type);
       Container = new InventoryContainer(size);
     }
 
@@ -99,6 +112,31 @@ namespace Inventory {
         }
         else {
           slot.UpdateSlot(remainingAmount);
+        }
+      }
+    }
+
+    public void TakeSimilar(InventoryObject destinationInventory) {
+      foreach (var slot in GetSlots) {
+        if (slot.isEmpty) {
+          continue;
+        }
+
+        foreach (var targetSlot in destinationInventory.GetSlots) {
+          if (targetSlot.isEmpty) {
+            continue;
+          }
+
+          if (slot.SlotsHasSameItems(targetSlot)) {
+            var remainingAmount = destinationInventory.AddItemBySlot(slot);
+
+            if (remainingAmount <= 0) {
+              slot.RemoveItem();
+            }
+            else {
+              slot.UpdateSlot(remainingAmount);
+            }
+          }
         }
       }
     }

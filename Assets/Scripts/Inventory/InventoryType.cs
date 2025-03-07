@@ -11,6 +11,6 @@
     ChemicalStationOutput = 8,
     ForgeOutput = 9,
     ForgeFuel = 10,
-    Case = 11,
+    Storage = 11,
   }
 }

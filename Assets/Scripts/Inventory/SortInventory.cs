@@ -1,21 +1,20 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Inventory {
   public class SortInventory : MonoBehaviour {
-    [SerializeField] private InventoryType inventoryType;
+    [SerializeField] private UserInterface inventoryUI;
     [SerializeField] private Image image;
     [SerializeField] private Button button;
     [SerializeField] private Sprite ascImg;
     [SerializeField] private Sprite descImg;
     [SerializeField] private bool defaultSortAsc;
 
-    private InventoryObject inventory;
     private bool ascending;
+    private InventoryObject inventory;
 
-    private void Awake() {
-      inventory = GameManager.Instance.PlayerInventory.GetInventoryByType(inventoryType);
+    private void Start() {
+      inventory = inventoryUI.Inventory;
     }
 
     private void OnEnable() {

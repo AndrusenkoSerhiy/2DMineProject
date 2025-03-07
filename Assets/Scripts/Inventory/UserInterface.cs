@@ -21,6 +21,8 @@ namespace Inventory {
     private GameManager gameManager;
     private InventoryObject inventory;
     private InventoryObject fastDropInventory;
+    private string storageId;
+    private string fastDropStorageId;
 
     private SplitItem splitItem;
     private GameObject tempDragItemObject;
@@ -44,17 +46,37 @@ namespace Inventory {
       inventoryType = type;
     }
 
+    public void Setup(string storageId) {
+      this.storageId = storageId;
+    }
+
+    public void SetupFastDrop(string fastDropStorageId) {
+      this.fastDropStorageId = fastDropStorageId;
+    }
+
     public void Awake() {
-      if(inventoryType == InventoryType.None) {
+      if (inventoryType == InventoryType.None) {
         Debug.LogError("Inventory type is none");
         return;
       }
-      
+
       gameManager = GameManager.Instance;
       var playerInventory = gameManager.PlayerInventory;
-      inventory = playerInventory.GetInventoryByType(inventoryType);
-      fastDropInventory = playerInventory.GetInventoryByType(fastDropInventoryType);
-      
+
+      if (inventoryType == InventoryType.Storage && !string.IsNullOrEmpty(storageId)) {
+        inventory = playerInventory.GetStorageById(storageId);
+      }
+      else {
+        inventory = playerInventory.GetInventoryByType(inventoryType);
+      }
+
+      if (fastDropInventoryType == InventoryType.Storage && !string.IsNullOrEmpty(fastDropStorageId)) {
+        fastDropInventory = playerInventory.GetStorageById(fastDropStorageId);
+      }
+      else {
+        fastDropInventory = playerInventory.GetInventoryByType(fastDropInventoryType);
+      }
+
       splitItem = gameManager.SplitItem;
       tempDragItemObject = gameManager.TempDragItem;
       tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
@@ -86,6 +108,8 @@ namespace Inventory {
       RemoveSlotsEvents();
 
       inventory.OnResorted -= ResortHandler;
+
+      HideTooltip();
     }
 
     public void CreateSlots() {

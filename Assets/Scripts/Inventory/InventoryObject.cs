@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Items;
 using SaveSystem;
 using Scriptables.Items;
 using UnityEngine;
@@ -21,7 +20,9 @@ namespace Inventory {
     public ItemDatabaseObject database;
     public InventoryType type;
     public string Id => !string.IsNullOrEmpty(id) ? id : type.ToString();
+
     public event Action<SlotSwappedEventData> OnSlotSwapped;
+
     // public event Action OnLoaded;
     public event Action OnResorted;
 
@@ -32,6 +33,7 @@ namespace Inventory {
     private bool loaded;
     private string id;
     private StorageType storageType;
+    private GameManager gameManager;
 
     public InventoryObject(InventoryType type, string inventoryId, StorageType storageType) {
       Init(type);
@@ -49,6 +51,7 @@ namespace Inventory {
         ? GameManager.Instance.PlayerInventory.GetStorageSizeByType(storageType)
         : GameManager.Instance.PlayerInventory.GetInventorySizeByType(type);
       Container = new InventoryContainer(size);
+      gameManager = GameManager.Instance;
     }
 
     public void SortInventory(bool ascending = true) {
@@ -186,43 +189,50 @@ namespace Inventory {
     }
 
     public int AddItemBySlot(InventorySlot slot, InventorySlot placeAt = null) {
-      return AddItem(slot.Item, slot.amount, placeAt, null, slot);
+      return AddItem(slot.Item, slot.amount, placeAt, slot);
     }
 
-    public int AddItem(Item item, int amount, InventorySlot placeAt = null, GroundItem groundItem = null,
-      InventorySlot formSlot = null) {
+    /// <summary>
+    /// Adds an item to the inventory, handling overflow and stacking where applicable.
+    /// </summary>
+    /// <param name="item">The item to add.</param>
+    /// <param name="amount">The amount of the item to add.</param>
+    /// <param name="placeAt">Optional slot to place the item in.</param>
+    /// <param name="formSlot">Optional slot form which the item is coming from.</param>
+    /// <returns>The amount that couldn't be added due to lack of space.</returns>
+    public int AddItem(Item item, int amount, InventorySlot placeAt = null, InventorySlot formSlot = null) {
       if (placeAt != null) {
         var overFlow = placeAt.isEmpty
           ? placeAt.UpdateSlot(amount, item, formSlot)
           : placeAt.AddAmount(amount, formSlot);
-        return HandleOverflow(overFlow, item, groundItem);
+        return HandleOverflow(overFlow, item);
       }
 
       var slot = FindStackableItemOnInventory(item);
-      //don't have empty slot or existing item
+      // If no empty slots and no existing stackable slot
       if (emptySlotCount <= 0 && slot == null) {
-        DropItemToGround(item, groundItem, amount);
         return amount;
       }
 
-      //add to new slot
+      // Add to a new slot if item is non-stackable or no existing stack
       if (!item.info.Stackable || slot == null) {
         var emptySlot = GetEmptySlot();
         var overFlow = emptySlot.UpdateSlot(amount, item, formSlot);
-        return HandleOverflow(overFlow, item, groundItem);
+        return HandleOverflow(overFlow, item);
       }
 
-      //add to exist slot
+      // Add to an existing stackable slot
       var remainingAmount = slot.AddAmount(amount, formSlot);
-      return HandleOverflow(remainingAmount, item, groundItem);
+      return HandleOverflow(remainingAmount, item);
     }
 
-    private int HandleOverflow(int overflowAmount, Item item, GroundItem groundItem = null,
-      InventorySlot formSlot = null) {
-      if (overflowAmount <= 0) {
-        return 0;
-      }
-
+    /// <summary>
+    /// Handles overflow of items when adding to inventory, distributing overflow into new slots.
+    /// </summary>
+    /// <param name="overflowAmount">The amount of overflow to handle.</param>
+    /// <param name="item">The item causing the overflow.</param>
+    /// <returns>The remaining overflow amount if slots are unavailable, otherwise 0.</returns>
+    private int HandleOverflow(int overflowAmount, Item item) {
       var maxStackSize = item.info.MaxStackSize;
 
       var countRepeat = Mathf.CeilToInt((float)overflowAmount / maxStackSize);
@@ -230,11 +240,10 @@ namespace Inventory {
       for (var i = 0; i < countRepeat; i++) {
         var emptySlot = GetEmptySlot();
         if (emptySlot != null) {
-          emptySlot.UpdateSlot(overflowAmount, item, formSlot);
+          emptySlot.UpdateSlot(overflowAmount, item);
           overflowAmount -= maxStackSize;
         }
         else {
-          DropItemToGround(item, groundItem, overflowAmount);
           return overflowAmount;
         }
       }
@@ -308,21 +317,6 @@ namespace Inventory {
       }
 
       return true;
-    }
-
-    private void DropItemToGround(Item item, GroundItem groundItem, int amount) {
-      if (!groundItem) {
-        return;
-      }
-
-      if (item != null) {
-        Debug.LogError($"Need to spawn item on floor! Amount: {amount}");
-        GameManager.Instance.PlayerInventory.SpawnItem(item, amount);
-      }
-
-      // UpdateCount(groundItem, amount);
-      groundItem.Count = amount;
-      groundItem.isPicked = false;
     }
 
     private int emptySlotCount {

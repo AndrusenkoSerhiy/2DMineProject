@@ -113,10 +113,10 @@ namespace Inventory {
     }
 
     public void AddItemToInventory(ItemObject item, int count, Vector3 cellPos) {
-      GetInventory().AddItem(new Item(item), count);
+      var addedAmount = AddItemToInventoryWithOverflowDrop(new Item(item), count);
 
       GameManager.Instance.RecipesManager.DiscoverMaterial(item);
-      GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
+      GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, addedAmount);
 
       //ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
       GameManager.Instance.PoolEffects.SpawnFlyEffect(item, cellPos);
@@ -138,18 +138,35 @@ namespace Inventory {
         }
 
         var count = Random.Range((int)currentResource.rndCount.x, (int)currentResource.rndCount.y);
-        GetInventory().AddItem(new Item(currentResource.item), count);
+        var addedAmount = AddItemToInventoryWithOverflowDrop(new Item(currentResource.item), count);
 
         GameManager.Instance.RecipesManager.DiscoverMaterial(currentResource.item);
-        GameManager.Instance.MessagesManager.ShowAddResourceMessage(currentResource.item, count);
+        GameManager.Instance.MessagesManager.ShowAddResourceMessage(currentResource.item, addedAmount);
 
         //ObjectPooler.Instance.SpawnFlyEffect(currentResource.item, cellPos);
         GameManager.Instance.PoolEffects.SpawnFlyEffect(currentResource.item, cellPos);
       }
     }
 
+    /// <summary>
+    /// Adds item to inventory, if no space left then spawn this item on the ground
+    /// </summary>
+    /// <param name="item">Item to add</param>
+    /// <param name="amount">Amount of this item</param>
+    /// <returns>Amount of items that was added to inventory</returns>
+    public int AddItemToInventoryWithOverflowDrop(Item item, int amount) {
+      var overflow = GetInventory().AddItem(item, amount);
+      if (overflow <= 0) {
+        return amount;
+      }
+
+      SpawnItem(item, overflow);
+
+      return amount - overflow;
+    }
+
     public void SpawnItem(Item item, int amount) {
-      if (item == null) {
+      if (item.isEmpty || item.info.spawnPrefab == null) {
         return;
       }
 
@@ -158,6 +175,8 @@ namespace Inventory {
         GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
       var groundObj = newObj.GetComponent<GroundItem>();
       groundObj.Count = amount;
+
+      GameManager.Instance.MessagesManager.ShowDroppedResourceMessage(item.info, amount);
     }
 
     #region Save/Load

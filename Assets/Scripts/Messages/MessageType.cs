@@ -5,5 +5,6 @@
     CraftSuccess = 2,
     SimpleText = 3,
     ResourcePickup = 4,
+    ResourceDropped = 5,
   }
 }

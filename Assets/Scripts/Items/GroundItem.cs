@@ -14,7 +14,7 @@ namespace Items {
       get => count;
       set => count = value;
     }
-    
+
     public string InteractionText => $"{interactName} {item.name}";
     public string InteractionHeader => interactHeader;
 
@@ -24,12 +24,12 @@ namespace Items {
         return true;
       }
 
-      var inventory = GameManager.Instance.PlayerInventory.GetInventory();
-      inventory.AddItem(new Item(item), Count, null, this);
-      
-      GameManager.Instance.RecipesManager.DiscoverMaterial(item);
-      GameManager.Instance.MessagesManager.ShowPickupResourceMessage(item, Count);
-      
+      var gameManager = GameManager.Instance;
+
+      var addedAmount = gameManager.PlayerInventory.AddItemToInventoryWithOverflowDrop(new Item(item), Count);
+      gameManager.RecipesManager.DiscoverMaterial(item);
+      gameManager.MessagesManager.ShowPickupResourceMessage(item, addedAmount);
+
       isPicked = true;
       Destroy(gameObject);
 

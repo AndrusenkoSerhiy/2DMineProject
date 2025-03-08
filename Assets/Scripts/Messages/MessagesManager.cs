@@ -30,21 +30,9 @@ namespace Messages {
     public float messageDuration = 5f;
 
     [Tooltip("Available variables: {name}, {amount}")]
-    public SerializedDictionary<MessageType, string> messageTemplates = new() {
-      { MessageType.SimpleText, $"{MessageTemplateVariables.name}" },
-      { MessageType.NewRecipe, $"New recipe: {MessageTemplateVariables.name}" },
-      { MessageType.ResourceAdded, $"Added x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" },
-      { MessageType.CraftSuccess, $"Crafted x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" },
-      { MessageType.ResourcePickup, $"Picked up x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" }
-    };
+    public SerializedDictionary<MessageType, string> messageTemplates;
 
-    public SerializedDictionary<MessageType, Position> messagePositions = new() {
-      { MessageType.SimpleText, Position.Top },
-      { MessageType.NewRecipe, Position.Top },
-      { MessageType.ResourceAdded, Position.Left },
-      { MessageType.CraftSuccess, Position.Right },
-      { MessageType.ResourcePickup, Position.Left }
-    };
+    public SerializedDictionary<MessageType, Position> messagePositions;
 
     public List<MessageUI> messagePool = new();
 
@@ -57,17 +45,47 @@ namespace Messages {
       activeMessages[rightContainer] = new List<MessageUI>();
     }
 
+    [ContextMenu("Set default messages settings")]
+    private void SetDefaultKMessagesSettings() {
+      messageTemplates = new SerializedDictionary<MessageType, string>() {
+        { MessageType.SimpleText, $"{MessageTemplateVariables.name}" },
+        { MessageType.NewRecipe, $"New recipe: {MessageTemplateVariables.name}" },
+        { MessageType.ResourceAdded, $"Added x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" },
+        { MessageType.CraftSuccess, $"Crafted x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" }, {
+          MessageType.ResourcePickup, $"Picked up x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}"
+        },
+        { MessageType.ResourceDropped, $"Dropped x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" }
+      };
+
+      messagePositions = new SerializedDictionary<MessageType, Position>() {
+        { MessageType.SimpleText, Position.Top },
+        { MessageType.NewRecipe, Position.Top },
+        { MessageType.ResourceAdded, Position.Left },
+        { MessageType.CraftSuccess, Position.Right },
+        { MessageType.ResourcePickup, Position.Left },
+        { MessageType.ResourceDropped, Position.Right }
+      };
+    }
+
     public void ShowSimpleMessage(string text) {
       var position = messagePositions[MessageType.SimpleText];
       ShowMessage(MessageType.SimpleText, position, text);
     }
 
     public void ShowAddResourceMessage(ItemObject item, int amount) {
+      if (amount <= 0) {
+        return;
+      }
+
       var position = messagePositions[MessageType.ResourceAdded];
       ShowMessage(MessageType.ResourceAdded, position, item.Name, item.Id, amount, item.UiDisplay);
     }
 
     public void ShowCraftMessage(ItemObject item, int amount) {
+      if (amount <= 0) {
+        return;
+      }
+
       var position = messagePositions[MessageType.CraftSuccess];
       ShowMessage(MessageType.CraftSuccess, position, item.Name, item.Id, amount, item.UiDisplay);
     }
@@ -78,8 +96,21 @@ namespace Messages {
     }
 
     public void ShowPickupResourceMessage(ItemObject item, int amount) {
+      if (amount <= 0) {
+        return;
+      }
+
       var position = messagePositions[MessageType.ResourcePickup];
       ShowMessage(MessageType.ResourcePickup, position, item.Name, item.Id, amount, item.UiDisplay);
+    }
+
+    public void ShowDroppedResourceMessage(ItemObject item, int amount) {
+      if (amount <= 0) {
+        return;
+      }
+
+      var position = messagePositions[MessageType.ResourceDropped];
+      ShowMessage(MessageType.ResourceDropped, position, item.Name, item.Id, amount, item.UiDisplay);
     }
 
     private void ShowMessage(

@@ -23,5 +23,10 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: 9629ad65c25f97048966dd27f06d3261, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
   Description: 
-  bonusResources: []
+  bonusResources:
+  - item: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
+    chance: 0.2
+    rndCount: {x: 1, y: 3}

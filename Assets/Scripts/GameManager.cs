@@ -10,6 +10,7 @@ using Scriptables.Items;
 using UnityEngine;
 using World;
 using Inventory;
+using Scriptables.CameraController;
 using Menu;
 using Messages;
 using Pool;
@@ -34,6 +35,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private CellObjectsPool cellObjectsPool;
   [SerializeField] private ItemDatabaseObject database;
   [SerializeField] private Camera mainCamera;
+  [SerializeField] private CameraConfigManager cameraConfigManager;
   [SerializeField] private Canvas canvas;
   [SerializeField] private WindowsController windowsController;
   [SerializeField] private PlayerInventory playerInventory;
@@ -68,6 +70,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public TaskManager TaskManager => taskManagerRef;
   public PlayerInventory PlayerInventory => playerInventory;
   public Camera MainCamera => mainCamera;
+  public CameraConfigManager CameraConfigManager => cameraConfigManager;
   public Canvas Canvas => canvas;
   public ItemDatabaseObject ItemDatabaseObject => database;
   public PlayerEquipment PlayerEquipment => playerEquipment;

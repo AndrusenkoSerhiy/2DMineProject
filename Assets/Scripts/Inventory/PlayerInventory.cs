@@ -165,6 +165,7 @@ namespace Inventory {
       return amount - overflow;
     }
 
+    //TODO remove after time, maybe add pool
     public void SpawnItem(Item item, int amount) {
       if (item.isEmpty || item.info.spawnPrefab == null) {
         return;

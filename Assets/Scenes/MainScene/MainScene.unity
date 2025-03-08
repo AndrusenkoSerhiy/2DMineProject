@@ -555,16 +555,17 @@ MonoBehaviour:
   maxMessagesPerZone: 3
   messageDuration: 4
   messageTemplates:
-    m_Keys: 0300000000000000010000000200000004000000
+    m_Keys: 030000000000000001000000020000000400000005000000
     m_Values:
     - '{name}'
     - 'New recipe: {name}'
     - Added x {amount} {name}
     - Crafted x {amount} {name}
     - Picked up x {amount} {name}
+    - Dropped x {amount} {name}
   messagePositions:
-    m_Keys: 0300000000000000010000000200000004000000
-    m_Values: 0000000000000000020000000300000002000000
+    m_Keys: 030000000000000001000000020000000400000005000000
+    m_Values: 000000000000000002000000030000000200000003000000
   messagePool:
   - {fileID: 1383654931}
   - {fileID: 691718130}

@@ -29,6 +29,29 @@ namespace Messages {
     public int maxMessagesPerZone = 3;
     public float messageDuration = 5f;
 
+    private SerializedDictionary<MessageType, string> GetDefaultMessageTemplates() {
+      return new SerializedDictionary<MessageType, string> {
+        { MessageType.SimpleText, $"{MessageTemplateVariables.name}" },
+        { MessageType.NewRecipe, $"New recipe: {MessageTemplateVariables.name}" },
+        { MessageType.ResourceAdded, $"Added x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" },
+        { MessageType.CraftSuccess, $"Crafted x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" }, {
+          MessageType.ResourcePickup, $"Picked up x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}"
+        },
+        { MessageType.ResourceDropped, $"Dropped x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" }
+      };
+    }
+
+    private SerializedDictionary<MessageType, Position> GetDefaultMessagePositions() {
+      return new SerializedDictionary<MessageType, Position> {
+        { MessageType.SimpleText, Position.Top },
+        { MessageType.NewRecipe, Position.Top },
+        { MessageType.ResourceAdded, Position.Left },
+        { MessageType.CraftSuccess, Position.Right },
+        { MessageType.ResourcePickup, Position.Left },
+        { MessageType.ResourceDropped, Position.Right }
+      };
+    }
+
     [Tooltip("Available variables: {name}, {amount}")]
     public SerializedDictionary<MessageType, string> messageTemplates;
 
@@ -43,28 +66,14 @@ namespace Messages {
       activeMessages[bottomContainer] = new List<MessageUI>();
       activeMessages[leftContainer] = new List<MessageUI>();
       activeMessages[rightContainer] = new List<MessageUI>();
+      messageTemplates = GetDefaultMessageTemplates();
+      messagePositions = GetDefaultMessagePositions();
     }
 
     [ContextMenu("Set default messages settings")]
-    private void SetDefaultKMessagesSettings() {
-      messageTemplates = new SerializedDictionary<MessageType, string>() {
-        { MessageType.SimpleText, $"{MessageTemplateVariables.name}" },
-        { MessageType.NewRecipe, $"New recipe: {MessageTemplateVariables.name}" },
-        { MessageType.ResourceAdded, $"Added x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" },
-        { MessageType.CraftSuccess, $"Crafted x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" }, {
-          MessageType.ResourcePickup, $"Picked up x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}"
-        },
-        { MessageType.ResourceDropped, $"Dropped x {MessageTemplateVariables.amount} {MessageTemplateVariables.name}" }
-      };
-
-      messagePositions = new SerializedDictionary<MessageType, Position>() {
-        { MessageType.SimpleText, Position.Top },
-        { MessageType.NewRecipe, Position.Top },
-        { MessageType.ResourceAdded, Position.Left },
-        { MessageType.CraftSuccess, Position.Right },
-        { MessageType.ResourcePickup, Position.Left },
-        { MessageType.ResourceDropped, Position.Right }
-      };
+    private void SetDefaultMessagesSettings() {
+      messageTemplates = GetDefaultMessageTemplates();
+      messagePositions = GetDefaultMessagePositions();
     }
 
     public void ShowSimpleMessage(string text) {

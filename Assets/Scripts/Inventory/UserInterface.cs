@@ -361,7 +361,7 @@ namespace Inventory {
 
       // Handle item drop on the ground
       if (MouseData.interfaceMouseIsOver == null) {
-        if (!PreventDropOnGround) {
+        if (!PreventDropOnGround && slot.CanDrop) {
           gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount);
           slot.RemoveItem();
 
@@ -419,9 +419,14 @@ namespace Inventory {
       }
 
       // Handle swapping items
-      // var canSwap = !targetUI.PreventSwapIn && (PreventSwapIn || (!PreventSwapIn && slot.isEmpty));
+      // Check UI params
       var cantSwap = targetUI.PreventSwapIn || (PreventSwapIn && !targetSlot.isEmpty);
       if (cantSwap) {
+        return false;
+      }
+
+      // Check item params for swap
+      if (targetUI != slot.Parent && (!slot.CanMoveToAnotherInventory || !targetSlot.CanMoveToAnotherInventory)) {
         return false;
       }
 

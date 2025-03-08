@@ -35,6 +35,8 @@ namespace Inventory {
     }
 
     public bool isEmpty => Item.info == null || amount <= 0;
+    public bool CanMoveToAnotherInventory => Item?.info?.CanMoveToAnotherInventory ?? true;
+    public bool CanDrop => Item?.info?.CanDrop ?? true;
 
     public InventorySlot PreventEvents() {
       preventEvents = true;

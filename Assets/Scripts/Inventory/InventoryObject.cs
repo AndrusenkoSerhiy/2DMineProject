@@ -18,15 +18,10 @@ namespace Inventory {
   }
 
   public class InventoryObject {
-    // public string savePath;
     public ItemDatabaseObject database;
-    // public int slotsCount = 24;
-
     public InventoryType type;
     public string Id => !string.IsNullOrEmpty(id) ? id : type.ToString();
-
     public event Action<SlotSwappedEventData> OnSlotSwapped;
-
     // public event Action OnLoaded;
     public event Action OnResorted;
 
@@ -101,8 +96,8 @@ namespace Inventory {
       }
 
       foreach (var slot in GetSlots) {
-        if (slot.isEmpty) {
-          continue; // Skip empty slots
+        if (slot.isEmpty || !slot.CanMoveToAnotherInventory) {
+          continue; // Skip
         }
 
         var remainingAmount = destinationInventory.AddItemBySlot(slot);
@@ -118,7 +113,7 @@ namespace Inventory {
 
     public void TakeSimilar(InventoryObject destinationInventory) {
       foreach (var slot in GetSlots) {
-        if (slot.isEmpty) {
+        if (slot.isEmpty || !slot.CanMoveToAnotherInventory) {
           continue;
         }
 

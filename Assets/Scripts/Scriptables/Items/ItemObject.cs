@@ -16,6 +16,8 @@ namespace Scriptables.Items {
     public Vector3 SpawnPosition;
     public Vector3 SpawnRotation;
     public GameObject spawnPrefab;
+    public bool CanMoveToAnotherInventory = true;
+    public bool CanDrop = true;
 
     [TextArea(15, 20)] public string Description;
 

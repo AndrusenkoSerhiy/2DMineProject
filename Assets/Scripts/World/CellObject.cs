@@ -25,6 +25,10 @@ namespace World {
     private Vector3 originalPosition;
     private Vector3 originalScale;
     private int originalSortingOrder;
+    
+    //in building prefab boxCollider is disabled by default and enabled 
+    //when you place it in the cell
+    public BoxCollider2D BoxCollider2D => boxCollider2D;
 
     public CellData CellData => _cellData;
 

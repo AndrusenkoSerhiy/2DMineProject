@@ -147,7 +147,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3815914773768959763}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -201,6 +201,7 @@ MonoBehaviour:
   interfacePrefab: {fileID: 1208913450436918581, guid: abbc60578dfa33f41b51b3768e65e5e7, type: 3}
   station: {fileID: 11400000, guid: 311520bedd68a7f438e3ca926263e226, type: 2}
   interactText: Craft
+  interactHeader: 
 --- !u!114 &1480851491351203543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,4 +227,3 @@ MonoBehaviour:
     x: 0
     y: 0
     perlin: 0
-  isBuilding: 1

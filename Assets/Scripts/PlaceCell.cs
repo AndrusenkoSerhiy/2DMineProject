@@ -15,7 +15,7 @@ public class PlaceCell : MonoBehaviour {
   [SerializeField] private Color previewColor;
   [SerializeField] private Color blockColor;
   private Color currPreviewColor;
-  private InventorySlot currSlot;
+  [SerializeField] private InventorySlot currSlot;
   private SpriteRenderer renderer;
 
   [SerializeField] private int radius = 1;
@@ -33,7 +33,6 @@ public class PlaceCell : MonoBehaviour {
   }
 
   public void ActivateBuildMode(InventorySlot slot, ResourceData rData, GameObject sPrefab) {
-    //Debug.LogError($"ActivateBuildMode {currSlot} | {slot.Item.name}");
     spawnPrefab = sPrefab;
     if (currSlot == null) {
       EnableBuildMode(slot, rData);
@@ -62,6 +61,7 @@ public class PlaceCell : MonoBehaviour {
   private void ChangeBuildMode(InventorySlot slot, ResourceData rData) {
     currSlot = slot;
     resourceData = rData;
+    SetEnabled(true);
     UpdatePreview();
   }
 
@@ -71,6 +71,7 @@ public class PlaceCell : MonoBehaviour {
 
     isPreviewing = true;
     previewInstance = Instantiate(spawnPrefab); //prefab
+    renderer = previewInstance.GetComponentInChildren<SpriteRenderer>();
     UpdatePreview();
 
     SetPreviewColor(previewColor);
@@ -78,11 +79,12 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void UpdatePreview() {
-    if (previewInstance != null && !previewInstance.name.Equals(spawnPrefab.name)) {
+    return;
+    if (previewInstance != null /*&& !previewInstance.name.Equals(spawnPrefab.name)*/) {
       Destroy(previewInstance);
-      previewInstance = Instantiate(spawnPrefab);
     }
-
+    previewInstance = Instantiate(spawnPrefab);
+    
     renderer = previewInstance.GetComponentInChildren<SpriteRenderer>();
     //renderer.sprite = resourceData.Sprite(0);
   }
@@ -180,6 +182,7 @@ public class PlaceCell : MonoBehaviour {
 
     GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
     var cell = GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
+    cell.BoxCollider2D.enabled = true;
     AfterPlaceCellActions(cell);
     //var cellObj = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y);
     //Debug.LogError($"resourceData {cellObj}");
@@ -213,6 +216,7 @@ public class PlaceCell : MonoBehaviour {
     currSlot.RemoveItem();
     SetEnabled(false);
     currSlot = null;
+    resourceData = null;
   }
 
   private Vector3 GetMousePosition() {

@@ -91,7 +91,7 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private bool UnselectSlot(InventorySlot slot) {
-    if (selectedSlot == null || selectedSlot != slot) {
+    if (selectedSlot == null || selectedSlot != slot || selectedSlot.isEmpty) {
       return false;
     }
 

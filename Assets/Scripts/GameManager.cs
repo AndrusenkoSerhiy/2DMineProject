@@ -46,6 +46,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private SplitItem splitItem;
   [SerializeField] private GameObject tempDragItem;
   [SerializeField] private ObjectPooler poolEffects;
+  [SerializeField] private QuickSlotListener quickSlotListener;
 
   private PlayerController playerController;
   private PlayerControllerBase currPlayerController;
@@ -78,6 +79,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public PlaceCell PlaceCell => placeCell;
   public AnimatorParameters AnimatorParameters => animatorParameters;
   public ObjectPooler PoolEffects => poolEffects;
+  public QuickSlotListener QuickSlotListener => quickSlotListener;
 
   public PlayerController PlayerController {
     set => playerController = value;

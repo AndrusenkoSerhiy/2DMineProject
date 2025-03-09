@@ -6,6 +6,10 @@ namespace Scriptables.Items {
     public List<T> ItemObjects = new();
     public Dictionary<string, T> ItemsMap;
 
+    private void OnEnable() {
+      InitializeLookup();
+    }
+
     public void OnValidate() => InitializeLookup();
 
     private void InitializeLookup() {

@@ -35,10 +35,6 @@ namespace Craft.Recipes {
         recipeStates.Add(recipe.Id, RecipeState.Locked);
       }
 
-      /*foreach (var recipe in recipesDB.DefaultUnlockedRecipes) {
-        recipeStates[recipe.Id] = RecipeState.Unlocked;
-      }*/
-
       foreach (var station in defaultUnlockedStations) {
         UnlockStation(station);
       }

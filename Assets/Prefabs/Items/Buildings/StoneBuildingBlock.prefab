@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 678262616524433075}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.57, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -135,6 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 1
   interactName: 
+  interactHeader: 
   item: {fileID: 11400000, guid: c4186f33ab9ebdd4fbc48c6d99586791, type: 2}
   isPicked: 0
 --- !u!70 &8794410963485848602
@@ -171,6 +172,6 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.63999957, y: 1}
-  m_Size: {x: 1.2800001, y: 2.0000002}
+  m_Offset: {x: 0.03, y: 0.03}
+  m_Size: {x: 1.2800001, y: 3.47}
   m_Direction: 0

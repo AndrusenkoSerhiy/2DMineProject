@@ -179,23 +179,23 @@ public class PlaceCell : MonoBehaviour {
   }*/
 
   private void PlaceCellOnScene() {
-    //var test = Instantiate(spawnPrefab);
-    //var cellObj = test.GetComponent<CellObject>();
-    var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
-    //test.transform.position = CoordsTransformer.GridToWorld(coords.X, coords.Y);
+    //for forge, stoneCutter etc
+    if (resourceData.IsBuilding) {
+      var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
 
-    GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-    var cell = GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
-    cell.BoxCollider2D.enabled = true;
-    AfterPlaceCellActions(cell);
-    //var cellObj = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y);
-    //Debug.LogError($"resourceData {cellObj}");
-    //test.transform.parent = cellObj.transform;
-    currSlot.AddAmount(-1);
-    ClearSLot();
-    return;
-    GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-    GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
+      GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+      var cell = GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
+      cell.BoxCollider2D.enabled = true;
+      AfterPlaceCellActions(cell);
+      currSlot.AddAmount(-1);
+      ClearSLot();
+    }
+    //for building blocks
+    else {
+      var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
+      GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+      GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
+    }
   }
 
   private void AfterPlaceCellActions(CellObject cell) {

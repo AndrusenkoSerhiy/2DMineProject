@@ -9,6 +9,8 @@ namespace Craft {
 
     private CraftWindow craftWindow;
     private CraftManager craftManager;
+    
+    public Workstation Station => station;
 
     private void Init() {
       if (craftWindow != null) {
@@ -48,9 +50,7 @@ namespace Craft {
         craftWindow.Hide();
       }
       else {
-        //TODO move to station plant
         GameManager.Instance.CraftTasks.SetStation(station);
-        
         craftWindow.Show();
       }
     }

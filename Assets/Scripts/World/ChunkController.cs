@@ -20,8 +20,9 @@ namespace World {
     private ChunkData chunkData;
     public ChunkData ChunkData => chunkData;
     private bool isInited = false;
-    
+
     [SerializeField] private ObjectPooler testPool;
+
     private void Awake() {
       getCellObjectsPool().Init();
       _chunkGenerator.Init();
@@ -95,6 +96,7 @@ namespace World {
           if (chunkData.CellFillDatas[i, j] == 0) {
             continue;
           }
+
           var cellData = chunkData.GetCellData(i, j);
           var data = _resourceDataLib.GetData(cellData.perlin);
           if (!data.IsBuilding) {
@@ -103,6 +105,7 @@ namespace World {
             if (!cell) {
               continue;
             }
+
             cell.Init(cellData, data);
             cell.InitSprite();
             _activeCellObjects[_proxyCoords] = cell;
@@ -113,6 +116,7 @@ namespace World {
             if (!cell) {
               continue;
             }
+
             cell.gameObject.SetActive(true);
             cell.Init(cellData, data);
             cell.transform.position = CoordsTransformer.GridToWorld(i, j);
@@ -125,14 +129,15 @@ namespace World {
 
       isInited = true;
     }
-    
+
     //get building from another pool
-    public void SpawnBuild(Coords coords, ResourceData resourceData) {
+    public CellObject SpawnBuild(Coords coords, ResourceData resourceData) {
       var cell = (CellObject)testPool.SpawnFromPool(resourceData.name, Vector3.zero, Quaternion.identity);
       cell.transform.position = CoordsTransformer.GridToWorld(coords.X, coords.Y);
       var cellData = chunkData.GetCellData(coords.X, coords.Y);
       cell.Init(cellData, resourceData);
       _activeCellObjects[new Coords(coords.X, coords.Y)] = cell;
+      return cell;
     }
 
     private List<Coords> clearList = new();
@@ -145,7 +150,7 @@ namespace World {
       foreach (var coord in _activeCellObjects.Keys) {
         if (Mathf.Abs(playerCoords.X - coord.X) > visionOffsetX ||
             Mathf.Abs(playerCoords.Y - coord.Y) > visionOffsetY) {
-          if(!_activeCellObjects[coord].resourceData.IsBuilding)
+          if (!_activeCellObjects[coord].resourceData.IsBuilding)
             getCellObjectsPool().ReturnObject(_activeCellObjects[coord]);
           else _activeCellObjects[coord].ReturnToPool();
           clearList.Add(coord);

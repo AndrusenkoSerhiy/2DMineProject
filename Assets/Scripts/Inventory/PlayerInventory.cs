@@ -97,7 +97,7 @@ namespace Inventory {
         const int count = 1;
         GetInventory().AddItem(new Item(item), count);
         GameManager.Instance.RecipesManager.DiscoverMaterial(item);
-        GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
+        // GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
       }
 
       SaveLoadSystem.Instance.gameData.DefaultItemAdded = true;

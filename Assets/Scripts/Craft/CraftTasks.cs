@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using SaveSystem;
 using Scriptables.Craft;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -100,7 +99,7 @@ namespace Craft {
       if (!station.PlayEffectsWhenClosed) {
         return;
       }
-      
+
       var item = GameManager.Instance.ItemDatabaseObject.ItemsMap[itemId];
       GameManager.Instance.MessagesManager.ShowCraftMessage(item, 1);
     }
@@ -125,7 +124,7 @@ namespace Craft {
           return;
         }
         
-        var station = AssetDatabase.LoadAssetAtPath<Workstation>(stationData.ResourcePath);
+        var station = Resources.Load<Workstation>(stationData.ResourcePath);
         if (station == null) {
           return;
         }
@@ -172,7 +171,7 @@ namespace Craft {
       var inputs = new List<CraftInputData>();
 
       var stationId = station.Id;
-      var resourcePath = AssetDatabase.GetAssetPath(station);
+      var resourcePath = station.ResourcePath;
 
       if (station.Inputs.Count == 0) {
         SaveLoadSystem.Instance.gameData.Workstations[stationId] =

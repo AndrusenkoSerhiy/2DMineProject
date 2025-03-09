@@ -1,3 +1,4 @@
+using Craft;
 using Inventory;
 using Player;
 using Scriptables;
@@ -16,7 +17,9 @@ public class PlaceCell : MonoBehaviour {
   private Color currPreviewColor;
   private InventorySlot currSlot;
   private SpriteRenderer renderer;
+
   [SerializeField] private int radius = 1;
+
   //private Coords playerCoords;
   private PlayerControllerBase playerController;
   private GameObject spawnPrefab;
@@ -28,6 +31,7 @@ public class PlaceCell : MonoBehaviour {
   private Coords GetPlayerCoords() {
     return GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
   }
+
   public void ActivateBuildMode(InventorySlot slot, ResourceData rData, GameObject sPrefab) {
     //Debug.LogError($"ActivateBuildMode {currSlot} | {slot.Item.name}");
     spawnPrefab = sPrefab;
@@ -66,7 +70,7 @@ public class PlaceCell : MonoBehaviour {
       return;
 
     isPreviewing = true;
-    previewInstance = Instantiate(spawnPrefab);//prefab
+    previewInstance = Instantiate(spawnPrefab); //prefab
     UpdatePreview();
 
     SetPreviewColor(previewColor);
@@ -78,6 +82,7 @@ public class PlaceCell : MonoBehaviour {
       Destroy(previewInstance);
       previewInstance = Instantiate(spawnPrefab);
     }
+
     renderer = previewInstance.GetComponentInChildren<SpriteRenderer>();
     //renderer.sprite = resourceData.Sprite(0);
   }
@@ -96,6 +101,7 @@ public class PlaceCell : MonoBehaviour {
     if (previewInstance != null) {
       Destroy(previewInstance);
     }
+
     playerController?.SetLockHighlight(false);
   }
 
@@ -127,9 +133,9 @@ public class PlaceCell : MonoBehaviour {
   private void UpdatePreviewPosition() {
     if (!isPreviewing || previewInstance == null)
       return;
-    
+
     var snappedPosition = GetSnappedWorldPosition();
-    
+
     previewInstance.transform.position = snappedPosition;
 
     SetPreviewColor(ShouldUseBlockColor(snappedPosition) ? blockColor : previewColor);
@@ -171,9 +177,10 @@ public class PlaceCell : MonoBehaviour {
     //var cellObj = test.GetComponent<CellObject>();
     var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
     //test.transform.position = CoordsTransformer.GridToWorld(coords.X, coords.Y);
-    
+
     GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-    GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
+    var cell = GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
+    AfterPlaceCellActions(cell);
     //var cellObj = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y);
     //Debug.LogError($"resourceData {cellObj}");
     //test.transform.parent = cellObj.transform;
@@ -182,6 +189,20 @@ public class PlaceCell : MonoBehaviour {
     return;
     GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
     GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
+  }
+
+  private void AfterPlaceCellActions(CellObject cell) {
+    cell.TryGetComponent<Workbench>(out var worckbench);
+    if (!worckbench) {
+      return;
+    }
+
+    var station = worckbench.Station;
+    if (station == null) {
+      return;
+    }
+    
+    GameManager.Instance.RecipesManager.UnlockStation(station.RecipeType);
   }
 
   private void ClearSLot() {
@@ -195,7 +216,8 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private Vector3 GetMousePosition() {
-    var mousePosition = GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
+    var mousePosition =
+      GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
     mousePosition.z = 0;
     return mousePosition;
   }

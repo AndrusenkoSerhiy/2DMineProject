@@ -21,9 +21,6 @@ namespace Inventory {
 
     public InventoryType InventoryType { get; private set; }
 
-    //TODO: Add ContainerIndex to Item(for storages)
-    public int ContainerIndex { get; private set; } = 0;
-
     public bool isSelected;
     /*public Image Background => GetBackground();
     public TextMeshProUGUI Text => GetText();*/

@@ -22,6 +22,7 @@ namespace Scriptables.Craft {
   [CreateAssetMenu(menuName = "Crafting System/Workstation", fileName = "New Workstation")]
   public class Workstation : BaseScriptableObject {
     public RecipeType RecipeType;
+    public string ResourcePath;
     public InventoryType OutputInventoryType;
     public InventoryType FuelInventoryType;
     public RecipesDatabaseObject RecipeDB;
@@ -51,6 +52,12 @@ namespace Scriptables.Craft {
     private InventoryObject fuelInventory;
     private int outputSlotsAmount;
     private int fuelSlotsAmount;
+
+#if UNITY_EDITOR
+    private void OnValidate() {
+      ResourcePath = UnityEditor.AssetDatabase.GetAssetPath(this);
+    }
+#endif
 
     public void Clear() {
       Inputs.Clear();

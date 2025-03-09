@@ -172,9 +172,12 @@ namespace Inventory {
       }
 
       //spawn higher in y pos because need TO DO pick up on action not the trigger enter
-      var newObj = Instantiate(item.info.spawnPrefab,
+      /*var newObj = Instantiate(item.info.spawnPrefab,
         GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
-      var groundObj = newObj.GetComponent<GroundItem>();
+      var groundObj = newObj.GetComponent<GroundItem>();*/
+      var groundObj = GameManager.Instance.GroundItemPool.GetItem(item.info);
+      groundObj.transform.position = GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0);
+      groundObj.transform.rotation = Quaternion.identity;
       groundObj.Count = amount;
 
       GameManager.Instance.MessagesManager.ShowDroppedResourceMessage(item.info, amount);

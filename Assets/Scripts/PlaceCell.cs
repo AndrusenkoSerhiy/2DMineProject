@@ -1,8 +1,10 @@
+using System;
 using Craft;
 using Inventory;
 using Player;
 using Scriptables;
 using Settings;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 using World;
@@ -10,7 +12,7 @@ using World;
 public class PlaceCell : MonoBehaviour {
   [SerializeField] private ResourceData resourceData;
   [SerializeField] private GameObject prefab;
-  private GameObject previewInstance;
+  [SerializeField] private GameObject previewInstance;
   [SerializeField] private bool isPreviewing;
   [SerializeField] private Color previewColor;
   [SerializeField] private Color blockColor;
@@ -19,6 +21,7 @@ public class PlaceCell : MonoBehaviour {
   private SpriteRenderer renderer;
 
   [SerializeField] private int radius = 1;
+  public static event Action OnSlotReset;
 
   //private Coords playerCoords;
   private PlayerControllerBase playerController;
@@ -109,6 +112,7 @@ public class PlaceCell : MonoBehaviour {
 
   //enable building mode
   private void SetEnabled(bool value) {
+    //Debug.LogError($"SetEnabled {value}");
     isPreviewing = value;
     BlockAction(value);
     if (value) StartPreview();
@@ -211,9 +215,8 @@ public class PlaceCell : MonoBehaviour {
   private void ClearSLot() {
     if (currSlot.amount > 0)
       return;
-
-    currSlot.Unselect();
-    currSlot.RemoveItem();
+    
+    OnSlotReset?.Invoke();
     SetEnabled(false);
     currSlot = null;
     resourceData = null;

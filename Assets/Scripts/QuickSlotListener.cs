@@ -23,6 +23,7 @@ public class QuickSlotListener : MonoBehaviour {
     selectedItem = null;
     //
     MiningRobotTool.OnPlayerEnteredRobot += UnselectCurrSlot;
+    PlaceCell.OnSlotReset += ResetSlot;
   }
 
   private void UnselectCurrSlot() {
@@ -153,5 +154,6 @@ public class QuickSlotListener : MonoBehaviour {
 
   private void OnDestroy() {
     MiningRobotTool.OnPlayerEnteredRobot -= UnselectCurrSlot;
+    PlaceCell.OnSlotReset -= UnselectCurrSlot;
   }
 }

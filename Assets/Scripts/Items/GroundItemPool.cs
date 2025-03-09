@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Items {
+  //TODO add rigidbody to items
   public class GroundItemPool : MonoBehaviour {
     public float autoDestroyDelay = 60f;
     private SerializedDictionary<string, List<GroundItem>> pool = new();

@@ -37,6 +37,7 @@ namespace Craft {
       InitComponent();
     }
 
+    //TODO refactor, add only new elements
     private void BuildList() {
       var recipes = GameManager.Instance.RecipesManager.GetRecipesForStation(station.RecipeType);
       if (recipesListButtons.Count > 0 && recipes.Count == recipesListButtons.Count) {

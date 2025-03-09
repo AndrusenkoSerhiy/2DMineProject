@@ -97,7 +97,6 @@ public class GameManager : PersistentSingleton<GameManager> {
   public bool showMenuOnStart = true;
 
   protected override void Awake() {
-    Debug.Log("Game manager awake");
     base.Awake();
 
     DOTween.Init();
@@ -121,7 +120,9 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   public void ExitGame() {
     if (Application.isEditor) {
+#if UNITY_EDITOR
       UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
     else {
       Application.Quit();

@@ -56,32 +56,21 @@ public class StartGameCameraController : MonoBehaviour {
     playerRb.simulated = true;
     yield return new WaitForSeconds(waitOnStart);
     while (playerRb.linearVelocity.magnitude > 0.1f) {
-      /*var t = elapsedTime / followDuration;
-      cinemachineCamera.Lens.OrthographicSize = Mathf.Lerp(startOrthographicSize, targetOrthographicSize, t);*/
-      Debug.Log(playerRb.linearVelocity);
-      /*if (playerRb.linearVelocity.magnitude <= 0.1f) {
-        cinemachineCamera.ForceCameraPosition(player.transform.position, player.transform.rotation);
-        cinemachineCamera.Follow = player;
-
-      }*/
       yield return null;
     }
+
     GameManager.Instance.CameraConfigManager.SetCameraLow();
     playerRb.gravityScale = 0f;
     yield return new WaitForSeconds(1f);
     GameManager.Instance.CameraConfigManager.SetCameraDefault();
-    /*cinemachineCamera.Lens.OrthographicSize = targetOrthographicSize;*/
-
     Stop();
   }
-  
-  IEnumerator FadeVignette(float targetIntensity, float duration)
-  {
+
+  IEnumerator FadeVignette(float targetIntensity, float duration) {
     float startIntensity = vignette.intensity.value;
     float elapsedTime = 0f;
 
-    while (elapsedTime < duration)
-    {
+    while (elapsedTime < duration) {
       vignette.intensity.value = Mathf.Lerp(startIntensity, targetIntensity, elapsedTime / duration);
       elapsedTime += Time.deltaTime;
       yield return null;
@@ -95,6 +84,7 @@ public class StartGameCameraController : MonoBehaviour {
     if (vignetteCoroutine == null) {
       return;
     }
+
     StopCoroutine(vignetteCoroutine);
   }
 

@@ -187,8 +187,6 @@ public class PlaceCell : MonoBehaviour {
       var cell = GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
       cell.BoxCollider2D.enabled = true;
       AfterPlaceCellActions(cell);
-      currSlot.AddAmount(-1);
-      ClearSLot();
     }
     //for building blocks
     else {
@@ -196,6 +194,8 @@ public class PlaceCell : MonoBehaviour {
       GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
       GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
     }
+    currSlot.AddAmount(-1);
+    ClearSLot();
   }
 
   private void AfterPlaceCellActions(CellObject cell) {

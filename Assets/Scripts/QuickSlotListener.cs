@@ -127,8 +127,8 @@ public class QuickSlotListener : MonoBehaviour {
 
   private void SelectSlot(InventorySlot slot) {
     //select empty slot
-    if (slot == null || slot.Item.info == null) {
-      if (selectedSlot != null && selectedSlot.Item.info != null) {
+    if (slot.isEmpty) {
+      if (selectedSlot != null && !selectedSlot.isEmpty) {
         ResetSlot();
       }
 
@@ -144,7 +144,7 @@ public class QuickSlotListener : MonoBehaviour {
       selectedSlot.Unselect();
       selectedItem?.info?.Use(selectedSlot);
     }
-
+    
     selectedSlot = slot;
     selectedItem = slot.Item;
     selectedSlot.Select();

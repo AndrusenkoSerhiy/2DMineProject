@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class StartGameCameraController : MonoBehaviour {
   public CinemachineCamera cinemachineCamera;
@@ -9,12 +11,14 @@ public class StartGameCameraController : MonoBehaviour {
   public Vector3 cameraStartPosition;
   public float startOrthographicSize = 30f;
   public float targetOrthographicSize = 18f;
-  public float followDuration = 2f;
   public float waitOnStart = 1f;
+  public Volume volume;
 
   private bool isFollowing;
   private Rigidbody2D playerRb;
   private Coroutine followCoroutine;
+  private Coroutine vignetteCoroutine;
+  private Vignette vignette;
 
   private void Awake() {
     if (player == null) {
@@ -28,40 +32,60 @@ public class StartGameCameraController : MonoBehaviour {
 
   public void Play() {
     followCoroutine = StartCoroutine(FollowPlayer());
+    vignetteCoroutine = StartCoroutine(FadeVignette(0.537f, 1.5f));
   }
 
   public void Init() {
     playerRb = player.GetComponent<Rigidbody2D>();
     playerRb.simulated = false;
+    playerRb.gravityScale = 200f;
     player.transform.position = playerStartPosition;
     cinemachineCamera.Follow = null;
     cinemachineCamera.transform.position = new Vector3(playerStartPosition.x, cameraStartPosition.y,
       cinemachineCamera.transform.position.z);
     cinemachineCamera.Lens.OrthographicSize = startOrthographicSize;
+    volume.profile.TryGet(out vignette);
+    if (vignette) {
+      vignette.intensity.value = 1f;
+    }
   }
 
   private IEnumerator FollowPlayer() {
+    cinemachineCamera.Follow = player;
+    GameManager.Instance.CameraConfigManager.SetCameraHigh();
     playerRb.simulated = true;
     yield return new WaitForSeconds(waitOnStart);
-
-    var elapsedTime = 0f;
-
-    while (elapsedTime < followDuration) {
-      elapsedTime += Time.deltaTime;
-      var t = elapsedTime / followDuration;
-      cinemachineCamera.Lens.OrthographicSize = Mathf.Lerp(startOrthographicSize, targetOrthographicSize, t);
-
-      if (!cinemachineCamera.Follow && player.transform.position.y <= cinemachineCamera.transform.position.y) {
-        cinemachineCamera.ForceCameraPosition(player.transform.position, player.transform.rotation);
-        cinemachineCamera.Follow = player;
-      }
-
+    while (playerRb.linearVelocity.magnitude > 0.1f) {
       yield return null;
     }
 
-    cinemachineCamera.Lens.OrthographicSize = targetOrthographicSize;
-
+    GameManager.Instance.CameraConfigManager.SetCameraLow();
+    playerRb.gravityScale = 0f;
+    yield return new WaitForSeconds(1f);
+    GameManager.Instance.CameraConfigManager.SetCameraDefault();
     Stop();
+  }
+
+  IEnumerator FadeVignette(float targetIntensity, float duration) {
+    float startIntensity = vignette.intensity.value;
+    float elapsedTime = 0f;
+
+    while (elapsedTime < duration) {
+      vignette.intensity.value = Mathf.Lerp(startIntensity, targetIntensity, elapsedTime / duration);
+      elapsedTime += Time.deltaTime;
+      yield return null;
+    }
+
+    vignette.intensity.value = targetIntensity;
+    StopVignette();
+  }
+
+  private void StopVignette() {
+    if (vignetteCoroutine == null) {
+      return;
+    }
+
+    StopCoroutine(vignetteCoroutine);
   }
 
   private void Stop() {

@@ -198,7 +198,6 @@ namespace World {
     }
 
     private void GeneratePOI(ChunkData chunkData) {
-      Debug.Log("Generating POI");
       //Get all empty points
       var emptyCells = new List<CellData>();
       for (int i = 0; i < chunkData.width; i++) {
@@ -213,7 +212,6 @@ namespace World {
         }
       }
 
-      Debug.Log("All points : " + emptyCells.Count);
       //Get POI variants
       for (int i = 0; i < _poiDataLibrary.POIDataList.Count; i++) {
         for (int j = 0; j < _poiDataLibrary.POIDataList[i].minCount; j++) {

@@ -18,8 +18,8 @@ MonoBehaviour:
   SnapInput: 1
   VerticalDeadZoneThreshold: 0.3
   HorizontalDeadZoneThreshold: 0.1
-  MaxSpeed: 14
-  MaxBackSpeed: 12
+  MaxSpeed: 20
+  MaxBackSpeed: 16
   SprintSpeed: 20
   Acceleration: 60
   GroundDeceleration: 60
@@ -42,3 +42,4 @@ MonoBehaviour:
   TimeBtwAttacks: 0.4
   StaminaUsage: 1
   AttackID: 0
+  AttackColliderSize: {x: 1, y: 1}

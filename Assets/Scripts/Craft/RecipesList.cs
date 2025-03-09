@@ -15,16 +15,16 @@ namespace Craft {
     private RecipeListItem selectedRecipeListItem;
 
     public Recipe Recipe { get; private set; }
+
     public event Action<Recipe> OnSelected;
 
     public void Awake() {
       ServiceLocator.For(this).Register<IRecipesList>(this);
       station = ServiceLocator.For(this).Get<Workstation>();
-
-      BuildList();
     }
 
     public void InitComponent() {
+      BuildList();
       AddEvents();
       SelectFirst();
     }
@@ -33,12 +33,19 @@ namespace Craft {
       RemoveEvents();
     }
 
+    public void UpdateList() {
+      InitComponent();
+    }
+
     private void BuildList() {
-      if (recipesListButtons.Count > 0) {
+      var recipes = GameManager.Instance.RecipesManager.GetRecipesForStation(station.RecipeType);
+      if (recipesListButtons.Count > 0 && recipes.Count == recipesListButtons.Count) {
         return;
       }
 
-      var recipes = GameManager.Instance.RecipesManager.GetRecipesForStation(station.RecipeType);
+      Debug.Log("BuildList");
+
+      ClearList();
 
       if (recipes.Count == 0) {
         Debug.LogError($"No recipes for station - {station.RecipeType}");
@@ -53,6 +60,16 @@ namespace Craft {
 
         recipesListButtons.Add(listItem);
       }
+    }
+
+    private void ClearList() {
+      RemoveEvents();
+
+      foreach (var button in recipesListButtons) {
+        Destroy(button.gameObject);
+      }
+
+      recipesListButtons.Clear();
     }
 
     private void Select(Button button, bool force = false) {

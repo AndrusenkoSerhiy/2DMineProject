@@ -96,7 +96,7 @@ namespace Inventory {
       foreach (var item in defaultItems) {
         const int count = 1;
         GetInventory().AddItem(new Item(item), count);
-        GameManager.Instance.RecipesManager.DiscoverMaterial(item);
+        // GameManager.Instance.RecipesManager.DiscoverMaterial(item);
         // GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
       }
 
@@ -115,7 +115,7 @@ namespace Inventory {
     public void AddItemToInventory(ItemObject item, int count, Vector3 cellPos) {
       var addedAmount = AddItemToInventoryWithOverflowDrop(new Item(item), count);
 
-      GameManager.Instance.RecipesManager.DiscoverMaterial(item);
+      // GameManager.Instance.RecipesManager.DiscoverMaterial(item);
       GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, addedAmount);
 
       //ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
@@ -140,7 +140,7 @@ namespace Inventory {
         var count = Random.Range((int)currentResource.rndCount.x, (int)currentResource.rndCount.y);
         var addedAmount = AddItemToInventoryWithOverflowDrop(new Item(currentResource.item), count);
 
-        GameManager.Instance.RecipesManager.DiscoverMaterial(currentResource.item);
+        // GameManager.Instance.RecipesManager.DiscoverMaterial(currentResource.item);
         GameManager.Instance.MessagesManager.ShowAddResourceMessage(currentResource.item, addedAmount);
 
         //ObjectPooler.Instance.SpawnFlyEffect(currentResource.item, cellPos);

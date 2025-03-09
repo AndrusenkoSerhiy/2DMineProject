@@ -52,7 +52,7 @@ namespace Items {
       var gameManager = GameManager.Instance;
 
       var addedAmount = gameManager.PlayerInventory.AddItemToInventoryWithOverflowDrop(new Item(item), Count);
-      gameManager.RecipesManager.DiscoverMaterial(item);
+      // gameManager.RecipesManager.DiscoverMaterial(item);
       gameManager.MessagesManager.ShowPickupResourceMessage(item, addedAmount);
 
       isPicked = true;

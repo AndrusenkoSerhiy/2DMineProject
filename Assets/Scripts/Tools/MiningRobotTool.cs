@@ -43,6 +43,9 @@ namespace Tools {
     }
 
     private void SitOnRobot() {
+      OnPlayerEnteredRobot?.Invoke();
+      GameManager.Instance.QuickSlotListener.Deactivate();
+      
       playerController.EnableController(false);
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
@@ -54,7 +57,6 @@ namespace Tools {
       GameManager.Instance.CurrPlayerController = miningRobotController;
       
       playerController.ResetLocalScale();
-      OnPlayerEnteredRobot?.Invoke();
     }
 
     private void ExitFromRobot() {
@@ -65,6 +67,7 @@ namespace Tools {
       playerController.SetLockHighlight(false);
       miningRobotController.SetLockHighlight(true);
       GameManager.Instance.CurrPlayerController = playerController;
+      GameManager.Instance.QuickSlotListener.Activate();
     }
 
     private void SetPlayerPosition(Transform tr, Vector3 pos) {

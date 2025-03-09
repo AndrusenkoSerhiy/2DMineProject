@@ -1,3 +1,4 @@
+using System;
 using Inventory;
 using Scriptables.Items;
 using Tools;
@@ -29,11 +30,27 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private void Start() {
-    GameManager.Instance.UserInput.controls.GamePlay.QuickSlots.performed += ChooseSlot;
-
+    SubscribeToClickQuickSlots();
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     UpdateQuickSlotsAfterLoad();
+  }
+  public void Activate() {
+    gameObject.SetActive(true);
+    SubscribeToClickQuickSlots();
+  }
+  
+  public void Deactivate() {
+    UnsubscribeToClickQuickSlots();
+    gameObject.SetActive(false);
+  }
+
+  private void SubscribeToClickQuickSlots() {
+    GameManager.Instance.UserInput.controls.GamePlay.QuickSlots.performed += ChooseSlot;
+  }
+  
+  private void UnsubscribeToClickQuickSlots() {
+    GameManager.Instance.UserInput.controls.GamePlay.QuickSlots.performed -= ChooseSlot;
   }
 
   private void OnSlotUpdateHandler(SlotSwappedEventData data) {
@@ -91,7 +108,7 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private bool UnselectSlot(InventorySlot slot) {
-    if (selectedSlot == null || selectedSlot != slot) {
+    if (selectedSlot == null || selectedSlot != slot || selectedSlot.isEmpty) {
       return false;
     }
 

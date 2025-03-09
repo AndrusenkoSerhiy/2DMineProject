@@ -1033,6 +1033,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3952768001628798844, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
   m_PrefabInstance: {fileID: 654027552286385189}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1080412506 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8694691423089828941, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
+  m_PrefabInstance: {fileID: 654027552286385189}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 554fb8e28dc240cdac4b7c39f362f1bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1174649895
 GameObject:
   m_ObjectHideFlags: 0
@@ -3071,6 +3082,10 @@ PrefabInstance:
       propertyPath: playerInventory
       value: 
       objectReference: {fileID: 1944342543}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: quickSlotListener
+      value: 
+      objectReference: {fileID: 1080412506}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: windowsController
       value: 

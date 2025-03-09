@@ -177,6 +177,51 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8084392240007554429, guid: 13536b19579612846a4b433fb9b73179, type: 3}
   m_PrefabInstance: {fileID: 5998974968584270748}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &396774649
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 396774650}
+  - component: {fileID: 396774651}
+  m_Layer: 0
+  m_Name: GroundItems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &396774650
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 396774649}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1040991176}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &396774651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 396774649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e150b1f8634128a2ec3422882b905b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoDestroyDelay: 60
 --- !u!1 &422886889
 GameObject:
   m_ObjectHideFlags: 0
@@ -970,6 +1015,7 @@ Transform:
   - {fileID: 466087909}
   - {fileID: 1940528086}
   - {fileID: 1944342542}
+  - {fileID: 396774650}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1049248127 stripped
@@ -3012,6 +3058,10 @@ PrefabInstance:
       propertyPath: tempDragItem
       value: 
       objectReference: {fileID: 1679368944}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: groundItemPool
+      value: 
+      objectReference: {fileID: 396774651}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: recipesManager
       value: 

@@ -10,6 +10,7 @@ using Scriptables.Items;
 using UnityEngine;
 using World;
 using Inventory;
+using Items;
 using Scriptables.CameraController;
 using Menu;
 using Messages;
@@ -30,6 +31,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private RecipesManager recipesManager;
   [SerializeField] private TooltipManager tooltipManager;
   [SerializeField] private CraftTasks craftTasks;
+  [SerializeField] private GroundItemPool groundItemPool;
   [SerializeField] private GameConfig gameConfigRef;
   [SerializeField] private ChunkController chunkController;
   [SerializeField] private CellObjectsPool cellObjectsPool;
@@ -62,6 +64,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public RecipesManager RecipesManager => recipesManager;
   public TooltipManager TooltipManager => tooltipManager;
   public CraftTasks CraftTasks => craftTasks;
+  public GroundItemPool GroundItemPool => groundItemPool;
   public ChunkController ChunkController => chunkController;
   public UISettings UISettings => uiSettings;
   public SplitItem SplitItem => splitItem;

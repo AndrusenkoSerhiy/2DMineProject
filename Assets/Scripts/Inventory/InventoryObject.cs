@@ -201,6 +201,7 @@ namespace Inventory {
     /// <param name="formSlot">Optional slot form which the item is coming from.</param>
     /// <returns>The amount that couldn't be added due to lack of space.</returns>
     public int AddItem(Item item, int amount, InventorySlot placeAt = null, InventorySlot formSlot = null) {
+      gameManager.RecipesManager.DiscoverMaterial(item.info);
       if (placeAt != null) {
         var overFlow = placeAt.isEmpty
           ? placeAt.UpdateSlot(amount, item, formSlot)

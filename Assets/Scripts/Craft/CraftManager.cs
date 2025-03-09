@@ -20,7 +20,7 @@ namespace Craft {
     private IInputItems inputItems;
     private ITotalAmount totalAmount;
     private IFuelItems fuelItems;
-    
+
     private InventoryObject outputInventory;
     private InventoryObject fuelInventory;
 
@@ -84,7 +84,7 @@ namespace Craft {
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
       recipesList = ServiceLocator.For(this).Get<IRecipesList>();
-      
+
       outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.OutputInventoryType);
       fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
 
@@ -107,7 +107,7 @@ namespace Craft {
         if (inputItems.InputInProgress == 0) {
           station.UpdateMillisecondsLeftByInput(input);
         }
-        
+
         // Debug.Log($"SetRecipe input.Count {input.Count}");
         inputItems.SetRecipe(input.Count, input.Recipe);
       }
@@ -127,9 +127,13 @@ namespace Craft {
       //craft output slots
       AddOutputUpdateEvents();
       takeAllButton.onClick.AddListener(OnTakeAllButtonClickHandler);
+      //recipes
+      GameManager.Instance.RecipesManager.OnRecipeUnlocked += OnRecipeUnlockedHandler;
     }
 
     private void RemoveEvents() {
+      //recipes
+      GameManager.Instance.RecipesManager.OnRecipeUnlocked -= OnRecipeUnlockedHandler;
       //craft output slots
       takeAllButton.onClick.RemoveAllListeners();
       RemoveOutputUpdateEvents();
@@ -212,7 +216,7 @@ namespace Craft {
 
     private void AddCraftedItemToOutput(ItemCraftedEventData data) {
       station.RemoveInputCountFromInputs(data.Count);
-      
+
       var item = new Item(data.Recipe.Result);
 
       fuelItems?.ConsumeFuel(data.Recipe, data.Count);
@@ -281,6 +285,14 @@ namespace Craft {
 
     private void FuelSlotUpdateHandler(SlotUpdateEventData data) {
       craftActions.UpdateAndPrintInputCount();
+    }
+
+    private void OnRecipeUnlockedHandler(Recipe recipe) {
+      if (recipe.RecipeType != station.RecipeType) {
+        return;
+      }
+
+      recipesList.UpdateList();
     }
   }
 }

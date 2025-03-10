@@ -1,12 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Craft;
 using Inventory;
 using SaveSystem;
+using Scriptables.Craft;
 using Scriptables.Items;
-using UnityEngine;
 
-namespace Scriptables.Craft {
+namespace Craft {
   [Serializable]
   public struct Input {
     public int Count;
@@ -19,27 +18,16 @@ namespace Scriptables.Craft {
     public float CurrentTimeInMilliseconds;
   }
 
-  [CreateAssetMenu(menuName = "Crafting System/Workstation", fileName = "New Workstation")]
-  public class Workstation : BaseScriptableObject {
-    public RecipeType RecipeType;
-    public string ResourcePath;
-    public InventoryType OutputInventoryType;
-    public InventoryType FuelInventoryType;
-    public RecipesDatabaseObject RecipeDB;
-    public string Title;
-    [TextArea(15, 20)] public string Description;
-    public bool PlayEffectsWhenClosed = true;
-
-    public long CraftStartTimestampMillis;
+  public class Workstation {
+    private WorkstationObject workstationObject;
+    private long craftStartTimestampMillis;
+    private string id;
 
     //Current Progress
     private CurrentProgress CurrentProgress;
-    public event Action OnCraftStarted;
-
-    public event Action OnCraftStopped;
 
     //For loaded inputs
-    public long MillisecondsLeft;
+    private long millisecondsLeft;
 
     //For effects
     public List<CraftingTask> CraftingTasks = new();
@@ -47,22 +35,21 @@ namespace Scriptables.Craft {
     //For Save/Load
     public List<Input> Inputs = new();
 
-#if UNITY_EDITOR
-    private void OnValidate() {
-      ResourcePath = UnityEditor.AssetDatabase.GetAssetPath(this).Replace("Assets/", "").Replace(".asset", "");
-    }
-#endif
+    public event Action OnCraftStarted;
+    public event Action OnCraftStopped;
 
-    private void OnEnable() {
-      Clear();
-    }
+    public WorkstationObject WorkstationObject => workstationObject;
+    public long CraftStartTimestampMillis => craftStartTimestampMillis;
+    public long MillisecondsLeft => millisecondsLeft;
+    public string Id => id;
+    public bool PlayEffectsWhenClosed => WorkstationObject.PlayEffectsWhenClosed;
+    public RecipeType RecipeType => WorkstationObject.RecipeType;
+    public InventoryType OutputInventoryType => WorkstationObject.OutputInventoryType;
+    public InventoryType FuelInventoryType => WorkstationObject.FuelInventoryType;
 
-    public void Clear() {
-      CraftStartTimestampMillis = 0;
-      CurrentProgress = new CurrentProgress();
-      ResetMillisecondsLeft();
-      CraftingTasks.Clear();
-      Inputs.Clear();
+    public Workstation(WorkstationObject workstationObject, string id) {
+      this.workstationObject = workstationObject;
+      this.id = id;
     }
 
     public void Load(WorkstationsData data) {
@@ -71,16 +58,16 @@ namespace Scriptables.Craft {
       }
 
       var inputs = data.Inputs;
-      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(FuelInventoryType);
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(FuelInventoryType, Id);
       var totalFuel = fuelInventory?.GetTotalCount();
 
-      CraftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
-      var currentCraftStartTimestampMillis = CraftStartTimestampMillis;
+      craftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
+      var currentCraftStartTimestampMillis = craftStartTimestampMillis;
       //only for first input
       var millisecondsLeft = data.MillisecondsLeft;
 
       foreach (var input in inputs) {
-        var recipe = RecipeDB.ItemsMap[input.RecipeId];
+        var recipe = WorkstationObject.RecipeDB.ItemsMap[input.RecipeId];
 
         Inputs.Add(new Input { Recipe = recipe, Count = input.Count });
 
@@ -92,8 +79,8 @@ namespace Scriptables.Craft {
 
         if (millisecondsLeft > 0) {
           var millisecondsPassed = inputTotalCraftMillis - millisecondsLeft;
-          CraftStartTimestampMillis = currentCraftStartTimestampMillis - millisecondsPassed;
-          currentCraftStartTimestampMillis = CraftStartTimestampMillis;
+          craftStartTimestampMillis = currentCraftStartTimestampMillis - millisecondsPassed;
+          currentCraftStartTimestampMillis = craftStartTimestampMillis;
           millisecondsLeft = 0;
         }
 
@@ -109,7 +96,7 @@ namespace Scriptables.Craft {
       }
 
       var currentTimeInMilliseconds = Helper.GetCurrentTimestampMillis();
-      var currentCraftStartTimestampMillis = CraftStartTimestampMillis;
+      var currentCraftStartTimestampMillis = craftStartTimestampMillis;
 
       for (var i = 0; i < Inputs.Count; i++) {
         var input = Inputs[i];
@@ -131,7 +118,8 @@ namespace Scriptables.Craft {
 
         // Process fully crafted items
         if (craftedCount > 0) {
-          var outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(OutputInventoryType);
+          var outputInventory =
+            GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(OutputInventoryType, Id);
           outputInventory.AddItem(new Item(recipe.Result), craftedCount);
           ConsumeFuel(recipe, craftedCount);
         }
@@ -153,7 +141,7 @@ namespace Scriptables.Craft {
       }
 
       // Update CraftStartTime for next session
-      CraftStartTimestampMillis = currentCraftStartTimestampMillis;
+      craftStartTimestampMillis = currentCraftStartTimestampMillis;
 
       if (Inputs.Count == 0) {
         ResetMillisecondsLeft();
@@ -165,7 +153,7 @@ namespace Scriptables.Craft {
         return true;
       }
 
-      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(FuelInventoryType);
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(FuelInventoryType, Id);
       if (fuelInventory == null) {
         return true;
       }
@@ -176,7 +164,7 @@ namespace Scriptables.Craft {
     }
 
     public void ConsumeFuel(Recipe recipe, int count) {
-      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(FuelInventoryType);
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(FuelInventoryType, Id);
       if (fuelInventory == null) {
         return;
       }
@@ -194,11 +182,19 @@ namespace Scriptables.Craft {
     }
 
     public void UpdateMillisecondsLeft(Recipe recipe, int count) {
-      MillisecondsLeft = CalculateTimeLeftInMilliseconds(recipe, count);
+      millisecondsLeft = CalculateTimeLeftInMilliseconds(recipe, count);
     }
 
     public void ResetMillisecondsLeft() {
-      MillisecondsLeft = 0;
+      millisecondsLeft = 0;
+    }
+
+    public void UpdateMillisecondsLeft(long milliseconds) {
+      millisecondsLeft = milliseconds;
+    }
+    
+    public void UpdateCraftStartTimestampMillis(long milliseconds) {
+      craftStartTimestampMillis = milliseconds;
     }
 
     public void UpdateCraftingTasks() {
@@ -207,7 +203,7 @@ namespace Scriptables.Craft {
         return;
       }
 
-      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(FuelInventoryType);
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(FuelInventoryType, Id);
       var totalFuel = fuelInventory?.GetTotalCount();
 
       var currentDateTimestampMillis = CraftStartTimestampMillis;

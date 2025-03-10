@@ -214,7 +214,7 @@ namespace Craft {
     }
 
     private int CalculateMaxCountByCurrentCraftingAndOutput() {
-      var outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.OutputInventoryType);
+      var outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(station.OutputInventoryType, station.Id);
       var freeOutputSlotsCount = outputInventory.GetFreeSlotsCount();
       var freeInputSlotsCount = outputInventory.GetSlots.Length - station.Inputs.Count;
 

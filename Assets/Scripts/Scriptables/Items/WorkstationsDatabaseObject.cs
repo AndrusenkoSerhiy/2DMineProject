@@ -3,6 +3,6 @@ using UnityEngine;
 
 namespace Scriptables.Items {
   [CreateAssetMenu(fileName = "New Workstations Database", menuName = "Workstations/WorkstationsDatabase")]
-  public class WorkstationsDatabaseObject : Database<Workstation> {
+  public class WorkstationsDatabaseObject : Database<WorkstationObject> {
   }
 }

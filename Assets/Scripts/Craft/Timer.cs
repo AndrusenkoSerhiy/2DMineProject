@@ -31,7 +31,7 @@ namespace Craft {
       while (isStarted && station.MillisecondsLeft > 0) {
         yield return null;
 
-        station.MillisecondsLeft -= (long)(Time.deltaTime * 1000);
+        station.UpdateMillisecondsLeft(station.MillisecondsLeft - (long)(Time.deltaTime * 1000));
 
         var timeLeftForCurrentInMilliseconds = station.MillisecondsLeft - ((itemsLeft - 1) * timeForOneInMilliseconds);
         station.UpdateProgress(timeLeftForCurrentInMilliseconds);
@@ -66,7 +66,7 @@ namespace Craft {
 
     public void StartTimer() {
       isStarted = station.HaveFuelForCraft(recipe);
-      
+
       if (station.MillisecondsLeft <= 0 || !isStarted) {
         SetTimerToCurrentItems();
       }
@@ -88,7 +88,7 @@ namespace Craft {
         station.UpdateMillisecondsLeft(recipe, itemsLeft);
       }
       else {
-        UpdateStartTimeByCurrent();
+        station.UpdateCraftStartTimestampMillis(Helper.GetCurrentTimestampMillis());
       }
 
       timerCoroutine = StartCoroutine(TimerCoroutine());
@@ -120,7 +120,7 @@ namespace Craft {
 
       itemsLeft--;
       SetTimerToCurrentItems();
-      UpdateStartTimeByCurrent();
+      station.UpdateCraftStartTimestampMillis(Helper.GetCurrentTimestampMillis());
       onItemTimerEnd?.Invoke(1);
 
       if (!station.HaveFuelForCraft(recipe)) {
@@ -138,11 +138,7 @@ namespace Craft {
     }
 
     private void SetTimerToCurrentItems() {
-      station.MillisecondsLeft = itemsLeft * recipe.CraftingTime * 1000;
-    }
-
-    private void UpdateStartTimeByCurrent() {
-      station.CraftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
+      station.UpdateMillisecondsLeft(itemsLeft * recipe.CraftingTime * 1000);
     }
   }
 }

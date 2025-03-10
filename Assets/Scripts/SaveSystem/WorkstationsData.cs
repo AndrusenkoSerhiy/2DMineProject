@@ -9,5 +9,6 @@ namespace SaveSystem {
     public List<CraftInputData> Inputs;
     public long MillisecondsLeft;
     public string ResourcePath;
+    public string WorkStationObjectId;
   }
 }

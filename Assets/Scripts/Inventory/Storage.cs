@@ -15,7 +15,7 @@ namespace Inventory {
 
     private StorageWindow storageWindow;
 
-    private string id = "storage_";
+    private string id;
     public string Id => id;
 
     public bool Interact(PlayerInteractor playerInteractor) {
@@ -51,7 +51,7 @@ namespace Inventory {
         return;
       }
 
-      id += cellObject.CellData.x + "_" + cellObject.CellData.y;
+      id = $"storage_{storageType}_{cellObject.CellData.x}_{cellObject.CellData.y}";
     }
   }
 }

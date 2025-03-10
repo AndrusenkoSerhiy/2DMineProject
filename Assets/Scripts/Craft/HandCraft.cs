@@ -5,5 +5,9 @@ namespace Craft {
     public void Start() {
       GameManager.Instance.UserInput.controls.UI.HandCraft.performed += ctx => CheckInteract();
     }
+
+    protected override void GenerateId() {
+      id = stationObject.name;
+    }
   }
 }

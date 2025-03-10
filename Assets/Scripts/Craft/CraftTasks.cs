@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using SaveSystem;
-using Scriptables.Craft;
 using Scriptables.Items;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -114,6 +113,17 @@ namespace Craft {
       return saving != null && saving[stationId];
     }
 
+    public Workstation GetWorkstation(string fullId, string stationObjectId) {
+      if (allStationsMap.ContainsKey(fullId)) {
+        return allStationsMap[fullId];
+      }
+
+      var stationObject = workstationsDatabase.ItemsMap[stationObjectId];
+      var station = new Workstation(stationObject, fullId);
+
+      return station;
+    }
+
     public void Load() {
       SetStationsFromLoadData();
       LoadInputs();
@@ -128,7 +138,7 @@ namespace Craft {
 
         var handle = Addressables.LoadAssetAsync<Workstation>(stationData.ResourcePath);
         var station = handle.WaitForCompletion();*/
-        var station = workstationsDatabase.ItemsMap[id];
+        var station = GetWorkstation(id, stationData.WorkStationObjectId);
         if (station == null) {
           return;
         }
@@ -175,11 +185,14 @@ namespace Craft {
       var inputs = new List<CraftInputData>();
 
       var stationId = station.Id;
-      var resourcePath = station.ResourcePath;
+      var resourcePath = station.WorkstationObject.ResourcePath;
 
       if (station.Inputs.Count == 0) {
         SaveLoadSystem.Instance.gameData.Workstations[stationId] =
-          new WorkstationsData { Id = stationId, Inputs = inputs, ResourcePath = resourcePath };
+          new WorkstationsData {
+            Id = stationId, Inputs = inputs, ResourcePath = resourcePath,
+            WorkStationObjectId = station.WorkstationObject.Id
+          };
         return;
       }
 
@@ -193,8 +206,10 @@ namespace Craft {
         });
       }
 
-      SaveLoadSystem.Instance.gameData.Workstations[stationId] = new WorkstationsData
-        { Id = stationId, Inputs = inputs, MillisecondsLeft = timeLeftInMilliseconds, ResourcePath = resourcePath };
+      SaveLoadSystem.Instance.gameData.Workstations[stationId] = new WorkstationsData {
+        Id = stationId, Inputs = inputs, MillisecondsLeft = timeLeftInMilliseconds, ResourcePath = resourcePath,
+        WorkStationObjectId = station.WorkstationObject.Id
+      };
     }
   }
 }

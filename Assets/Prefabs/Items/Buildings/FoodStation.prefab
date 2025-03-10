@@ -103,7 +103,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interfacePrefab: {fileID: 1208913450436918581, guid: abbc60578dfa33f41b51b3768e65e5e7, type: 3}
-  station: {fileID: 11400000, guid: 94252aade6eb85842b9b04735ee5edad, type: 2}
+  stationObject: {fileID: 11400000, guid: 94252aade6eb85842b9b04735ee5edad, type: 2}
+  cellObject: {fileID: 7264757973071991012}
   interactText: Craft
   interactHeader: 
 --- !u!114 &7264757973071991012

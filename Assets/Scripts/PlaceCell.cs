@@ -3,8 +3,6 @@ using Craft;
 using Inventory;
 using Player;
 using Scriptables;
-using Settings;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 using World;
@@ -86,8 +84,9 @@ public class PlaceCell : MonoBehaviour {
     if (previewInstance != null /*&& !previewInstance.name.Equals(spawnPrefab.name)*/) {
       Destroy(previewInstance);
     }
+
     previewInstance = Instantiate(spawnPrefab);
-    
+
     renderer = previewInstance.GetComponentInChildren<SpriteRenderer>();
     //renderer.sprite = resourceData.Sprite(0);
   }
@@ -194,6 +193,7 @@ public class PlaceCell : MonoBehaviour {
       GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
       GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
     }
+
     currSlot.AddAmount(-1);
     ClearSLot();
   }
@@ -204,18 +204,18 @@ public class PlaceCell : MonoBehaviour {
       return;
     }
 
-    var station = worckbench.Station;
+    var station = worckbench.StationObject;
     if (station == null) {
       return;
     }
-    
+
     GameManager.Instance.RecipesManager.UnlockStation(station.RecipeType);
   }
 
   private void ClearSLot() {
     if (currSlot.amount > 0)
       return;
-    
+
     OnSlotReset?.Invoke();
     SetEnabled(false);
     currSlot = null;

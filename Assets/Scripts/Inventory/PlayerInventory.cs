@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Windows;
-using Items;
 using Scriptables.Items;
 using UnityEngine;
 using SaveSystem;
@@ -26,8 +25,7 @@ namespace Inventory {
     };
 
     private PlayerInventoryWindow inventoryWindow;
-    private Dictionary<InventoryType, InventoryObject> inventories = new();
-    private Dictionary<string, InventoryObject> storages = new();
+    private Dictionary<string, InventoryObject> inventories = new();
 
     public void Start() {
       inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
@@ -37,11 +35,12 @@ namespace Inventory {
     }
 
     /// <summary>
-    /// Gets inventory object by type, if null - creates new and try to load data from file
+    /// Gets inventory object by type and id, if null - creates new and try to load data from file
     /// </summary>
     /// <param name="type">Inventory type</param>
+    /// <param name="id">Inventory id</param>
     /// <returns>Inventory object</returns>
-    public InventoryObject GetInventoryByType(InventoryType type) {
+    public InventoryObject GetInventoryByTypeAndId(InventoryType type, string id) {
       if (type == InventoryType.None) {
         return null;
       }
@@ -51,36 +50,41 @@ namespace Inventory {
         return null;
       }
 
-      if (inventories.ContainsKey(type)) {
-        return inventories[type];
+      var fullId = $"{type.ToString()}_{id}".ToLower();
+
+      if (inventories.ContainsKey(fullId)) {
+        return inventories[fullId];
       }
 
-      var inventory = new InventoryObject(type);
+      var inventory = new InventoryObject(type, fullId);
       inventory.LoadFromGameData();
-      inventories.Add(type, inventory);
+      inventories.Add(fullId, inventory);
 
       return inventory;
     }
 
     public int GetInventorySizeByType(InventoryType type) => inventoriesSizes[type];
 
-    public InventoryObject GetQuickSlots() => GetInventoryByType(InventoryType.QuickSlots);
-    public InventoryObject GetInventory() => GetInventoryByType(InventoryType.Inventory);
+    public InventoryObject GetQuickSlots() => GetInventoryByTypeAndId(InventoryType.QuickSlots, "");
 
-    public InventoryObject GetStorageById(string id, StorageType storageType) {
+    public InventoryObject GetInventory() => GetInventoryByTypeAndId(InventoryType.Inventory, "");
+
+    public InventoryObject GetStorageById(StorageType storageType, string id) {
       if (string.IsNullOrEmpty(id)) {
         return null;
       }
 
-      if (storages.ContainsKey(id)) {
-        return storages[id];
+      var fullId = $"{storageType.ToString()}_{id}".ToLower();
+
+      if (inventories.ContainsKey(fullId)) {
+        return inventories[fullId];
       }
 
-      var inventory = new InventoryObject(InventoryType.Storage, id, storageType);
+      var inventory = new InventoryObject(InventoryType.Storage, fullId, storageType);
       inventory.LoadFromGameData();
-      storages.Add(inventory.Id, inventory);
+      inventories.Add(fullId, inventory);
 
-      return storages[id];
+      return inventory;
     }
 
     public int GetStorageSizeByType(StorageType type) => storagesSizes[type];
@@ -192,10 +196,6 @@ namespace Inventory {
     public void Save() {
       foreach (var (_, inventory) in inventories) {
         inventory.SaveToGameData();
-      }
-
-      foreach (var (_, storage) in storages) {
-        storage.SaveToGameData();
       }
     }
 

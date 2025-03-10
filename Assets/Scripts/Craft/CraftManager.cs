@@ -31,7 +31,7 @@ namespace Craft {
 
     public void Setup(Workstation station) {
       this.station = station;
-      outputInterface.Setup(station.OutputInventoryType);
+      outputInterface.Setup(station.OutputInventoryType, station.Id);
     }
 
     public void Awake() {
@@ -87,7 +87,7 @@ namespace Craft {
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
       recipesList = ServiceLocator.For(this).Get<IRecipesList>();
 
-      outputInventory = gameManager.PlayerInventory.GetInventoryByType(station.OutputInventoryType);
+      outputInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(station.OutputInventoryType, station.Id);
 
       ServiceLocator.For(this).TryGet(out fuelItems);
     }

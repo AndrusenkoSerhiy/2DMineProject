@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Inventory;
 using Scriptables.Craft;
-using Scriptables.Items;
 using UnityEngine;
 using UnityServiceLocator;
 
@@ -18,14 +17,14 @@ namespace Craft {
 
     public void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
-      fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
+      fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(station.FuelInventoryType, station.Id);
 
       if (fuelInventory == null) {
         Debug.LogError("Set FuelInventory to the station");
         return;
       }
 
-      fuelInterface.Setup(InventoryType.ForgeFuel);
+      fuelInterface.Setup(InventoryType.ForgeFuel, station.Id);
       ServiceLocator.For(this).Register<IFuelItems>(this);
     }
 

@@ -19,7 +19,7 @@ namespace Inventory {
   public class InventoryObject {
     public ItemDatabaseObject database;
     public InventoryType type;
-    public string Id => !string.IsNullOrEmpty(id) ? id : type.ToString();
+    public string Id => id;
 
     public event Action<SlotSwappedEventData> OnSlotSwapped;
 
@@ -41,7 +41,10 @@ namespace Inventory {
       this.storageType = storageType;
     }
 
-    public InventoryObject(InventoryType type) => Init(type);
+    public InventoryObject(InventoryType type, string inventoryId) {
+      Init(type);
+      id = inventoryId;
+    }
 
     private void Init(InventoryType inventoryType) {
       var db = GameManager.Instance.ItemDatabaseObject;

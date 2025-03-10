@@ -1,8 +1,10 @@
+using System;
 using Craft;
 using Inventory;
 using Player;
 using Scriptables;
 using Settings;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 using World;
@@ -10,7 +12,7 @@ using World;
 public class PlaceCell : MonoBehaviour {
   [SerializeField] private ResourceData resourceData;
   [SerializeField] private GameObject prefab;
-  private GameObject previewInstance;
+  [SerializeField] private GameObject previewInstance;
   [SerializeField] private bool isPreviewing;
   [SerializeField] private Color previewColor;
   [SerializeField] private Color blockColor;
@@ -19,6 +21,7 @@ public class PlaceCell : MonoBehaviour {
   private SpriteRenderer renderer;
 
   [SerializeField] private int radius = 1;
+  public static event Action OnSlotReset;
 
   //private Coords playerCoords;
   private PlayerControllerBase playerController;
@@ -109,6 +112,7 @@ public class PlaceCell : MonoBehaviour {
 
   //enable building mode
   private void SetEnabled(bool value) {
+    //Debug.LogError($"SetEnabled {value}");
     isPreviewing = value;
     BlockAction(value);
     if (value) StartPreview();
@@ -175,23 +179,23 @@ public class PlaceCell : MonoBehaviour {
   }*/
 
   private void PlaceCellOnScene() {
-    //var test = Instantiate(spawnPrefab);
-    //var cellObj = test.GetComponent<CellObject>();
-    var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
-    //test.transform.position = CoordsTransformer.GridToWorld(coords.X, coords.Y);
+    //for forge, stoneCutter etc
+    if (resourceData.IsBuilding) {
+      var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
 
-    GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-    var cell = GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
-    cell.BoxCollider2D.enabled = true;
-    AfterPlaceCellActions(cell);
-    //var cellObj = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y);
-    //Debug.LogError($"resourceData {cellObj}");
-    //test.transform.parent = cellObj.transform;
+      GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+      var cell = GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
+      cell.BoxCollider2D.enabled = true;
+      AfterPlaceCellActions(cell);
+    }
+    //for building blocks
+    else {
+      var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
+      GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+      GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
+    }
     currSlot.AddAmount(-1);
     ClearSLot();
-    return;
-    GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-    GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
   }
 
   private void AfterPlaceCellActions(CellObject cell) {
@@ -211,9 +215,8 @@ public class PlaceCell : MonoBehaviour {
   private void ClearSLot() {
     if (currSlot.amount > 0)
       return;
-
-    currSlot.Unselect();
-    currSlot.RemoveItem();
+    
+    OnSlotReset?.Invoke();
     SetEnabled(false);
     currSlot = null;
     resourceData = null;

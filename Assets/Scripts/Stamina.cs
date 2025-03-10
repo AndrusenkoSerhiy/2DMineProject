@@ -18,39 +18,44 @@ namespace DefaultNamespace {
     [SerializeField] private bool isSprinting;
     private PlayerController playerController;
     private float previousStamina;
+    private UserInput userInput;
     public bool IsSprinting => isSprinting;
 
 
     private void Start() {
       currentStamina = maxStamina;
       staminaBar.SetMaxStamina(maxStamina);
-      GameManager.Instance.UserInput.controls.GamePlay.Sprint.performed += SprintPerformed;
-      GameManager.Instance.UserInput.controls.GamePlay.Sprint.canceled += SprintCanceled;
+      userInput = GameManager.Instance.UserInput; 
+      userInput.controls.GamePlay.Sprint.performed += SprintPerformed;
+      userInput.controls.GamePlay.Sprint.canceled += SprintCanceled;
       playerController = GameManager.Instance.PlayerController;
     }
 
-    private void SprintPerformed(InputAction.CallbackContext context) {
-      SetSprinting(true);
-    }
+    private void SprintPerformed(InputAction.CallbackContext context) => SetSprinting(true);
 
-    private void SprintCanceled(InputAction.CallbackContext context) {
-      SetSprinting(false);
-    }
+    private void SprintCanceled(InputAction.CallbackContext context) => SetSprinting(false);
 
     private void SetSprinting(bool value) {
       //block use stamina if she not enough 
       if (value && (currentStamina < minStamina || Mathf.Sign(playerController.GetMoveForward()) < 0) ||
-          GameManager.Instance.UserInput.GetMovement().Equals(Vector2.zero) ||
-          !playerController.Grounded && !playerController.WasSprintingOnJump)
-
+          (value && userInput.GetMovement().Equals(Vector2.zero)) ||
+          !playerController.Grounded && !playerController.WasSprintingOnJump) {
         return;
+      }
 
       isSprinting = value;
     }
 
     private void Update() {
+      StopSprinting();
       UpdateStaminaValue();
       UpdateStaminaUI();
+    }
+
+    private void StopSprinting() {
+      if (GameManager.Instance.UserInput.GetMovement().magnitude <=0) {
+        SetSprinting(false);
+      }
     }
 
     private void UpdateStaminaValue() {
@@ -75,12 +80,11 @@ namespace DefaultNamespace {
     }
 
     private void OnDestroy() {
-      if (!GameManager.HasInstance) {
+      if (!GameManager.HasInstance)
         return;
-      }
-
-      GameManager.Instance.UserInput.controls.GamePlay.Sprint.performed -= SprintPerformed;
-      GameManager.Instance.UserInput.controls.GamePlay.Sprint.canceled -= SprintCanceled;
+      
+      userInput.controls.GamePlay.Sprint.performed -= SprintPerformed;
+      userInput.controls.GamePlay.Sprint.canceled -= SprintCanceled;
     }
   }
 }

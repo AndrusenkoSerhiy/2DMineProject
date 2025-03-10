@@ -20,7 +20,7 @@ namespace Craft {
     private Color buttonsDisabledColor;
 
     private ITotalAmount totalAmount;
-    private IFuelItems fuelItems;
+    // private IFuelItems fuelItems;
     private Recipe recipe;
     private Workstation station;
 
@@ -68,13 +68,13 @@ namespace Craft {
       EnableButton(craftButton, currentCount > 0);
     }
 
-    private IFuelItems GetFuelItems() {
+    /*private IFuelItems GetFuelItems() {
       if (fuelItems == null) {
         ServiceLocator.For(this).TryGet(out fuelItems);
       }
 
       return fuelItems;
-    }
+    }*/
 
     private void EnableButton(Button button, bool state, Image subimage = null) {
       var color = state ? buttonsActiveColor : buttonsDisabledColor;
@@ -160,29 +160,36 @@ namespace Craft {
     private void CalculateMaxCount() {
       var maxCountByInputOutput = CalculateMaxCountByCurrentCraftingAndOutput();
       var maxCountByResources = CalculateMaxCountByResources();
-      var maxCountByFuel = CalculateMaxCountByFuel();
+      // var maxCountByFuel = CalculateMaxCountByFuel();
 
-      maxCount = maxCountByFuel > -1
-        ? Math.Min(maxCountByInputOutput, Math.Min(maxCountByResources, maxCountByFuel))
-        : Math.Min(maxCountByInputOutput, maxCountByResources);
+      maxCount = Math.Min(maxCountByInputOutput, maxCountByResources);
 
-      RunFuelEffect(maxCountByFuel);
+      // maxCount = maxCountByFuel > -1
+      //   ? Math.Min(maxCountByInputOutput, Math.Min(maxCountByResources, maxCountByFuel))
+      //   : Math.Min(maxCountByInputOutput, maxCountByResources);
+
+      // RunFuelEffect();
     }
 
-    private void RunFuelEffect(int maxCountByFuel) {
+    /*private void RunFuelEffect() {
       if (GetFuelItems() == null) {
         return;
       }
 
-      if (maxCountByFuel == 0) {
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
+      var total = fuelInventory.GetTotalCount() / recipe.Fuel.Amount;
+      
+      Debug.Log($"RunFuelEffect total {total}");
+
+      if (total <= 0) {
         GetFuelItems().StartBlink();
       }
       else {
         GetFuelItems().StopBlink();
       }
-    }
+    }*/
 
-    private int CalculateMaxCountByFuel() {
+    /*private int CalculateMaxCountByFuel() {
       var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
       if (fuelInventory == null || recipe.Fuel == null) {
         return -1;
@@ -192,7 +199,7 @@ namespace Craft {
       var inUse = station.Inputs.Sum(x => x.Count * x.Recipe.Fuel.Amount);
 
       return (total - inUse);
-    }
+    }*/
 
     private int CalculateMaxCountByResources() {
       var max = int.MaxValue;

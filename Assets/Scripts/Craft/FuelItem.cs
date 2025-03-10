@@ -14,7 +14,9 @@ namespace Craft {
     private Workstation station;
     private GameObject blockFadeGameObject;
     private GameObject progressFadeGameObject;
+
     private EventTrigger trigger;
+
     // private bool blocked;
     private bool current;
     private Color defaultBgColor;

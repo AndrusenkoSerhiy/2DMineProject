@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using SaveSystem;
 using Scriptables.Craft;
+using Scriptables.Items;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Craft {
   public class CraftTasks : MonoBehaviour, ISaveLoad {
+    [SerializeField] private WorkstationsDatabaseObject workstationsDatabase;
     [SerializeField] private SerializedDictionary<string, Workstation> allStationsMap;
     [SerializeField] private List<string> stations;
     [SerializeField] private SerializedDictionary<string, bool> windowOpenStates;
@@ -120,11 +122,13 @@ namespace Craft {
     private void SetStationsFromLoadData() {
       var stationsData = SaveLoadSystem.Instance.gameData.Workstations;
       foreach (var (id, stationData) in stationsData) {
-        if (string.IsNullOrEmpty(stationData.ResourcePath)) {
+        /*if (string.IsNullOrEmpty(stationData.ResourcePath)) {
           return;
         }
-        
-        var station = Resources.Load<Workstation>(stationData.ResourcePath);
+
+        var handle = Addressables.LoadAssetAsync<Workstation>(stationData.ResourcePath);
+        var station = handle.WaitForCompletion();*/
+        var station = workstationsDatabase.ItemsMap[id];
         if (station == null) {
           return;
         }
@@ -179,7 +183,8 @@ namespace Craft {
         return;
       }
 
-      var timeLeftInMilliseconds = station.CalculateTimeLeftInMilliseconds(station.Inputs[0]);
+      var timeLeftInMilliseconds =
+        station.CalculateTimeLeftInMilliseconds(station.Inputs[0].Recipe, station.Inputs[0].Count);
 
       foreach (var input in station.Inputs) {
         inputs.Add(new CraftInputData {

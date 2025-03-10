@@ -12,6 +12,7 @@ namespace Craft {
     [SerializeField] private bool preventItemDrop;
     [SerializeField] private UserInterface outputInterface;
 
+    private GameManager gameManager;
     private Workstation station;
     private IRecipesList recipesList;
     private IRecipeDetail detail;
@@ -22,7 +23,7 @@ namespace Craft {
     private IFuelItems fuelItems;
 
     private InventoryObject outputInventory;
-    private InventoryObject fuelInventory;
+    // private InventoryObject fuelInventory;
 
     private bool started;
 
@@ -35,6 +36,7 @@ namespace Craft {
 
     public void Awake() {
       ServiceLocator.For(this).Register(station);
+      gameManager = GameManager.Instance;
     }
 
     public void Start() {
@@ -78,15 +80,14 @@ namespace Craft {
         return;
       }
 
-      playerInventory = GameManager.Instance.PlayerInventory;
+      playerInventory = gameManager.PlayerInventory;
       totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
       detail = ServiceLocator.For(this).Get<IRecipeDetail>();
       craftActions = ServiceLocator.For(this).Get<ICraftActions>();
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
       recipesList = ServiceLocator.For(this).Get<IRecipesList>();
 
-      outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.OutputInventoryType);
-      fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
+      outputInventory = gameManager.PlayerInventory.GetInventoryByType(station.OutputInventoryType);
 
       ServiceLocator.For(this).TryGet(out fuelItems);
     }
@@ -104,11 +105,7 @@ namespace Craft {
       }
 
       foreach (var input in inputs) {
-        if (inputItems.InputInProgress == 0) {
-          station.UpdateMillisecondsLeftByInput(input);
-        }
-
-        // Debug.Log($"SetRecipe input.Count {input.Count}");
+        // Debug.Log($"ProcessCraftedInputs SetRecipe input.Count {input.Count}");
         inputItems.SetRecipe(input.Count, input.Recipe);
       }
     }
@@ -128,12 +125,12 @@ namespace Craft {
       AddOutputUpdateEvents();
       takeAllButton.onClick.AddListener(OnTakeAllButtonClickHandler);
       //recipes
-      GameManager.Instance.RecipesManager.OnRecipeUnlocked += OnRecipeUnlockedHandler;
+      gameManager.RecipesManager.OnRecipeUnlocked += OnRecipeUnlockedHandler;
     }
 
     private void RemoveEvents() {
       //recipes
-      GameManager.Instance.RecipesManager.OnRecipeUnlocked -= OnRecipeUnlockedHandler;
+      gameManager.RecipesManager.OnRecipeUnlocked -= OnRecipeUnlockedHandler;
       //craft output slots
       takeAllButton.onClick.RemoveAllListeners();
       RemoveOutputUpdateEvents();
@@ -264,27 +261,29 @@ namespace Craft {
     }
 
     private void AddFuelUpdateEvents() {
-      if (fuelInventory == null) {
+      if (fuelItems == null) {
         return;
       }
 
-      foreach (var slot in fuelInventory.GetSlots) {
+      foreach (var slot in fuelItems.Inventory.GetSlots) {
         slot.OnAfterUpdated += FuelSlotUpdateHandler;
       }
     }
 
     private void RemoveFuelUpdateEvents() {
-      if (fuelInventory == null) {
+      if (fuelItems == null) {
         return;
       }
 
-      foreach (var slot in fuelInventory.GetSlots) {
+      foreach (var slot in fuelItems.Inventory.GetSlots) {
         slot.OnAfterUpdated -= FuelSlotUpdateHandler;
       }
     }
 
     private void FuelSlotUpdateHandler(SlotUpdateEventData data) {
-      craftActions.UpdateAndPrintInputCount();
+      // craftActions.UpdateAndPrintInputCount();
+      fuelItems.RunFuelEffect(recipesList.Recipe);
+      inputItems.CraftInput.Timer.CheckTimer();
     }
 
     private void OnRecipeUnlockedHandler(Recipe recipe) {

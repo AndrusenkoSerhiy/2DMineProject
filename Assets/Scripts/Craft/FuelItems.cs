@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Inventory;
 using Scriptables.Craft;
+using Scriptables.Items;
 using UnityEngine;
 using UnityServiceLocator;
 
@@ -13,6 +14,7 @@ namespace Craft {
 
     private Workstation station;
     private InventoryObject fuelInventory;
+    public InventoryObject Inventory => fuelInventory;
 
     public void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
@@ -27,23 +29,37 @@ namespace Craft {
       ServiceLocator.For(this).Register<IFuelItems>(this);
     }
 
+    public void RunFuelEffect(Recipe recipe) {
+      if (station.HaveFuelForCraft(recipe)) {
+        StopBlink();
+        BlockUnblockItems();
+      }
+      else {
+        StartBlink();
+      }
+    }
+
     public void UpdateInterface(Recipe recipe) {
-      var fuelInventory = fuelInterface.Inventory;
       var fuelSlots = fuelInventory.GetSlots;
       var currentFuel = recipe.Fuel.Material;
 
       //check current fuel items, move them to inventory if they are not in the recipe
       if (fuelSlots[0].AllowedItem == currentFuel) {
+        RunFuelEffect(recipe);
         return;
       }
 
-      fuelInventory.MoveAllItemsTo(GameManager.Instance.PlayerInventory.GetInventory());
+      var firstNotEmpty = fuelInventory.FindFirstNotEmpty();
+      if (firstNotEmpty != null && firstNotEmpty.Item.id != currentFuel.Id) {
+        fuelInventory.MoveAllItemsTo(GameManager.Instance.PlayerInventory.GetInventory());
+      }
 
       foreach (var slot in fuelSlots) {
         slot.AllowedItem = currentFuel;
       }
 
       fuelInterface.UpdateInventoryUI();
+      RunFuelEffect(recipe);
     }
 
     public void ConsumeFuel(Recipe recipe, int count) {

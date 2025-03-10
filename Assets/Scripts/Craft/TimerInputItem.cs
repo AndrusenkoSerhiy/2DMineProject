@@ -22,7 +22,7 @@ namespace Craft {
       timer.enabled = true;
       timer.onTimerStop += OnTimerStopHandler;
       timer.onItemTimerEnd += OnItemTimerEndHandler;
-      timer.InitTimer(count, recipe.CraftingTime);
+      timer.InitTimer(count, recipe);
 
       if (position == 0) {
         StartCrafting();

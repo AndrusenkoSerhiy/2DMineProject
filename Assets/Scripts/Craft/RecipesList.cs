@@ -44,8 +44,6 @@ namespace Craft {
         return;
       }
 
-      Debug.Log("BuildList");
-
       ClearList();
 
       if (recipes.Count == 0) {

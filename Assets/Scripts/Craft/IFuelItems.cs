@@ -1,10 +1,11 @@
-﻿using Scriptables.Craft;
+﻿using Inventory;
+using Scriptables.Craft;
 
 namespace Craft {
   public interface IFuelItems : ICraftComponent {
     public void ConsumeFuel(Recipe recipe, int count);
     public void UpdateInterface(Recipe recipe);
-    public void StartBlink();
-    public void StopBlink();
+    public InventoryObject Inventory { get; }
+    public void RunFuelEffect(Recipe recipe);
   }
 }

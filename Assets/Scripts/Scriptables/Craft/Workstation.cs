@@ -28,19 +28,18 @@ namespace Scriptables.Craft {
     public RecipesDatabaseObject RecipeDB;
     public string Title;
     [TextArea(15, 20)] public string Description;
-    public bool PlayEffectsWhenOpened;
     public bool PlayEffectsWhenClosed = true;
 
     public long CraftStartTimestampMillis;
 
     //Current Progress
-    private CurrentProgress CurrentProgress = new();
+    private CurrentProgress CurrentProgress;
     public event Action OnCraftStarted;
 
     public event Action OnCraftStopped;
 
     //For loaded inputs
-    public long MillisecondsLeft = 0;
+    public long MillisecondsLeft;
 
     //For effects
     public List<CraftingTask> CraftingTasks = new();
@@ -48,32 +47,32 @@ namespace Scriptables.Craft {
     //For Save/Load
     public List<Input> Inputs = new();
 
-    private InventoryObject outputInventory;
-    private InventoryObject fuelInventory;
-    private int outputSlotsAmount;
-    private int fuelSlotsAmount;
-
 #if UNITY_EDITOR
     private void OnValidate() {
-      ResourcePath = UnityEditor.AssetDatabase.GetAssetPath(this);
+      ResourcePath = UnityEditor.AssetDatabase.GetAssetPath(this).Replace("Assets/", "").Replace(".asset", "");
     }
 #endif
 
+    private void OnEnable() {
+      Clear();
+    }
+
     public void Clear() {
-      Inputs.Clear();
-      CraftingTasks.Clear();
-      ResetMillisecondsLeft();
       CraftStartTimestampMillis = 0;
+      CurrentProgress = new CurrentProgress();
+      ResetMillisecondsLeft();
+      CraftingTasks.Clear();
+      Inputs.Clear();
     }
 
     public void Load(WorkstationsData data) {
-      Clear();
-
       if (data.Inputs.Count <= 0) {
         return;
       }
 
       var inputs = data.Inputs;
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(FuelInventoryType);
+      var totalFuel = fuelInventory?.GetTotalCount();
 
       CraftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
       var currentCraftStartTimestampMillis = CraftStartTimestampMillis;
@@ -82,6 +81,13 @@ namespace Scriptables.Craft {
 
       foreach (var input in inputs) {
         var recipe = RecipeDB.ItemsMap[input.RecipeId];
+
+        Inputs.Add(new Input { Recipe = recipe, Count = input.Count });
+
+        if (totalFuel.HasValue && totalFuel <= 0) {
+          continue;
+        }
+
         var inputTotalCraftMillis = (long)input.Count * recipe.CraftingTime * 1000;
 
         if (millisecondsLeft > 0) {
@@ -91,8 +97,7 @@ namespace Scriptables.Craft {
           millisecondsLeft = 0;
         }
 
-        Inputs.Add(new Input { Recipe = recipe, Count = input.Count });
-        AddCraftingTask(recipe.Result.Id, recipe.CraftingTime, input.Count, currentCraftStartTimestampMillis);
+        AddCraftingTask(recipe, input.Count, currentCraftStartTimestampMillis, ref totalFuel);
 
         currentCraftStartTimestampMillis += inputTotalCraftMillis;
       }
@@ -114,7 +119,7 @@ namespace Scriptables.Craft {
         for (var j = 0; j < input.Count; j++) {
           var itemEndTimeInMilliseconds = currentCraftStartTimestampMillis + (recipe.CraftingTime * 1000);
 
-          if (currentTimeInMilliseconds >= itemEndTimeInMilliseconds) {
+          if (currentTimeInMilliseconds >= itemEndTimeInMilliseconds && HaveFuelForCraft(recipe)) {
             craftedCount++;
             currentCraftStartTimestampMillis = itemEndTimeInMilliseconds; // Move to next item's start
           }
@@ -149,6 +154,25 @@ namespace Scriptables.Craft {
 
       // Update CraftStartTime for next session
       CraftStartTimestampMillis = currentCraftStartTimestampMillis;
+
+      if (Inputs.Count == 0) {
+        ResetMillisecondsLeft();
+      }
+    }
+
+    public bool HaveFuelForCraft(Recipe recipe) {
+      if (recipe.Fuel == null) {
+        return true;
+      }
+
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(FuelInventoryType);
+      if (fuelInventory == null) {
+        return true;
+      }
+
+      var total = fuelInventory.GetTotalCount() / recipe.Fuel.Amount;
+
+      return total > 0;
     }
 
     public void ConsumeFuel(Recipe recipe, int count) {
@@ -162,16 +186,15 @@ namespace Scriptables.Craft {
       fuelInventory.RemoveItem(recipe.Fuel.Material.Id, totalCount);
     }
 
-    public long CalculateTimeLeftInMilliseconds(Input input) {
+    public long CalculateTimeLeftInMilliseconds(Recipe recipe, int count) {
       var currentTimeInMilliseconds = Helper.GetCurrentTimestampMillis();
       var elapsedTimeInMilliseconds = currentTimeInMilliseconds - CraftStartTimestampMillis;
-      var totalTimeInMilliseconds = (long)input.Count * input.Recipe.CraftingTime * 1000;
+      var totalTimeInMilliseconds = (long)count * recipe.CraftingTime * 1000;
       return Math.Clamp((totalTimeInMilliseconds - elapsedTimeInMilliseconds), 0, totalTimeInMilliseconds);
     }
 
-    public void UpdateMillisecondsLeftByInput(Input input) {
-      MillisecondsLeft = CalculateTimeLeftInMilliseconds(input);
-      Debug.Log($"UpdateMillisecondsLeft MillisecondsLeft {MillisecondsLeft}");
+    public void UpdateMillisecondsLeft(Recipe recipe, int count) {
+      MillisecondsLeft = CalculateTimeLeftInMilliseconds(recipe, count);
     }
 
     public void ResetMillisecondsLeft() {
@@ -184,17 +207,32 @@ namespace Scriptables.Craft {
         return;
       }
 
+      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(FuelInventoryType);
+      var totalFuel = fuelInventory?.GetTotalCount();
+
       var currentDateTimestampMillis = CraftStartTimestampMillis;
       foreach (var input in Inputs) {
-        AddCraftingTask(input.Recipe.Result.Id, input.Recipe.CraftingTime, input.Count, currentDateTimestampMillis);
+        if (totalFuel.HasValue && totalFuel <= 0) {
+          break;
+        }
+
+        AddCraftingTask(input.Recipe, input.Count, currentDateTimestampMillis, ref totalFuel);
         currentDateTimestampMillis += input.Count * input.Recipe.CraftingTime * 1000;
       }
     }
 
-    private void AddCraftingTask(string id, int craftTime, int count, long startInMilliseconds) {
+    private void AddCraftingTask(Recipe recipe, int count, long startInMilliseconds, ref int? totalFuel) {
       for (var i = 1; i <= count; i++) {
-        var endTime = startInMilliseconds + (craftTime * i * 1000);
-        CraftingTasks.Add(new CraftingTask(id, endTime));
+        if (totalFuel.HasValue && (totalFuel - recipe.Fuel.Amount) < 0) {
+          break;
+        }
+
+        var endTime = startInMilliseconds + (recipe.CraftingTime * i * 1000);
+        CraftingTasks.Add(new CraftingTask(recipe.Result.Id, endTime));
+
+        if (totalFuel.HasValue) {
+          totalFuel -= recipe.Fuel.Amount;
+        }
       }
     }
 
@@ -237,6 +275,7 @@ namespace Scriptables.Craft {
       }
 
       if (Inputs.Count <= 0) {
+        ResetMillisecondsLeft();
         OnCraftStopped?.Invoke();
       }
     }
@@ -249,6 +288,7 @@ namespace Scriptables.Craft {
       Inputs.RemoveAt(inputPosition);
 
       if (Inputs.Count <= 0) {
+        ResetMillisecondsLeft();
         OnCraftStopped?.Invoke();
       }
     }

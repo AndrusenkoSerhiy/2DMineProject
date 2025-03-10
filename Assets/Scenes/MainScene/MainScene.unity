@@ -2085,6 +2085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eda531d48104574bd9a6f431979f80f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  workstationsDatabase: {fileID: 11400000, guid: 1741e05f92036664b85e68a373d88673, type: 2}
   allStationsMap:
     m_Keys: []
     m_Values: []
@@ -3856,13 +3857,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2208676779476954386, guid: 5fe3e4a4c9e9f314aa1db32aef4d2542, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4455733607037691151, guid: 5fe3e4a4c9e9f314aa1db32aef4d2542, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.6800013
+      value: 32.97
       objectReference: {fileID: 0}
     - target: {fileID: 4455733607037691151, guid: 5fe3e4a4c9e9f314aa1db32aef4d2542, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.58
+      value: 4.73
       objectReference: {fileID: 0}
     - target: {fileID: 4455733607037691151, guid: 5fe3e4a4c9e9f314aa1db32aef4d2542, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4333,6 +4338,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2292073947769524504, guid: dc7c810a83ee7a745925cd72a8cb6573, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3773624294396459548, guid: dc7c810a83ee7a745925cd72a8cb6573, type: 3}
       propertyPath: overlayPrefab
       value: 

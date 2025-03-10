@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
@@ -9,12 +10,14 @@ namespace Craft {
     [SerializeField] private TextMeshProUGUI timerText;
 
     private Workstation station;
+    private Recipe recipe;
     private int timeForOneInMilliseconds;
     private int totalItems;
     private int itemsLeft;
     private int totalTimeInMilliseconds;
 
     private bool isStarted;
+    private Coroutine timerCoroutine;
 
     public Action onTimerStop;
     public Action<int> onItemTimerEnd;
@@ -24,40 +27,84 @@ namespace Craft {
       station = ServiceLocator.For(this).Get<Workstation>();
     }
 
-    public void Update() {
-      if (!isStarted) {
+    private IEnumerator TimerCoroutine() {
+      while (isStarted && station.MillisecondsLeft > 0) {
+        yield return null;
+
+        station.MillisecondsLeft -= (long)(Time.deltaTime * 1000);
+
+        var timeLeftForCurrentInMilliseconds = station.MillisecondsLeft - ((itemsLeft - 1) * timeForOneInMilliseconds);
+        station.UpdateProgress(timeLeftForCurrentInMilliseconds);
+
+        CheckItemCompletion();
+        PrintTime();
+      }
+
+      if (itemsLeft <= 0) {
+        StopTimer();
+      }
+      else {
+        SetTimerToCurrentItems();
+      }
+    }
+
+    public void CheckTimer() {
+      if (isStarted || recipe == null) {
         return;
       }
 
-      TimerTick();
+      StartTimer();
     }
 
-    public void InitTimer(int count, int time) {
+    public void InitTimer(int count, Recipe recipe) {
+      this.recipe = recipe;
       totalItems = count;
-      timeForOneInMilliseconds = time * 1000;
-      totalTimeInMilliseconds = count * time * 1000;
+      timeForOneInMilliseconds = recipe.CraftingTime * 1000;
+      totalTimeInMilliseconds = count * recipe.CraftingTime * 1000;
       itemsLeft = totalItems;
-
-      PrintTime();
     }
 
     public void StartTimer() {
-      isStarted = true;
-      if (station.MillisecondsLeft <= 0) {
-        station.MillisecondsLeft = totalTimeInMilliseconds;
-        station.CraftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
+      isStarted = station.HaveFuelForCraft(recipe);
+      
+      if (station.MillisecondsLeft <= 0 || !isStarted) {
+        SetTimerToCurrentItems();
       }
 
       var timeLeftForCurrentInMilliseconds = Math.Min(station.MillisecondsLeft, timeForOneInMilliseconds);
       station.SetProgress(timeForOneInMilliseconds, timeLeftForCurrentInMilliseconds);
+
+      PrintTime();
+
+      if (timerCoroutine != null) {
+        StopCoroutine(timerCoroutine);
+      }
+
+      if (!isStarted) {
+        return;
+      }
+
+      if (station.MillisecondsLeft != totalTimeInMilliseconds) {
+        station.UpdateMillisecondsLeft(recipe, itemsLeft);
+      }
+      else {
+        UpdateStartTimeByCurrent();
+      }
+
+      timerCoroutine = StartCoroutine(TimerCoroutine());
     }
 
     public void Reset() {
       isStarted = false;
       timerText.text = string.Empty;
 
-      station.ResetMillisecondsLeft();
+      // station.ResetMillisecondsLeft();
       station.ResetProgress();
+
+      if (timerCoroutine != null) {
+        StopCoroutine(timerCoroutine);
+        timerCoroutine = null;
+      }
     }
 
     private void CheckItemCompletion() {
@@ -67,9 +114,17 @@ namespace Craft {
 
       var timeLeftWithoutCurrent = (itemsLeft - 1) * timeForOneInMilliseconds;
 
-      if (station.MillisecondsLeft <= timeLeftWithoutCurrent) {
-        itemsLeft--;
-        onItemTimerEnd?.Invoke(1);
+      if (station.MillisecondsLeft > timeLeftWithoutCurrent) {
+        return;
+      }
+
+      itemsLeft--;
+      SetTimerToCurrentItems();
+      UpdateStartTimeByCurrent();
+      onItemTimerEnd?.Invoke(1);
+
+      if (!station.HaveFuelForCraft(recipe)) {
+        isStarted = false;
       }
     }
 
@@ -78,22 +133,16 @@ namespace Craft {
       timerText.text = Helper.SecondsToTimeString(roundedTimeLeft);
     }
 
-    private void TimerTick() {
-      station.MillisecondsLeft -= (long)(Time.deltaTime * 1000);
-
-      var timeLeftForCurrentInMilliseconds = station.MillisecondsLeft - ((itemsLeft - 1) * timeForOneInMilliseconds);
-      station.UpdateProgress(timeLeftForCurrentInMilliseconds);
-
-      CheckItemCompletion();
-      PrintTime();
-
-      if (station.MillisecondsLeft <= 0) {
-        StopTimer();
-      }
-    }
-
     private void StopTimer() {
       onTimerStop?.Invoke();
+    }
+
+    private void SetTimerToCurrentItems() {
+      station.MillisecondsLeft = itemsLeft * recipe.CraftingTime * 1000;
+    }
+
+    private void UpdateStartTimeByCurrent() {
+      station.CraftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
     }
   }
 }

@@ -300,16 +300,6 @@ namespace Inventory {
       return count;
     }
 
-    public void AddDefaultItem(ItemObject defaultItem) {
-      if (!isEmpty()) {
-        return;
-      }
-
-      var item = new Item(defaultItem);
-      // GetSlots[0].UpdateSlot(1, item);
-      AddItem(item, 1);
-    }
-
     private bool isEmpty() {
       for (var i = 0; i < GetSlots.Length; i++) {
         if (GetSlots[i].amount > 0) {
@@ -337,6 +327,17 @@ namespace Inventory {
       for (var i = 0; i < GetSlots.Length; i++) {
         if (GetSlots[i].Item?.info.Id == item.info.Id) {
           return GetSlots[i];
+        }
+      }
+
+      return null;
+    }
+
+    public InventorySlot FindFirstNotEmpty() {
+      for (var i = 0; i < GetSlots.Length; i++) {
+        var slot = GetSlots[i];
+        if (!slot.isEmpty) {
+          return slot;
         }
       }
 

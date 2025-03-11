@@ -268,7 +268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipesDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   defaultUnlockedStations: 00000000
-  unlockAllRecipes: 0
+  unlockAllRecipes: 1
 --- !u!114 &425212838 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 263804862651814355, guid: 13536b19579612846a4b433fb9b73179, type: 3}
@@ -2142,13 +2142,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoriesSizes:
-    m_Keys: 01000000030000000400000005000000060000000700000008000000090000000a000000
-    m_Values: 180000000a00000005000000050000000500000005000000050000000500000003000000
+    m_Keys: 01000000030000000400000005000000060000000700000008000000090000000a0000000c000000
+    m_Values: 180000000a0000000500000005000000050000000500000005000000050000000300000003000000
   storagesSizes:
-    m_Keys: 00000000
-    m_Values: 12000000
-  inventories:
-    m_Keys: []
+    m_Keys: 000000000100000002000000
+    m_Values: 120000001b00000024000000
 --- !u!1001 &2019439808
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3100,6 +3098,22 @@ PrefabInstance:
       propertyPath: cameraConfigManager
       value: 
       objectReference: {fileID: 1757388733}
+    - target: {fileID: 2686495433876375109, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: pools.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686495433876375109, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: pools.Array.data[5].tag
+      value: WoodChestBuildingData
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686495433876375109, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: pools.Array.data[5].size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686495433876375109, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: pools.Array.data[5].prefab
+      value: 
+      objectReference: {fileID: 3817076882879528663, guid: 3936a09999815234386e4606c0f03ae8, type: 3}
     - target: {fileID: 4001951038154339777, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_Name
       value: GameManager

@@ -20,8 +20,8 @@ MonoBehaviour:
   - Material: {fileID: 11400000, guid: 7684243e236b60b4dac023d5e8cdd7f6, type: 2}
     Amount: 2
   Fuel:
-    Material: {fileID: 0}
-    Amount: 0
+    Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    Amount: 1
   Result: {fileID: 11400000, guid: 6313de26ee526784197208c35fc1ff4a, type: 2}
   ResultAmount: 1
   CraftingTime: 10

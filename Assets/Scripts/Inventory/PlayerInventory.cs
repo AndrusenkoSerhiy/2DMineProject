@@ -8,24 +8,41 @@ using UnityEngine.Rendering;
 namespace Inventory {
   [DefaultExecutionOrder(-1)]
   public class PlayerInventory : MonoBehaviour, IPlayerInventory, ISaveLoad {
-    [SerializeField] private SerializedDictionary<InventoryType, int> inventoriesSizes = new() {
-      { InventoryType.Inventory, 24 },
-      { InventoryType.QuickSlots, 10 },
-      { InventoryType.HandCraftOutput, 5 },
-      { InventoryType.WorkbenchOutput, 5 },
-      { InventoryType.StoneCutterOutput, 5 },
-      { InventoryType.FoodStationOutput, 5 },
-      { InventoryType.ChemicalStationOutput, 5 },
-      { InventoryType.ForgeOutput, 5 },
-      { InventoryType.ForgeFuel, 3 },
-    };
+    [SerializeField] private SerializedDictionary<InventoryType, int> inventoriesSizes;
 
-    [SerializeField] private SerializedDictionary<StorageType, int> storagesSizes = new() {
-      { StorageType.Small, 18 },
-    };
+    [SerializeField] private SerializedDictionary<StorageType, int> storagesSizes;
 
     private PlayerInventoryWindow inventoryWindow;
     private Dictionary<string, InventoryObject> inventories = new();
+
+    private SerializedDictionary<InventoryType, int> GetdefaultInventoriesSizes() {
+      return new SerializedDictionary<InventoryType, int> {
+        { InventoryType.Inventory, 24 },
+        { InventoryType.QuickSlots, 10 },
+        { InventoryType.HandCraftOutput, 5 },
+        { InventoryType.WorkbenchOutput, 5 },
+        { InventoryType.StoneCutterOutput, 5 },
+        { InventoryType.FoodStationOutput, 5 },
+        { InventoryType.ChemicalStationOutput, 5 },
+        { InventoryType.ForgeOutput, 5 },
+        { InventoryType.ForgeFuel, 3 },
+        { InventoryType.FoodStationFuel, 3 },
+      };
+    }
+
+    private SerializedDictionary<StorageType, int> GetdefaultStoragesSizes() {
+      return new SerializedDictionary<StorageType, int> {
+        { StorageType.Small, 18 },
+        { StorageType.Mid, 27 },
+        { StorageType.Big, 36 },
+      };
+    }
+
+    [ContextMenu("Set default inventories sizes")]
+    private void SetDefaultMessagesSettings() {
+      inventoriesSizes = GetdefaultInventoriesSizes();
+      storagesSizes = GetdefaultStoragesSizes();
+    }
 
     public void Start() {
       inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();

@@ -12,5 +12,6 @@
     ForgeOutput = 9,
     ForgeFuel = 10,
     Storage = 11,
+    FoodStationFuel = 12,
   }
 }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7309800373237914667}
   - component: {fileID: 7469849115667634943}
   m_Layer: 3
-  m_Name: StorageSmall
+  m_Name: WoodChest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,7 +55,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3817076882879528663}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -82,7 +82,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.030166626, y: 0.0051136017}
+  m_Offset: {x: 0.009490967, y: -0.02541387}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -92,7 +92,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3.74263, y: 3.6831717}
+  m_Size: {x: 5.3355103, y: 3.6221168}
   m_EdgeRadius: 0
 --- !u!114 &7309800373237914667
 MonoBehaviour:
@@ -221,7 +221,7 @@ SpriteRenderer:
   m_SortingLayerID: -1277350549
   m_SortingLayer: 3
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: cb39aa25624545e4eab7aec7b4afe034, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 56282988e220fab4e82217be134fe409, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -17,8 +17,7 @@ namespace Craft {
 
     public void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
-      fuelInventory =
-        GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(station.FuelInventoryType, station.Id);
+      fuelInventory = station.GetFuelInventory();
 
       if (fuelInventory == null) {
         Debug.LogError("Set FuelInventory to the station");

@@ -28,6 +28,7 @@ namespace Craft {
     private bool started;
 
     public bool PreventItemDropIn => preventItemDrop;
+    public Workstation Station => station;
 
     public void Setup(Workstation station) {
       this.station = station;
@@ -87,7 +88,7 @@ namespace Craft {
       inputItems = ServiceLocator.For(this).Get<IInputItems>();
       recipesList = ServiceLocator.For(this).Get<IRecipesList>();
 
-      outputInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(station.OutputInventoryType, station.Id);
+      outputInventory = station.GetOutputInventory();
 
       ServiceLocator.For(this).TryGet(out fuelItems);
     }
@@ -123,7 +124,7 @@ namespace Craft {
       AddInputEvents();
       //craft output slots
       AddOutputUpdateEvents();
-      takeAllButton.onClick.AddListener(OnTakeAllButtonClickHandler);
+      takeAllButton?.onClick.AddListener(OnTakeAllButtonClickHandler);
       //recipes
       gameManager.RecipesManager.OnRecipeUnlocked += OnRecipeUnlockedHandler;
     }
@@ -132,7 +133,7 @@ namespace Craft {
       //recipes
       gameManager.RecipesManager.OnRecipeUnlocked -= OnRecipeUnlockedHandler;
       //craft output slots
-      takeAllButton.onClick.RemoveAllListeners();
+      takeAllButton?.onClick.RemoveAllListeners();
       RemoveOutputUpdateEvents();
       //craft input slots
       RemoveInputEvents();
@@ -254,6 +255,9 @@ namespace Craft {
       if (data.after.isEmpty) {
         craftActions.UpdateAndPrintInputCount();
       }
+
+      //Check timer
+      inputItems.CraftInput.Timer.CheckTimer();
     }
 
     private void OnTakeAllButtonClickHandler() {

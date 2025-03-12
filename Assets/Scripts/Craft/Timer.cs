@@ -17,6 +17,7 @@ namespace Craft {
     private int totalTimeInMilliseconds;
 
     private bool isStarted;
+    private bool isPaused;
     private Coroutine timerCoroutine;
 
     public Action onTimerStop;
@@ -48,6 +49,15 @@ namespace Craft {
       }
     }
 
+    private void StopTimerCoroutine() {
+      if (timerCoroutine == null) {
+        return;
+      }
+
+      StopCoroutine(timerCoroutine);
+      timerCoroutine = null;
+    }
+
     public void CheckTimer() {
       if (isStarted || recipe == null) {
         return;
@@ -65,7 +75,7 @@ namespace Craft {
     }
 
     public void StartTimer() {
-      isStarted = station.HaveFuelForCraft(recipe);
+      isStarted = station.CanCraft(recipe);
 
       if (station.MillisecondsLeft <= 0 || !isStarted) {
         SetTimerToCurrentItems();
@@ -76,35 +86,31 @@ namespace Craft {
 
       PrintTime();
 
-      if (timerCoroutine != null) {
-        StopCoroutine(timerCoroutine);
-      }
+      StopTimerCoroutine();
 
       if (!isStarted) {
         return;
       }
 
       if (station.MillisecondsLeft != totalTimeInMilliseconds) {
-        station.UpdateMillisecondsLeft(recipe, itemsLeft);
+        station.UpdateMillisecondsLeftByCurrentTime(recipe, itemsLeft);
       }
-      else {
+
+      if (station.MillisecondsLeft == totalTimeInMilliseconds || isPaused) {
         station.UpdateCraftStartTimestampMillis(Helper.GetCurrentTimestampMillis());
       }
 
       timerCoroutine = StartCoroutine(TimerCoroutine());
+      isPaused = false;
     }
 
     public void Reset() {
       isStarted = false;
       timerText.text = string.Empty;
 
-      // station.ResetMillisecondsLeft();
       station.ResetProgress();
 
-      if (timerCoroutine != null) {
-        StopCoroutine(timerCoroutine);
-        timerCoroutine = null;
-      }
+      StopTimerCoroutine();
     }
 
     private void CheckItemCompletion() {
@@ -123,9 +129,13 @@ namespace Craft {
       station.UpdateCraftStartTimestampMillis(Helper.GetCurrentTimestampMillis());
       onItemTimerEnd?.Invoke(1);
 
-      if (!station.HaveFuelForCraft(recipe)) {
-        isStarted = false;
+      if (station.CanCraft(recipe)) {
+        return;
       }
+
+      isStarted = false;
+      isPaused = true;
+      StopTimerCoroutine();
     }
 
     private void PrintTime() {

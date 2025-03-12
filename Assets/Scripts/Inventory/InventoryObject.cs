@@ -255,38 +255,42 @@ namespace Inventory {
       return 0;
     }
 
-    public int GetFreeSlotsCount() {
+    public int FreeSpaceForItem(ItemObject itemObj) {
       var count = 0;
-
       foreach (var slot in GetSlots) {
-        //slot is empty
-        if (slot.isEmpty) {
-          count++;
+        if (!slot.isEmpty && slot.Item.info.Id != itemObj.Id) {
+          continue;
         }
+
+        count += itemObj.MaxStackSize - slot.amount;
       }
 
       return count;
     }
 
-    public Dictionary<string, int> CalculateTotalCounts() {
-      var count = new Dictionary<string, int>();
+    public (string[], int[], int) FreeSpaces() {
+      var ids = new string[GetSlots.Length];
+      var freeCounts = new int[GetSlots.Length];
+      var emptySlots = 0;
 
-      foreach (var slot in GetSlots) {
+      for (var i = 0; i < GetSlots.Length; i++) {
+        var slot = GetSlots[i];
+
         if (slot.isEmpty) {
-          continue;
-        }
-
-        var slotItemId = slot.Item.info.Id;
-
-        if (!count.ContainsKey(slotItemId)) {
-          count.Add(slotItemId, slot.amount);
+          emptySlots++;
+          ids[i] = string.Empty;
+          freeCounts[i] = 0;
         }
         else {
-          count[slotItemId] += slot.amount;
+          var slotItemId = slot.Item.info.Id;
+          var free = slot.Item.info.MaxStackSize - slot.amount;
+
+          ids[i] = slotItemId;
+          freeCounts[i] = free;
         }
       }
 
-      return count;
+      return (ids, freeCounts, emptySlots);
     }
 
     public int GetTotalCount() {
@@ -303,16 +307,6 @@ namespace Inventory {
       return count;
     }
 
-    private bool isEmpty() {
-      for (var i = 0; i < GetSlots.Length; i++) {
-        if (GetSlots[i].amount > 0) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
     private int emptySlotCount {
       get {
         var counter = 0;
@@ -324,16 +318,6 @@ namespace Inventory {
 
         return counter;
       }
-    }
-
-    public InventorySlot FindItemOnInventory(Item item) {
-      for (var i = 0; i < GetSlots.Length; i++) {
-        if (GetSlots[i].Item?.info.Id == item.info.Id) {
-          return GetSlots[i];
-        }
-      }
-
-      return null;
     }
 
     public InventorySlot FindFirstNotEmpty() {
@@ -360,16 +344,6 @@ namespace Inventory {
       }
 
       return null;
-    }
-
-    public bool IsItemInInventory(ItemObject item) {
-      for (var i = 0; i < GetSlots.Length; i++) {
-        if (GetSlots[i].Item?.info.Id == item.Id) {
-          return true;
-        }
-      }
-
-      return false;
     }
 
     public InventorySlot GetEmptySlot() {

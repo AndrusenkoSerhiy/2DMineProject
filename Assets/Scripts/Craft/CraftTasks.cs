@@ -97,7 +97,7 @@ namespace Craft {
 
 
     private void RunEffect(Workstation station, string itemId) {
-      if (!station.PlayEffectsWhenClosed) {
+      if (!station.ShowSuccessCraftMessages) {
         return;
       }
 

@@ -19,7 +19,7 @@ namespace Inventory {
       return new SerializedDictionary<InventoryType, int> {
         { InventoryType.Inventory, 24 },
         { InventoryType.QuickSlots, 10 },
-        { InventoryType.HandCraftOutput, 5 },
+        // { InventoryType.HandCraftOutput, 5 },
         { InventoryType.WorkbenchOutput, 5 },
         { InventoryType.StoneCutterOutput, 5 },
         { InventoryType.FoodStationOutput, 5 },
@@ -65,6 +65,10 @@ namespace Inventory {
       if (type == InventoryType.Storage) {
         Debug.LogError("Set storage to \"storage\"");
         return null;
+      }
+
+      if (type == InventoryType.Inventory || type == InventoryType.QuickSlots) {
+        id = "";
       }
 
       var fullId = $"{type.ToString()}_{id}".ToLower();

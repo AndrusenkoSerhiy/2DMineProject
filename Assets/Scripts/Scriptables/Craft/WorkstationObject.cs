@@ -12,7 +12,8 @@ namespace Scriptables.Craft {
     public RecipesDatabaseObject RecipeDB;
     public string Title;
     [TextArea(15, 20)] public string Description;
-    public bool PlayEffectsWhenClosed = true;
+    public bool ShowSuccessCraftMessages;
+    public int CraftSlotsCount = 5;
 
 #if UNITY_EDITOR
     private void OnValidate() {

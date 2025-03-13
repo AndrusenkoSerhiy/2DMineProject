@@ -2088,6 +2088,7 @@ MonoBehaviour:
   workstationsDatabase: {fileID: 11400000, guid: 1741e05f92036664b85e68a373d88673, type: 2}
   allStationsMap:
     m_Keys: []
+    m_Values: []
   stations: []
   windowOpenStates:
     m_Keys: []
@@ -2224,6 +2225,10 @@ PrefabInstance:
       propertyPath: stationObject
       value: 
       objectReference: {fileID: 11400000, guid: 33b923de99302004c8dda329339d3e62, type: 2}
+    - target: {fileID: 1255239565477947570, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
+      propertyPath: interfacePrefab
+      value: 
+      objectReference: {fileID: 1208913450436918581, guid: caaa36600c646d14ab21fae3a3cc6a15, type: 3}
     - target: {fileID: 2428154648203464867, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_Name
       value: Player

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
@@ -20,6 +19,7 @@ namespace Craft {
     private Color buttonsDisabledColor;
 
     private ITotalAmount totalAmount;
+
     // private IFuelItems fuelItems;
     private Recipe recipe;
     private Workstation station;
@@ -67,14 +67,6 @@ namespace Craft {
       EnableButton(minCountButton, currentCount > minCount, minCountButtonSub);
       EnableButton(craftButton, currentCount > 0);
     }
-
-    /*private IFuelItems GetFuelItems() {
-      if (fuelItems == null) {
-        ServiceLocator.For(this).TryGet(out fuelItems);
-      }
-
-      return fuelItems;
-    }*/
 
     private void EnableButton(Button button, bool state, Image subimage = null) {
       var color = state ? buttonsActiveColor : buttonsDisabledColor;
@@ -158,48 +150,12 @@ namespace Craft {
     }
 
     private void CalculateMaxCount() {
-      var maxCountByInputOutput = CalculateMaxCountByCurrentCraftingAndOutput();
+      // var maxCountByInputOutput = CalculateMaxCountByCurrentCraftingAndOutput();
+      var maxCountByInput = CalculateMaxCountByCurrentCrafting();
       var maxCountByResources = CalculateMaxCountByResources();
-      // var maxCountByFuel = CalculateMaxCountByFuel();
 
-      maxCount = Math.Min(maxCountByInputOutput, maxCountByResources);
-
-      // maxCount = maxCountByFuel > -1
-      //   ? Math.Min(maxCountByInputOutput, Math.Min(maxCountByResources, maxCountByFuel))
-      //   : Math.Min(maxCountByInputOutput, maxCountByResources);
-
-      // RunFuelEffect();
+      maxCount = Math.Min(maxCountByInput, maxCountByResources);
     }
-
-    /*private void RunFuelEffect() {
-      if (GetFuelItems() == null) {
-        return;
-      }
-
-      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
-      var total = fuelInventory.GetTotalCount() / recipe.Fuel.Amount;
-      
-      Debug.Log($"RunFuelEffect total {total}");
-
-      if (total <= 0) {
-        GetFuelItems().StartBlink();
-      }
-      else {
-        GetFuelItems().StopBlink();
-      }
-    }*/
-
-    /*private int CalculateMaxCountByFuel() {
-      var fuelInventory = GameManager.Instance.PlayerInventory.GetInventoryByType(station.FuelInventoryType);
-      if (fuelInventory == null || recipe.Fuel == null) {
-        return -1;
-      }
-
-      var total = fuelInventory.GetTotalCount() / recipe.Fuel.Amount;
-      var inUse = station.Inputs.Sum(x => x.Count * x.Recipe.Fuel.Amount);
-
-      return (total - inUse);
-    }*/
 
     private int CalculateMaxCountByResources() {
       var max = int.MaxValue;
@@ -213,8 +169,23 @@ namespace Craft {
       return max == int.MaxValue ? 0 : max;
     }
 
-    private int CalculateMaxCountByCurrentCraftingAndOutput() {
-      var outputInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(station.OutputInventoryType, station.Id);
+    private int CalculateMaxCountByCurrentCrafting() {
+      var slotsCount = station.CraftSlotsCount;
+      var freeInputSlotsCount = slotsCount - station.Inputs.Count;
+
+      if (freeInputSlotsCount <= 0) {
+        return 0;
+      }
+
+      var maxStackSize = recipe.Result.MaxStackSize;
+      var maxByFreeSlots = freeInputSlotsCount * maxStackSize;
+
+      return Math.Max(0, maxByFreeSlots);
+    }
+
+    /*private int CalculateMaxCountByCurrentCraftingAndOutput() {
+      var outputInventory =
+        GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(station.OutputInventoryType, station.Id);
       var freeOutputSlotsCount = outputInventory.GetFreeSlotsCount();
       var freeInputSlotsCount = outputInventory.GetSlots.Length - station.Inputs.Count;
 
@@ -265,7 +236,7 @@ namespace Craft {
       var maxCraftable = availableStacks * maxStackSize + leftCount;
 
       return Mathf.Max(0, maxCraftable); // Ensure non-negative values
-    }
+    }*/
 
     private void SetCurrentCount() {
       if (currentCount <= 0 && maxCount > 0) {

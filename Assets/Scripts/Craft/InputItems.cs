@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Scriptables.Craft;
 using UnityEngine;
@@ -7,8 +8,6 @@ namespace Craft {
   public class InputItems : MonoBehaviour, IInputItems {
     [SerializeField] private TimerInputItem craftInput;
     [SerializeField] private List<InputItem> items;
-
-    private int itemsCount;
 
     private int inputInProgress;
     public int InputInProgress => inputInProgress;
@@ -21,7 +20,6 @@ namespace Craft {
     public void Awake() {
       ServiceLocator.For(this).Register<IInputItems>(this);
       station = ServiceLocator.For(this).Get<Workstation>();
-      itemsCount = GameManager.Instance.PlayerInventory.GetInventorySizeByType(station.OutputInventoryType);
 
       InitInputs();
     }
@@ -38,21 +36,21 @@ namespace Craft {
     }
 
     private void InitInputs() {
-      if (items.Count < itemsCount) {
-        Debug.LogError("InputItems: not enough slots in the interface");
-        return;
-      }
-
-      for (var i = 0; i < items.Count - 1; i++) {
+      for (var i = 0; i < items.Count; i++) {
         items[i].SetPosition(i);
       }
     }
 
     public void SetRecipe(int count, Recipe recipe) {
-      var item = items[inputInProgress];
-      item.Init(count, recipe);
+      var maxStack = recipe.Result.MaxStackSize;
+      while (count > 0) {
+        var addCount = count > maxStack ? maxStack : count;
+        var item = items[inputInProgress];
+        item.Init(addCount, recipe);
 
-      inputInProgress++;
+        count -= addCount;
+        inputInProgress++;
+      }
     }
 
     public void UpdateWaitInputs(int fromPosition = 0) {
@@ -70,20 +68,26 @@ namespace Craft {
     }
 
     private void UpdateWaitChain(int fromPosition = 0) {
-      for (var i = fromPosition; i < inputInProgress - 1; i++) {
-        var currentCount = items[i].CountLeft;
-        var currentRecipe = items[i].Recipe;
-        var nextCount = items[i + 1].CountLeft;
-        var nextRecipe = items[i + 1].Recipe;
+      for (var i = fromPosition; i < inputInProgress; i++) {
+        var current = items[i];
+        var currentCount = current.CountLeft;
+        var currentRecipe = current.Recipe;
 
-        items[i].ResetInput();
-        if (nextRecipe) {
-          items[i].Init(nextCount, nextRecipe);
+        current.ResetInput();
+        if ((i + 1) >= inputInProgress) {
+          break;
         }
 
-        items[i + 1].ResetInput();
+        var next = items[i + 1];
+
+        var nextCount = next.CountLeft;
+        var nextRecipe = next.Recipe;
+
+        current.Init(nextCount, nextRecipe);
+
+        next.ResetInput();
         if (currentRecipe) {
-          items[i + 1].Init(currentCount, currentRecipe);
+          next.Init(currentCount, currentRecipe);
         }
       }
     }

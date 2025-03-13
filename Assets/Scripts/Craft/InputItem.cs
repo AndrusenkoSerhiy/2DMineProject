@@ -3,6 +3,7 @@ using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityServiceLocator;
 
 namespace Craft {
   public struct ItemCanceledEventData {
@@ -19,6 +20,7 @@ namespace Craft {
     [SerializeField] protected Image fade;
     [SerializeField] protected Button cancel;
 
+    protected Workstation station;
     protected Recipe recipe;
     protected int countLeft;
     protected int position;
@@ -31,6 +33,7 @@ namespace Craft {
 
     public void Awake() {
       rectTransform = GetComponent<RectTransform>();
+      station = ServiceLocator.For(this).Get<Workstation>();
     }
 
     public void SetPosition(int position) {
@@ -48,17 +51,23 @@ namespace Craft {
       cancel.onClick.AddListener(CancelHandler);
     }
 
-    protected void PrintTime() {
+    private void PrintTime() {
       timerText.text = Helper.SecondsToTimeString(countLeft * recipe.CraftingTime);
     }
 
-    protected void CancelHandler() {
+    private void CancelHandler() {
+      if (!station.CanCancelCraft(recipe, countLeft)) {
+        GameManager.Instance.MessagesManager.ShowSimpleMessage(
+          "You can't cancel craft. Not enough space in inventory.");
+        return;
+      }
+
       var data = new ItemCanceledEventData { Recipe = Recipe, Position = Position, CountLeft = countLeft };
       ResetInput();
       OnCanceled?.Invoke(data);
     }
 
-    protected void SetupUI() {
+    private void SetupUI() {
       icon.sprite = recipe.Result.UiDisplay;
       icon.color = new Color(1, 1, 1, 255);
       timeIcon.gameObject.SetActive(true);

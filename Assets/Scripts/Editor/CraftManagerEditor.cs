@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(CraftManager))]
+[CustomEditor(typeof(Window))]
 public class CraftManagerEditor : Editor {
   private int[] variants = { 5, 10, 100, 1000 };
 
@@ -17,7 +17,7 @@ public class CraftManagerEditor : Editor {
       return;
     }
 
-    var station = target?.GetComponent<CraftManager>()?.Station;
+    var station = target?.GetComponent<Window>()?.Station;
     if (station == null) {
       return;
     }

@@ -17,6 +17,7 @@ using Messages;
 using Pool;
 using Settings;
 using UI;
+using UnityEngine.Serialization;
 using Utility;
 
 [DefaultExecutionOrder(-5)]
@@ -30,7 +31,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private MessagesManager messagesManager;
   [SerializeField] private RecipesManager recipesManager;
   [SerializeField] private TooltipManager tooltipManager;
-  [SerializeField] private CraftTasks craftTasks;
+  [SerializeField] private CraftManager craftManager;
   [SerializeField] private GroundItemPool groundItemPool;
   [SerializeField] private GameConfig gameConfigRef;
   [SerializeField] private ChunkController chunkController;
@@ -63,7 +64,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public MessagesManager MessagesManager => messagesManager;
   public RecipesManager RecipesManager => recipesManager;
   public TooltipManager TooltipManager => tooltipManager;
-  public CraftTasks CraftTasks => craftTasks;
+  public CraftManager CraftManager => craftManager;
   public GroundItemPool GroundItemPool => groundItemPool;
   public ChunkController ChunkController => chunkController;
   public UISettings UISettings => uiSettings;

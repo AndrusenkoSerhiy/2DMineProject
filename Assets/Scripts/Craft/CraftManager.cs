@@ -1,301 +1,215 @@
-using System.Linq;
-using Inventory;
-using Scriptables.Craft;
+﻿using System.Collections;
+using System.Collections.Generic;
+using SaveSystem;
 using Scriptables.Items;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityServiceLocator;
+using UnityEngine.Rendering;
 
 namespace Craft {
-  public class CraftManager : MonoBehaviour, IInventoryDropZoneUI {
-    [SerializeField] private Button takeAllButton;
-    [SerializeField] private bool preventItemDrop;
-    [SerializeField] private UserInterface outputInterface;
+  public class CraftManager : MonoBehaviour, ISaveLoad {
+    [SerializeField] private WorkstationsDatabaseObject workstationsDatabase;
+    [SerializeField] private SerializedDictionary<string, Workstation> allStationsMap;
+    [SerializeField] private List<string> stations;
+    [SerializeField] private SerializedDictionary<string, bool> windowOpenStates;
+    [SerializeField] private SerializedDictionary<string, bool> saving;
+    [SerializeField] private SerializedDictionary<string, Coroutine> checkCoroutines;
 
-    private GameManager gameManager;
-    private Workstation station;
-    private IRecipesList recipesList;
-    private IRecipeDetail detail;
-    private ICraftActions craftActions;
-    private PlayerInventory playerInventory;
-    private IInputItems inputItems;
-    private ITotalAmount totalAmount;
-    private IFuelItems fuelItems;
-
-    private InventoryObject outputInventory;
-    // private InventoryObject fuelInventory;
-
-    private bool started;
-
-    public bool PreventItemDropIn => preventItemDrop;
-    public Workstation Station => station;
-
-    public void Setup(Workstation station) {
-      this.station = station;
-      outputInterface.Setup(station.OutputInventoryType, station.Id);
-    }
-
-    public void Awake() {
-      ServiceLocator.For(this).Register(station);
-      gameManager = GameManager.Instance;
-    }
-
-    public void Start() {
-      Init();
-      started = true;
-    }
-
-    public void OnEnable() {
-      if (!started) {
-        return;
-      }
-
-      Init();
-    }
-
-    private void OnDisable() {
-      craftActions.ClearComponent();
-      recipesList.ClearComponent();
-      totalAmount.ClearComponent();
-      inputItems.ClearComponent();
-      fuelItems?.ClearComponent();
-
-      RemoveEvents();
-    }
-
-    private void Init() {
-      InitReferences();
-      AddEvents();
-      totalAmount.InitComponent();
-      recipesList.InitComponent();
-      craftActions.InitComponent();
-      inputItems.InitComponent();
-
+    private void Awake() {
       Load();
-
-      fuelItems?.InitComponent();
+      StartCraftingCheck();
     }
 
-    private void InitReferences() {
-      if (totalAmount != null) {
+    public void SetStation(Workstation station) {
+      if (stations.Contains(station.Id)) {
         return;
       }
 
-      playerInventory = gameManager.PlayerInventory;
-      totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
-      detail = ServiceLocator.For(this).Get<IRecipeDetail>();
-      craftActions = ServiceLocator.For(this).Get<ICraftActions>();
-      inputItems = ServiceLocator.For(this).Get<IInputItems>();
-      recipesList = ServiceLocator.For(this).Get<IRecipesList>();
-
-      outputInventory = station.GetOutputInventory();
-
-      ServiceLocator.For(this).TryGet(out fuelItems);
+      var id = station.Id;
+      allStationsMap.Add(id, station);
+      stations.Add(id);
+      windowOpenStates.Add(id, false);
+      saving.Add(id, false);
+      checkCoroutines.Add(id, null);
     }
 
-    private void Load() {
-      ProcessCraftedInputs();
+    public void UpdateWindowState(string stationId, bool isOpen) {
+      windowOpenStates[stationId] = isOpen;
+
+      if (!isOpen) {
+        UpdateCraftingAndCheck(stationId);
+      }
     }
 
-    private void ProcessCraftedInputs() {
-      station.ProcessCraftedInputs();
+    private void StartCraftingCheck() {
+      foreach (var id in stations) {
+        StationCraftingCheck(id);
+      }
+    }
 
-      var inputs = station.Inputs;
-      if (inputs.Count == 0) {
+    private void StationCraftingCheck(string id) {
+      var station = allStationsMap[id];
+      if (checkCoroutines[id] == null && station.CraftingTasks.Count > 0) {
+        checkCoroutines[id] = StartCoroutine(CheckCraftingLoop(station));
+      }
+    }
+
+    private void StopCraftingCheck(string stationId) {
+      if (checkCoroutines[stationId] == null) {
         return;
       }
 
-      foreach (var input in inputs) {
-        // Debug.Log($"ProcessCraftedInputs SetRecipe input.Count {input.Count}");
-        inputItems.SetRecipe(input.Count, input.Recipe);
+      StopCoroutine(checkCoroutines[stationId]);
+      checkCoroutines[stationId] = null;
+    }
+
+    private IEnumerator CheckCraftingLoop(Workstation station) {
+      while (true) {
+        yield return new WaitForSeconds(1);
+
+        CheckForCompletedTask(station);
+
+        // Stop if no more tasks
+        if (station.CraftingTasks.Count > 0) {
+          continue;
+        }
+
+        StopCraftingCheck(station.Id);
+        break;
       }
     }
 
-    private void AddEvents() {
-      //recipes list
-      recipesList.OnSelected += OnRecipeSelectedHandler;
-      //inventory slots
-      AddSlotsUpdateEvents();
-      //Fuel slots
-      AddFuelUpdateEvents();
-      //craft input actions
-      craftActions.OnCraftRequested += OnCraftRequestedHandler;
-      //craft input slots
-      AddInputEvents();
-      //craft output slots
-      AddOutputUpdateEvents();
-      takeAllButton?.onClick.AddListener(OnTakeAllButtonClickHandler);
-      //recipes
-      gameManager.RecipesManager.OnRecipeUnlocked += OnRecipeUnlockedHandler;
-    }
-
-    private void RemoveEvents() {
-      //recipes
-      gameManager.RecipesManager.OnRecipeUnlocked -= OnRecipeUnlockedHandler;
-      //craft output slots
-      takeAllButton?.onClick.RemoveAllListeners();
-      RemoveOutputUpdateEvents();
-      //craft input slots
-      RemoveInputEvents();
-      //craft input actions
-      craftActions.OnCraftRequested -= OnCraftRequestedHandler;
-      //Fuel slots
-      RemoveFuelUpdateEvents();
-      //inventory slots
-      RemoveSlotsUpdateEvents();
-      //recipes list
-      recipesList.OnSelected -= OnRecipeSelectedHandler;
-    }
-
-    private void OnCraftRequestedHandler(int count) {
-      var recipe = recipesList.Recipe;
-
-      //remove resources from inventory
-      foreach (var item in recipe.RequiredMaterials) {
-        var totalCount = count * item.Amount;
-        totalAmount.RemoveFromInventoriesPool(item.Material.Id, totalCount);
-      }
-
-      inputItems.SetRecipe(count, recipe);
-      station.AddItemToInputs(recipe, count);
-
-      craftActions.UpdateAndPrintInputCount();
-    }
-
-    private void OnRecipeSelectedHandler(Recipe recipe) {
-      detail.SetRecipeDetails(recipe);
-
-      craftActions.SetRecipe(recipe);
-      craftActions.UpdateAndPrintInputCount(true);
-
-      fuelItems?.UpdateInterface(recipe);
-    }
-
-    private void AddSlotsUpdateEvents() {
-      totalAmount.onResourcesTotalUpdate += SlotAmountUpdateHandler;
-    }
-
-    private void RemoveSlotsUpdateEvents() {
-      totalAmount.onResourcesTotalUpdate -= SlotAmountUpdateHandler;
-    }
-
-    private void SlotAmountUpdateHandler(string resourceId) {
-      var recipeIngredientsIds = detail.GetRecipeIngredientsIds();
-      if (recipeIngredientsIds.Length > 0 && recipeIngredientsIds.Contains(resourceId)) {
-        UpdateResourcesListAndCount();
-      }
-    }
-
-    private void UpdateResourcesListAndCount() {
-      detail.PrintList();
-
-      craftActions.UpdateAndPrintInputCount();
-    }
-
-    private void AddInputEvents() {
-      foreach (var input in inputItems.Items) {
-        input.OnCanceled += OnInputCanceledHandler;
-      }
-
-      var craftInput = inputItems.CraftInput;
-      craftInput.OnItemCrafted += AddCraftedItemToOutput;
-      craftInput.OnInputAllCrafted += OnInputAllCraftedHandler;
-    }
-
-    private void RemoveInputEvents() {
-      foreach (var input in inputItems.Items) {
-        input.OnCanceled -= OnInputCanceledHandler;
-      }
-
-      var craftInput = inputItems.CraftInput;
-      craftInput.OnInputAllCrafted -= OnInputAllCraftedHandler;
-      craftInput.OnItemCrafted -= AddCraftedItemToOutput;
-    }
-
-    private void AddCraftedItemToOutput(ItemCraftedEventData data) {
-      station.RemoveInputCountFromInputs(data.Count);
-
-      var item = new Item(data.Recipe.Result);
-
-      fuelItems?.ConsumeFuel(data.Recipe, data.Count);
-      outputInventory.AddItem(item, data.Count);
-    }
-
-    private void OnInputAllCraftedHandler() {
-      inputItems.UpdateWaitInputs();
-      craftActions.UpdateAndPrintInputCount();
-    }
-
-    private void OnInputCanceledHandler(ItemCanceledEventData data) {
-      station.RemoveInputFromInputs(data.Position);
-
-      //remove resources from inventory
-      foreach (var item in data.Recipe.RequiredMaterials) {
-        var totalCount = data.CountLeft * item.Amount;
-        var addItem = new Item(item.Material);
-        playerInventory.GetInventory().AddItem(addItem, totalCount);
-      }
-
-      inputItems.UpdateWaitInputs(data.Position);
-    }
-
-    private void AddOutputUpdateEvents() {
-      foreach (var output in outputInventory.GetSlots) {
-        output.OnAfterUpdated += OutputUpdateSlotHandler;
-      }
-    }
-
-    private void RemoveOutputUpdateEvents() {
-      foreach (var output in outputInventory.GetSlots) {
-        output.OnAfterUpdated -= OutputUpdateSlotHandler;
-      }
-    }
-
-    private void OutputUpdateSlotHandler(SlotUpdateEventData data) {
-      if (data.after.isEmpty) {
-        craftActions.UpdateAndPrintInputCount();
-      }
-
-      //Check timer
-      inputItems.CraftInput.Timer.CheckTimer();
-    }
-
-    private void OnTakeAllButtonClickHandler() {
-      outputInventory.MoveAllItemsTo(playerInventory.GetInventory());
-    }
-
-    private void AddFuelUpdateEvents() {
-      if (fuelItems == null) {
+    private void CheckForCompletedTask(Workstation station) {
+      if (station == null || IsWindowOpen(station.Id)) {
         return;
       }
 
-      foreach (var slot in fuelItems.Inventory.GetSlots) {
-        slot.OnAfterUpdated += FuelSlotUpdateHandler;
+      var task = station.RemoveFirstTaskIfEnded();
+      if (task != null) {
+        RunEffect(station, task.Value.ItemId);
       }
     }
 
-    private void RemoveFuelUpdateEvents() {
-      if (fuelItems == null) {
+    private void UpdateCraftingAndCheck(string id) {
+      var station = allStationsMap[id];
+      station.UpdateCraftingTasks();
+      StationCraftingCheck(id);
+    }
+
+
+    private void RunEffect(Workstation station, string itemId) {
+      if (!station.ShowSuccessCraftMessages) {
         return;
       }
 
-      foreach (var slot in fuelItems.Inventory.GetSlots) {
-        slot.OnAfterUpdated -= FuelSlotUpdateHandler;
+      var item = GameManager.Instance.ItemDatabaseObject.ItemsMap[itemId];
+      GameManager.Instance.MessagesManager.ShowCraftMessage(item, 1);
+    }
+
+    private bool IsWindowOpen(string stationId) {
+      return windowOpenStates != null && windowOpenStates[stationId];
+    }
+
+    private bool IsSaving(string stationId) {
+      return saving != null && saving[stationId];
+    }
+
+    public Workstation GetWorkstation(string fullId, string stationObjectId) {
+      if (allStationsMap.ContainsKey(fullId)) {
+        return allStationsMap[fullId];
+      }
+
+      var stationObject = workstationsDatabase.ItemsMap[stationObjectId];
+      var station = new Workstation(stationObject, fullId);
+
+      return station;
+    }
+
+    public void Load() {
+      SetStationsFromLoadData();
+      LoadInputs();
+    }
+
+    private void SetStationsFromLoadData() {
+      var stationsData = SaveLoadSystem.Instance.gameData.Workstations;
+      foreach (var (id, stationData) in stationsData) {
+        /*if (string.IsNullOrEmpty(stationData.ResourcePath)) {
+          return;
+        }
+
+        var handle = Addressables.LoadAssetAsync<Workstation>(stationData.ResourcePath);
+        var station = handle.WaitForCompletion();*/
+        var station = GetWorkstation(id, stationData.WorkStationObjectId);
+        if (station == null) {
+          return;
+        }
+
+        SetStation(station);
       }
     }
 
-    private void FuelSlotUpdateHandler(SlotUpdateEventData data) {
-      // craftActions.UpdateAndPrintInputCount();
-      fuelItems.RunFuelEffect(recipesList.Recipe);
-      inputItems.CraftInput.Timer.CheckTimer();
+    private void LoadInputs() {
+      foreach (var id in stations) {
+        if (!allStationsMap.ContainsKey(id)) {
+          continue;
+        }
+
+        var station = allStationsMap[id];
+        LoadStationInputs(station);
+      }
     }
 
-    private void OnRecipeUnlockedHandler(Recipe recipe) {
-      if (recipe.RecipeType != station.RecipeType) {
+    private void LoadStationInputs(Workstation station) {
+      if (!SaveLoadSystem.Instance.gameData.Workstations.TryGetValue(station.Id, out var data)) {
         return;
       }
 
-      recipesList.UpdateList();
+      station.Load(data);
+    }
+
+    public void Save() {
+      foreach (var id in stations) {
+        if (!allStationsMap.ContainsKey(id)) {
+          continue;
+        }
+
+        var station = allStationsMap[id];
+
+        saving[id] = true;
+        station.ProcessCraftedInputs();
+        SaveWorkstationInputs(station);
+        saving[id] = false;
+      }
+    }
+
+    private void SaveWorkstationInputs(Workstation station) {
+      var inputs = new List<CraftInputData>();
+
+      var stationId = station.Id;
+      var resourcePath = station.WorkstationObject.ResourcePath;
+
+      if (station.Inputs.Count == 0) {
+        SaveLoadSystem.Instance.gameData.Workstations[stationId] =
+          new WorkstationsData {
+            Id = stationId, Inputs = inputs, ResourcePath = resourcePath,
+            WorkStationObjectId = station.WorkstationObject.Id
+          };
+        return;
+      }
+
+      var timeLeftInMilliseconds =
+        station.CalculateTimeLeftInMilliseconds(station.Inputs[0].Recipe, station.Inputs[0].Count);
+
+      foreach (var input in station.Inputs) {
+        inputs.Add(new CraftInputData {
+          RecipeId = input.Recipe.Id,
+          Count = input.Count,
+        });
+      }
+
+      SaveLoadSystem.Instance.gameData.Workstations[stationId] = new WorkstationsData {
+        Id = stationId, Inputs = inputs, MillisecondsLeft = timeLeftInMilliseconds, ResourcePath = resourcePath,
+        WorkStationObjectId = station.WorkstationObject.Id
+      };
     }
   }
 }

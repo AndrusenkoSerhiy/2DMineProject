@@ -10,7 +10,7 @@ namespace Craft {
     [SerializeField] private CellObject cellObject;
 
     private CraftWindow craftWindow;
-    private CraftManager craftManager;
+    private Window window;
     private Workstation station;
     protected string id;
 
@@ -24,10 +24,10 @@ namespace Craft {
       }
 
       GenerateId();
-      station = GameManager.Instance.CraftTasks.GetWorkstation(Id, stationObject.Id);
+      station = GameManager.Instance.CraftManager.GetWorkstation(Id, stationObject.Id);
       var craftWindowObj = Instantiate(interfacePrefab, GameManager.Instance.Canvas.transform);
-      craftManager = craftWindowObj.GetComponent<CraftManager>();
-      craftManager.Setup(station);
+      window = craftWindowObj.GetComponent<Window>();
+      window.Setup(station);
 
       craftWindowObj.transform.SetSiblingIndex(0);
 
@@ -39,11 +39,11 @@ namespace Craft {
     }
 
     private void OnShowWindowHandler(WindowBase window) {
-      GameManager.Instance.CraftTasks.UpdateWindowState(station.Id, true);
+      GameManager.Instance.CraftManager.UpdateWindowState(station.Id, true);
     }
 
     private void OnHideWindowHandler(WindowBase window) {
-      GameManager.Instance.CraftTasks.UpdateWindowState(station.Id, false);
+      GameManager.Instance.CraftManager.UpdateWindowState(station.Id, false);
     }
 
     protected void CheckInteract() {
@@ -58,7 +58,7 @@ namespace Craft {
         craftWindow.Hide();
       }
       else {
-        GameManager.Instance.CraftTasks.SetStation(station);
+        GameManager.Instance.CraftManager.SetStation(station);
         craftWindow.Show();
       }
     }

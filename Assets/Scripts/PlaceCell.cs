@@ -20,13 +20,14 @@ public class PlaceCell : MonoBehaviour {
 
   [SerializeField] private int radius = 1;
   public static event Action OnSlotReset;
-
-  //private Coords playerCoords;
+  
   private PlayerControllerBase playerController;
   private GameObject spawnPrefab;
+  private ChunkController chunkController;
 
   private void Start() {
     playerController = GameManager.Instance.CurrPlayerController;
+    chunkController = GameManager.Instance.ChunkController;
   }
 
   private Coords GetPlayerCoords() {
@@ -50,7 +51,6 @@ public class PlaceCell : MonoBehaviour {
     currSlot = slot;
     resourceData = rData;
     SetEnabled(true);
-    UpdatePreview();
   }
 
   private void DisableBuildMode() {
@@ -63,7 +63,6 @@ public class PlaceCell : MonoBehaviour {
     currSlot = slot;
     resourceData = rData;
     SetEnabled(true);
-    UpdatePreview();
   }
 
   private void StartPreview() {
@@ -71,24 +70,11 @@ public class PlaceCell : MonoBehaviour {
       return;
 
     isPreviewing = true;
-    previewInstance = Instantiate(spawnPrefab); //prefab
+    previewInstance = Instantiate(spawnPrefab);
     renderer = previewInstance.GetComponentInChildren<SpriteRenderer>();
-    UpdatePreview();
 
     SetPreviewColor(previewColor);
     playerController?.SetLockHighlight(true);
-  }
-
-  private void UpdatePreview() {
-    return;
-    if (previewInstance != null /*&& !previewInstance.name.Equals(spawnPrefab.name)*/) {
-      Destroy(previewInstance);
-    }
-
-    previewInstance = Instantiate(spawnPrefab);
-
-    renderer = previewInstance.GetComponentInChildren<SpriteRenderer>();
-    //renderer.sprite = resourceData.Sprite(0);
   }
 
   private void SetPreviewColor(Color col) {
@@ -160,9 +146,29 @@ public class PlaceCell : MonoBehaviour {
 
   private bool ShouldUseBlockColor(Vector3 worldPosition) {
     var grid = CoordsTransformer.WorldToGrid(worldPosition);
-    var hasCell = GameManager.Instance.ChunkController.GetCell(grid.X, grid.Y) != null;
+    var canPlace = CanPlaceObject(grid.X, grid.Y, (int)resourceData.CellSize.x, (int)resourceData.CellSize.y);
     var isPlayerOnGrid = GetPlayerCoords().Equals(grid);
-    return hasCell || isPlayerOnGrid;
+    //if we place building we just need to know the all cells is empty
+    if (resourceData.IsBuilding) {
+      return !canPlace;
+    }
+
+    return !canPlace || isPlayerOnGrid;
+  }
+
+  private bool CanPlaceObject(int startX, int startY, int objectSizeX, int objectSizeY) {
+    for (var x = 0; x < objectSizeX; x++) {
+      for (var y = 0; y < objectSizeY; y++) {
+        var checkX = startX + x;
+        var checkY = startY - y;
+
+        if (chunkController.ChunkData.GetCellFill(checkX, checkY) == 1) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   private void UIInput_OnUIClick() {
@@ -173,29 +179,42 @@ public class PlaceCell : MonoBehaviour {
     PlaceCellOnScene();
   }
 
-  /*private void Input_OnBuildClick(object sender, EventArgs e) {
-    SetEnabled(!_isPreviewing);
-  }*/
-
   private void PlaceCellOnScene() {
     //for forge, stoneCutter etc
     if (resourceData.IsBuilding) {
-      var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
-
-      GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-      var cell = GameManager.Instance.ChunkController.SpawnBuild(coords, resourceData);
-      cell.BoxCollider2D.enabled = true;
-      AfterPlaceCellActions(cell);
+      PlaceBuilding();
     }
-    //for building blocks
     else {
-      var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
-      GameManager.Instance.ChunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-      GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
+      PlaceBuildingBlock();
     }
 
     currSlot.AddAmount(-1);
     ClearSLot();
+  }
+
+  private void PlaceBuilding() {
+    var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
+    chunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+    FillBuildingCells(coords.X, coords.Y, (int)resourceData.CellSize.x, (int)resourceData.CellSize.y);
+    var cell = chunkController.SpawnBuild(coords, resourceData);
+    cell.BoxCollider2D.enabled = true;
+    AfterPlaceCellActions(cell);
+  }
+
+  private void PlaceBuildingBlock() {
+    var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
+    chunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+    chunkController.UpdateCellAround(coords.X, coords.Y);
+  }
+
+  private void FillBuildingCells(int startX, int startY, int objectSizeX, int objectSizeY) {
+    for (var x = 0; x < objectSizeX; x++) {
+      for (var y = 0; y < objectSizeY; y++) {
+        var coordX = startX + x; 
+        var coordY = startY - y;
+        chunkController.ChunkData.SetCellFill(coordX, coordY);
+      }
+    }
   }
 
   private void AfterPlaceCellActions(CellObject cell) {

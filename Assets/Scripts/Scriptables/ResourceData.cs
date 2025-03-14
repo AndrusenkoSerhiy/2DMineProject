@@ -14,6 +14,7 @@ namespace Scriptables {
     [SerializeField] private Vector2 colliderOffset = Vector2.zero;
     [SerializeField] private Vector2 colliderSize = new Vector2(3.44f, 3.44f);
     [SerializeField] private bool isBuilding;
+    [SerializeField] private Vector2 cellSize = Vector3.one;
 
     public Sprite Sprite(int index) => tileDatas[index].Sprite;
     public int SortingOrder(int index) => sortingOrder + tileDatas[index].OffsetSorting;
@@ -25,5 +26,6 @@ namespace Scriptables {
     public ItemObject ItemData => itemData;
     public Color Color => mapColor;
     public bool IsBuilding => isBuilding;
+    public Vector2 CellSize => cellSize;
   }
 }

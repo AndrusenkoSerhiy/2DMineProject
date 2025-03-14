@@ -1,34 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using Inventory;
+using Scriptables.Items;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityServiceLocator;
 
 namespace Craft {
-  public class TotalAmount : MonoBehaviour, ITotalAmount {
+  [Serializable]
+  public class InventoriesPool {
     private List<InventoryObject> checkInventories = new();
 
     private SerializedDictionary<string, int> resourcesTotal = new();
-    public event Action<string> onResourcesTotalUpdate;
+    public event Action<string> OnResourcesTotalUpdate;
+    public List<InventoryObject> Inventories => checkInventories;
 
-    public void Awake() {
-      ServiceLocator.For(this).Register<ITotalAmount>(this);
-
+    /*public InventoriesPool() {
       InitInventories();
-    }
-
-    public void InitComponent() {
+      CalculateResourcesTotal();
+      AddEvents();
+    }*/
+    
+    public void Init() {
+      InitInventories();
       CalculateResourcesTotal();
       AddEvents();
     }
 
-    public void ClearComponent() {
-      RemoveEvents();
-      resourcesTotal.Clear();
-    }
-
     public int GetResourceTotalAmount(string resourceId) {
+
+      if (!resourcesTotal.ContainsKey(resourceId)) {
+        Debug.LogError($"resourceId - {resourceId} nor found");
+      }
+
       return resourcesTotal.GetValueOrDefault(resourceId, 0);
     }
 
@@ -40,6 +43,20 @@ namespace Craft {
       var remainingAmount = amount;
       foreach (var inventory in checkInventories) {
         remainingAmount = inventory.RemoveItem(id, remainingAmount);
+        if (remainingAmount <= 0) {
+          break;
+        }
+      }
+    }
+
+    public void AddItemToInventoriesPool(Item item, int amount) {
+      if (amount <= 0) {
+        return;
+      }
+
+      var remainingAmount = amount;
+      foreach (var inventory in checkInventories) {
+        remainingAmount = inventory.AddItem(item, remainingAmount);
         if (remainingAmount <= 0) {
           break;
         }
@@ -135,6 +152,7 @@ namespace Craft {
       var id = itemBefore?.Id ?? itemAfter?.Id;
 
       var amountDelta = after.amount - before.amount;
+
       UpdateResourceTotal(id, amountDelta);
     }
 
@@ -151,7 +169,7 @@ namespace Craft {
       }
 
       if (triggerEvent) {
-        onResourcesTotalUpdate?.Invoke(resourceId);
+        OnResourcesTotalUpdate?.Invoke(resourceId);
       }
     }
   }

@@ -1,95 +1,83 @@
-using System;
 using System.Collections.Generic;
-using Scriptables.Craft;
 using UnityEngine;
 using UnityServiceLocator;
 
 namespace Craft {
-  public class InputItems : MonoBehaviour, IInputItems {
-    [SerializeField] private TimerInputItem craftInput;
+  public class InputItems : MonoBehaviour {
     [SerializeField] private List<InputItem> items;
-
-    private int inputInProgress;
-    public int InputInProgress => inputInProgress;
 
     private Workstation station;
 
-    public List<InputItem> Items => items;
-    public TimerInputItem CraftInput => craftInput;
-
-    public void Awake() {
-      ServiceLocator.For(this).Register<IInputItems>(this);
+    private void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
+    }
 
+    private void OnEnable() {
       InitInputs();
+      station.OnAfterAddItemToInputs += SetRecipe;
+      station.OnCraftCanceled += OnCraftCanceledHandler;
+      station.OnInputAllCrafted += OnInputAllCraftedHandler;
+      station.OnItemCrafted += OnItemCraftedHandler;
     }
 
-    public void InitComponent() {
-      return;
+    private void OnDisable() {
+      station.OnAfterAddItemToInputs -= SetRecipe;
+      station.OnCraftCanceled -= OnCraftCanceledHandler;
+      station.OnInputAllCrafted -= OnInputAllCraftedHandler;
+      station.OnItemCrafted -= OnItemCraftedHandler;
+      ResetInputs();
     }
 
-    public void ClearComponent() {
-      inputInProgress = 0;
+    private void OnItemCraftedHandler() {
+      if (station.Inputs.Count == 0) {
+        return;
+      }
+
+      var item = items[0];
+      item.ResetInput();
+      item.Init(station.Inputs[0], 0);
+    }
+
+    private void OnCraftCanceledHandler(Input input, int position) => UpdateInputs();
+    private void OnInputAllCraftedHandler() => UpdateInputs();
+
+    private void InitInputs() {
+      for (var i = 0; i < items.Count; i++) {
+        var item = items[i];
+        
+        if (i > station.Inputs.Count - 1) {
+          break;
+        }
+
+        var inputData = station.Inputs[i];
+        
+        item.Init(inputData, i);
+      }
+    }
+
+    private void ResetInputs() {
       foreach (var item in items) {
         item.ResetInput();
       }
     }
 
-    private void InitInputs() {
+    private void UpdateInputs() {
       for (var i = 0; i < items.Count; i++) {
-        items[i].SetPosition(i);
-      }
-    }
-
-    public void SetRecipe(int count, Recipe recipe) {
-      var maxStack = recipe.Result.MaxStackSize;
-      while (count > 0) {
-        var addCount = count > maxStack ? maxStack : count;
-        var item = items[inputInProgress];
-        item.Init(addCount, recipe);
-
-        count -= addCount;
-        inputInProgress++;
-      }
-    }
-
-    public void UpdateWaitInputs(int fromPosition = 0) {
-      if (inputInProgress == 1) {
-        inputInProgress--;
-        return;
-      }
-
-      UpdateWaitChain(fromPosition);
-      inputInProgress--;
-
-      if (inputInProgress > 0 && !craftInput.Timer.IsStarted) {
-        craftInput.StartCrafting();
-      }
-    }
-
-    private void UpdateWaitChain(int fromPosition = 0) {
-      for (var i = fromPosition; i < inputInProgress; i++) {
-        var current = items[i];
-        var currentCount = current.CountLeft;
-        var currentRecipe = current.Recipe;
-
-        current.ResetInput();
-        if ((i + 1) >= inputInProgress) {
-          break;
+        var item = items[i];
+        item.ResetInput();
+        if (i >= station.Inputs.Count) {
+          continue;
         }
 
-        var next = items[i + 1];
-
-        var nextCount = next.CountLeft;
-        var nextRecipe = next.Recipe;
-
-        current.Init(nextCount, nextRecipe);
-
-        next.ResetInput();
-        if (currentRecipe) {
-          next.Init(currentCount, currentRecipe);
-        }
+        var inputData = station.Inputs[i];
+        item.Init(inputData, i);
       }
+    }
+
+    private void SetRecipe(Input inputData) {
+      var inputInProgress = station.Inputs.Count - 1;
+      var item = items[inputInProgress];
+      item.Init(inputData, inputInProgress);
     }
   }
 }

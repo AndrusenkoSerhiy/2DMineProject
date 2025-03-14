@@ -1,12 +1,15 @@
 using System;
+using System.Collections.Generic;
+using Inventory;
 using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityServiceLocator;
 
 namespace Craft {
-  public class CraftActions : MonoBehaviour, ICraftActions {
+  public class CraftActions : MonoBehaviour {
     [SerializeField] private TMP_InputField countInput;
     [SerializeField] private Button craftButton;
     [SerializeField] private Button incrementButton;
@@ -18,38 +21,36 @@ namespace Craft {
     private Color buttonsActiveColor;
     private Color buttonsDisabledColor;
 
-    private ITotalAmount totalAmount;
-
-    // private IFuelItems fuelItems;
-    private Recipe recipe;
     private Workstation station;
+    private GameManager gameManager;
+    private InventoriesPool inventoriesPool;
+    private List<InventoryObject> outputInventories;
 
     private int minCount = 1;
     private int maxCount;
     private int currentCount = 1;
 
-    public event Action<int> OnCraftRequested;
-
-    public void Awake() {
-      var uiSettings = GameManager.Instance.UISettings;
+    private void Awake() {
+      gameManager = GameManager.Instance;
+      var uiSettings = gameManager.UISettings;
       buttonsActiveColor = uiSettings.buttonsActiveColor;
       buttonsDisabledColor = uiSettings.buttonsDisabledColor;
 
-      ServiceLocator.For(this).Register<ICraftActions>(this);
-
       station = ServiceLocator.For(this).Get<Workstation>();
-      totalAmount = ServiceLocator.For(this).Get<ITotalAmount>();
+      inventoriesPool = gameManager.CraftManager.InventoriesPool;
+      outputInventories = station.GetOutputInventories();
     }
 
-    public void Start() {
-      GameManager.Instance.UserInput.controls.UI.Craft.performed += ctx => OnCraftClickHandler();
+    private void OnEnable() {
+      UpdateAndPrintInputCount();
+      AddEvents();
     }
 
-    public void InitComponent() => AddEvents();
+    private void OnDisable() {
+      RemoveEvents();
+    }
 
-    public void ClearComponent() => RemoveEvents();
-
-    public void UpdateAndPrintInputCount(bool resetCurrentCount = false) {
+    private void UpdateAndPrintInputCount(bool resetCurrentCount = false) {
       if (resetCurrentCount) {
         ResetCurrentCount();
       }
@@ -77,26 +78,82 @@ namespace Craft {
       }
     }
 
-    public void SetRecipe(Recipe recipe) {
-      this.recipe = recipe;
-    }
-
     private void AddEvents() {
+      gameManager.UserInput.controls.UI.Craft.performed += OnCraftPerformed;
+
       countInput.onValueChanged.AddListener(OnCountInputChangeHandler);
       craftButton.onClick.AddListener(OnCraftClickHandler);
       incrementButton.onClick.AddListener(OnIncrementClickHandler);
       decrementButton.onClick.AddListener(OnDecrementClickHandler);
       maxCountButton.onClick.AddListener(OnMaxCountButtonClickHandler);
       minCountButton.onClick.AddListener(OnMinCountButtonClickHandler);
+
+      station.OnRecipeChanged += OnRecipeChangedHandler;
+      station.OnAfterAddItemToInputs += OnAfterCraftRequestedHandler;
+      station.OnInputAllCrafted += OnInputAllCraftedHandler;
+      inventoriesPool.OnResourcesTotalUpdate += OnResourcesTotalUpdateHandler;
+
+      //for InventoryType.Inventory handles inside station
+      if (station.OutputInventoryType != InventoryType.Inventory) {
+        AddOutputUpdateEvents();
+      }
     }
 
     private void RemoveEvents() {
+      //for InventoryType.Inventory handles inside station
+      if (station.OutputInventoryType != InventoryType.Inventory) {
+        RemoveOutputUpdateEvents();
+      }
+
+      station.OnInputAllCrafted -= OnInputAllCraftedHandler;
+      station.OnAfterAddItemToInputs -= OnAfterCraftRequestedHandler;
+      station.OnRecipeChanged -= OnRecipeChangedHandler;
+      inventoriesPool.OnResourcesTotalUpdate -= OnResourcesTotalUpdateHandler;
+
       countInput.onValueChanged.RemoveAllListeners();
       craftButton.onClick.RemoveAllListeners();
       incrementButton.onClick.RemoveAllListeners();
       decrementButton.onClick.RemoveAllListeners();
       maxCountButton.onClick.RemoveAllListeners();
       minCountButton.onClick.RemoveAllListeners();
+
+      gameManager.UserInput.controls.UI.Craft.performed -= OnCraftPerformed;
+    }
+
+    private void OnCraftPerformed(InputAction.CallbackContext ctx) => OnCraftClickHandler();
+    private void OnRecipeChangedHandler(Recipe recipe) => UpdateAndPrintInputCount(true);
+    private void OnAfterCraftRequestedHandler(Input input) => UpdateAndPrintInputCount();
+    private void OnInputAllCraftedHandler() => UpdateAndPrintInputCount();
+
+    private void OnResourcesTotalUpdateHandler(string resourceId) {
+      var recipeIngredientsIds = station.GetRecipeIngredientsIds();
+      if (Array.IndexOf(recipeIngredientsIds, resourceId) != -1) {
+        UpdateAndPrintInputCount();
+      }
+    }
+
+    private void AddOutputUpdateEvents() {
+      foreach (var outputInventory in outputInventories) {
+        foreach (var output in outputInventory.GetSlots) {
+          output.OnAfterUpdated += OutputUpdateSlotHandler;
+        }
+      }
+    }
+
+    private void RemoveOutputUpdateEvents() {
+      foreach (var outputInventory in outputInventories) {
+        foreach (var output in outputInventory.GetSlots) {
+          output.OnAfterUpdated -= OutputUpdateSlotHandler;
+        }
+      }
+    }
+
+    private void OutputUpdateSlotHandler(SlotUpdateEventData data) {
+      if (data.after.isEmpty) {
+        UpdateAndPrintInputCount();
+      }
+
+      station.StartCrafting();
     }
 
     private void OnCountInputChangeHandler(string value) {
@@ -118,7 +175,7 @@ namespace Craft {
         return;
       }
 
-      OnCraftRequested?.Invoke(currentCount);
+      station.CraftRequested(currentCount);
     }
 
     private void OnIncrementClickHandler() {
@@ -150,7 +207,6 @@ namespace Craft {
     }
 
     private void CalculateMaxCount() {
-      // var maxCountByInputOutput = CalculateMaxCountByCurrentCraftingAndOutput();
       var maxCountByInput = CalculateMaxCountByCurrentCrafting();
       var maxCountByResources = CalculateMaxCountByResources();
 
@@ -160,8 +216,8 @@ namespace Craft {
     private int CalculateMaxCountByResources() {
       var max = int.MaxValue;
 
-      foreach (var resource in recipe.RequiredMaterials) {
-        var availableAmount = totalAmount.GetResourceTotalAmount(resource.Material.Id);
+      foreach (var resource in station.CurrentRecipe.RequiredMaterials) {
+        var availableAmount = inventoriesPool.GetResourceTotalAmount(resource.Material.Id);
         var maxCraftable = availableAmount / resource.Amount;
         max = Math.Min(max, maxCraftable);
       }
@@ -177,66 +233,11 @@ namespace Craft {
         return 0;
       }
 
-      var maxStackSize = recipe.Result.MaxStackSize;
+      var maxStackSize = station.CurrentRecipe.Result.MaxStackSize;
       var maxByFreeSlots = freeInputSlotsCount * maxStackSize;
 
       return Math.Max(0, maxByFreeSlots);
     }
-
-    /*private int CalculateMaxCountByCurrentCraftingAndOutput() {
-      var outputInventory =
-        GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(station.OutputInventoryType, station.Id);
-      var freeOutputSlotsCount = outputInventory.GetFreeSlotsCount();
-      var freeInputSlotsCount = outputInventory.GetSlots.Length - station.Inputs.Count;
-
-      if (freeInputSlotsCount <= 0) {
-        return 0;
-      }
-
-      var usedSlotsByCrafting = 0;
-      var leftCount = 0;
-
-      var maxStackSize = recipe.Result.MaxStackSize;
-      var outputSlotsCount = outputInventory.CalculateTotalCounts();
-      // var inputItemsIds = station.CraftItemsTotal.Keys.Select(x => x.Id).ToList();
-      var inputItemsIds = station.Inputs.Select(x => x.Recipe.Result.Id).ToList();
-
-      // Count used slots and check crafting progress
-      foreach (var input in station.Inputs) {
-        var id = input.Recipe.Result.Id;
-        var inputMaxStackSize = input.Recipe.Result.MaxStackSize;
-        var outputCount = outputSlotsCount.ContainsKey(id) ? outputSlotsCount[id] : 0;
-        var inputOutputCount = input.Count + outputCount;
-
-        usedSlotsByCrafting += (inputOutputCount + inputMaxStackSize - 1) / inputMaxStackSize;
-
-        if (outputCount > 0) {
-          usedSlotsByCrafting -= (outputCount + inputMaxStackSize - 1) / inputMaxStackSize;
-        }
-
-        if (id == recipe.Result.Id) {
-          var left = inputOutputCount % maxStackSize;
-          leftCount += (left == 0) ? 0 : maxStackSize - (left);
-        }
-      }
-
-      foreach (var output in outputSlotsCount) {
-        if (inputItemsIds.Contains(output.Key)) {
-          continue;
-        }
-
-        if (output.Key == recipe.Result.Id) {
-          var left = output.Value % maxStackSize;
-          leftCount += (left == 0) ? 0 : maxStackSize - (left);
-        }
-      }
-
-      // Calculate remaining space for new crafted items
-      var availableStacks = freeOutputSlotsCount - usedSlotsByCrafting;
-      var maxCraftable = availableStacks * maxStackSize + leftCount;
-
-      return Mathf.Max(0, maxCraftable); // Ensure non-negative values
-    }*/
 
     private void SetCurrentCount() {
       if (currentCount <= 0 && maxCount > 0) {

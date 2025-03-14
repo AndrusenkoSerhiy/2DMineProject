@@ -268,7 +268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipesDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   defaultUnlockedStations: 00000000
-  unlockAllRecipes: 1
+  unlockAllRecipes: 0
 --- !u!114 &425212838 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 263804862651814355, guid: 13536b19579612846a4b433fb9b73179, type: 3}
@@ -2093,11 +2093,6 @@ MonoBehaviour:
   windowOpenStates:
     m_Keys: []
     m_Values: 
-  saving:
-    m_Keys: []
-    m_Values: 
-  checkCoroutines:
-    m_Keys: []
 --- !u!1 &1944342541
 GameObject:
   m_ObjectHideFlags: 0
@@ -3095,6 +3090,10 @@ PrefabInstance:
       propertyPath: playerInventory
       value: 
       objectReference: {fileID: 1944342543}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: showMenuOnStart
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: quickSlotListener
       value: 

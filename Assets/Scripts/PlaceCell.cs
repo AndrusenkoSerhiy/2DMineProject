@@ -188,7 +188,7 @@ public class PlaceCell : MonoBehaviour {
       PlaceBuildingBlock();
     }
 
-    currSlot.AddAmount(-1);
+    currSlot.RemoveAmount(1);
     ClearSLot();
   }
 

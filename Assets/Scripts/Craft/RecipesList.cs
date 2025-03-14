@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Scriptables.Craft;
 using UnityEngine;
@@ -6,35 +5,30 @@ using UnityEngine.UI;
 using UnityServiceLocator;
 
 namespace Craft {
-  public class RecipesList : MonoBehaviour, IRecipesList {
+  public class RecipesList : MonoBehaviour {
     [SerializeField] private GameObject recipesListContainerPrefab;
     [SerializeField] private Button recipesListItemPrefab;
 
     private Workstation station;
     private List<Button> recipesListButtons = new();
     private RecipeListItem selectedRecipeListItem;
+    private GameManager gameManager;
 
-    public Recipe Recipe { get; private set; }
-
-    public event Action<Recipe> OnSelected;
-
-    public void Awake() {
-      ServiceLocator.For(this).Register<IRecipesList>(this);
+    private void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
+      gameManager = GameManager.Instance;
     }
 
-    public void InitComponent() {
-      BuildList();
-      AddEvents();
-      SelectFirst();
-    }
+    private void OnEnable() => InitComponent();
 
-    public void ClearComponent() {
+    private void OnDisable() {
       RemoveEvents();
     }
 
-    public void UpdateList() {
-      InitComponent();
+    private void InitComponent() {
+      BuildList();
+      AddEvents();
+      SelectFirst();
     }
 
     //TODO refactor, add only new elements
@@ -85,8 +79,7 @@ namespace Craft {
       selectedRecipeListItem = recipeListItem;
       recipeListItem.SetActiveStyles();
 
-      Recipe = selectedRecipeListItem.Recipe;
-      OnSelected?.Invoke(selectedRecipeListItem.Recipe);
+      station.SetRecipe(selectedRecipeListItem.Recipe);
     }
 
     private void SelectFirst() {
@@ -98,6 +91,7 @@ namespace Craft {
     }
 
     private void AddEvents() {
+      gameManager.RecipesManager.OnRecipeUnlocked += OnRecipeUnlockedHandler;
       foreach (var button in recipesListButtons) {
         button.onClick.AddListener(() => ListItemClickHandler(button));
       }
@@ -107,7 +101,11 @@ namespace Craft {
       foreach (var button in recipesListButtons) {
         button.onClick.RemoveAllListeners();
       }
+
+      gameManager.RecipesManager.OnRecipeUnlocked -= OnRecipeUnlockedHandler;
     }
+
+    private void OnRecipeUnlockedHandler(Recipe recipe) => InitComponent();
 
     private void ListItemClickHandler(Button button) {
       Select(button);

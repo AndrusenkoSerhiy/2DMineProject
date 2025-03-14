@@ -27,11 +27,6 @@ namespace Craft {
     }
 
     public int GetResourceTotalAmount(string resourceId) {
-
-      if (!resourcesTotal.ContainsKey(resourceId)) {
-        Debug.LogError($"resourceId - {resourceId} nor found");
-      }
-
       return resourcesTotal.GetValueOrDefault(resourceId, 0);
     }
 

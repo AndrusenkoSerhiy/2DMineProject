@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityServiceLocator;
 
 namespace Craft {
-  public class FuelItems : MonoBehaviour, IFuelItems {
+  public class FuelItems : MonoBehaviour {
     [SerializeField] private UserInterface fuelInterface;
     [SerializeField] private List<FuelItem> items;
     [SerializeField] private Color blinkBgColor;
@@ -13,22 +13,79 @@ namespace Craft {
 
     private Workstation station;
     private InventoryObject fuelInventory;
-    public InventoryObject Inventory => fuelInventory;
 
-    public void Awake() {
+    private void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
       fuelInventory = station.GetFuelInventory();
 
       if (fuelInventory == null) {
-        Debug.LogError("Set FuelInventory to the station");
         return;
       }
 
       fuelInterface.Setup(station.FuelInventoryType, station.Id);
-      ServiceLocator.For(this).Register<IFuelItems>(this);
+
+      InitItems();
     }
 
-    public void RunFuelEffect(Recipe recipe) {
+    private void InitItems() {
+      foreach (var item in items) {
+        item.Init();
+      }
+    }
+
+    private void OnEnable() {
+      fuelInterface.OnLoaded += OnFuelInterfaceLoadedHandler;
+      station.OnCraftStarted += OnCraftStartedHandler;
+      station.OnInputAllCrafted += OnInputAllCraftedHandler;
+      station.OnFuelConsumed += OnFuelConsumedHandler;
+      station.OnRecipeChanged += OnRecipeChangedHandler;
+      station.OnAllInputsCanceled += OnAllInputsCanceledHandler;
+      station.OnCraftPaused += OnCraftPausedHandler;
+      AddFuelUpdateEvents();
+    }
+
+    private void OnDisable() {
+      RemoveFuelUpdateEvents();
+      station.OnRecipeChanged -= OnRecipeChangedHandler;
+      station.OnFuelConsumed -= OnFuelConsumedHandler;
+      station.OnInputAllCrafted -= OnInputAllCraftedHandler;
+      station.OnCraftStarted -= OnCraftStartedHandler;
+      fuelInterface.OnLoaded -= OnFuelInterfaceLoadedHandler;
+      station.OnAllInputsCanceled -= OnAllInputsCanceledHandler;
+      station.OnCraftPaused -= OnCraftPausedHandler;
+    }
+
+    private void OnCraftStartedHandler() => BlockUnblockItems();
+    private void OnInputAllCraftedHandler() => BlockUnblockItems();
+    private void OnFuelConsumedHandler() => BlockUnblockItems();
+    private void OnAllInputsCanceledHandler() => BlockUnblockItems();
+    private void OnCraftPausedHandler() => BlockUnblockItems();
+    private void OnRecipeChangedHandler(Recipe recipe) => UpdateInterface(recipe);
+
+    private void OnFuelInterfaceLoadedHandler() {
+      UpdateInterface(station.CurrentRecipe);
+      BlockUnblockItems();
+    }
+
+    private void AddFuelUpdateEvents() {
+      foreach (var slot in fuelInventory.GetSlots) {
+        slot.OnAfterUpdated += FuelSlotUpdateHandler;
+      }
+    }
+
+    private void RemoveFuelUpdateEvents() {
+      foreach (var slot in fuelInventory.GetSlots) {
+        slot.OnAfterUpdated -= FuelSlotUpdateHandler;
+      }
+    }
+
+    private void FuelSlotUpdateHandler(SlotUpdateEventData data) {
+      RunFuelEffect(station.CurrentRecipe);
+
+      station.StartCrafting();
+    }
+
+    private void RunFuelEffect(Recipe recipe) {
       if (station.HaveFuelForCraft(recipe)) {
         StopBlink();
         BlockUnblockItems();
@@ -38,7 +95,7 @@ namespace Craft {
       }
     }
 
-    public void UpdateInterface(Recipe recipe) {
+    private void UpdateInterface(Recipe recipe) {
       var fuelSlots = fuelInventory.GetSlots;
       var currentFuel = recipe.Fuel.Material;
 
@@ -61,44 +118,27 @@ namespace Craft {
       RunFuelEffect(recipe);
     }
 
-    public void ConsumeFuel(Recipe recipe, int count) {
-      station.ConsumeFuel(recipe, count);
-
-      BlockUnblockItems();
-    }
-
-    public void InitComponent() {
-      BlockUnblockItems();
-      station.OnCraftStarted += CraftStartedHandler;
-      station.OnCraftStopped += CraftStoppedHandler;
-    }
-
-    public void ClearComponent() {
-      station.OnCraftStarted -= CraftStartedHandler;
-      station.OnCraftStopped -= CraftStoppedHandler;
-    }
-
-    public void StartBlink() {
+    private void StartBlink() {
       foreach (var item in items) {
         item.StartBlink(blinkBgColor, blinkTime);
       }
     }
 
-    public void StopBlink() {
+    private void StopBlink() {
       foreach (var item in items) {
         item.ClearBlinkEffect();
       }
     }
 
-    private void CraftStartedHandler() {
-      BlockUnblockItems();
-    }
-
-    private void CraftStoppedHandler() {
-      BlockUnblockItems();
-    }
-
     private void BlockUnblockItems() {
+      if (!station.CurrentProgress.IsCrafting) {
+        foreach (var fuelItem in items) {
+          fuelItem.UnBlock();
+        }
+
+        return;
+      }
+
       var fuelAmountNeed = 0;
       var inputItems = station.Inputs;
 

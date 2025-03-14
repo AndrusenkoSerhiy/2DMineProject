@@ -1,48 +1,34 @@
-using System;
-using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityServiceLocator;
 
 namespace Craft {
-  public struct ItemCanceledEventData {
-    public Recipe Recipe;
-    public int Position;
-    public int CountLeft;
-  }
-
   public class InputItem : MonoBehaviour {
-    [SerializeField] protected Image icon;
-    [SerializeField] protected TextMeshProUGUI countText;
+    [SerializeField] private Image icon;
+    [SerializeField] private TextMeshProUGUI countText;
     [SerializeField] private TextMeshProUGUI timerText;
-    [SerializeField] protected Image timeIcon;
-    [SerializeField] protected Image fade;
-    [SerializeField] protected Button cancel;
+    [SerializeField] private Image timeIcon;
+    [SerializeField] private Image fade;
+    [SerializeField] private Button cancel;
 
-    protected Workstation station;
-    protected Recipe recipe;
-    protected int countLeft;
-    protected int position;
-    protected RectTransform rectTransform;
+    private Workstation station;
+    private Input input;
+    private int position;
 
-    public event Action<ItemCanceledEventData> OnCanceled;
-    public Recipe Recipe => recipe;
-    public int CountLeft => countLeft;
-    public int Position => position;
+    private void InitWorkstation() {
+      if (station != null) {
+        return;
+      }
 
-    public void Awake() {
-      rectTransform = GetComponent<RectTransform>();
       station = ServiceLocator.For(this).Get<Workstation>();
     }
 
-    public void SetPosition(int position) {
-      this.position = position;
-    }
+    public void Init(Input inputData, int inputPosition) {
+      InitWorkstation();
 
-    public virtual void Init(int count, Recipe recipe) {
-      this.recipe = recipe;
-      countLeft = count;
+      input = inputData;
+      position = inputPosition;
 
       SetupUI();
       PrintCount();
@@ -52,38 +38,32 @@ namespace Craft {
     }
 
     private void PrintTime() {
-      timerText.text = Helper.SecondsToTimeString(countLeft * recipe.CraftingTime);
+      var time = position == 0 && !station.CurrentProgress.Finished
+        ? (station.CurrentProgress.MillisecondsLeft / 1000)
+        : (input.Count * input.Recipe.CraftingTime);
+      timerText.text = Helper.SecondsToTimeString(time);
     }
 
     private void CancelHandler() {
-      if (!station.CanCancelCraft(recipe, countLeft)) {
-        GameManager.Instance.MessagesManager.ShowSimpleMessage(
-          "You can't cancel craft. Not enough space in inventory.");
-        return;
-      }
-
-      var data = new ItemCanceledEventData { Recipe = Recipe, Position = Position, CountLeft = countLeft };
-      ResetInput();
-      OnCanceled?.Invoke(data);
+      station.CancelInput(input, position);
     }
 
     private void SetupUI() {
-      icon.sprite = recipe.Result.UiDisplay;
+      icon.sprite = input.Recipe.Result.UiDisplay;
       icon.color = new Color(1, 1, 1, 255);
       timeIcon.gameObject.SetActive(true);
       fade.gameObject.SetActive(true);
       cancel.gameObject.SetActive(true);
     }
 
-    protected void PrintCount() {
-      countText.text = countLeft.ToString();
+    private void PrintCount() {
+      countText.text = input.Count.ToString();
     }
 
-    public virtual void ResetInput() {
+    public void ResetInput() {
       cancel.onClick.RemoveAllListeners();
 
-      countLeft = 0;
-      recipe = null;
+      input = null;
 
       icon.sprite = null;
       icon.color = new Color(1, 1, 1, 0);

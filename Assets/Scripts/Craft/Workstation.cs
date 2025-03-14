@@ -1,70 +1,271 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Inventory;
+using Messages;
 using SaveSystem;
 using Scriptables.Craft;
 using Scriptables.Items;
+using World;
 
 namespace Craft {
   [Serializable]
-  public struct Input {
+  public class Input {
     public int Count;
     public Recipe Recipe;
   }
 
   [Serializable]
-  public struct CurrentProgress {
-    public int CraftTimeInMilliseconds;
+  public class CurrentProgress {
+    public bool IsCrafting;
+    public bool Finished;
+    public int CraftTimeForOneInMilliseconds;
     public float CurrentTimeInMilliseconds;
+    public float MillisecondsLeft;
+
+    public CurrentProgress() {
+      Reset();
+    }
+
+    public void Reset() {
+      IsCrafting = false;
+      Finished = true;
+      CraftTimeForOneInMilliseconds = 0;
+      CurrentTimeInMilliseconds = 0f;
+      MillisecondsLeft = 0f;
+    }
   }
 
   [Serializable]
   public class Workstation {
-    private WorkstationObject workstationObject;
-    private long craftStartTimestampMillis;
-    private string id;
-    private InventoryObject outputInventory;
+    private readonly WorkstationObject workstationObject;
+    private readonly string id;
+    private readonly GameManager gameManager;
+    private readonly MessagesManager messageManager;
+    private readonly CraftManager craftManager;
+    private readonly InventoriesPool inventoriesPool;
+    private List<InventoryObject> outputInventories;
     private InventoryObject fuelInventory;
     private InventoryObject inventory;
+    private int tickDelay = 200;
+    private bool outputEventsAdded;
 
-    //Current Progress
-    private CurrentProgress CurrentProgress;
+    private Recipe currentRecipe;
+    private string[] recipeIngredientsIds;
 
-    //For loaded inputs
-    private long millisecondsLeft;
-
-    //For effects
-    public List<CraftingTask> CraftingTasks = new();
-
-    //For Save/Load
+    public InventoriesPool InventoriesPool => inventoriesPool;
+    public CurrentProgress CurrentProgress;
     public List<Input> Inputs = new();
-
-    public event Action OnCraftStarted;
-    public event Action OnCraftStopped;
-
     public WorkstationObject WorkstationObject => workstationObject;
-    public long CraftStartTimestampMillis => craftStartTimestampMillis;
-    public long MillisecondsLeft => millisecondsLeft;
     public string Id => id;
+    public Recipe CurrentRecipe => currentRecipe;
     public bool ShowSuccessCraftMessages => WorkstationObject.ShowSuccessCraftMessages;
     public RecipeType RecipeType => WorkstationObject.RecipeType;
     public InventoryType OutputInventoryType => WorkstationObject.OutputInventoryType;
     public InventoryType FuelInventoryType => WorkstationObject.FuelInventoryType;
     public int CraftSlotsCount => WorkstationObject.CraftSlotsCount;
 
-    #region Tmp fields for tasks
+    #region Events
+
+    public event Action<Recipe> OnRecipeChanged;
+    public event Action<Input> OnAfterAddItemToInputs;
+    public event Action OnCraftStarted;
+    public event Action<Input, int> OnCraftCanceled;
+    public event Action OnCraftPaused;
+    public event Action OnAllInputsCanceled;
+    public event Action OnInputAllCrafted;
+    public event Action OnItemCrafted;
+    public event Action OnFuelConsumed;
+
+    #endregion
+
+    public Workstation(WorkstationObject workstationObject, string id) {
+      this.workstationObject = workstationObject;
+      this.id = id;
+      gameManager = GameManager.Instance;
+      messageManager = gameManager.MessagesManager;
+      craftManager = gameManager.CraftManager;
+      inventoriesPool = craftManager.InventoriesPool;
+      CurrentProgress = new CurrentProgress();
+    }
+
+    public static string GenerateId(CellObject cellObject, WorkstationObject stationObject) {
+      return cellObject != null
+        ? $"{stationObject.name}_{cellObject.CellData.x}_{cellObject.CellData.y}".ToLower()
+        : stationObject.name.ToLower();
+    }
+
+    #region Inventories
+
+    public List<InventoryObject> GetOutputInventories() {
+      if (outputInventories == null) {
+        outputInventories = OutputInventoryType == InventoryType.Inventory
+          ? inventoriesPool.Inventories
+          : new List<InventoryObject>()
+            { gameManager.PlayerInventory.GetInventoryByTypeAndId(OutputInventoryType, Id) };
+      }
+
+      return outputInventories;
+    }
+
+    public InventoryObject GetFuelInventory() {
+      if (fuelInventory == null) {
+        fuelInventory =
+          gameManager.PlayerInventory.GetInventoryByTypeAndId(FuelInventoryType, Id);
+      }
+
+      return fuelInventory;
+    }
+
+    private void AddItemToOutput(Item item, int count) {
+      if (count <= 0) {
+        return;
+      }
+
+      var remainingAmount = count;
+      foreach (var inventory in GetOutputInventories()) {
+        remainingAmount = inventory.AddItem(item, remainingAmount);
+        if (remainingAmount <= 0) {
+          break;
+        }
+      }
+    }
+
+    private void RemoveRecipeResources(string materialId, int totalCount) {
+      inventoriesPool.RemoveFromInventoriesPool(materialId, totalCount);
+    }
+
+    private void ReturnCraftResourcesToInventory(Item addItem, int totalCount) {
+      inventoriesPool.AddItemToInventoriesPool(addItem, totalCount);
+    }
+
+    #endregion
+
+    #region Handle output events even if craft window is closed, for output type = inventory
+
+    private void AddOutputUpdateEvents() {
+      foreach (var outputInventory in GetOutputInventories()) {
+        foreach (var output in outputInventory.GetSlots) {
+          output.OnAfterUpdated += OutputUpdateSlotHandler;
+        }
+      }
+
+      outputEventsAdded = true;
+    }
+
+    private void RemoveOutputUpdateEvents() {
+      foreach (var outputInventory in outputInventories) {
+        foreach (var output in outputInventory.GetSlots) {
+          output.OnAfterUpdated -= OutputUpdateSlotHandler;
+        }
+      }
+
+      outputEventsAdded = false;
+    }
+
+    private void OutputUpdateSlotHandler(SlotUpdateEventData data) {
+      StartCrafting();
+    }
+
+    private void TryAddOutputSlotsEvents() {
+      if (OutputInventoryType != InventoryType.Inventory) {
+        return;
+      }
+
+      if (outputEventsAdded) {
+        return;
+      }
+
+      if (Inputs.Count == 0) {
+        return;
+      }
+
+      AddOutputUpdateEvents();
+    }
+
+    private void TryRemoveOutputSlotsEvents() {
+      if (OutputInventoryType != InventoryType.Inventory) {
+        return;
+      }
+
+      if (!outputEventsAdded) {
+        return;
+      }
+
+      if (Inputs.Count > 0) {
+        return;
+      }
+
+      RemoveOutputUpdateEvents();
+    }
+
+    #endregion
+
+    #region Tmp fields for checks
 
     private int? totalFuel;
-    private string[] outputSlotsIds;
-    private int[] outputSlotsFreeCounts;
-    private int outputFreeSlotsCount;
+    private List<string> tmpSlotsIds;
+    private List<int> tmpSlotsFreeCounts;
+    private int tmpFreeSlotsCount;
 
     private void InitTmpFuel() {
       totalFuel = GetFuelInventory()?.GetTotalCount();
     }
 
-    private void InitTmpOutput(bool mainInventory = false) {
-      (outputSlotsIds, outputSlotsFreeCounts, outputFreeSlotsCount) = OutputSpaces(mainInventory);
+    private void InitTmpOutput() {
+      (tmpSlotsIds, tmpSlotsFreeCounts, tmpFreeSlotsCount) = GetSpaces(GetOutputInventories());
+    }
+
+    private void InitTmpPool() {
+      (tmpSlotsIds, tmpSlotsFreeCounts, tmpFreeSlotsCount) = GetSpaces(inventoriesPool.Inventories);
+    }
+
+    private (List<string>, List<int>, int) GetSpaces(List<InventoryObject> inventories) {
+      var ids = new List<string>();
+      var free = new List<int>();
+      var totalFreeSlots = 0;
+
+      foreach (var inventory in inventories) {
+        var (invIds, invFree, freeSlots) = inventory.FreeSpaces();
+
+        ids.AddRange(invIds);
+        free.AddRange(invFree);
+        totalFreeSlots += freeSlots;
+      }
+
+      return (ids, free, totalFreeSlots);
+    }
+
+    public bool HaveFuelForCraft(Recipe recipe) {
+      var count = GetFuelCount(recipe);
+
+      return count == -1 || count > 0;
+    }
+
+    private int GetFuelCount(Recipe recipe) {
+      if (recipe.Fuel == null) {
+        return -1;
+      }
+
+      GetFuelInventory();
+      if (fuelInventory == null) {
+        return -1;
+      }
+
+      var total = fuelInventory.GetTotalCount() / recipe.Fuel.Amount;
+
+      return total;
+    }
+
+    public int OutputSpaceForItem(ItemObject itemObj) {
+      var total = 0;
+
+      foreach (var inventory in GetOutputInventories()) {
+        total += inventory.FreeSpaceForItem(itemObj);
+      }
+
+      return total;
     }
 
     private void InitTmpFieldsForLoad() {
@@ -77,9 +278,9 @@ namespace Craft {
     }
 
     private void ClearTmpOutput() {
-      outputSlotsIds = null;
-      outputSlotsFreeCounts = null;
-      outputFreeSlotsCount = 0;
+      tmpSlotsIds = null;
+      tmpSlotsFreeCounts = null;
+      tmpFreeSlotsCount = 0;
     }
 
     private void ClearTmpFieldsForLoad() {
@@ -112,14 +313,14 @@ namespace Craft {
     }
 
     private bool HaveTmpOutputSpace(ItemObject itemObj, int count = 1) {
-      for (var i = 0; i < outputSlotsIds.Length; i++) {
-        var slotItemId = outputSlotsIds[i];
+      for (var i = 0; i < tmpSlotsIds.Count; i++) {
+        var slotItemId = tmpSlotsIds[i];
 
         if (slotItemId != itemObj.Id) {
           continue;
         }
 
-        var freeCount = outputSlotsFreeCounts[i];
+        var freeCount = tmpSlotsFreeCounts[i];
         if (freeCount >= count) {
           return true;
         }
@@ -127,72 +328,156 @@ namespace Craft {
         count = Math.Abs(freeCount - count);
       }
 
-      return outputFreeSlotsCount * itemObj.MaxStackSize >= count;
+      return tmpFreeSlotsCount * itemObj.MaxStackSize >= count;
     }
 
     private void AddToTmpOutput(ItemObject itemObj, int count = 1) {
-      for (var i = 0; i < outputSlotsIds.Length; i++) {
-        var slotItemId = outputSlotsIds[i];
+      for (var i = 0; i < tmpSlotsIds.Count; i++) {
+        var slotItemId = tmpSlotsIds[i];
 
         if (slotItemId != itemObj.Id) {
           continue;
         }
 
-        var freeCount = outputSlotsFreeCounts[i];
+        var freeCount = tmpSlotsFreeCounts[i];
         if (freeCount >= count) {
-          outputSlotsFreeCounts[i] -= count;
+          tmpSlotsFreeCounts[i] -= count;
           return;
         }
 
-        outputSlotsFreeCounts[i] = 0;
+        tmpSlotsFreeCounts[i] = 0;
         count -= freeCount;
       }
 
-      if (outputFreeSlotsCount == 0) {
+      if (tmpFreeSlotsCount == 0) {
         return;
       }
 
-      while (count > 0 && outputFreeSlotsCount > 0) {
-        var firstFreeCount = outputSlotsIds.Length - outputFreeSlotsCount;
-        outputSlotsIds[firstFreeCount] = itemObj.Id;
-        outputSlotsFreeCounts[firstFreeCount] = itemObj.MaxStackSize - count;
-        outputFreeSlotsCount--;
+      while (count > 0 && tmpFreeSlotsCount > 0) {
+        tmpSlotsIds.Add(itemObj.Id);
+        tmpSlotsFreeCounts.Add((itemObj.MaxStackSize - count));
+        tmpFreeSlotsCount--;
       }
     }
 
     #endregion
 
-    public Workstation(WorkstationObject workstationObject, string id) {
-      this.workstationObject = workstationObject;
-      this.id = id;
-    }
+    #region Timer
 
-    public InventoryObject GetOutputInventory() {
-      if (outputInventory == null) {
-        outputInventory =
-          GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(OutputInventoryType, Id);
+    private CancellationTokenSource cancellationTokenSource;
+
+    public async void StartCrafting() {
+      if (CurrentProgress.IsCrafting
+          || Inputs.Count == 0
+          || !HaveFuelForCraft(CurrentRecipe)
+          || (!CurrentProgress.Finished && OutputSpaceForItem(CurrentRecipe.Result) <= 0)
+         ) {
+        return;
       }
 
-      return outputInventory;
-    }
+      if (CurrentProgress.Finished) {
+        var input = Inputs[0];
+        var oneItemCraftTimeMillis = input.Recipe.CraftingTime * 1000;
+        var totalCraftTimeMillis = oneItemCraftTimeMillis * input.Count;
 
-    public InventoryObject GetFuelInventory() {
-      if (fuelInventory == null) {
-        fuelInventory =
-          GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(FuelInventoryType, Id);
+        CurrentProgress = new CurrentProgress {
+          IsCrafting = true,
+          Finished = false,
+          CraftTimeForOneInMilliseconds = oneItemCraftTimeMillis,
+          CurrentTimeInMilliseconds = oneItemCraftTimeMillis,
+          MillisecondsLeft = totalCraftTimeMillis
+        };
+      }
+      else {
+        CurrentProgress.IsCrafting = true;
       }
 
-      return fuelInventory;
-    }
+      cancellationTokenSource = new CancellationTokenSource();
 
-    public InventoryObject GetInventory() {
-      if (inventory == null) {
-        inventory =
-          GameManager.Instance.PlayerInventory.GetInventory();
+      try {
+        await CraftingAsync(cancellationTokenSource.Token);
+      }
+      catch (TaskCanceledException) {
+        CancelCraft(true);
+        return;
       }
 
-      return inventory;
+      FinishInputCrafting();
     }
+
+    private async Task CraftingAsync(CancellationToken token) {
+      OnCraftStarted?.Invoke();
+
+      var input = Inputs[0];
+      var stopwatch = new System.Diagnostics.Stopwatch();
+      stopwatch.Start();
+
+      while (input.Count > 0 && !token.IsCancellationRequested) {
+        var startTime = stopwatch.ElapsedMilliseconds;
+
+        await Task.Delay(tickDelay, token);
+
+        var elapsed = stopwatch.ElapsedMilliseconds - startTime;
+        CurrentProgress.MillisecondsLeft -= elapsed;
+        CurrentProgress.CurrentTimeInMilliseconds -= elapsed;
+
+        var timeLeftWithoutCurrent = (input.Count - 1) * CurrentProgress.CraftTimeForOneInMilliseconds;
+        if (CurrentProgress.MillisecondsLeft > timeLeftWithoutCurrent) {
+          continue;
+        }
+
+        if (!CanCraft(input.Recipe)) {
+          CurrentProgress.MillisecondsLeft = timeLeftWithoutCurrent;
+          CancelCraft(true);
+          return;
+        }
+
+        CurrentProgress.CurrentTimeInMilliseconds = CurrentProgress.CraftTimeForOneInMilliseconds;
+        ItemCrafted(input.Recipe, 1);
+      }
+
+      stopwatch.Stop();
+    }
+
+    private void FinishInputCrafting() {
+      if (!CurrentProgress.Finished) {
+        return;
+      }
+
+      CancelCraft();
+
+      OnInputAllCrafted?.Invoke();
+
+      if (Inputs.Count > 0) {
+        StartCrafting();
+      }
+    }
+
+    public void CancelCraft(bool isPaused = false) {
+      CancelCraftProcess();
+
+      if (isPaused) {
+        CurrentProgress.IsCrafting = false;
+        OnCraftPaused?.Invoke();
+      }
+      else {
+        CurrentProgress.Reset();
+      }
+    }
+
+    private void CancelCraftProcess() {
+      if (cancellationTokenSource == null) {
+        return;
+      }
+
+      cancellationTokenSource?.Cancel();
+      cancellationTokenSource?.Dispose();
+      cancellationTokenSource = null;
+    }
+
+    #endregion
+
+    #region Load
 
     public void Load(WorkstationsData data) {
       if (data.Inputs.Count <= 0) {
@@ -200,148 +485,85 @@ namespace Craft {
       }
 
       var inputs = data.Inputs;
-      InitTmpFieldsForLoad();
-
-      craftStartTimestampMillis = Helper.GetCurrentTimestampMillis();
-      var currentCraftStartTimestampMillis = craftStartTimestampMillis;
-      //only for first input
-      var millisecondsLeft = data.MillisecondsLeft;
 
       foreach (var input in inputs) {
         var recipe = WorkstationObject.RecipeDB.ItemsMap[input.RecipeId];
 
-        Inputs.Add(new Input { Recipe = recipe, Count = input.Count });
-
-        if (!ShowSuccessCraftMessages || !HaveTmpFuel() || !HaveTmpOutputSpace(recipe.Result)) {
-          continue;
-        }
-
-        var inputTotalCraftMillis = (long)input.Count * recipe.CraftingTime * 1000;
-
-        if (millisecondsLeft > 0) {
-          var millisecondsPassed = inputTotalCraftMillis - millisecondsLeft;
-          craftStartTimestampMillis = currentCraftStartTimestampMillis - millisecondsPassed;
-          currentCraftStartTimestampMillis = craftStartTimestampMillis;
-          millisecondsLeft = 0;
-        }
-
-        AddCraftingTask(recipe, input.Count, currentCraftStartTimestampMillis);
-
-        currentCraftStartTimestampMillis += inputTotalCraftMillis;
+        AddItemToInputs(recipe, input.Count);
       }
 
-      ClearTmpFieldsForLoad();
+      CurrentProgress = data.CurrentProgress;
+      SetRecipe(Inputs[0].Recipe);
+
+      StartCrafting();
     }
 
-    public void ProcessCraftedInputs() {
-      if (Inputs.Count == 0) {
-        return;
+    #endregion
+
+    #region Actions
+
+    public void SetRecipe(Recipe recipe) {
+      currentRecipe = recipe;
+      FillRecipeIngredientsIds();
+      OnRecipeChanged?.Invoke(recipe);
+    }
+
+    public void CraftRequested(int currentCount) {
+      //remove resources from inventory pool
+      foreach (var item in CurrentRecipe.RequiredMaterials) {
+        var totalCount = currentCount * item.Amount;
+        RemoveRecipeResources(item.Material.Id, totalCount);
       }
 
-      var currentTimeInMilliseconds = Helper.GetCurrentTimestampMillis();
-      var currentCraftStartTimestampMillis = craftStartTimestampMillis;
-      InitTmpFieldsForLoad();
+      AddItemToInputs(CurrentRecipe, currentCount);
 
-      for (var i = 0; i < Inputs.Count; i++) {
-        var input = Inputs[i];
-        var recipe = input.Recipe;
-        var craftedCount = 0;
+      StartCrafting();
+    }
 
-        for (var j = 0; j < input.Count; j++) {
-          var itemEndTimeInMilliseconds = currentCraftStartTimestampMillis + (recipe.CraftingTime * 1000);
+    private void ItemCrafted(Recipe inputRecipe, int count) {
+      RemoveInputCountFromInputs(count);
 
-          if (currentTimeInMilliseconds >= itemEndTimeInMilliseconds
-              && HaveTmpFuel() && HaveTmpOutputSpace(recipe.Result)) {
-            craftedCount++;
-            currentCraftStartTimestampMillis = itemEndTimeInMilliseconds; // Move to next item's start
+      var item = new Item(inputRecipe.Result);
 
-            ConsumeTmpFuel(recipe.Fuel.Amount);
-            AddToTmpOutput(recipe.Result);
-          }
-          else {
-            // Stop processing further — this item isn't done yet
-            break;
-          }
-        }
+      ConsumeFuel(inputRecipe, count);
+      AddItemToOutput(item, count);
 
-        // Process fully crafted items
-        if (craftedCount > 0) {
-          GetOutputInventory().AddItem(new Item(recipe.Result), craftedCount);
-          ConsumeFuel(recipe, craftedCount);
-        }
+      OnItemCrafted?.Invoke();
 
-        // Fully crafted this input, remove it
-        if (craftedCount >= input.Count) {
-          Inputs.RemoveAt(i--);
-          continue;
-        }
+      if (WorkstationObject.ShowSuccessCraftMessages && !craftManager.IsWindowOpen(Id)) {
+        messageManager.ShowCraftMessage(inputRecipe.Result, 1);
+      }
+    }
 
-        // Partial progress, update count
-        input.Count -= craftedCount;
-        Inputs[i] = input;
-
-        // If we broke early (some items still crafting), the next item should start right after this one
-        if (craftedCount < input.Count) {
-          break;
-        }
+    public bool CancelInput(Input inputData, int position) {
+      if (!CanCancelCraft(inputData)) {
+        messageManager.ShowSimpleMessage("You can't cancel craft. Not enough space in inventory.");
+        return false;
       }
 
-      // Update CraftStartTime for next session
-      craftStartTimestampMillis = currentCraftStartTimestampMillis;
+      if (!RemoveInputFromInputs(position)) {
+        return false;
+      }
+
+      foreach (var item in inputData.Recipe.RequiredMaterials) {
+        var totalCount = inputData.Count * item.Amount;
+        var addItem = new Item(item.Material);
+        ReturnCraftResourcesToInventory(addItem, totalCount);
+      }
+
+      //Stop input crafting
+      if (position == 0) {
+        CancelCraft();
+        StartCrafting();
+      }
+
+      OnCraftCanceled?.Invoke(inputData, position);
 
       if (Inputs.Count == 0) {
-        ResetMillisecondsLeft();
+        OnAllInputsCanceled?.Invoke();
       }
 
-      ClearTmpFieldsForLoad();
-    }
-
-    public bool CanCraft(Recipe recipe) {
-      return HaveFuelForCraft(recipe) && OutputSpaceForItem(recipe.Result) > 0;
-    }
-
-    public bool CanCancelCraft(Recipe recipe, int count) {
-      InitTmpOutput(true);
-
-      foreach (var material in recipe.RequiredMaterials) {
-        if (!HaveTmpOutputSpace(material.Material, count)) {
-          return false;
-        }
-
-        AddToTmpOutput(material.Material, count);
-      }
-
-      ClearTmpOutput();
       return true;
-    }
-
-    private int GetFuelCount(Recipe recipe) {
-      if (recipe.Fuel == null) {
-        return -1;
-      }
-
-      GetFuelInventory();
-      if (fuelInventory == null) {
-        return -1;
-      }
-
-      var total = fuelInventory.GetTotalCount() / recipe.Fuel.Amount;
-
-      return total;
-    }
-
-    public bool HaveFuelForCraft(Recipe recipe) {
-      var count = GetFuelCount(recipe);
-
-      return count == -1 || count > 0;
-    }
-
-    public int OutputSpaceForItem(ItemObject itemObj) {
-      return GetOutputInventory().FreeSpaceForItem(itemObj);
-    }
-
-    private (string[], int[], int) OutputSpaces(bool mainInventory = false) {
-      return mainInventory ? GetInventory().FreeSpaces() : GetOutputInventory().FreeSpaces();
     }
 
     public void ConsumeFuel(Recipe recipe, int count) {
@@ -353,93 +575,30 @@ namespace Craft {
       var totalCount = count * recipe.Fuel.Amount;
 
       fuelInventory.RemoveItem(recipe.Fuel.Material.Id, totalCount);
+      OnFuelConsumed?.Invoke();
     }
 
-    public long CalculateTimeLeftInMilliseconds(Recipe recipe, int count) {
-      var currentTimeInMilliseconds = Helper.GetCurrentTimestampMillis();
-      var elapsedTimeInMilliseconds = currentTimeInMilliseconds - CraftStartTimestampMillis;
-      var totalTimeInMilliseconds = (long)count * recipe.CraftingTime * 1000;
-      return Math.Clamp((totalTimeInMilliseconds - elapsedTimeInMilliseconds), 0, totalTimeInMilliseconds);
-    }
+    #endregion
 
-    public void UpdateMillisecondsLeftByCurrentTime(Recipe recipe, int count) {
-      millisecondsLeft = CalculateTimeLeftInMilliseconds(recipe, count);
-    }
+    #region Inputs
 
-    public void ResetMillisecondsLeft() {
-      millisecondsLeft = 0;
-    }
-
-    public void UpdateMillisecondsLeft(long milliseconds) {
-      millisecondsLeft = milliseconds;
-    }
-
-    public void UpdateCraftStartTimestampMillis(long milliseconds) {
-      craftStartTimestampMillis = milliseconds;
-    }
-
-    public void UpdateCraftingTasks() {
-      CraftingTasks.Clear();
-      if (!ShowSuccessCraftMessages || Inputs.Count <= 0) {
-        return;
-      }
-
-      InitTmpFieldsForLoad();
-
-      var currentDateTimestampMillis = CraftStartTimestampMillis;
-      foreach (var input in Inputs) {
-        if (!HaveTmpFuel() || !HaveTmpOutputSpace(input.Recipe.Result)) {
-          break;
-        }
-
-        AddCraftingTask(input.Recipe, input.Count, currentDateTimestampMillis);
-        currentDateTimestampMillis += input.Count * input.Recipe.CraftingTime * 1000;
-      }
-
-      ClearTmpFieldsForLoad();
-    }
-
-    private void AddCraftingTask(Recipe recipe, int count, long startInMilliseconds) {
-      for (var i = 1; i <= count; i++) {
-        if (!CanConsumeTmpFuel(recipe.Fuel.Amount) || !HaveTmpOutputSpace(recipe.Result)) {
-          break;
-        }
-
-        var endTime = startInMilliseconds + (recipe.CraftingTime * i * 1000);
-        CraftingTasks.Add(new CraftingTask(recipe.Result.Id, endTime));
-
-        ConsumeTmpFuel(recipe.Fuel.Amount);
-        AddToTmpOutput(recipe.Result);
-      }
-    }
-
-    public CraftingTask? RemoveFirstTaskIfEnded() {
-      if (CraftingTasks.Count <= 0) {
-        return null;
-      }
-
-      var currentDateTimestampMillis = Helper.GetCurrentTimestampMillis();
-      var firstTask = CraftingTasks[0];
-      if (firstTask.FinishTimeMilliseconds > currentDateTimestampMillis) {
-        return null;
-      }
-
-      CraftingTasks.RemoveAt(0);
-      return firstTask;
-    }
-
-    public void AddItemToInputs(Recipe recipe, int count) {
+    private void AddItemToInputs(Recipe recipe, int count) {
       var maxStack = recipe.Result.MaxStackSize;
-
       while (count > 0) {
         var addCount = count > maxStack ? maxStack : count;
-        Inputs.Add(new Input { Recipe = recipe, Count = addCount });
+
+        var input = new Input {
+          Count = addCount,
+          Recipe = recipe
+        };
+        Inputs.Add(input);
+
+        OnAfterAddItemToInputs?.Invoke(input);
+
         count -= addCount;
       }
 
-      if (Inputs.Count >= 1) {
-        OnCraftStarted?.Invoke();
-      }
+      TryAddOutputSlotsEvents();
     }
 
     public void RemoveInputCountFromInputs(int count) {
@@ -452,52 +611,63 @@ namespace Craft {
       input.Count = Math.Max(0, input.Count - count);
 
       if (input.Count == 0) {
-        ResetMillisecondsLeft();
         Inputs.RemoveAt(inputPosition);
+        CurrentProgress.Finished = true;
       }
       else {
         Inputs[inputPosition] = input;
       }
 
-      if (Inputs.Count <= 0) {
-        OnCraftStopped?.Invoke();
-      }
+      TryRemoveOutputSlotsEvents();
     }
 
-    public void RemoveInputFromInputs(int inputPosition) {
+    public bool RemoveInputFromInputs(int inputPosition) {
       if (!IsValidInputPosition(inputPosition)) {
-        return;
+        return false;
       }
 
       Inputs.RemoveAt(inputPosition);
-      if (inputPosition == 0) {
-        ResetMillisecondsLeft();
-      }
 
-      if (Inputs.Count <= 0) {
-        OnCraftStopped?.Invoke();
-      }
+      TryRemoveOutputSlotsEvents();
+
+      return true;
     }
 
     private bool IsValidInputPosition(int position) {
       return position >= 0 && position < Inputs.Count;
     }
 
-    public void SetProgress(int craftTimeInMilliseconds, float currentTimeInMilliseconds) {
-      CurrentProgress.CraftTimeInMilliseconds = craftTimeInMilliseconds;
-      CurrentProgress.CurrentTimeInMilliseconds = currentTimeInMilliseconds;
+    #endregion
+
+    public string[] GetRecipeIngredientsIds() => recipeIngredientsIds;
+
+    private void FillRecipeIngredientsIds() {
+      var materials = CurrentRecipe.RequiredMaterials;
+      recipeIngredientsIds = new string[materials.Count];
+
+      for (var i = 0; i < materials.Count; i++) {
+        var resource = materials[i];
+        recipeIngredientsIds[i] = resource.Material.Id;
+      }
     }
 
-    public void UpdateProgress(float currentTimeInMilliseconds) {
-      CurrentProgress.CurrentTimeInMilliseconds = currentTimeInMilliseconds;
+    public bool CanCraft(Recipe recipe) {
+      return HaveFuelForCraft(recipe) && OutputSpaceForItem(recipe.Result) > 0;
     }
 
-    public void ResetProgress() {
-      CurrentProgress.CraftTimeInMilliseconds = 0;
-      CurrentProgress.CurrentTimeInMilliseconds = 0;
-    }
+    public bool CanCancelCraft(Input inputData) {
+      InitTmpPool();
 
-    public float GetProgressTimeInMilliseconds() => CurrentProgress.CurrentTimeInMilliseconds;
-    public int GetProgressCraftTimeInMilliseconds() => CurrentProgress.CraftTimeInMilliseconds;
+      foreach (var material in inputData.Recipe.RequiredMaterials) {
+        if (!HaveTmpOutputSpace(material.Material, inputData.Count)) {
+          return false;
+        }
+
+        AddToTmpOutput(material.Material, inputData.Count);
+      }
+
+      ClearTmpOutput();
+      return true;
+    }
   }
 }

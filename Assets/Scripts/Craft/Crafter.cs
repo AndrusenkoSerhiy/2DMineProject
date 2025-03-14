@@ -12,10 +12,9 @@ namespace Craft {
     private CraftWindow craftWindow;
     private Window window;
     private Workstation station;
-    protected string id;
+    private string id;
 
     public WorkstationObject StationObject => stationObject;
-    public Workstation Station => station;
     public string Id => id;
 
     private void Init() {
@@ -23,8 +22,8 @@ namespace Craft {
         return;
       }
 
-      GenerateId();
-      station = GameManager.Instance.CraftManager.GetWorkstation(Id, stationObject.Id);
+      id = Workstation.GenerateId(cellObject, stationObject);
+      station = GameManager.Instance.CraftManager.GetWorkstation(id, stationObject.Id);
       var craftWindowObj = Instantiate(interfacePrefab, GameManager.Instance.Canvas.transform);
       window = craftWindowObj.GetComponent<Window>();
       window.Setup(station);
@@ -61,15 +60,6 @@ namespace Craft {
         GameManager.Instance.CraftManager.SetStation(station);
         craftWindow.Show();
       }
-    }
-
-    protected virtual void GenerateId() {
-      if (cellObject == null) {
-        Debug.LogError("Crafter: cellObject is null");
-        return;
-      }
-
-      id = $"{stationObject.name}_{cellObject.CellData.x}_{cellObject.CellData.y}".ToLower();
     }
   }
 }

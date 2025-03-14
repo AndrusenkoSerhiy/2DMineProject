@@ -51,13 +51,20 @@ namespace Inventory {
       AddDefaultItemOnFirstStart();
     }
 
+    [ContextMenu("Clear inventories")]
+    public void ClearInventories() {
+      foreach (var (_, inventory) in inventories) {
+        inventory.Clear();
+      }
+    }
+
     /// <summary>
     /// Gets inventory object by type and id, if null - creates new and try to load data from file
     /// </summary>
     /// <param name="type">Inventory type</param>
-    /// <param name="id">Inventory id</param>
+    /// <param name="entityId">Inventory id</param>
     /// <returns>Inventory object</returns>
-    public InventoryObject GetInventoryByTypeAndId(InventoryType type, string id) {
+    public InventoryObject GetInventoryByTypeAndId(InventoryType type, string entityId) {
       if (type == InventoryType.None) {
         return null;
       }
@@ -67,11 +74,7 @@ namespace Inventory {
         return null;
       }
 
-      if (type == InventoryType.Inventory || type == InventoryType.QuickSlots) {
-        id = "";
-      }
-
-      var fullId = $"{type.ToString()}_{id}".ToLower();
+      var fullId = InventoryObject.GenerateId(type, entityId);
 
       if (inventories.ContainsKey(fullId)) {
         return inventories[fullId];
@@ -90,12 +93,12 @@ namespace Inventory {
 
     public InventoryObject GetInventory() => GetInventoryByTypeAndId(InventoryType.Inventory, "");
 
-    public InventoryObject GetStorageById(StorageType storageType, string id) {
-      if (string.IsNullOrEmpty(id)) {
+    public InventoryObject GetStorageById(StorageType storageType, string entityId) {
+      if (string.IsNullOrEmpty(entityId)) {
         return null;
       }
 
-      var fullId = $"{storageType.ToString()}_{id}".ToLower();
+      var fullId = InventoryObject.GenerateStorageId(storageType, entityId);
 
       if (inventories.ContainsKey(fullId)) {
         return inventories[fullId];

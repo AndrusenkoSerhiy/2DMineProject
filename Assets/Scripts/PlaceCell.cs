@@ -194,7 +194,7 @@ public class PlaceCell : MonoBehaviour {
       GameManager.Instance.ChunkController.UpdateCellAround(coords.X, coords.Y);
     }
 
-    currSlot.AddAmount(-1);
+    currSlot.RemoveAmount(1);
     ClearSLot();
   }
 

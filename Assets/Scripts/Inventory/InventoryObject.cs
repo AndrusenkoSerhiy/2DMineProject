@@ -35,6 +35,18 @@ namespace Inventory {
     private StorageType storageType;
     private GameManager gameManager;
 
+    public static string GenerateId(InventoryType type, string entityId) {
+      if (type == InventoryType.Inventory || type == InventoryType.QuickSlots) {
+        entityId = "";
+      }
+
+      return $"{type.ToString()}_{entityId}".ToLower();
+    }
+
+    public static string GenerateStorageId(StorageType storageType, string entityId) {
+      return $"{storageType.ToString()}_{entityId}".ToLower();
+    }
+
     public InventoryObject(InventoryType type, string inventoryId, StorageType storageType) {
       Init(type);
       id = inventoryId;
@@ -255,6 +267,16 @@ namespace Inventory {
       return 0;
     }
 
+    public void Clear() {
+      foreach (var slot in GetSlots) {
+        if (slot.isEmpty) {
+          continue;
+        }
+
+        slot.RemoveItem();
+      }
+    }
+
     public int FreeSpaceForItem(ItemObject itemObj) {
       var count = 0;
       foreach (var slot in GetSlots) {
@@ -268,9 +290,9 @@ namespace Inventory {
       return count;
     }
 
-    public (string[], int[], int) FreeSpaces() {
-      var ids = new string[GetSlots.Length];
-      var freeCounts = new int[GetSlots.Length];
+    public (List<string>, List<int>, int) FreeSpaces() {
+      var ids = new List<string>();
+      var freeCounts = new List<int>();
       var emptySlots = 0;
 
       for (var i = 0; i < GetSlots.Length; i++) {
@@ -278,15 +300,13 @@ namespace Inventory {
 
         if (slot.isEmpty) {
           emptySlots++;
-          ids[i] = string.Empty;
-          freeCounts[i] = 0;
         }
         else {
           var slotItemId = slot.Item.info.Id;
           var free = slot.Item.info.MaxStackSize - slot.amount;
 
-          ids[i] = slotItemId;
-          freeCounts[i] = free;
+          ids.Add(slotItemId);
+          freeCounts.Add(free);
         }
       }
 

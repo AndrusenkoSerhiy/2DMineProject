@@ -1,5 +1,4 @@
 using System.Collections;
-using Scriptables.Craft;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -17,17 +16,17 @@ namespace Craft {
 
     private EventTrigger trigger;
 
-    // private bool blocked;
     private bool current;
     private Color defaultBgColor;
     private Coroutine blinkCoroutine;
+    // private bool started;
 
-    public void Awake() {
+    public void Init() {
       station = ServiceLocator.For(this).Get<Workstation>();
       defaultBgColor = background.color;
     }
 
-    public void Update() {
+    private void Update() {
       if (!current) {
         return;
       }
@@ -35,14 +34,13 @@ namespace Craft {
       Progress();
     }
 
-    public void OnDisable() {
+    private void OnDisable() {
       ClearBlinkEffect();
     }
 
     public void Block() {
       GetTrigger().enabled = false;
       GetFadeGameObject().SetActive(true);
-      // blocked = true;
     }
 
     public void UnBlock() {
@@ -50,7 +48,6 @@ namespace Craft {
       GetFadeGameObject().SetActive(false);
       GetProgressGameObject().SetActive(false);
       ResetFill();
-      // blocked = false;
       current = false;
     }
 
@@ -75,6 +72,10 @@ namespace Craft {
 
     private IEnumerator BlinkBackgroundColor(Color color, float time) {
       while (true) {
+        /*if (!started) {
+          yield return null;
+        }*/
+
         background.color = color;
         yield return new WaitForSeconds(time);
         background.color = defaultBgColor;
@@ -87,8 +88,8 @@ namespace Craft {
     }
 
     private void Progress() {
-      var totalTimeInMilliseconds = station.GetProgressCraftTimeInMilliseconds();
-      var currentTimeInMillisecond = station.GetProgressTimeInMilliseconds();
+      var totalTimeInMilliseconds = station.CurrentProgress.CraftTimeForOneInMilliseconds;
+      var currentTimeInMillisecond = station.CurrentProgress.CurrentTimeInMilliseconds;
       if (totalTimeInMilliseconds <= 0) {
         return;
       }

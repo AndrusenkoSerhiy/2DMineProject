@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SaveSystem;
 using Scriptables.Items;
 using UnityEngine;
@@ -9,14 +8,20 @@ namespace Craft {
   public class CraftManager : MonoBehaviour, ISaveLoad {
     [SerializeField] private WorkstationsDatabaseObject workstationsDatabase;
     [SerializeField] private SerializedDictionary<string, Workstation> allStationsMap;
+
     [SerializeField] private List<string> stations;
+
     [SerializeField] private SerializedDictionary<string, bool> windowOpenStates;
-    [SerializeField] private SerializedDictionary<string, bool> saving;
-    [SerializeField] private SerializedDictionary<string, Coroutine> checkCoroutines;
+    // [SerializeField] private SerializedDictionary<string, bool> saving;
+
+    private InventoriesPool inventoriesPool;
+
+    public InventoriesPool InventoriesPool => inventoriesPool;
 
     private void Awake() {
+      inventoriesPool = new InventoriesPool();
+      inventoriesPool.Init();
       Load();
-      StartCraftingCheck();
     }
 
     public void SetStation(Workstation station) {
@@ -28,90 +33,20 @@ namespace Craft {
       allStationsMap.Add(id, station);
       stations.Add(id);
       windowOpenStates.Add(id, false);
-      saving.Add(id, false);
-      checkCoroutines.Add(id, null);
+      // saving.Add(id, false);
     }
 
     public void UpdateWindowState(string stationId, bool isOpen) {
       windowOpenStates[stationId] = isOpen;
-
-      if (!isOpen) {
-        UpdateCraftingAndCheck(stationId);
-      }
     }
 
-    private void StartCraftingCheck() {
-      foreach (var id in stations) {
-        StationCraftingCheck(id);
-      }
-    }
-
-    private void StationCraftingCheck(string id) {
-      var station = allStationsMap[id];
-      if (checkCoroutines[id] == null && station.CraftingTasks.Count > 0) {
-        checkCoroutines[id] = StartCoroutine(CheckCraftingLoop(station));
-      }
-    }
-
-    private void StopCraftingCheck(string stationId) {
-      if (checkCoroutines[stationId] == null) {
-        return;
-      }
-
-      StopCoroutine(checkCoroutines[stationId]);
-      checkCoroutines[stationId] = null;
-    }
-
-    private IEnumerator CheckCraftingLoop(Workstation station) {
-      while (true) {
-        yield return new WaitForSeconds(1);
-
-        CheckForCompletedTask(station);
-
-        // Stop if no more tasks
-        if (station.CraftingTasks.Count > 0) {
-          continue;
-        }
-
-        StopCraftingCheck(station.Id);
-        break;
-      }
-    }
-
-    private void CheckForCompletedTask(Workstation station) {
-      if (station == null || IsWindowOpen(station.Id)) {
-        return;
-      }
-
-      var task = station.RemoveFirstTaskIfEnded();
-      if (task != null) {
-        RunEffect(station, task.Value.ItemId);
-      }
-    }
-
-    private void UpdateCraftingAndCheck(string id) {
-      var station = allStationsMap[id];
-      station.UpdateCraftingTasks();
-      StationCraftingCheck(id);
-    }
-
-
-    private void RunEffect(Workstation station, string itemId) {
-      if (!station.ShowSuccessCraftMessages) {
-        return;
-      }
-
-      var item = GameManager.Instance.ItemDatabaseObject.ItemsMap[itemId];
-      GameManager.Instance.MessagesManager.ShowCraftMessage(item, 1);
-    }
-
-    private bool IsWindowOpen(string stationId) {
+    public bool IsWindowOpen(string stationId) {
       return windowOpenStates != null && windowOpenStates[stationId];
     }
 
-    private bool IsSaving(string stationId) {
+    /*private bool IsSaving(string stationId) {
       return saving != null && saving[stationId];
-    }
+    }*/
 
     public Workstation GetWorkstation(string fullId, string stationObjectId) {
       if (allStationsMap.ContainsKey(fullId)) {
@@ -147,6 +82,16 @@ namespace Craft {
       }
     }
 
+    private void OnDisable() {
+      if (allStationsMap.Count <= 0) {
+        return;
+      }
+
+      foreach (var (id, station) in allStationsMap) {
+        station.CancelCraft(true);
+      }
+    }
+
     private void LoadInputs() {
       foreach (var id in stations) {
         if (!allStationsMap.ContainsKey(id)) {
@@ -173,11 +118,11 @@ namespace Craft {
         }
 
         var station = allStationsMap[id];
+        station.CancelCraft(true);
 
-        saving[id] = true;
-        station.ProcessCraftedInputs();
+        // saving[id] = true;
         SaveWorkstationInputs(station);
-        saving[id] = false;
+        // saving[id] = false;
       }
     }
 
@@ -190,14 +135,13 @@ namespace Craft {
       if (station.Inputs.Count == 0) {
         SaveLoadSystem.Instance.gameData.Workstations[stationId] =
           new WorkstationsData {
-            Id = stationId, Inputs = inputs, ResourcePath = resourcePath,
-            WorkStationObjectId = station.WorkstationObject.Id
+            Id = stationId,
+            Inputs = inputs,
+            WorkStationObjectId = station.WorkstationObject.Id,
+            CurrentProgress = new CurrentProgress()
           };
         return;
       }
-
-      var timeLeftInMilliseconds =
-        station.CalculateTimeLeftInMilliseconds(station.Inputs[0].Recipe, station.Inputs[0].Count);
 
       foreach (var input in station.Inputs) {
         inputs.Add(new CraftInputData {
@@ -207,8 +151,10 @@ namespace Craft {
       }
 
       SaveLoadSystem.Instance.gameData.Workstations[stationId] = new WorkstationsData {
-        Id = stationId, Inputs = inputs, MillisecondsLeft = timeLeftInMilliseconds, ResourcePath = resourcePath,
-        WorkStationObjectId = station.WorkstationObject.Id
+        Id = stationId,
+        Inputs = inputs,
+        WorkStationObjectId = station.WorkstationObject.Id,
+        CurrentProgress = station.CurrentProgress
       };
     }
   }

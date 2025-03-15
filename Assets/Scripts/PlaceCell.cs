@@ -17,6 +17,7 @@ public class PlaceCell : MonoBehaviour {
   private Color currPreviewColor;
   [SerializeField] private InventorySlot currSlot;
   private SpriteRenderer renderer;
+  [SerializeField] private ResourceData emptyResourceData;
 
   [SerializeField] private int radius = 1;
   public static event Action OnSlotReset;
@@ -208,11 +209,17 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void FillBuildingCells(int startX, int startY, int objectSizeX, int objectSizeY) {
+    var firstCellSkipped = false;
     for (var x = 0; x < objectSizeX; x++) {
       for (var y = 0; y < objectSizeY; y++) {
         var coordX = startX + x; 
         var coordY = startY - y;
-        chunkController.ChunkData.SetCellFill(coordX, coordY);
+        if (!firstCellSkipped) {
+          firstCellSkipped = true;
+          continue;
+        }
+        //chunkController.ChunkData.SetCellFill(coordX, coordY);
+        chunkController.ChunkData.ForceCellFill(emptyResourceData, coordX, coordY);
       }
     }
   }

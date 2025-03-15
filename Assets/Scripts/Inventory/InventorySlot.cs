@@ -148,7 +148,11 @@ namespace Inventory {
         return false;
       }
 
-      return targetSlot.Item.info.MaxStackSize >= amount + targetSlot.amount;
+      if (targetSlot.isEmpty || isEmpty) {
+        return true;
+      }
+
+      return targetSlot.amount < targetSlot.Item.info.MaxStackSize && amount < Item.info.MaxStackSize;
     }
 
     public void Select() {

@@ -129,6 +129,29 @@ namespace Inventory {
       }
     }
 
+    /// <summary>
+    /// Completes stacks in the destination inventory with items from this inventory.
+    /// </summary>
+    /// <param name="destinationInventory">The inventory to fill stacks in.</param>
+    public void CompleteStacksIfExist(InventoryObject destinationInventory) {
+      if (destinationInventory == null) {
+        return;
+      }
+
+      foreach (var slot in GetSlots.Where(slot => !slot.isEmpty)) {
+        while (slot.amount > 0) {
+          var stackableSlot = destinationInventory.FindStackableItemOnInventory(slot.Item);
+          if (stackableSlot == null) {
+            break;
+          }
+
+          var canMoveAmount = Math.Min(stackableSlot.Item.info.MaxStackSize - stackableSlot.amount, slot.amount);
+          slot.RemoveAmount(canMoveAmount);
+          stackableSlot.AddAmount(canMoveAmount);
+        }
+      }
+    }
+
     public void TakeSimilar(InventoryObject destinationInventory) {
       foreach (var slot in GetSlots) {
         if (slot.isEmpty || !slot.CanMoveToAnotherInventory) {
@@ -358,7 +381,7 @@ namespace Inventory {
           continue;
         }
 
-        if (slot.Item?.info.Id == item.info.Id && slot.amount < item.info.MaxStackSize) {
+        if (slot.Item.info.Id == item.info.Id && slot.amount < item.info.MaxStackSize) {
           return GetSlots[i];
         }
       }

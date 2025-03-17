@@ -63,7 +63,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -88,6 +88,7 @@ MonoBehaviour:
   exitTransforms:
   - {fileID: 4071054159070599446}
   - {fileID: 5602485324963326271}
+  interactHeader: 
 --- !u!1 &2775448591728752450
 GameObject:
   m_ObjectHideFlags: 0

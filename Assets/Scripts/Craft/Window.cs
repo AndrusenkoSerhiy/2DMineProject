@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Inventory;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,11 +9,7 @@ namespace Craft {
     [SerializeField] private bool preventItemDrop;
     [SerializeField] private UserInterface outputInterface;
 
-    private GameManager gameManager;
     private Workstation station;
-    private PlayerInventory playerInventory;
-    private List<InventoryObject> outputInventories;
-    private bool started;
 
     public bool PreventItemDropIn => preventItemDrop;
     public Workstation Station => station;
@@ -26,38 +21,14 @@ namespace Craft {
 
     public void Awake() {
       ServiceLocator.For(this).Register(station);
-      gameManager = GameManager.Instance;
-    }
-
-    public void Start() {
-      Init();
-      started = true;
     }
 
     public void OnEnable() {
-      if (!started) {
-        return;
-      }
-
-      Init();
+      AddEvents();
     }
 
     private void OnDisable() {
       RemoveEvents();
-    }
-
-    private void Init() {
-      InitReferences();
-      AddEvents();
-    }
-
-    private void InitReferences() {
-      if (playerInventory != null) {
-        return;
-      }
-
-      playerInventory = gameManager.PlayerInventory;
-      outputInventories = station.GetOutputInventories();
     }
 
     private void AddEvents() {
@@ -71,9 +42,7 @@ namespace Craft {
     }
 
     private void OnTakeAllButtonClickHandler() {
-      foreach (var inventory in station.InventoriesPool.Inventories) {
-        outputInventories[0].MoveAllItemsTo(inventory);
-      }
+      station.MoveAllFromOutput();
     }
   }
 }

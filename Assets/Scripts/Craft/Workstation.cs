@@ -140,6 +140,29 @@ namespace Craft {
       inventoriesPool.AddItemToInventoriesPool(addItem, totalCount);
     }
 
+    /// <summary>
+    /// Moves all items from the output inventory to the inventories in the pool.
+    /// Prioritizes completing stacks in the QuickSlots inventory first.
+    /// </summary>
+    public void MoveAllFromOutput() {
+      var outputInventory = outputInventories[0];
+
+      // Complete stacks in QuickSlots inventory first
+      foreach (var inventory in inventoriesPool.Inventories) {
+        if (inventory.type != InventoryType.QuickSlots) {
+          continue;
+        }
+
+        outputInventory.CompleteStacksIfExist(inventory);
+        break;
+      }
+
+      // Move all remaining items to other inventories
+      foreach (var inventory in inventoriesPool.Inventories) {
+        outputInventory.MoveAllItemsTo(inventory);
+      }
+    }
+
     #endregion
 
     #region Handle output events even if craft window is closed, for output type = inventory

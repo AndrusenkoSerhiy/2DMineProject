@@ -11,8 +11,10 @@ namespace Craft {
 
     private Workstation station;
     private List<Button> recipesListButtons = new();
+    private List<string> recipesListIds = new();
     private RecipeListItem selectedRecipeListItem;
     private GameManager gameManager;
+    private bool isListBuilt;
 
     private void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
@@ -21,48 +23,72 @@ namespace Craft {
 
     private void OnEnable() => InitComponent();
 
-    private void OnDisable() {
-      RemoveEvents();
-    }
+    private void OnDisable() => RemoveEvents();
 
     private void InitComponent() {
       BuildList();
       AddEvents();
-      SelectFirst();
     }
 
-    //TODO refactor, add only new elements
     private void BuildList() {
       var recipes = GameManager.Instance.RecipesManager.GetRecipesForStation(station.RecipeType);
-      if (recipesListButtons.Count > 0 && recipes.Count == recipesListButtons.Count) {
-        return;
-      }
-
-      ClearList();
 
       if (recipes.Count == 0) {
         Debug.LogError($"No recipes for station - {station.RecipeType}");
         return;
       }
 
-      foreach (var recipe in recipes) {
-        var listItem = Instantiate<Button>(recipesListItemPrefab, recipesListContainerPrefab.transform);
-
-        var recipeListItem = listItem.GetComponent<RecipeListItem>();
-        recipeListItem.SetRecipeDetails(recipe.RecipeName, recipe.Result.UiDisplay, recipe);
-
-        recipesListButtons.Add(listItem);
+      if (recipesListButtons.Count > 0 && recipes.Count == recipesListButtons.Count) {
+        return;
       }
+
+      Button previousButton = null;
+
+      foreach (var recipe in recipes) {
+        var findIndex = recipesListIds.IndexOf(recipe.Id);
+        if (findIndex != -1) {
+          previousButton = recipesListButtons[findIndex];
+          continue;
+        }
+
+        var listItem = CreateButton(recipe);
+
+        if (isListBuilt && previousButton != null) {
+          InsertButton(previousButton, listItem, recipe);
+        }
+        else {
+          AddButton(listItem, recipe);
+        }
+
+        previousButton = listItem;
+      }
+
+      if (isListBuilt) {
+        return;
+      }
+
+      SelectFirst();
+      isListBuilt = true;
     }
 
-    private void ClearList() {
-      RemoveEvents();
+    private void AddButton(Button button, Recipe recipe) {
+      recipesListIds.Add(recipe.Id);
+      recipesListButtons.Add(button);
+    }
 
-      foreach (var button in recipesListButtons) {
-        Destroy(button.gameObject);
-      }
+    private void InsertButton(Button previousButton, Button button, Recipe recipe) {
+      var index = previousButton.transform.GetSiblingIndex() + 1;
+      button.transform.SetSiblingIndex(index);
+      recipesListIds.Insert(index, recipe.Id);
+      recipesListButtons.Insert(index, button);
+    }
 
-      recipesListButtons.Clear();
+    private Button CreateButton(Recipe recipe) {
+      var listItem = Instantiate(recipesListItemPrefab, recipesListContainerPrefab.transform);
+      var recipeListItem = listItem.GetComponent<RecipeListItem>();
+      recipeListItem.SetRecipeDetails(recipe.RecipeName, recipe.Result.UiDisplay, recipe);
+
+      return listItem;
     }
 
     private void Select(Button button, bool force = false) {
@@ -92,6 +118,7 @@ namespace Craft {
 
     private void AddEvents() {
       gameManager.RecipesManager.OnRecipeUnlocked += OnRecipeUnlockedHandler;
+
       foreach (var button in recipesListButtons) {
         button.onClick.AddListener(() => ListItemClickHandler(button));
       }
@@ -105,7 +132,25 @@ namespace Craft {
       gameManager.RecipesManager.OnRecipeUnlocked -= OnRecipeUnlockedHandler;
     }
 
-    private void OnRecipeUnlockedHandler(Recipe recipe) => InitComponent();
+    private void OnRecipeUnlockedHandler(Recipe recipe) {
+      if (recipesListIds.Contains(recipe.Id)) {
+        return;
+      }
+
+      var recipes = GameManager.Instance.RecipesManager.GetRecipesForStation(station.RecipeType);
+
+      var findIndex = recipes.IndexOf(recipe);
+      var previousButton = findIndex > 0 ? recipesListButtons[findIndex - 1] : null;
+      if (previousButton == null) {
+        return;
+      }
+
+      var listItem = CreateButton(recipe);
+
+      InsertButton(previousButton, listItem, recipe);
+
+      listItem.onClick.AddListener(() => ListItemClickHandler(listItem));
+    }
 
     private void ListItemClickHandler(Button button) {
       Select(button);

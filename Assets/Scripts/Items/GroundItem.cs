@@ -12,7 +12,8 @@ namespace Items {
     [SerializeField] private bool isPicked;
 
     private Rigidbody2D rb;
-    private bool isGrounded;
+
+    // private bool isGrounded;
     private bool startMerging;
 
     private Coroutine destructionCoroutine;
@@ -46,13 +47,13 @@ namespace Items {
         return;
       }
 
-      if (collision.gameObject.layer == LayerMask.NameToLayer("Cell")) {
+      /*if (collision.gameObject.layer == LayerMask.NameToLayer("Cell") && IsStopped()) {
         isGrounded = true;
       }
 
       if (!isGrounded) {
         return;
-      }
+      }*/
 
       if (!collision.gameObject.CompareTag("GroundItem")) {
         return;
@@ -97,6 +98,14 @@ namespace Items {
       rb = GetComponent<Rigidbody2D>();
     }
 
+    /*private bool IsStopped() {
+      if (rb == null) {
+        return true;
+      }
+
+      return rb.linearVelocity.magnitude < 0.05f;
+    }*/
+
     private IEnumerator AutoDestroyAfterDelay(float delay) {
       yield return new WaitForSeconds(delay);
       if (!isPicked) {
@@ -116,7 +125,7 @@ namespace Items {
     public void ResetState() {
       isPicked = false;
       count = 1;
-      isGrounded = false;
+      // isGrounded = false;
       startMerging = false;
     }
 
@@ -127,8 +136,12 @@ namespace Items {
 
       var gameManager = GameManager.Instance;
 
+      if (!gameManager.PlayerInventory.CanAddItemToInventory(item)) {
+        gameManager.MessagesManager.ShowSimpleMessage("Inventory is full");
+        return false;
+      }
+
       var addedAmount = gameManager.PlayerInventory.AddItemToInventoryWithOverflowDrop(new Item(item), Count);
-      // gameManager.RecipesManager.DiscoverMaterial(item);
       gameManager.MessagesManager.ShowPickupResourceMessage(item, addedAmount);
 
       isPicked = true;

@@ -87,7 +87,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &3890226224433729309
+--- !u!1 &3219522858528035654
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,89 +95,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3625460618267473847}
-  - component: {fileID: 9064497359182062437}
-  - component: {fileID: 2976147064728059673}
-  - component: {fileID: 6108445730913287864}
-  - component: {fileID: 5825264164745270514}
+  - component: {fileID: 3922499967547721392}
+  - component: {fileID: 4393942454516333074}
+  - component: {fileID: 439293577465376397}
   m_Layer: 3
-  m_Name: Stone
-  m_TagString: GroundItem
+  m_Name: Collider
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3625460618267473847
+--- !u!4 &3922499967547721392
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3890226224433729309}
+  m_GameObject: {fileID: 3219522858528035654}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00011089405, y: -0.002229116, z: -0.049686417, w: 0.9987624}
-  m_LocalPosition: {x: -0.8939936, y: 3.4269996, z: -0.0028567465}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2092274831044427735}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -0.025, y: -0.254, z: -5.696}
---- !u!114 &9064497359182062437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3890226224433729309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dd16bfd3ff0d17408d926e3d68b829c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  count: 1
-  interactName: Pickup
-  interactHeader: 
-  item: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
-  isPicked: 0
---- !u!50 &2976147064728059673
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3890226224433729309}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 100
-  m_LinearDamping: 0.5
-  m_AngularDamping: 1
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 0
---- !u!70 &6108445730913287864
+  m_Children: []
+  m_Father: {fileID: 3625460618267473847}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &4393942454516333074
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3890226224433729309}
+  m_GameObject: {fileID: 3219522858528035654}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: a089ceb1ca423ed4089bc4586e875e96, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -204,13 +157,13 @@ CapsuleCollider2D:
   m_Offset: {x: 0.5970268, y: 0.9496443}
   m_Size: {x: 1.4986774, y: 1.6262794}
   m_Direction: 0
---- !u!61 &5825264164745270514
+--- !u!61 &439293577465376397
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3890226224433729309}
+  m_GameObject: {fileID: 3219522858528035654}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -250,3 +203,82 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.6404676, y: 1.722229}
   m_EdgeRadius: 0
+--- !u!1 &3890226224433729309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3625460618267473847}
+  - component: {fileID: 9064497359182062437}
+  - component: {fileID: 554573879642777727}
+  m_Layer: 3
+  m_Name: Stone
+  m_TagString: GroundItem
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3625460618267473847
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3890226224433729309}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.00011089405, y: -0.002229116, z: -0.049686417, w: 0.9987624}
+  m_LocalPosition: {x: -0.8939936, y: 3.4269996, z: -0.0028567465}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2092274831044427735}
+  - {fileID: 3922499967547721392}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: -0.025, y: -0.254, z: -5.696}
+--- !u!114 &9064497359182062437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3890226224433729309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dd16bfd3ff0d17408d926e3d68b829c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  count: 1
+  interactName: 
+  interactHeader: 
+  item: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
+  isPicked: 0
+--- !u!50 &554573879642777727
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3890226224433729309}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 100
+  m_LinearDamping: 0.5
+  m_AngularDamping: 1
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0

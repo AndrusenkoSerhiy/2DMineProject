@@ -49,7 +49,8 @@ public class PlayerInventoryEditor : Editor {
 
   private void AddItemToInventory(InventoryObject inventory, Item item, int amount) {
     Undo.RecordObject(target, "Add Item to Inventory");
-    inventory.AddItem(item, amount, inventory.GetEmptySlot());
+    // inventory.AddItem(item, amount, inventory.GetEmptySlot());
+    GameManager.Instance.PlayerInventory.AddItemToInventoryWithOverflowDrop(item, amount);
     EditorUtility.SetDirty(target);
   }
 }

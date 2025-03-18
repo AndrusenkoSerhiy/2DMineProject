@@ -336,6 +336,16 @@ namespace Inventory {
       return (ids, freeCounts, emptySlots);
     }
 
+    public bool CanAddItem(ItemObject item) {
+      foreach (var slot in GetSlots) {
+        if (slot.isEmpty || (slot.Item.info.Id == item.Id && slot.amount < item.MaxStackSize)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     public int GetTotalCount() {
       var count = 0;
 

@@ -149,9 +149,10 @@ public class PlaceCell : MonoBehaviour {
     var grid = CoordsTransformer.WorldToGrid(worldPosition);
     var canPlace = CanPlaceObject(grid.X, grid.Y, (int)resourceData.CellSize.x, (int)resourceData.CellSize.y);
     var isPlayerOnGrid = GetPlayerCoords().Equals(grid);
+    var hasGround = HasGround(grid.X, grid.Y, (int)resourceData.CellSize.x);
     //if we place building we just need to know the all cells is empty
     if (resourceData.IsBuilding) {
-      return !canPlace;
+      return !canPlace || !hasGround;
     }
 
     return !canPlace || isPlayerOnGrid;
@@ -166,6 +167,20 @@ public class PlaceCell : MonoBehaviour {
         if (chunkController.ChunkData.GetCellFill(checkX, checkY) == 1) {
           return false;
         }
+      }
+    }
+
+    return true;
+  }
+
+  private bool HasGround(int startX, int startY, int objectSizeX) {
+    for (var x = 0; x < objectSizeX; x++) {
+      var checkX = startX + x;
+      var checkY = startY + 1;
+      var cellObj = chunkController.GetCell(checkX, checkY);
+      if (chunkController.ChunkData.GetCellFill(checkX, checkY) == 0 ||
+          cellObj.resourceData.Equals(emptyResourceData) || cellObj.resourceData.IsBuilding) {
+        return false;
       }
     }
 

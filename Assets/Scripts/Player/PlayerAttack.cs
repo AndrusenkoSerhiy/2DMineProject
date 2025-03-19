@@ -73,7 +73,7 @@ namespace Player {
         return false;
       }
 
-      var weaponStats = playerEquipment.ItemInHand.GetComponent<GroundItem>().item;
+      var weaponStats = playerEquipment.ItemInHand.GetComponent<GroundItem>().Item;
       if (!(weaponStats is IAttackableItem attackableItem)) {
         Debug.LogWarning("Equipped item is not attackable", this);
         return false;

@@ -124,8 +124,6 @@ namespace Inventory {
       foreach (var item in defaultItems) {
         const int count = 1;
         GetInventory().AddItem(new Item(item), count);
-        // GameManager.Instance.RecipesManager.DiscoverMaterial(item);
-        // GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, count);
       }
 
       SaveLoadSystem.Instance.gameData.DefaultItemAdded = true;
@@ -177,7 +175,7 @@ namespace Inventory {
     }
 
     /// <summary>
-    /// Adds item to inventory, if no space left then spawn this item on the ground
+    /// Adds item to inventory(+quick slots), if no space left then spawn this item on the ground
     /// </summary>
     /// <param name="item">Item to add</param>
     /// <param name="amount">Amount of this item</param>
@@ -188,21 +186,25 @@ namespace Inventory {
         return amount;
       }
 
+      overflow = GetQuickSlots().AddItem(item, overflow);
+      if (overflow <= 0) {
+        return amount;
+      }
+
       SpawnItem(item, overflow);
 
       return amount - overflow;
     }
 
-    //TODO remove after time, maybe add pool
+    public bool CanAddItemToInventory(ItemObject item) {
+      return (GetInventory().CanAddItem(item) || GetQuickSlots().CanAddItem(item));
+    }
+
     public void SpawnItem(Item item, int amount) {
       if (item.isEmpty || item.info.spawnPrefab == null) {
         return;
       }
 
-      //spawn higher in y pos because need TO DO pick up on action not the trigger enter
-      /*var newObj = Instantiate(item.info.spawnPrefab,
-        GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0), Quaternion.identity);
-      var groundObj = newObj.GetComponent<GroundItem>();*/
       var groundObj = GameManager.Instance.GroundItemPool.GetItem(item.info);
       groundObj.transform.position = GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0);
       groundObj.transform.rotation = Quaternion.identity;

@@ -23,11 +23,13 @@ MonoBehaviour:
   SpawnPosition: {x: 0.4, y: -0.29, z: 0}
   SpawnRotation: {x: 0, y: 0, z: -90}
   spawnPrefab: {fileID: 3890226224433729309, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
   Description: drill description
   useSelfAnim: 1
   attackLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1280
   blockDamage: 12
   entityDamage: 3
   range: 3

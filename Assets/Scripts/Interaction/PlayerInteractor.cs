@@ -8,7 +8,7 @@ namespace Interaction
     [SerializeField] private LayerMask interactableMask;
     [SerializeField] private InteractionPrompt interactionPromtUI;
 
-    private Collider2D[] colliders = new Collider2D[3];
+    [SerializeField] private Collider2D[] colliders = new Collider2D[3];
     [SerializeField] private int numFound;
 
     private IInteractable interactable;
@@ -32,7 +32,11 @@ namespace Interaction
         return;
       }
 
-      interactable = colliders[0].GetComponent<IInteractable>();
+      foreach (var col in colliders) {
+        interactable = col.GetComponent<IInteractable>();
+        if (interactable != null) break;
+      }
+      
       if (interactable == null)
         return;
 

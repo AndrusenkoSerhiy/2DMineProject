@@ -191,26 +191,35 @@ namespace Inventory {
         return amount;
       }
 
-      SpawnItem(item, overflow);
+      if (SpawnItem(item, overflow)) {
+        return amount - overflow;
+      }
 
-      return amount - overflow;
+      return amount;
     }
 
     public bool CanAddItemToInventory(ItemObject item) {
       return (GetInventory().CanAddItem(item) || GetQuickSlots().CanAddItem(item));
     }
 
-    public void SpawnItem(Item item, int amount) {
+    public bool SpawnItem(Item item, int amount) {
       if (item.isEmpty || item.info.spawnPrefab == null) {
-        return;
+        return false;
       }
 
       var groundObj = GameManager.Instance.GroundItemPool.GetItem(item.info);
+
+      if (groundObj == null) {
+        GameManager.Instance.MessagesManager.ShowSimpleMessage("Cant spawn item on the ground");
+        return false;
+      }
+
       groundObj.transform.position = GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0);
       groundObj.transform.rotation = Quaternion.identity;
       groundObj.Count = amount;
 
       GameManager.Instance.MessagesManager.ShowDroppedResourceMessage(item.info, amount);
+      return true;
     }
 
     #region Save/Load

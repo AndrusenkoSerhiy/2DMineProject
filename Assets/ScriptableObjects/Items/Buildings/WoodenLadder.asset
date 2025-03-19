@@ -23,5 +23,7 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 8644890756887494857, guid: 794defbbefaee1e4b9f12330af9fcbb6, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 0
   Description: 
   ResourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}

@@ -15,8 +15,15 @@ namespace Items {
         return null;
       }
 
+      if (!item.spawnPrefab.TryGetComponent<GroundItem>(out var prefabGroundItem)) {
+        Debug.LogError($"Item spawnPrefab does not contain a GroundItem component, id - {item.Id}, name - {item.Name}");
+        return null;
+      }
+
       var newObj = Instantiate(item.spawnPrefab, gameObject.transform);
-      var groundItem = newObj.GetComponent<GroundItem>();
+      if (!newObj.TryGetComponent<GroundItem>(out var groundItem)) {
+        return null;
+      }
 
       if (!pool.ContainsKey(item.Id)) {
         pool[item.Id] = new List<GroundItem>();
@@ -37,11 +44,13 @@ namespace Items {
       }
 
       foreach (var item in poolItems) {
-        if (!item.gameObject.activeInHierarchy) {
-          item.gameObject.SetActive(true);
-          item.ResetState();
-          return item;
+        if (item.gameObject.activeInHierarchy) {
+          continue;
         }
+
+        item.gameObject.SetActive(true);
+        item.ResetState();
+        return item;
       }
 
       return CreateNewItem(itemObject);

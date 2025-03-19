@@ -367,15 +367,18 @@ namespace Inventory {
 
       // Handle item drop on the ground
       if (MouseData.interfaceMouseIsOver == null) {
-        if (!PreventDropOnGround && slot.CanDrop) {
-          gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount);
-          slot.RemoveItem();
-
-          Debug.Log("Dropping item on the ground");
-          return true;
+        if (PreventDropOnGround || !slot.CanDrop) {
+          gameManager.MessagesManager.ShowSimpleMessage("Can`t drop this item on the ground.");
+          return false;
         }
 
-        return false;
+        if (!gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount)) {
+          return false;
+        }
+
+        slot.RemoveItem();
+        Debug.Log("Dropping item on the ground");
+        return true;
       }
 
       if (!MouseData.slotHoveredOver) {
@@ -405,7 +408,7 @@ namespace Inventory {
       }
 
       if (!targetSlot.IsItemAllowed(slot.Item.info) || !slot.IsItemAllowed(targetSlot.Item.info)) {
-        Debug.Log("Item not allowed");
+        gameManager.MessagesManager.ShowSimpleMessage("Item not allowed.");
         return false;
       }
 

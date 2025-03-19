@@ -19,7 +19,7 @@ namespace World {
     public ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
     [SerializeField] private CellData _cellData;
-    private UnitHealth unitHealth;
+    [SerializeField] private UnitHealth unitHealth;
     private Renderer cellRenderer;
     private Tween currentShakeTween;
     private Vector3 originalPosition;
@@ -35,7 +35,17 @@ namespace World {
     public void Init(CellData cellData, ResourceData data) {
       _cellData = cellData;
       resourceData = data;
+      InitUnitHealth();
+    }
+
+    private void InitUnitHealth() {
       unitHealth = new UnitHealth(resourceData.Durability);
+      //if cell have not full hp we need to update overlayDamage for cell
+      if (_cellData.durability > 0 && !Mathf.Approximately(resourceData.Durability, _cellData.durability)) {
+        unitHealth.SetCurrentHealth(_cellData.durability);
+        UpdateDamageOverlay(resourceData.Durability - _cellData.durability); 
+      }
+      
       unitHealth.OnTakeDamage += AddItemToInventory;
     }
 
@@ -66,7 +76,7 @@ namespace World {
         //Debug.LogError($"You need to add itemData in resourceData {resourceData}");
         return;
       }
-
+      _cellData.UpdateDurability(damage);
       GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage, transform.position);
     }
 
@@ -149,13 +159,13 @@ namespace World {
     }
 
     private void UpdateDamageOverlay(float damage) {
-      if (unitHealth.health == unitHealth.maxHealth) {
+      if (Mathf.Approximately(_cellData.durability, unitHealth.maxHealth)) {
         return;
       }
-
+      
       damageOverlayRenderer = GetDamageOverlayRenderer();
 
-      float healthPercentage = unitHealth.health / unitHealth.maxHealth;
+      float healthPercentage = _cellData.durability / unitHealth.maxHealth; //unitHealth.health / unitHealth.maxHealth;
       int hpSteps = (int)(unitHealth.maxHealth / damage);
 
       int overlayIndex;

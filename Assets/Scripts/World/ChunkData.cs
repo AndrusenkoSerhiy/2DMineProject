@@ -2,6 +2,7 @@ using System;
 using Scriptables;
 using Unity.Collections;
 using Unity.Jobs;
+using UnityEngine;
 using Utils;
 using World.Jobs;
 
@@ -73,8 +74,8 @@ namespace World {
       for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
           var perlin = smoothedNoiseMap[i + j * width];
-          _cellDatas[i, j] = new CellData(i, j, perlin, this);
           var data = GameManager.Instance.ChunkController.ResourceDataLibrary.GetData(perlin);
+          _cellDatas[i, j] = new CellData(i, j, perlin, data ? data.Durability : 0, this);
           if (data) {
             SetCellFill(i, j);
           }

@@ -1,5 +1,6 @@
 using System;
 using Scriptables;
+using UnityEngine;
 
 namespace World {
   [Serializable]
@@ -7,19 +8,24 @@ namespace World {
     public int x;
     public int y;
     public float perlin;
+    public float durability;
     private ChunkData _chunk;
     private ResourceData resData;
     public int NeighboursIndex => neighboursIndex();
     public bool HasAnyNeighbours => hasAnyNeighbours();
     public bool HasStandPoint => hasStandPoint();
 
-    public CellData(int x, int y, float perlin, ChunkData chunk) {
+    public CellData(int x, int y, float perlin, int durability, ChunkData chunk) {
       this.x = x;
       this.y = y;
       this.perlin = perlin;
+      this.durability = durability;
       _chunk = chunk;
     }
 
+    public void UpdateDurability(float value) {
+      durability -= value;
+    }
     private int neighboursIndex() {
       //allNeighbours
       if (_chunk.GetCellFill(x, y - 1, perlin) == 1 &&

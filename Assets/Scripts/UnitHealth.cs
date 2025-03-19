@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[Serializable]
 public class UnitHealth {
   private float _currentHealth;
   private readonly float _maxHealth;
@@ -29,6 +30,10 @@ public class UnitHealth {
     _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
 
     OnTakeDamage?.Invoke(damage);
+  }
+
+  public void SetCurrentHealth(float health) {
+    _currentHealth = Mathf.Clamp(health, 0, _maxHealth);
   }
 
   public void Heal(float healAmount) {

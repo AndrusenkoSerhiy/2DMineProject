@@ -12,10 +12,7 @@ namespace Items {
     [SerializeField] private bool isPicked;
 
     private Rigidbody2D rb;
-
-    // private bool isGrounded;
     private bool startMerging;
-
     private Coroutine destructionCoroutine;
 
     public int Count {
@@ -28,11 +25,14 @@ namespace Items {
 
     public ItemObject Item => item;
 
+    private void Awake() {
+      rb = GetComponent<Rigidbody2D>();
+    }
+
     private void OnEnable() {
       var destroyAfter = GameManager.Instance.GroundItemPool.autoDestroyDelay;
       destructionCoroutine = StartCoroutine(AutoDestroyAfterDelay(destroyAfter));
 
-      SetRigidbody();
       AddForce();
     }
 
@@ -46,14 +46,6 @@ namespace Items {
       if (startMerging) {
         return;
       }
-
-      /*if (collision.gameObject.layer == LayerMask.NameToLayer("Cell") && IsStopped()) {
-        isGrounded = true;
-      }
-
-      if (!isGrounded) {
-        return;
-      }*/
 
       if (!collision.gameObject.CompareTag("GroundItem")) {
         return;
@@ -90,22 +82,6 @@ namespace Items {
       rb.AddForce(randomForce, ForceMode2D.Impulse);
     }
 
-    private void SetRigidbody() {
-      if (rb != null) {
-        return;
-      }
-
-      rb = GetComponent<Rigidbody2D>();
-    }
-
-    /*private bool IsStopped() {
-      if (rb == null) {
-        return true;
-      }
-
-      return rb.linearVelocity.magnitude < 0.05f;
-    }*/
-
     private IEnumerator AutoDestroyAfterDelay(float delay) {
       yield return new WaitForSeconds(delay);
       if (!isPicked) {
@@ -125,7 +101,6 @@ namespace Items {
     public void ResetState() {
       isPicked = false;
       count = 1;
-      // isGrounded = false;
       startMerging = false;
     }
 

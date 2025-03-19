@@ -17,11 +17,13 @@ MonoBehaviour:
   Name: Wood block
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: cb39aa25624545e4eab7aec7b4afe034, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 7a0f58293bb8a0741b562d630f1bad22, type: 3}
   Stackable: 1
   MaxStackSize: 50
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: 29b1a952a9d6cec4fa94d492dc501fc3, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
   Description: 
   ResourceData: {fileID: 11400000, guid: 563f6ef75ef5211469844e99c2383a96, type: 2}

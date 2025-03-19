@@ -1,11 +1,10 @@
 using System;
-using Settings;
 using UnityEngine;
 
 namespace Tools {
-  public class DrillTool : ToolBase {
+  public class DrillTool : HandItem {
     private static readonly int IsActive = Animator.StringToHash("isActive");
-    
+
     [SerializeField] private Animator animator;
     private bool isActive;
     private Vector3 defaultRotation;
@@ -33,7 +32,7 @@ namespace Tools {
     private void StopDrilling(object sender, EventArgs e) {
       StopAnimation();
       isActive = false;
-      
+
       transform.localEulerAngles = defaultRotation;
     }
 
@@ -48,26 +47,28 @@ namespace Tools {
     private void Update() {
       if (!isActive)
         return;
-      
+
       LookAt();
     }
 
     private void LookAt() {
-      var mousePosition = GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
-      
-      var direction = GameManager.Instance.PlayerController.transform.localScale.x * (mousePosition - transform.position);
-      
+      var mousePosition =
+        GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
+
+      var direction = GameManager.Instance.PlayerController.transform.localScale.x *
+                      (mousePosition - transform.position);
+
       float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
       // Apply the rotation
       transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
-    
+
     private void OnDestroy() {
       if (!GameManager.HasInstance) {
         return;
       }
-      
+
       GameManager.Instance.UserInput.OnAttackPerformed -= StartDrilling;
       GameManager.Instance.UserInput.OnAttackCanceled -= StopDrilling;
     }

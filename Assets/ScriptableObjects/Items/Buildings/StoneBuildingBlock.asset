@@ -17,11 +17,13 @@ MonoBehaviour:
   Name: Stone block
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 9a6e018b4d944164c86f34e5d21e3905, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 5f54c42773ad3d44693014ab6605598a, type: 3}
   Stackable: 1
   MaxStackSize: 50
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
-  spawnPrefab: {fileID: 3890226224433729309, guid: 5f54c42773ad3d44693014ab6605598a, type: 3}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 5d26b41645e96f24981cc2365b513a70, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
   Description: 
   ResourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}

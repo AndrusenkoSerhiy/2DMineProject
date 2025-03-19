@@ -55,10 +55,10 @@ namespace Player {
     }
 
     private void TryActivateTool() {
-      if(playerEquipment.ItemInHand == null)
+      if (playerEquipment.ItemInHand == null)
         return;
-      
-      var tool = playerEquipment.ItemInHand.GetComponent<ToolBase>();
+
+      var tool = playerEquipment.ItemInHand.GetComponent<HandItem>();
       tool?.Activate();
     }
 
@@ -73,7 +73,7 @@ namespace Player {
         return false;
       }
 
-      var weaponStats = playerEquipment.ItemInHand.GetComponent<GroundItem>().Item;
+      var weaponStats = playerEquipment.ItemInHand.GetComponent<HandItem>().Item;
       if (!(weaponStats is IAttackableItem attackableItem)) {
         Debug.LogWarning("Equipped item is not attackable", this);
         return false;

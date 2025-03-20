@@ -9,6 +9,7 @@ namespace World {
     public int y;
     public float perlin;
     public float durability;
+    public bool canTakeDamage = true;
     private ChunkData _chunk;
     private ResourceData resData;
     public int NeighboursIndex => neighboursIndex();
@@ -25,6 +26,11 @@ namespace World {
 
     public void UpdateDurability(float value) {
       durability -= value;
+    }
+
+    //use for don't allow to break the cell under the building
+    public void SetCanTakeDamage(bool value) {
+      canTakeDamage = value;
     }
     private int neighboursIndex() {
       //allNeighbours

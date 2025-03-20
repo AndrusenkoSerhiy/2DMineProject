@@ -237,6 +237,16 @@ public class PlaceCell : MonoBehaviour {
         chunkController.ChunkData.ForceCellFill(emptyResourceData, coordX, coordY);
       }
     }
+    
+    SetCellsUndamegable(startX, startY, objectSizeX);
+  }
+
+  private void SetCellsUndamegable(int startX, int startY, int objectSizeX) {
+    var coordY = startY + 1;
+    for (var x = 0; x < objectSizeX; x++) {
+      var coordX = startX + x; 
+      chunkController.ChunkData.GetCellData(coordX, coordY).canTakeDamage = false;
+    }
   }
 
   private void AfterPlaceCellActions(CellObject cell) {

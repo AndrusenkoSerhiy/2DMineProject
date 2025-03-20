@@ -67,6 +67,9 @@ namespace World {
     }
 
     public void Damage(float damage) {
+      if(!_cellData.canTakeDamage)
+        return;
+      
       unitHealth.TakeDamage(damage);
       UpdateDamageOverlay(damage);
     }

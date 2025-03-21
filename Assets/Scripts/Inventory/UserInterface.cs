@@ -420,11 +420,9 @@ namespace Inventory {
       }
 
       // Handle merging items
-      if (!targetUI.PreventMergeIn && slot.CanMerge(targetSlot)) {
-        targetInventory.MergeItems(slot, targetSlot);
-
+      if (!targetUI.PreventMergeIn && slot.SlotsHasSameItems(targetSlot)) {
         Debug.Log("Merging items");
-        return true;
+        return targetInventory.MergeItems(slot, targetSlot);
       }
 
       // Handle swapping items
@@ -439,9 +437,8 @@ namespace Inventory {
         return false;
       }
 
-      inventory.SwapSlots(slot, targetSlot);
       Debug.Log("SwapSlots");
-      return true;
+      return inventory.SwapSlots(slot, targetSlot);
     }
   }
 }

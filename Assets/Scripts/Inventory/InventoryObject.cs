@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SaveSystem;
 using Scriptables.Items;
-using UnityEngine;
 
 namespace Inventory {
   public class ItemComparer : IEqualityComparer<Item> {
@@ -145,7 +144,7 @@ namespace Inventory {
             break;
           }
 
-          var canMoveAmount = Math.Min(stackableSlot.Item.info.MaxStackSize - stackableSlot.amount, slot.amount);
+          var canMoveAmount = Math.Min(stackableSlot.GetMaxSize() - stackableSlot.amount, slot.amount);
           slot.RemoveAmount(canMoveAmount);
           stackableSlot.AddAmount(canMoveAmount);
         }
@@ -177,9 +176,9 @@ namespace Inventory {
       }
     }
 
-    public void MergeItems(InventorySlot slot, InventorySlot targetSlot) {
-      if (!slot.SlotsHasSameItems(targetSlot)) {
-        return;
+    public bool MergeItems(InventorySlot slot, InventorySlot targetSlot) {
+      if (!slot.CanMerge(targetSlot)) {
+        return false;
       }
 
       var remainingAmount = AddItemBySlot(slot, targetSlot);
@@ -190,11 +189,14 @@ namespace Inventory {
       else {
         slot.UpdateSlot(remainingAmount);
       }
+
+      return true;
     }
 
-    public void SwapSlots(InventorySlot slot, InventorySlot targetSlot) {
-      slot.SwapWith(targetSlot);
+    public bool SwapSlots(InventorySlot slot, InventorySlot targetSlot) {
+      var result = slot.SwapWith(targetSlot);
       OnSlotSwapped?.Invoke(new SlotSwappedEventData(slot, targetSlot));
+      return result;
     }
 
     public int RemoveItem(string id, int amount) {
@@ -241,6 +243,10 @@ namespace Inventory {
     public int AddItem(Item item, int amount, InventorySlot placeAt = null, InventorySlot formSlot = null) {
       gameManager.RecipesManager.DiscoverMaterial(item.info);
       if (placeAt != null) {
+        if (!placeAt.IsItemAllowed(item.info)) {
+          return amount;
+        }
+
         var overFlow = placeAt.isEmpty
           ? placeAt.UpdateSlot(amount, item, formSlot)
           : placeAt.AddAmount(amount, formSlot);
@@ -248,6 +254,7 @@ namespace Inventory {
       }
 
       var slot = FindStackableItemOnInventory(item);
+      var emptySlotCount = GetEmptySlotCount(item.info);
       // If no empty slots and no existing stackable slot
       if (emptySlotCount <= 0 && slot == null) {
         return amount;
@@ -255,7 +262,7 @@ namespace Inventory {
 
       // Add to a new slot if item is non-stackable or no existing stack
       if (!item.info.Stackable || slot == null) {
-        var emptySlot = GetEmptySlot();
+        var emptySlot = GetEmptySlot(item.info);
         var overFlow = emptySlot.UpdateSlot(amount, item, formSlot);
         return HandleOverflow(overFlow, item);
       }
@@ -272,22 +279,16 @@ namespace Inventory {
     /// <param name="item">The item causing the overflow.</param>
     /// <returns>The remaining overflow amount if slots are unavailable, otherwise 0.</returns>
     private int HandleOverflow(int overflowAmount, Item item) {
-      var maxStackSize = item.info.MaxStackSize;
-
-      var countRepeat = Mathf.CeilToInt((float)overflowAmount / maxStackSize);
-
-      for (var i = 0; i < countRepeat; i++) {
-        var emptySlot = GetEmptySlot();
-        if (emptySlot != null) {
-          emptySlot.UpdateSlot(overflowAmount, item);
-          overflowAmount -= maxStackSize;
+      while (overflowAmount > 0) {
+        var emptySlot = GetEmptySlot(item.info);
+        if (emptySlot == null) {
+          break;
         }
-        else {
-          return overflowAmount;
-        }
+
+        overflowAmount = emptySlot.UpdateSlot(overflowAmount, item);
       }
 
-      return 0;
+      return overflowAmount;
     }
 
     public void Clear() {
@@ -307,7 +308,7 @@ namespace Inventory {
           continue;
         }
 
-        count += itemObj.MaxStackSize - slot.amount;
+        count += slot.GetMaxSize(itemObj) - slot.amount;
       }
 
       return count;
@@ -326,7 +327,7 @@ namespace Inventory {
         }
         else {
           var slotItemId = slot.Item.info.Id;
-          var free = slot.Item.info.MaxStackSize - slot.amount;
+          var free = slot.GetMaxSize() - slot.amount;
 
           ids.Add(slotItemId);
           freeCounts.Add(free);
@@ -338,7 +339,7 @@ namespace Inventory {
 
     public bool CanAddItem(ItemObject item) {
       foreach (var slot in GetSlots) {
-        if (slot.isEmpty || (slot.Item.info.Id == item.Id && slot.amount < item.MaxStackSize)) {
+        if (slot.isEmpty || (slot.Item.info.Id == item.Id && slot.amount < slot.GetMaxSize(item))) {
           return true;
         }
       }
@@ -360,17 +361,15 @@ namespace Inventory {
       return count;
     }
 
-    private int emptySlotCount {
-      get {
-        var counter = 0;
-        for (var i = 0; i < GetSlots.Length; i++) {
-          if (GetSlots[i].isEmpty) {
-            counter++;
-          }
+    private int GetEmptySlotCount(ItemObject itemObject) {
+      var counter = 0;
+      foreach (var slot in GetSlots) {
+        if (slot.isEmpty && slot.IsItemAllowed(itemObject)) {
+          counter++;
         }
-
-        return counter;
       }
+
+      return counter;
     }
 
     public InventorySlot FindFirstNotEmpty() {
@@ -384,25 +383,24 @@ namespace Inventory {
       return null;
     }
 
-    public InventorySlot FindStackableItemOnInventory(Item item) {
-      for (var i = 0; i < GetSlots.Length; i++) {
-        var slot = GetSlots[i];
+    private InventorySlot FindStackableItemOnInventory(Item item) {
+      foreach (var slot in GetSlots) {
         if (slot.isEmpty) {
           continue;
         }
 
-        if (slot.Item.info.Id == item.info.Id && slot.amount < item.info.MaxStackSize) {
-          return GetSlots[i];
+        if (slot.Item.info.Id == item.info.Id && slot.amount < slot.GetMaxSize(item.info)) {
+          return slot;
         }
       }
 
       return null;
     }
 
-    public InventorySlot GetEmptySlot() {
-      for (var i = 0; i < GetSlots.Length; i++) {
-        if (GetSlots[i].isEmpty) {
-          return GetSlots[i];
+    public InventorySlot GetEmptySlot(ItemObject itemObject) {
+      foreach (var slot in GetSlots) {
+        if (slot.isEmpty && slot.IsItemAllowed(itemObject)) {
+          return slot;
         }
       }
 

@@ -13,5 +13,6 @@
     ForgeFuel = 10,
     Storage = 11,
     FoodStationFuel = 12,
+    RobotRepair = 13,
   }
 }

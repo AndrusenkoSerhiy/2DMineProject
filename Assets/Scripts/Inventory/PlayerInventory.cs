@@ -27,6 +27,7 @@ namespace Inventory {
         { InventoryType.ForgeOutput, 5 },
         { InventoryType.ForgeFuel, 3 },
         { InventoryType.FoodStationFuel, 3 },
+        { InventoryType.RobotRepair, 5 },
       };
     }
 

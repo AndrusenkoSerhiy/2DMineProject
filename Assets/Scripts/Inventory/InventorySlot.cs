@@ -10,6 +10,7 @@ namespace Inventory {
     [field: NonSerialized] public event Action<SlotUpdateEventData> OnAfterUpdated;
     [field: NonSerialized] public event Action<InventorySlot> OnBeforeUpdated;
     public ItemObject AllowedItem;
+    public int MaxAllowedAmount = -1;
 
     // [NonSerialized] public Action<string, int> OnAmountUpdate;
     // [NonSerialized] private GameObject outline;
@@ -18,6 +19,7 @@ namespace Inventory {
 
     public Item Item;
     public int amount;
+    public int index;
 
     public InventoryType InventoryType { get; private set; }
 
@@ -66,13 +68,32 @@ namespace Inventory {
       amount = 0;
     }
 
+    public InventorySlot(int index) {
+      Item = new Item();
+      amount = 0;
+      this.index = index;
+    }
+
     public InventorySlot Clone(InventorySlot formSlot = null) {
       return new InventorySlot {
         Item = Item,
         amount = amount,
         isSelected = isSelected,
+        index = index,
         InventoryType = formSlot?.InventoryType ?? InventoryType,
       };
+    }
+
+    public int GetMaxSize(ItemObject itemObject = null) {
+      itemObject ??= Item.info;
+
+      if (!itemObject) {
+        return MaxAllowedAmount == -1 ? 0 : MaxAllowedAmount;
+      }
+
+      return MaxAllowedAmount == -1
+        ? itemObject.MaxStackSize
+        : Math.Min(itemObject.MaxStackSize, MaxAllowedAmount);
     }
 
     public int AddItem(Item item, int amount) {
@@ -105,7 +126,8 @@ namespace Inventory {
       }
 
       itemValue ??= Item;
-      var maxStack = itemValue.info ? itemValue.info.MaxStackSize : 0;
+      // var maxStack = itemValue.info ? itemValue.info.MaxStackSize : 0;
+      var maxStack = GetMaxSize(itemValue.info);
       var newAmount = Mathf.Min(amountValue, maxStack);
       var overFlow = Mathf.Max(0, amountValue - maxStack);
       isSelected = formSlot?.isSelected ?? isSelected;
@@ -123,16 +145,26 @@ namespace Inventory {
     }
 
     //use when swap items
-    public void SwapWith(InventorySlot targetSlot) {
+    public bool SwapWith(InventorySlot targetSlot) {
       if (targetSlot == null || targetSlot == this) {
-        return;
+        return false;
       }
 
       var tempSlot = Clone();
 
       // Swap data
-      UpdateSlotBySlot(targetSlot);
-      targetSlot.UpdateSlotBySlot(tempSlot);
+      var slotLeftAmount = UpdateSlotBySlot(targetSlot);
+      var targetLeftAmount = targetSlot.UpdateSlotBySlot(tempSlot);
+
+      if (slotLeftAmount > 0 && targetSlot.isEmpty) {
+        targetSlot.UpdateSlot(slotLeftAmount, Item);
+      }
+
+      if (targetLeftAmount > 0 && isEmpty) {
+        UpdateSlot(targetLeftAmount, targetSlot.Item);
+      }
+
+      return true;
     }
 
     public bool SlotsHasSameItems(InventorySlot targetSlot) {
@@ -152,7 +184,12 @@ namespace Inventory {
         return true;
       }
 
-      return targetSlot.amount < targetSlot.Item.info.MaxStackSize && amount < Item.info.MaxStackSize;
+      var targetMax = targetSlot.GetMaxSize();
+      var slotMax = GetMaxSize();
+
+      return targetMax == slotMax
+        ? targetSlot.amount < targetSlot.GetMaxSize() && amount < GetMaxSize()
+        : targetSlot.amount < targetSlot.GetMaxSize();
     }
 
     public void Select() {
@@ -161,7 +198,7 @@ namespace Inventory {
     }
 
     public void Unselect() {
-      SlotDisplay.DeactivateOutline();
+      SlotDisplay?.DeactivateOutline();
       isSelected = false;
     }
 

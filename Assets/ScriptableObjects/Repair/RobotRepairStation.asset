@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 265b919a654c40b3a8b9d2a10fba059e, type: 3}
+  m_Name: RobotRepairStation
+  m_EditorClassIdentifier: 
+  id: c9c44a54-b2ac-473b-b441-a4cfd394571b
+  InterfacePrefab: {fileID: 2952217949748886116, guid: b49974e96cbeecc4389d1b2bbc35dc2a, type: 3}
+  RobotPrefab: {fileID: 8299954890877120637, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
+  InventoryType: 13
+  RepairResources:
+  - {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+  - {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
+  - {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+  - {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
+  - {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
+  RepairResourcesAmount: 040000000500000003000000050000000a000000

@@ -8,12 +8,12 @@ namespace Interaction
     [SerializeField] private LayerMask interactableMask;
     [SerializeField] private InteractionPrompt interactionPromtUI;
 
-    [SerializeField] private Collider2D[] colliders = new Collider2D[3];
+    private Collider2D[] colliders = new Collider2D[3];
     [SerializeField] private int numFound;
 
     private IInteractable interactable;
     private void Update() {
-      //id any window is open don't allow to find items and show interaction message
+      //if any window is open don't allow to find items and show interaction message
       if (GameManager.Instance.WindowsController.IsAnyWindowOpen) {
         interactionPromtUI.ShowPrompt(false);
         return; 

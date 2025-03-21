@@ -15,7 +15,6 @@ public class PlaceCell : MonoBehaviour {
   [SerializeField] private Color previewColor;
   [SerializeField] private Color blockColor;
   private Color currPreviewColor;
-  [SerializeField] private InventorySlot currSlot;
   private SpriteRenderer renderer;
   [SerializeField] private ResourceData emptyResourceData;
 
@@ -35,35 +34,28 @@ public class PlaceCell : MonoBehaviour {
     return GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
   }
 
-  public void ActivateBuildMode(InventorySlot slot, ResourceData rData, GameObject sPrefab) {
+  public void ActivateBuildMode(ResourceData rData, GameObject sPrefab) {
     spawnPrefab = sPrefab;
-    if (currSlot == null) {
-      EnableBuildMode(slot, rData);
+    if (!isPreviewing){
+      EnableBuildMode(GetSelectedSlot(), rData);
     }
-    else if (currSlot.Item == slot.Item) {
+    else {
       DisableBuildMode();
-    }
-    else if (currSlot.Item != slot.Item) {
-      ChangeBuildMode(slot, rData);
     }
   }
 
+  private InventorySlot GetSelectedSlot() {
+    return GameManager.Instance.QuickSlotListener.GetSelectedSlot();
+  }
+
   private void EnableBuildMode(InventorySlot slot, ResourceData rData) {
-    currSlot = slot;
     resourceData = rData;
     SetEnabled(true);
   }
 
   private void DisableBuildMode() {
     SetEnabled(false);
-    currSlot = null;
     resourceData = null;
-  }
-
-  private void ChangeBuildMode(InventorySlot slot, ResourceData rData) {
-    currSlot = slot;
-    resourceData = rData;
-    SetEnabled(true);
   }
 
   private void StartPreview() {
@@ -204,7 +196,7 @@ public class PlaceCell : MonoBehaviour {
       PlaceBuildingBlock();
     }
 
-    currSlot.RemoveAmount(1);
+    GetSelectedSlot().RemoveAmount(1);
     ClearSLot();
   }
 
@@ -264,12 +256,11 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void ClearSLot() {
-    if (currSlot.amount > 0)
+    if (GetSelectedSlot().amount > 0)
       return;
 
     OnSlotReset?.Invoke();
     SetEnabled(false);
-    currSlot = null;
     resourceData = null;
   }
 

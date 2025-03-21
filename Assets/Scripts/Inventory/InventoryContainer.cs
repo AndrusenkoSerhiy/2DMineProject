@@ -10,7 +10,7 @@ namespace Inventory {
       Slots = new InventorySlot[size];
 
       for (var i = 0; i < Slots.Length; i++) {
-        Slots[i] = new InventorySlot();
+        Slots[i] = new InventorySlot(i);
       }
     }
 

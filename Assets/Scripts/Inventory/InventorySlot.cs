@@ -18,6 +18,7 @@ namespace Inventory {
 
     public Item Item;
     public int amount;
+    public int index;
 
     public InventoryType InventoryType { get; private set; }
 
@@ -66,11 +67,18 @@ namespace Inventory {
       amount = 0;
     }
 
+    public InventorySlot(int index) {
+      Item = new Item();
+      amount = 0;
+      this.index = index;
+    }
+
     public InventorySlot Clone(InventorySlot formSlot = null) {
       return new InventorySlot {
         Item = Item,
         amount = amount,
         isSelected = isSelected,
+        index = index,
         InventoryType = formSlot?.InventoryType ?? InventoryType,
       };
     }
@@ -161,7 +169,7 @@ namespace Inventory {
     }
 
     public void Unselect() {
-      SlotDisplay.DeactivateOutline();
+      SlotDisplay?.DeactivateOutline();
       isSelected = false;
     }
 

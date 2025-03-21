@@ -78,9 +78,13 @@ namespace Craft {
 
     private void InsertButton(Button previousButton, Button button, Recipe recipe) {
       var index = previousButton.transform.GetSiblingIndex() + 1;
-      button.transform.SetSiblingIndex(index);
-      recipesListIds.Insert(index, recipe.Id);
-      recipesListButtons.Insert(index, button);
+      InsertButtonInPosition(index, button, recipe);
+    }
+
+    private void InsertButtonInPosition(int position, Button button, Recipe recipe) {
+      button.transform.SetSiblingIndex(position);
+      recipesListIds.Insert(position, recipe.Id);
+      recipesListButtons.Insert(position, button);
     }
 
     private Button CreateButton(Recipe recipe) {
@@ -133,21 +137,39 @@ namespace Craft {
     }
 
     private void OnRecipeUnlockedHandler(Recipe recipe) {
+      if (recipe.RecipeType != station.RecipeType) {
+        return;
+      }
+
       if (recipesListIds.Contains(recipe.Id)) {
         return;
       }
 
       var recipes = GameManager.Instance.RecipesManager.GetRecipesForStation(station.RecipeType);
+      var newRecipeIndex = recipes.IndexOf(recipe);
 
-      var findIndex = recipes.IndexOf(recipe);
-      var previousButton = findIndex > 0 ? recipesListButtons[findIndex - 1] : null;
-      if (previousButton == null) {
-        return;
+      Button previousButton = null;
+
+      for (var i = newRecipeIndex - 1; i >= 0; i--) {
+        var previousRecipeId = recipes[i].Id;
+        var previousIndexInList = recipesListIds.IndexOf(previousRecipeId);
+
+        if (previousIndexInList == -1) {
+          continue;
+        }
+
+        previousButton = recipesListButtons[previousIndexInList];
+        break;
       }
 
       var listItem = CreateButton(recipe);
 
-      InsertButton(previousButton, listItem, recipe);
+      if (previousButton != null) {
+        InsertButton(previousButton, listItem, recipe);
+      }
+      else {
+        InsertButtonInPosition(0, listItem, recipe);
+      }
 
       listItem.onClick.AddListener(() => ListItemClickHandler(listItem));
     }

@@ -14,6 +14,7 @@ using Items;
 using Scriptables.CameraController;
 using Menu;
 using Messages;
+using Movement;
 using Pool;
 using Settings;
 using UI;
@@ -50,6 +51,10 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private GameObject tempDragItem;
   [SerializeField] private ObjectPooler poolEffects;
   [SerializeField] private QuickSlotListener quickSlotListener;
+  //TODO
+  //robot don't need this param in own script
+  [SerializeField] private StaminaBar staminaBar;
+  [SerializeField] private LadderMovement playerLadderMovement;
 
   private PlayerController playerController;
   private PlayerControllerBase currPlayerController;
@@ -84,6 +89,8 @@ public class GameManager : PersistentSingleton<GameManager> {
   public AnimatorParameters AnimatorParameters => animatorParameters;
   public ObjectPooler PoolEffects => poolEffects;
   public QuickSlotListener QuickSlotListener => quickSlotListener;
+  public StaminaBar StaminaBar => staminaBar;
+  public LadderMovement PlayerLadderMovement => playerLadderMovement;
 
   public PlayerController PlayerController {
     set => playerController = value;

@@ -1,6 +1,5 @@
 using System;
 using Animation;
-using DefaultNamespace;
 using Movement;
 using Pool;
 using Scriptables;
@@ -31,7 +30,7 @@ namespace Player {
     public PlayerCoords PlayerCoords => _playerCoords;
     public Vector2 FrameVelocity => _frameVelocity;
 
-    [SerializeField] private Stamina _stamina;
+    [SerializeField] protected Stamina _stamina;
     public Stamina Stamina => _stamina;
     public PlayerStats Stats => _stats;
     private float _frameLeftGrounded = float.MinValue;

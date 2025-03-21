@@ -1035,6 +1035,7 @@ GameObject:
   - component: {fileID: 6949316742863476391}
   - component: {fileID: 858450107997457076}
   - component: {fileID: 7553158782713885977}
+  - component: {fileID: 5548036571162556360}
   m_Layer: 6
   m_Name: MiningRobot
   m_TagString: Untagged
@@ -1083,7 +1084,7 @@ MonoBehaviour:
   _flipDeadZone: 1
   _playerCoords: {fileID: 7553158782713885977}
   _ladderMovement: {fileID: 0}
-  _stamina: {fileID: 0}
+  _stamina: {fileID: 5548036571162556360}
   grounded: 0
   startFalling: 0
   miningRobotAttack: {fileID: 858450107997457076}
@@ -1187,6 +1188,25 @@ MonoBehaviour:
     X: -1
     Y: -1
   trForGrid: {fileID: 1706817066457549848}
+--- !u!114 &5548036571162556360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8299954890877120637}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af42f2ee84a74a76aec5b0a83426c0e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  staminaBar: {fileID: 0}
+  maxStamina: 100
+  currentStamina: 0
+  staminaDrain: 20
+  staminaRecovery: 10
+  minStamina: 10
+  isSprinting: 0
 --- !u!1 &8974371386463895364
 GameObject:
   m_ObjectHideFlags: 0

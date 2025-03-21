@@ -8,6 +8,8 @@ namespace Player {
       base.Awake();
       GameManager.Instance.MiningRobotController = this;
       EnableController(false);
+      _stamina.SetStaminaBarRef();
+      _ladderMovement = GameManager.Instance.PlayerLadderMovement;
     }
 
     protected override void LookAtMouse() {

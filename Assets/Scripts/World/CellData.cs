@@ -9,6 +9,10 @@ namespace World {
     public int y;
     public float perlin;
     public float durability;
+    //amount of items what already dropped from cell
+    public int alreadyDroped;
+    //how exactly we close to drop item
+    public float fractionalResource;
     public bool canTakeDamage = true;
     private ChunkData _chunk;
     private ResourceData resData;

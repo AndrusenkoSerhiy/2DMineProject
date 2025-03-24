@@ -13,71 +13,44 @@ MonoBehaviour:
   m_Name: IronData
   m_EditorClassIdentifier: 
   Durability: 25
+  DropCount: 5
   tileDatas:
   - sprite: {fileID: 21300000, guid: 982fd111b44bd6a4d8178ef033ac9674, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: e603ce6e9ec795243953b54b96c2bed2, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 9887f6b656f5bf94dbeeb5a1c5cea5e1, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: cf44119480b288d47ad1c76dceafdb7f, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: c5fac4e9502946f4aa38c0b733e10493, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: c67a4a434b008a147b402974a0c000e7, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 0a2b34c2cb55edd489309f2fb9fc957d, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 63bab46a86b149649ade12eaab3b64be, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 869a62083b2a0324ab5f34e8f9f1211a, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 587fa2a224ee84a46a18b70bf594191a, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 4ad1c72602821824c89a35ffac91a6f3, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 1ff1183f5b331c9419765b99049acc4b, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: fbc81cc5682b57e44aa9781c57c060f9, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 69ae75a12b046d847b26d833a5fdb40d, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 6803ac36921e5a043ac7a01fe3b65fa6, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   - sprite: {fileID: 21300000, guid: 70c86799941009040babc7d62ce98bdf, type: 3}
     offsetSorting: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetCollider: {x: 0, y: 0, z: 0}
   sortingOrder: 1
   itemData: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
   mapColor: {r: 0, g: 0.6631289, b: 0.7169812, a: 0}
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 3.44, y: 3.44}
+  isBuilding: 0
+  cellSize: {x: 1, y: 1}

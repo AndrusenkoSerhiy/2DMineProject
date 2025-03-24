@@ -7,6 +7,7 @@ namespace Scriptables {
   [CreateAssetMenu(menuName = "Create ResourceData", fileName = "ResourceData", order = 0)]
   public class ResourceData : ScriptableObject {
     public int Durability;
+    public int DropCount;
     [SerializeField] private List<TileData> tileDatas;
     [SerializeField] private int sortingOrder;
     [SerializeField] private ItemObject itemData;

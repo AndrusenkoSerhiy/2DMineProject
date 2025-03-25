@@ -146,7 +146,9 @@ namespace Inventory {
       GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, addedAmount);
 
       //ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
-      GameManager.Instance.PoolEffects.SpawnFlyEffect(item, cellPos);
+      if (count != 0) {
+        GameManager.Instance.PoolEffects.SpawnFlyEffect(item, cellPos);
+      }
       AddAdditionalItem(item, cellPos);
     }
 

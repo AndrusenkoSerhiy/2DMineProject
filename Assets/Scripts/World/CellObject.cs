@@ -25,6 +25,9 @@ namespace World {
     private Vector3 originalPosition;
     private Vector3 originalScale;
     private int originalSortingOrder;
+    //for spawn drop count
+    private float resourcePerDurability;
+    private float fractionalResource;
     
     //in building prefab boxCollider is disabled by default and enabled 
     //when you place it in the cell
@@ -37,7 +40,7 @@ namespace World {
       resourceData = data;
       InitUnitHealth();
     }
-
+    
     private void InitUnitHealth() {
       unitHealth = new UnitHealth(resourceData.Durability);
       //if cell have not full hp we need to update overlayDamage for cell
@@ -46,6 +49,9 @@ namespace World {
         UpdateDamageOverlay(resourceData.Durability - _cellData.durability); 
       }
       
+      resourcePerDurability = (float)resourceData.DropCount/resourceData.Durability;
+      //Debug.LogError($"resourceData {resourceData.name} | DropCount {resourceData.DropCount} | resourceData.Durability {resourceData.Durability} | resourcePerDurability {resourcePerDurability}");
+      fractionalResource = _cellData.fractionalResource;
       unitHealth.OnTakeDamage += AddItemToInventory;
     }
 
@@ -80,7 +86,24 @@ namespace World {
         return;
       }
       _cellData.UpdateDurability(damage);
-      GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, (int)damage, transform.position);
+      //Debug.LogError($"Durability {resourceData.Durability} _cellData.durability {_cellData.durability}");
+      CalculateCountToSpawn(damage);
+    }
+
+    private void CalculateCountToSpawn(float damage) {
+      var totalResourceGained = damage * resourcePerDurability;
+      fractionalResource += totalResourceGained;
+      int integerResource = (int)fractionalResource;
+      
+      fractionalResource -= integerResource;
+      _cellData.alreadyDroped += integerResource;
+      _cellData.fractionalResource = fractionalResource;
+      
+      GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, integerResource, transform.position);
+      //if cell is destroyed need to check for spawn left item
+      if (_cellData.durability <= 0 && resourceData.DropCount - _cellData.alreadyDroped > 0) {
+        GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, resourceData.DropCount - _cellData.alreadyDroped, transform.position);
+      }
     }
 
     public float GetHealth() {

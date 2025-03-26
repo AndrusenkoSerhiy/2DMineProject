@@ -3,6 +3,7 @@ using Windows;
 using Scriptables.Items;
 using UnityEngine;
 using SaveSystem;
+using Scriptables;
 using UnityEngine.Rendering;
 
 namespace Inventory {
@@ -149,20 +150,21 @@ namespace Inventory {
       if (count != 0) {
         GameManager.Instance.PoolEffects.SpawnFlyEffect(item, cellPos);
       }
-      AddAdditionalItem(item, cellPos);
+
+      //if (withAdditional) AddAdditionalItem(item, cellPos);
     }
 
     //get bonus resource when we are mining
-    private void AddAdditionalItem(ItemObject item, Vector3 cellPos) {
-      var resource = item as Resource;
-      if (resource == null) {
+    public void AddAdditionalItem(ResourceData resourceData, Vector3 cellPos) {
+      if (resourceData == null) {
         return;
       }
 
-      var list = resource.GetBonusResources;
+      var list = resourceData.GetBonusResources;
       for (var i = 0; i < list.Count; i++) {
         var currentResource = list[i];
-        if (Random.value > currentResource.chance) {
+        var rand = Random.value;
+        if (rand > currentResource.chance) {
           return;
         }
 

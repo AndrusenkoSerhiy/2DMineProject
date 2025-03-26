@@ -14,15 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3f409518-7db3-46aa-90fd-7862f4f126f5
   RecipeName: Nails
-  Code: nails
   RecipeType: 2
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
-    Amount: 20
+    Amount: 1
   Fuel:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
-  ResultAmount: 30
   CraftingTime: 5
   detailImg: {fileID: 0}

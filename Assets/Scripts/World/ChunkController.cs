@@ -198,6 +198,23 @@ namespace World {
 
     private void InitStartChunk() {
       chunkData = _chunkGenerator.GetChunk(0, 0);
+      //fill first row
+      var data = ResourceDataLibrary.GetData(0.3f);
+      for (int i = 0; i < 500; i++) {
+        var cell = chunkData.GetCellData(i, 0);
+        if (cell.perlin <= 0.3f) {
+          cell.perlin = 0.3f;
+          cell.durability = data.Durability;
+          chunkData.SetCellFill(i, 0);
+        }
+      }
+      //set first help
+      var dataWood = ResourceDataLibrary.GetData(0.3f);
+      var cellWood = chunkData.GetCellData(258, 0);
+      cellWood.perlin = -1f;
+      cellWood.durability = dataWood.Durability;
+      
+      //POI
       GeneratePOI(chunkData);
       SpawnChunk(0, 0);
     }
@@ -223,7 +240,7 @@ namespace World {
           var randIndex = Random.Range(0, emptyCells.Count);
           var startCell = emptyCells[randIndex];
           for (int k = 0; k < _poiDataLibrary.POIDataList[i].Cells.Count; k++) {
-            var targetData = _poiDataLibrary.POIDataList[i].Cells[i];
+            var targetData = _poiDataLibrary.POIDataList[k].Cells[k];
             if (targetData == null) continue;
             var xCoord = startCell.x + targetData.localX;
             var yCoord = startCell.y + targetData.localY;

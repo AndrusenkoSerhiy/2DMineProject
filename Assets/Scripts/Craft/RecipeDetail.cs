@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Inventory;
 using Scriptables.Craft;
 using TMPro;
 using UnityEngine;
@@ -19,18 +20,20 @@ namespace Craft {
 
     private void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
-      inventoriesPool = GameManager.Instance.CraftManager.InventoriesPool;
+      inventoriesPool = GameManager.Instance.PlayerInventory.InventoriesPool;
     }
 
     private void OnEnable() {
       SetRecipeDetails(station.CurrentRecipe);
       station.OnRecipeChanged += SetRecipeDetails;
-      inventoriesPool.OnResourcesTotalUpdate += OnResourcesTotalUpdateHandler;
+      // inventoriesPool.OnResourcesTotalUpdate += OnResourcesTotalUpdateHandler;
+      AddInventoryPoolEvents();
     }
 
     private void OnDisable() {
       station.OnRecipeChanged -= SetRecipeDetails;
-      inventoriesPool.OnResourcesTotalUpdate -= OnResourcesTotalUpdateHandler;
+      // inventoriesPool.OnResourcesTotalUpdate -= OnResourcesTotalUpdateHandler;
+      RemoveInventoryPoolEvents();
     }
 
     private void OnResourcesTotalUpdateHandler(string resourceId) {
@@ -71,6 +74,34 @@ namespace Craft {
         var recipeDetailRow = rows[rowIndex++];
         recipeDetailRow.ClearRow();
       }
+    }
+
+    private void AddInventoryPoolEvents() {
+      foreach (var inventory in inventoriesPool.Inventories) {
+        foreach (var slot in inventory.Slots) {
+          slot.OnAfterItemAdd += OnAfterAmountChangedHandler;
+          slot.OnAfterItemRemoved += OnAfterAmountChangedHandler;
+          slot.OnAfterAmountChanged += OnAfterAmountChangedHandler;
+        }
+      }
+    }
+
+    private void RemoveInventoryPoolEvents() {
+      foreach (var inventory in inventoriesPool.Inventories) {
+        foreach (var slot in inventory.Slots) {
+          slot.OnAfterItemAdd -= OnAfterAmountChangedHandler;
+          slot.OnAfterItemRemoved -= OnAfterAmountChangedHandler;
+          slot.OnAfterAmountChanged -= OnAfterAmountChangedHandler;
+        }
+      }
+    }
+
+    private void OnAfterAmountChangedHandler(InventorySlot slot) {
+      if (slot.isEmpty) {
+        return;
+      }
+
+      OnResourcesTotalUpdateHandler(slot.Item.info.Id);
     }
   }
 }

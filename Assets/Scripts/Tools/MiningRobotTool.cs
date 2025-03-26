@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Interaction;
+using Inventory;
 using Player;
 using UnityEngine;
 
@@ -57,6 +58,10 @@ namespace Tools {
       GameManager.Instance.CurrPlayerController = miningRobotController;
       
       playerController.ResetLocalScale();
+
+      //TODO robot id
+      var robotInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(InventoryType.RobotInventory, "base_robot");
+      GameManager.Instance.PlayerInventory.GetInventory().AddInventoryObject(robotInventory.MainInventoryObject);
     }
 
     private void ExitFromRobot() {
@@ -68,6 +73,10 @@ namespace Tools {
       miningRobotController.SetLockHighlight(true);
       GameManager.Instance.CurrPlayerController = playerController;
       GameManager.Instance.QuickSlotListener.Activate();
+      
+      //TODO robot id
+      var robotInventory = GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(InventoryType.RobotInventory, "base_robot");
+      GameManager.Instance.PlayerInventory.GetInventory().RemoveInventoryObject(robotInventory.MainInventoryObject);
     }
 
     private void SetPlayerPosition(Transform tr, Vector3 pos) {

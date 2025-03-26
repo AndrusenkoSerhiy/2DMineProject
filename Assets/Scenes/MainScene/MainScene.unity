@@ -2194,12 +2194,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db8fbed0a15cbbe4582206c75914aa28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoriesSizes:
-    m_Keys: 010000000300000005000000060000000700000008000000090000000a0000000c0000000d000000
-    m_Values: 180000000a0000000500000005000000050000000500000005000000030000000300000005000000
-  storagesSizes:
-    m_Keys: 000000000100000002000000
-    m_Values: 120000001b00000024000000
+  inventoriesSettings:
+  - type: 1
+    size: 9
+    slotIcon: {fileID: 0}
+  - type: 3
+    size: 10
+    slotIcon: {fileID: 0}
+  - type: 4
+    size: 18
+    slotIcon: {fileID: 0}
+  - type: 5
+    size: 27
+    slotIcon: {fileID: 0}
+  - type: 6
+    size: 36
+    slotIcon: {fileID: 0}
+  - type: 20
+    size: 5
+    slotIcon: {fileID: 0}
+  - type: 21
+    size: 3
+    slotIcon: {fileID: 0}
+  - type: 40
+    size: 16
+    slotIcon: {fileID: 21300000, guid: 5a24758d08364fd44933b1d529ff90ea, type: 3}
+  - type: 41
+    size: 5
+    slotIcon: {fileID: 0}
 --- !u!1001 &2019439808
 PrefabInstance:
   m_ObjectHideFlags: 0

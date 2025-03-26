@@ -9,23 +9,21 @@ namespace Inventory {
     [NonSerialized] public SlotDisplay SlotDisplay;
     [field: NonSerialized] public event Action<SlotUpdateEventData> OnAfterUpdated;
     [field: NonSerialized] public event Action<InventorySlot> OnBeforeUpdated;
+    [field: NonSerialized] public event Action<InventorySlot> OnAfterItemAdd;
+    [field: NonSerialized] public event Action<InventorySlot> OnAfterItemRemoved;
+    [field: NonSerialized] public event Action<InventorySlot> OnAfterAmountChanged;
     public ItemObject AllowedItem;
     public int MaxAllowedAmount = -1;
-
-    // [NonSerialized] public Action<string, int> OnAmountUpdate;
-    // [NonSerialized] private GameObject outline;
-    // [NonSerialized] private Image background;
-    // [NonSerialized] private TextMeshProUGUI text;
 
     public Item Item;
     public int amount;
     public int index;
 
     public InventoryType InventoryType { get; private set; }
+    public InventoryType InventoryObjectType { get; private set; }
+    public string InventoryId { get; private set; }
 
     public bool isSelected;
-    /*public Image Background => GetBackground();
-    public TextMeshProUGUI Text => GetText();*/
 
     private bool preventEvents = false;
 
@@ -48,7 +46,7 @@ namespace Inventory {
 
     public void SetParent(IInventoryUI parent) {
       Parent = parent;
-      InventoryType = parent.Inventory.type;
+      InventoryType = parent.Inventory.Type;
     }
 
     public bool IsItemAllowed(ItemObject item) {
@@ -68,10 +66,12 @@ namespace Inventory {
       amount = 0;
     }
 
-    public InventorySlot(int index) {
+    public InventorySlot(int index, InventoryType type, string inventoryId) {
       Item = new Item();
       amount = 0;
       this.index = index;
+      InventoryObjectType = type;
+      InventoryId = inventoryId;
     }
 
     public InventorySlot Clone(InventorySlot formSlot = null) {
@@ -80,6 +80,7 @@ namespace Inventory {
         amount = amount,
         isSelected = isSelected,
         index = index,
+        InventoryObjectType = formSlot?.InventoryObjectType ?? InventoryObjectType,
         InventoryType = formSlot?.InventoryType ?? InventoryType,
       };
     }
@@ -96,30 +97,66 @@ namespace Inventory {
         : Math.Min(itemObject.MaxStackSize, MaxAllowedAmount);
     }
 
-    public int AddItem(Item item, int amount) {
-      return UpdateSlot(amount, item);
+    public int AddItem(int addAmount, Item item, InventorySlot formSlot = null) {
+      var amountBefore = amount;
+      var overFlow = UpdateSlot(addAmount, item, formSlot);
+
+      if (!preventEvents && amountBefore != amount) {
+        OnAfterItemAdd?.Invoke(this);
+      }
+
+      return overFlow;
     }
 
     public void RemoveItem() {
+      var slotDataBefore = Clone(this);
       UpdateSlot(0, new Item());
+
+      if (!preventEvents) {
+        OnAfterItemRemoved?.Invoke(slotDataBefore);
+      }
     }
 
     public int AddAmount(int value, InventorySlot formSlot = null) {
-      return UpdateSlot(amount + value, Item, formSlot);
+      var amountBefore = amount;
+      var overFlow = UpdateSlot(amount + value, Item, formSlot);
+
+      if (!preventEvents && amountBefore != amount) {
+        OnAfterAmountChanged?.Invoke(this);
+      }
+
+      return overFlow;
     }
 
     public int RemoveAmount(int value, InventorySlot formSlot = null) {
       var newAmount = amount - value;
       var item = newAmount <= 0 ? new Item() : Item;
+      var amountBefore = amount;
+      var overFlow = UpdateSlot(newAmount, item, formSlot);
 
-      return UpdateSlot(newAmount, item, formSlot);
+      if (!preventEvents && amountBefore != amount) {
+        OnAfterAmountChanged?.Invoke(this);
+      }
+
+      return overFlow;
+    }
+
+    public int SetAmount(int value) {
+      var amountBefore = amount;
+      var overFlow = UpdateSlot(value);
+
+      if (!preventEvents && amountBefore != amount) {
+        OnAfterAmountChanged?.Invoke(this);
+      }
+
+      return overFlow;
     }
 
     public int UpdateSlotBySlot(InventorySlot slot) {
       return UpdateSlot(slot.amount, slot.Item, slot);
     }
 
-    public int UpdateSlot(int amountValue, Item itemValue = null, InventorySlot formSlot = null) {
+    private int UpdateSlot(int amountValue, Item itemValue = null, InventorySlot formSlot = null) {
       var slotDataBefore = Clone(this);
       if (!preventEvents) {
         OnBeforeUpdated?.Invoke(slotDataBefore);
@@ -210,42 +247,5 @@ namespace Inventory {
         SlotDisplay.DeactivateOutline();
       }
     }
-
-    /*private void ActivateOutline() {
-      GetOutline().SetActive(true);
-    }
-
-    private void DeactivateOutline() {
-      GetOutline().SetActive(false);
-    }*/
-
-    /*private GameObject GetOutline() {
-      if (!outline) {
-        outline = SlotDisplay.transform.GetChild(0).gameObject;
-      }
-
-      return outline;
-    }
-
-    private Image GetBackground() {
-      if (background == null) {
-        background = SlotDisplay.transform.GetChild(1).GetComponent<Image>();
-      }
-
-      return background;
-    }
-
-    private TextMeshProUGUI GetText() {
-      if (text == null) {
-        text = SlotDisplay.GetComponentInChildren<TextMeshProUGUI>();
-      }
-
-      return text;
-    }
-
-    public void ResetBackgroundAndText() {
-      background = null;
-      text = null;
-    }*/
   }
 }

@@ -24,7 +24,7 @@ namespace Craft {
     private Workstation station;
     private GameManager gameManager;
     private InventoriesPool inventoriesPool;
-    private List<InventoryObject> outputInventories;
+    private List<Inventory.Inventory> outputInventories;
 
     private int minCount = 1;
     private int maxCount;
@@ -37,7 +37,7 @@ namespace Craft {
       buttonsDisabledColor = uiSettings.buttonsDisabledColor;
 
       station = ServiceLocator.For(this).Get<Workstation>();
-      inventoriesPool = gameManager.CraftManager.InventoriesPool;
+      inventoriesPool = gameManager.PlayerInventory.InventoriesPool;
       outputInventories = station.GetOutputInventories();
     }
 
@@ -91,7 +91,9 @@ namespace Craft {
       station.OnRecipeChanged += OnRecipeChangedHandler;
       station.OnAfterAddItemToInputs += OnAfterCraftRequestedHandler;
       station.OnInputAllCrafted += OnInputAllCraftedHandler;
-      inventoriesPool.OnResourcesTotalUpdate += OnResourcesTotalUpdateHandler;
+      // inventoriesPool.OnResourcesTotalUpdate += OnResourcesTotalUpdateHandler;
+
+      AddInventoryPoolEvents();
 
       //for InventoryType.Inventory handles inside station
       if (station.OutputInventoryType != InventoryType.Inventory) {
@@ -105,10 +107,12 @@ namespace Craft {
         RemoveOutputUpdateEvents();
       }
 
+      RemoveInventoryPoolEvents();
+
       station.OnInputAllCrafted -= OnInputAllCraftedHandler;
       station.OnAfterAddItemToInputs -= OnAfterCraftRequestedHandler;
       station.OnRecipeChanged -= OnRecipeChangedHandler;
-      inventoriesPool.OnResourcesTotalUpdate -= OnResourcesTotalUpdateHandler;
+      // inventoriesPool.OnResourcesTotalUpdate -= OnResourcesTotalUpdateHandler;
 
       countInput.onValueChanged.RemoveAllListeners();
       craftButton.onClick.RemoveAllListeners();
@@ -134,7 +138,7 @@ namespace Craft {
 
     private void AddOutputUpdateEvents() {
       foreach (var outputInventory in outputInventories) {
-        foreach (var output in outputInventory.GetSlots) {
+        foreach (var output in outputInventory.Slots) {
           output.OnAfterUpdated += OutputUpdateSlotHandler;
         }
       }
@@ -142,7 +146,7 @@ namespace Craft {
 
     private void RemoveOutputUpdateEvents() {
       foreach (var outputInventory in outputInventories) {
-        foreach (var output in outputInventory.GetSlots) {
+        foreach (var output in outputInventory.Slots) {
           output.OnAfterUpdated -= OutputUpdateSlotHandler;
         }
       }
@@ -154,6 +158,36 @@ namespace Craft {
       }
 
       station.StartCrafting();
+    }
+
+    private void AddInventoryPoolEvents() {
+      foreach (var inventory in inventoriesPool.Inventories) {
+        foreach (var slot in inventory.Slots) {
+          slot.OnAfterItemAdd += OnAfterAmountChangedHandler;
+          slot.OnAfterItemRemoved += OnAfterAmountChangedHandler;
+          slot.OnAfterAmountChanged += OnAfterAmountChangedHandler;
+        }
+      }
+    }
+
+    private void RemoveInventoryPoolEvents() {
+      foreach (var inventory in inventoriesPool.Inventories) {
+        foreach (var slot in inventory.Slots) {
+          slot.OnAfterItemAdd -= OnAfterAmountChangedHandler;
+          slot.OnAfterItemRemoved -= OnAfterAmountChangedHandler;
+          slot.OnAfterAmountChanged -= OnAfterAmountChangedHandler;
+        }
+      }
+    }
+
+    private void OnAfterAmountChangedHandler(InventorySlot slot) {
+      Debug.Log($"OnAfterAmountChangedHandler id: {slot.Item.info.Id}. name: {slot.Item.info.Name}");
+
+      if (slot.isEmpty) {
+        return;
+      }
+
+      OnResourcesTotalUpdateHandler(slot.Item.info.Id);
     }
 
     private void OnCountInputChangeHandler(string value) {

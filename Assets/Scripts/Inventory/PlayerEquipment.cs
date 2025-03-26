@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Inventory {
   public class PlayerEquipment : MonoBehaviour {
     //private InventoryObject _equipment;
-    private InventoryObject quickSlots;
+    private Inventory quickSlots;
 
     [Header("Equip Transforms")] [SerializeField]
     private Transform offhandWristTransform;
@@ -44,7 +44,7 @@ namespace Inventory {
       if (itemObject == null)
         return;
 
-      switch (slot.Parent.Inventory.type) {
+      switch (slot.Parent.Inventory.Type) {
         case InventoryType.QuickSlots: //InterfaceType.Equipment
           switch (slot.GetItemObject().Type) {
             case ItemType.Tool:

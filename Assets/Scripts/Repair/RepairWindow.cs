@@ -53,7 +53,7 @@ namespace Repair {
     }
 
     private void AddSlotsEvents() {
-      foreach (var slot in robotRepair.ResourcesInventory.GetSlots) {
+      foreach (var slot in robotRepair.ResourcesInventory.Slots) {
         slot.OnAfterUpdated += OnSlotUpdatedHandler;
       }
     }
@@ -76,7 +76,7 @@ namespace Repair {
     }
 
     private void RemoveSlotsEvents() {
-      foreach (var slot in robotRepair.ResourcesInventory.GetSlots) {
+      foreach (var slot in robotRepair.ResourcesInventory.Slots) {
         slot.OnAfterUpdated -= OnSlotUpdatedHandler;
       }
     }
@@ -117,12 +117,12 @@ namespace Repair {
       for (var i = 0; i < items.Count; i++) {
         var item = items[i];
         var count = robotRepair.RobotRepairObject.RepairResourcesAmount[i];
-        item.Init(count, robotRepair.ResourcesInventory.GetSlots[i]);
+        item.Init(count, robotRepair.ResourcesInventory.Slots[i]);
       }
     }
 
     private void PrepareResourcesInterface() {
-      var slots = robotRepair.ResourcesInventory.GetSlots;
+      var slots = robotRepair.ResourcesInventory.Slots;
 
       if (robotRepair.RobotRepairObject.RepairResources.Count != slots.Length) {
         Debug.LogError("Repair resources count doesn't match inventory slots count.");

@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1cee76d2-bca6-4314-a260-682d224580e1
   RecipeType: 3
-  OutputInventoryType: 9
-  FuelInventoryType: 10
+  ResourcePath: ScriptableObjects/Craft/Forge
+  OutputInventoryType: 20
+  FuelInventoryType: 21
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Forge
   Description: 
-  OutputSlotsAmount: 5
-  FuelSlotsAmount: 3
-  PlayEffectsWhenOpened: 0
-  PlayEffectsWhenClosed: 1
-  CraftStartTimestampMillis: 0
-  MillisecondsLeft: 0
-  CraftingTasks: []
-  Inputs: []
+  ShowSuccessCraftMessages: 0
+  CraftSlotsCount: 5

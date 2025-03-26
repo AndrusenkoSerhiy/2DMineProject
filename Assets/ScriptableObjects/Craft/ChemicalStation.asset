@@ -14,14 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: d546f39c-5fa9-410e-af9a-59db71f515f3
   RecipeType: 5
-  OutputInventoryType: 8
+  ResourcePath: ScriptableObjects/Craft/ChemicalStation
+  OutputInventoryType: 20
+  FuelInventoryType: 0
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Chemical Station
   Description: Workbench desc
-  OutputSlotsAmount: 5
-  PlayEffectsWhenOpened: 0
-  PlayEffectsWhenClosed: 1
-  CraftStartTimestampMillis: 0
-  MillisecondsLeft: 0
-  CraftingTasks: []
-  Inputs: []
+  ShowSuccessCraftMessages: 0
+  CraftSlotsCount: 5

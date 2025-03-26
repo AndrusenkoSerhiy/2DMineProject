@@ -82,7 +82,7 @@ public class Stamina : MonoBehaviour {
   }
 
   private void OnDestroy() {
-    if (!GameManager.HasInstance)
+    if (!GameManager.HasInstance || userInput == null)
       return;
       
     userInput.controls.GamePlay.Sprint.performed -= SprintPerformed;

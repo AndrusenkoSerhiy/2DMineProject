@@ -45,16 +45,15 @@ namespace Craft {
     private readonly MessagesManager messageManager;
     private readonly CraftManager craftManager;
     private readonly InventoriesPool inventoriesPool;
-    private List<InventoryObject> outputInventories;
-    private InventoryObject fuelInventory;
-    private InventoryObject inventory;
+    private List<Inventory.Inventory> outputInventories;
+    private Inventory.Inventory fuelInventory;
+    private Inventory.Inventory inventory;
     private int tickDelay = 200;
     private bool outputEventsAdded;
 
     private Recipe currentRecipe;
     private string[] recipeIngredientsIds;
-
-    public InventoriesPool InventoriesPool => inventoriesPool;
+    
     public CurrentProgress CurrentProgress;
     public List<Input> Inputs = new();
     public WorkstationObject WorkstationObject => workstationObject;
@@ -86,7 +85,7 @@ namespace Craft {
       gameManager = GameManager.Instance;
       messageManager = gameManager.MessagesManager;
       craftManager = gameManager.CraftManager;
-      inventoriesPool = craftManager.InventoriesPool;
+      inventoriesPool = gameManager.PlayerInventory.InventoriesPool;
       CurrentProgress = new CurrentProgress();
     }
 
@@ -98,18 +97,18 @@ namespace Craft {
 
     #region Inventories
 
-    public List<InventoryObject> GetOutputInventories() {
+    public List<Inventory.Inventory> GetOutputInventories() {
       if (outputInventories == null) {
         outputInventories = OutputInventoryType == InventoryType.Inventory
           ? inventoriesPool.Inventories
-          : new List<InventoryObject>()
+          : new List<Inventory.Inventory>()
             { gameManager.PlayerInventory.GetInventoryByTypeAndId(OutputInventoryType, Id) };
       }
 
       return outputInventories;
     }
 
-    public InventoryObject GetFuelInventory() {
+    public Inventory.Inventory GetFuelInventory() {
       if (fuelInventory == null) {
         fuelInventory =
           gameManager.PlayerInventory.GetInventoryByTypeAndId(FuelInventoryType, Id);
@@ -149,7 +148,7 @@ namespace Craft {
 
       // Complete stacks in QuickSlots inventory first
       foreach (var inventory in inventoriesPool.Inventories) {
-        if (inventory.type != InventoryType.QuickSlots) {
+        if (inventory.Type != InventoryType.QuickSlots) {
           continue;
         }
 
@@ -169,7 +168,7 @@ namespace Craft {
 
     private void AddOutputUpdateEvents() {
       foreach (var outputInventory in GetOutputInventories()) {
-        foreach (var output in outputInventory.GetSlots) {
+        foreach (var output in outputInventory.Slots) {
           output.OnAfterUpdated += OutputUpdateSlotHandler;
         }
       }
@@ -179,7 +178,7 @@ namespace Craft {
 
     private void RemoveOutputUpdateEvents() {
       foreach (var outputInventory in outputInventories) {
-        foreach (var output in outputInventory.GetSlots) {
+        foreach (var output in outputInventory.Slots) {
           output.OnAfterUpdated -= OutputUpdateSlotHandler;
         }
       }
@@ -244,7 +243,7 @@ namespace Craft {
       (tmpSlotsIds, tmpSlotsFreeCounts, tmpFreeSlotsCount) = GetSpaces(inventoriesPool.Inventories);
     }
 
-    private (List<string>, List<int>, int) GetSpaces(List<InventoryObject> inventories) {
+    private (List<string>, List<int>, int) GetSpaces(List<Inventory.Inventory> inventories) {
       var ids = new List<string>();
       var free = new List<int>();
       var totalFreeSlots = 0;

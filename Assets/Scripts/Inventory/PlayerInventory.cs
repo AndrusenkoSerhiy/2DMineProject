@@ -1,51 +1,53 @@
 ﻿using System.Collections.Generic;
 using Windows;
+using Craft;
 using Scriptables.Items;
 using UnityEngine;
 using SaveSystem;
-using UnityEngine.Rendering;
 
 namespace Inventory {
   [DefaultExecutionOrder(-1)]
   public class PlayerInventory : MonoBehaviour, IPlayerInventory, ISaveLoad {
-    [SerializeField] private SerializedDictionary<InventoryType, int> inventoriesSizes;
-
-    [SerializeField] private SerializedDictionary<StorageType, int> storagesSizes;
+    [SerializeField] private List<InventorySettings> inventoriesSettings;
 
     private PlayerInventoryWindow inventoryWindow;
-    private Dictionary<string, InventoryObject> inventories = new();
+    private Dictionary<string, Inventory> inventories = new();
+    private Dictionary<InventoryType, InventorySettings> settings = new();
+    private InventoriesPool inventoriesPool;
 
-    private SerializedDictionary<InventoryType, int> GetdefaultInventoriesSizes() {
-      return new SerializedDictionary<InventoryType, int> {
-        { InventoryType.Inventory, 24 },
-        { InventoryType.QuickSlots, 10 },
-        // { InventoryType.HandCraftOutput, 5 },
-        { InventoryType.WorkbenchOutput, 5 },
-        { InventoryType.StoneCutterOutput, 5 },
-        { InventoryType.FoodStationOutput, 5 },
-        { InventoryType.ChemicalStationOutput, 5 },
-        { InventoryType.ForgeOutput, 5 },
-        { InventoryType.ForgeFuel, 3 },
-        { InventoryType.FoodStationFuel, 3 },
-        { InventoryType.RobotRepair, 5 },
+    //Inventories that are used in farm/craft
+    public InventoriesPool InventoriesPool => inventoriesPool;
+
+    private List<InventorySettings> GetDefaultInventoriesSettings() {
+      return new List<InventorySettings> {
+        new() { type = InventoryType.Inventory, size = 24 },
+        new() { type = InventoryType.QuickSlots, size = 10 },
+
+        new() { type = InventoryType.StorageSmall, size = 18 },
+        new() { type = InventoryType.StorageMid, size = 27 },
+        new() { type = InventoryType.StorageBig, size = 36 },
+
+        new() { type = InventoryType.WorkstationOutput, size = 5 },
+        new() { type = InventoryType.WorkstationFuel, size = 3 },
+        new() { type = InventoryType.RobotInventory, size = 24 },
+        new() { type = InventoryType.RobotRepair, size = 5 },
       };
     }
 
-    private SerializedDictionary<StorageType, int> GetdefaultStoragesSizes() {
-      return new SerializedDictionary<StorageType, int> {
-        { StorageType.Small, 18 },
-        { StorageType.Mid, 27 },
-        { StorageType.Big, 36 },
-      };
+    [ContextMenu("Set default inventories settings")]
+    private void SetDefaultInventoriesSettings() {
+      inventoriesSettings = GetDefaultInventoriesSettings();
     }
 
-    [ContextMenu("Set default inventories sizes")]
-    private void SetDefaultMessagesSettings() {
-      inventoriesSizes = GetdefaultInventoriesSizes();
-      storagesSizes = GetdefaultStoragesSizes();
+    private void Awake() {
+      foreach (var inventorySettings in inventoriesSettings) {
+        settings.Add(inventorySettings.type, inventorySettings);
+      }
+
+      inventoriesPool = new InventoriesPool();
     }
 
-    public void Start() {
+    private void Start() {
       inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
       GameManager.Instance.UserInput.controls.UI.Inventory.performed += ctx => ShowInventory();
 
@@ -64,14 +66,9 @@ namespace Inventory {
     /// </summary>
     /// <param name="type">Inventory type</param>
     /// <param name="entityId">Inventory id</param>
-    /// <returns>Inventory object</returns>
-    public InventoryObject GetInventoryByTypeAndId(InventoryType type, string entityId) {
+    /// <returns>Inventory</returns>
+    public Inventory GetInventoryByTypeAndId(InventoryType type, string entityId) {
       if (type == InventoryType.None) {
-        return null;
-      }
-
-      if (type == InventoryType.Storage) {
-        Debug.LogError("Set storage to \"storage\"");
         return null;
       }
 
@@ -81,42 +78,25 @@ namespace Inventory {
         return inventories[fullId];
       }
 
-      var inventory = new InventoryObject(type, fullId);
-      inventory.LoadFromGameData();
+      var inventoryObject = new InventoryObject(type, fullId);
+      inventoryObject.LoadFromGameData();
+
+      var inventory = new Inventory(inventoryObject);
       inventories.Add(fullId, inventory);
 
       return inventory;
     }
 
-    public int GetInventorySizeByType(InventoryType type) => inventoriesSizes[type];
+    public int GetInventorySizeByType(InventoryType type) => settings[type].size;
+    public Sprite GetInventoryIconByType(InventoryType type) => settings[type].slotIcon;
 
-    public InventoryObject GetQuickSlots() => GetInventoryByTypeAndId(InventoryType.QuickSlots, "");
+    public Inventory GetQuickSlots() => GetInventoryByTypeAndId(InventoryType.QuickSlots, "");
 
-    public InventoryObject GetInventory() => GetInventoryByTypeAndId(InventoryType.Inventory, "");
-
-    public InventoryObject GetStorageById(StorageType storageType, string entityId) {
-      if (string.IsNullOrEmpty(entityId)) {
-        return null;
-      }
-
-      var fullId = InventoryObject.GenerateStorageId(storageType, entityId);
-
-      if (inventories.ContainsKey(fullId)) {
-        return inventories[fullId];
-      }
-
-      var inventory = new InventoryObject(InventoryType.Storage, fullId, storageType);
-      inventory.LoadFromGameData();
-      inventories.Add(fullId, inventory);
-
-      return inventory;
-    }
-
-    public int GetStorageSizeByType(StorageType type) => storagesSizes[type];
+    public Inventory GetInventory() => GetInventoryByTypeAndId(InventoryType.Inventory, "");
 
     private void AddDefaultItemOnFirstStart() {
       var itemAlreadyAdded = SaveLoadSystem.Instance.gameData.DefaultItemAdded;
-      var defaultItems = GetInventory().database.DefaultItemsOnStart;
+      var defaultItems = GameManager.Instance.ItemDatabaseObject.DefaultItemsOnStart;
 
       if (itemAlreadyAdded || defaultItems.Count == 0) {
         return;
@@ -124,7 +104,7 @@ namespace Inventory {
 
       foreach (var item in defaultItems) {
         const int count = 1;
-        GetInventory().AddItem(new Item(item), count);
+        inventoriesPool.AddItemToInventoriesPool(new Item(item), count);
       }
 
       SaveLoadSystem.Instance.gameData.DefaultItemAdded = true;
@@ -149,6 +129,7 @@ namespace Inventory {
       if (count != 0) {
         GameManager.Instance.PoolEffects.SpawnFlyEffect(item, cellPos);
       }
+
       AddAdditionalItem(item, cellPos);
     }
 
@@ -184,12 +165,7 @@ namespace Inventory {
     /// <param name="amount">Amount of this item</param>
     /// <returns>Amount of items that was added to inventory</returns>
     public int AddItemToInventoryWithOverflowDrop(Item item, int amount) {
-      var overflow = GetInventory().AddItem(item, amount);
-      if (overflow <= 0) {
-        return amount;
-      }
-
-      overflow = GetQuickSlots().AddItem(item, overflow);
+      var overflow = inventoriesPool.AddItemToInventoriesPool(item, amount);
       if (overflow <= 0) {
         return amount;
       }
@@ -202,7 +178,7 @@ namespace Inventory {
     }
 
     public bool CanAddItemToInventory(ItemObject item) {
-      return (GetInventory().CanAddItem(item) || GetQuickSlots().CanAddItem(item));
+      return inventoriesPool.CanAddItem(item);
     }
 
     public bool SpawnItem(Item item, int amount) {
@@ -233,7 +209,7 @@ namespace Inventory {
 
     public void Save() {
       foreach (var (_, inventory) in inventories) {
-        inventory.SaveToGameData();
+        inventory.MainInventoryObject.SaveToGameData();
       }
     }
 

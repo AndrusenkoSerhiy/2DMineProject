@@ -11,7 +11,7 @@ namespace Inventory {
     [SerializeField] private bool defaultSortAsc;
 
     private bool ascending;
-    private InventoryObject inventory;
+    private Inventory inventory;
 
     private void Start() {
       inventory = inventoryUI.Inventory;

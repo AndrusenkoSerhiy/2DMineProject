@@ -181,7 +181,7 @@ namespace Craft {
     }
 
     private void OnAfterAmountChangedHandler(InventorySlot slot) {
-      Debug.Log($"OnAfterAmountChangedHandler id: {slot.Item.info.Id}. name: {slot.Item.info.Name}");
+      // Debug.Log($"OnAfterAmountChangedHandler id: {slot.Item.info.Id}. name: {slot.Item.info.Name}");
 
       if (slot.isEmpty) {
         return;

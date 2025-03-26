@@ -24,11 +24,13 @@ namespace World {
     private Tween currentShakeTween;
     private Vector3 originalPosition;
     private Vector3 originalScale;
+
     private int originalSortingOrder;
+
     //for spawn drop count
     private float resourcePerDurability;
     private float fractionalResource;
-    
+
     //in building prefab boxCollider is disabled by default and enabled 
     //when you place it in the cell
     public BoxCollider2D BoxCollider2D => boxCollider2D;
@@ -40,27 +42,27 @@ namespace World {
       resourceData = data;
       InitUnitHealth();
     }
-    
+
     private void InitUnitHealth() {
       unitHealth = new UnitHealth(resourceData.Durability);
       //if cell have not full hp we need to update overlayDamage for cell
       if (_cellData.durability > 0 && !Mathf.Approximately(resourceData.Durability, _cellData.durability)) {
         unitHealth.SetCurrentHealth(_cellData.durability);
-        UpdateDamageOverlay(resourceData.Durability - _cellData.durability); 
+        UpdateDamageOverlay(resourceData.Durability - _cellData.durability);
       }
-      
-      resourcePerDurability = (float)resourceData.DropCount/resourceData.Durability;
+
+      resourcePerDurability = (float)resourceData.DropCount / resourceData.Durability;
       //Debug.LogError($"resourceData {resourceData.name} | DropCount {resourceData.DropCount} | resourceData.Durability {resourceData.Durability} | resourcePerDurability {resourcePerDurability}");
       fractionalResource = _cellData.fractionalResource;
       unitHealth.OnTakeDamage += AddItemToInventory;
     }
 
     public void InitSprite() {
-      if(resourceData.IsBuilding)
+      if (resourceData.IsBuilding)
         return;
-      
+
       var neighbourIndex = _cellData.NeighboursIndex;
-      var targetSprite = resourceData.Sprite(neighbourIndex); 
+      var targetSprite = resourceData.Sprite(neighbourIndex);
       sprite.sprite = atlasRef.GetSprite(targetSprite.name);
       sprite.sortingOrder = resourceData.SortingOrder(neighbourIndex);
       boxCollider2D.offset = resourceData.ColOffset();
@@ -73,9 +75,9 @@ namespace World {
     }
 
     public void Damage(float damage) {
-      if(!_cellData.canTakeDamage)
+      if (!_cellData.canTakeDamage)
         return;
-      
+
       unitHealth.TakeDamage(damage);
       UpdateDamageOverlay(damage);
     }
@@ -85,24 +87,29 @@ namespace World {
         //Debug.LogError($"You need to add itemData in resourceData {resourceData}");
         return;
       }
+
       _cellData.UpdateDurability(damage);
       //Debug.LogError($"Durability {resourceData.Durability} _cellData.durability {_cellData.durability}");
       CalculateCountToSpawn(damage);
     }
 
     private void CalculateCountToSpawn(float damage) {
-      var totalResourceGained = damage * resourcePerDurability;
+      var totalResourceGained = damage * resourcePerDurability+0.001f;
       fractionalResource += totalResourceGained;
       int integerResource = (int)fractionalResource;
-      
       fractionalResource -= integerResource;
       _cellData.alreadyDroped += integerResource;
       _cellData.fractionalResource = fractionalResource;
-      
-      GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, integerResource, transform.position);
-      //if cell is destroyed need to check for spawn left item
-      if (_cellData.durability <= 0 && resourceData.DropCount - _cellData.alreadyDroped > 0) {
-        GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, resourceData.DropCount - _cellData.alreadyDroped, transform.position);
+      if (integerResource <= 0) return;
+      GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, integerResource,
+        transform.position);
+      if (_cellData.durability <= 0) {
+        GameManager.Instance.PlayerInventory.AddAdditionalItem(resourceData, transform.position);
+        //if cell is destroyed need to check for spawn left item
+        if (resourceData.DropCount - _cellData.alreadyDroped > 0) {
+          GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData,
+            resourceData.DropCount - _cellData.alreadyDroped, transform.position);
+        }
       }
     }
 
@@ -188,7 +195,7 @@ namespace World {
       if (Mathf.Approximately(_cellData.durability, unitHealth.maxHealth)) {
         return;
       }
-      
+
       damageOverlayRenderer = GetDamageOverlayRenderer();
 
       float healthPercentage = _cellData.durability / unitHealth.maxHealth; //unitHealth.health / unitHealth.maxHealth;

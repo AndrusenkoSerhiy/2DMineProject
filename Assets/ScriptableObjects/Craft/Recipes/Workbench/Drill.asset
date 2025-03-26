@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: dcdab831-ff3c-49e9-a4fc-2bc968865145
   RecipeName: Drill
-  Code: drill
   RecipeType: 2
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
@@ -22,13 +21,12 @@ MonoBehaviour:
   - Material: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
     Amount: 20
   - Material: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
-    Amount: 20
+    Amount: 10
   - Material: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
     Amount: 10
   Fuel:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
-  ResultAmount: 1
   CraftingTime: 70
   detailImg: {fileID: 0}

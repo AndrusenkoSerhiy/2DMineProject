@@ -14,19 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: d3ef609c-a778-497d-88b1-310d9d353d67
   RecipeName: Building stone
-  Code: buildingstone
   RecipeType: 1
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
-    Amount: 10
+    Amount: 1
   - Material: {fileID: 11400000, guid: 154e8ba0ea2911e40a9cf1f243c3d7ad, type: 2}
-    Amount: 10
-  - Material: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
     Amount: 1
   Fuel:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
-  ResultAmount: 10
   CraftingTime: 5
   detailImg: {fileID: 0}

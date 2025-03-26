@@ -200,7 +200,7 @@ namespace World {
       chunkData = _chunkGenerator.GetChunk(0, 0);
       //fill first row
       var data = ResourceDataLibrary.GetData(0.3f);
-      for (int i = 0; i < 500; i++) {
+      for (int i = 248; i < 258; i++) {
         var cell = chunkData.GetCellData(i, 0);
         if (cell.perlin <= 0.3f) {
           cell.perlin = 0.3f;

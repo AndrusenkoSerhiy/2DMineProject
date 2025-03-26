@@ -12,12 +12,17 @@ namespace World {
     //Chunk data info
     public Coords id;
     public int x;
+
     public int y;
+
     //All cells data
     private CellData[,] _cellDatas;
+
     //Cells fill data array
     private int[,] _cellFillDatas;
+
     public int[,] CellFillDatas => _cellFillDatas;
+
     //Generation job arrays
     private NativeArray<float> noiseMap;
     private NativeArray<float> smoothedNoiseMap;
@@ -53,19 +58,16 @@ namespace World {
         seed = randomSeed,
         noiseMap = noiseMap
       };
-
       var perlinHandle = perlinJob.Schedule(width * height, 64);
       perlinHandle.Complete();
-
       smoothedNoiseMap = new NativeArray<float>(width * height, Allocator.Persistent);
 
       var caSmoothingJob = new CellularAutomataSmoothingJob {
-        width = width,
-        height = height,
+        width = height, //width,
+        height = width, //height,
         noiseMap = noiseMap,
         smoothedNoiseMap = smoothedNoiseMap
       };
-
       var caHandle = caSmoothingJob.Schedule(width * height, 64, perlinHandle);
       caHandle.Complete();
     }
@@ -107,7 +109,7 @@ namespace World {
     public CellData ForceCellFill(ResourceData data, int x, int y) {
       if (!data) return null;
       var dataObject = GameManager.Instance.ChunkController.ResourceDataLibrary.GetDataObject(data);
-      if(dataObject == null) return null;
+      if (dataObject == null) return null;
       var cell = GetCellData(x, y);
       cell.perlin = (dataObject.PerlinRange.x + dataObject.PerlinRange.y) / 2;
       SetCellFill(cell.x, cell.y);

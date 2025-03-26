@@ -6,11 +6,12 @@ using Interaction;
 using Inventory;
 using Player;
 using Repair;
+using SaveSystem;
 using Scriptables.Repair;
 using UnityEngine;
 
 namespace Tools {
-  public class MiningRobotTool : MonoBehaviour, IInteractable {
+  public class MiningRobotTool : MonoBehaviour, IInteractable, ISaveLoad {
     [SerializeField] private string interactEnterName;
     [SerializeField] private string interactExitName;
     [SerializeField] private Transform playerTransform;
@@ -37,6 +38,10 @@ namespace Tools {
 
     private void Start() {
       id = robotObject.Id;
+
+      Load();
+      CheckRobotRepaired();
+
       playerController = GameManager.Instance.PlayerController;
       miningRobotController = GameManager.Instance.MiningRobotController;
       animator.SetBool("IsBroken", broken);
@@ -147,9 +152,39 @@ namespace Tools {
     }
 
     private void RobotRepaired() {
+      Repair();
+      AnimationEventManager.onRobotRepaired -= RobotRepaired;
+    }
+
+    private void CheckRobotRepaired() {
+      if (!broken) {
+        Repair();
+      }
+    }
+
+    private void Repair() {
       robotImage.enabled = true;
       brokenRobotImage.enabled = false;
-      AnimationEventManager.onRobotRepaired -= RobotRepaired;
+    }
+
+    public void Save() {
+      SaveLoadSystem.Instance.gameData.Robots[id] = new RobotData {
+        Id = id,
+        Broken = broken
+      };
+    }
+
+    public void Load() {
+      if (!SaveLoadSystem.Instance.gameData.Robots.TryGetValue(id, out var data)) {
+        return;
+      }
+
+      var isNew = string.IsNullOrEmpty(data.Id);
+      if (isNew) {
+        return;
+      }
+
+      broken = data.Broken;
     }
   }
 }

@@ -15,18 +15,21 @@ namespace Repair {
     [SerializeField] private Color blinkBgColor;
     [SerializeField] private float blinkTime = 1.5f;
 
-    private RobotRepair robotRepair;
+    private Inventory.Inventory resourcesInventory;
+    private RobotObject robotObject;
     private Coroutine blinkCoroutine;
     private List<int> blinkItems;
     public event Action OnRepaired;
 
     public void Setup(RobotObject settings) {
-      robotRepair = new RobotRepair(settings);
+      robotObject = settings;
+      resourcesInventory =
+        GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(robotObject.InventoryType, robotObject.Id);
     }
 
     private void Awake() {
       DisableRepairButton();
-      resourcesInterface.Setup(robotRepair.RobotObject.InventoryType, robotRepair.Id);
+      resourcesInterface.Setup(robotObject.InventoryType, robotObject.Id);
       InitItems();
       blinkItems = new List<int>();
     }
@@ -51,7 +54,7 @@ namespace Repair {
     }
 
     private void AddSlotsEvents() {
-      foreach (var slot in robotRepair.ResourcesInventory.Slots) {
+      foreach (var slot in resourcesInventory.Slots) {
         slot.OnAfterUpdated += OnSlotUpdatedHandler;
       }
     }
@@ -72,7 +75,7 @@ namespace Repair {
     }
 
     private void RemoveSlotsEvents() {
-      foreach (var slot in robotRepair.ResourcesInventory.Slots) {
+      foreach (var slot in resourcesInventory.Slots) {
         slot.OnAfterUpdated -= OnSlotUpdatedHandler;
       }
     }
@@ -112,23 +115,23 @@ namespace Repair {
     private void InitItems() {
       for (var i = 0; i < items.Count; i++) {
         var item = items[i];
-        var count = robotRepair.RobotObject.RepairResourcesAmount[i];
-        item.Init(count, robotRepair.ResourcesInventory.Slots[i]);
+        var count = robotObject.RepairResourcesAmount[i];
+        item.Init(count, resourcesInventory.Slots[i]);
       }
     }
 
     private void PrepareResourcesInterface() {
-      var slots = robotRepair.ResourcesInventory.Slots;
+      var slots = resourcesInventory.Slots;
 
-      if (robotRepair.RobotObject.RepairResources.Count != slots.Length) {
+      if (robotObject.RepairResources.Count != slots.Length) {
         Debug.LogError("Repair resources count doesn't match inventory slots count.");
         return;
       }
 
       for (var i = 0; i < slots.Length; i++) {
         var slot = slots[i];
-        var allowedItem = robotRepair.RobotObject.RepairResources[i];
-        var requiredAmount = robotRepair.RobotObject.RepairResourcesAmount[i];
+        var allowedItem = robotObject.RepairResources[i];
+        var requiredAmount = robotObject.RepairResourcesAmount[i];
         slot.AllowedItem = allowedItem;
         slot.MaxAllowedAmount = requiredAmount;
       }

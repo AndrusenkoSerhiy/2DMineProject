@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 7f927a28-4384-4eec-a108-5803d8f11ad0
   RecipeName: Mace
-  Code: mace
   RecipeType: 2
+  RecipeTypes: 02000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 10
@@ -27,6 +27,5 @@ MonoBehaviour:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: b842459342758864ea8fd5dd1fc317ac, type: 2}
-  ResultAmount: 1
   CraftingTime: 70
   detailImg: {fileID: 0}

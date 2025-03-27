@@ -7,7 +7,7 @@ namespace Scriptables.Craft {
   [CreateAssetMenu(menuName = "Crafting System/Recipe", fileName = "New Recipe")]
   public class Recipe : BaseScriptableObject {
     public string RecipeName;
-    public RecipeType RecipeType;
+    public List<RecipeType> RecipeTypes;
     public List<CraftingMaterial> RequiredMaterials;
     public CraftingMaterial Fuel;
     public ItemObject Result;

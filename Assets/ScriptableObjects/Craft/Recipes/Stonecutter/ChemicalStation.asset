@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 79fa1e71-0d64-4981-a4d2-bc209ba59e2b
   RecipeName: Chemical station
-  Code: chemicalstation
   RecipeType: 1
+  RecipeTypes: 01000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 10
@@ -27,6 +27,5 @@ MonoBehaviour:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: 79d38eda902dfde42903776f98ef9778, type: 2}
-  ResultAmount: 1
   CraftingTime: 20
   detailImg: {fileID: 0}

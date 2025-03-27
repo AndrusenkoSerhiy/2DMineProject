@@ -91,7 +91,7 @@ namespace Craft.Recipes {
       foreach (var (recipeId, state) in recipeStates) {
         var recipe = recipesDB.ItemsMap[recipeId];
 
-        if (recipe.RecipeType != stationType) {
+        if (!IsRecipeOfType(recipe, stationType)) {
           continue;
         }
 
@@ -117,7 +117,7 @@ namespace Craft.Recipes {
       foreach (var (recipeId, state) in recipeStates) {
         var recipe = recipesDB.ItemsMap[recipeId];
 
-        if (recipe.RecipeType == stationType && state == RecipeState.Unlocked) {
+        if (IsRecipeOfType(recipe, stationType) && state == RecipeState.Unlocked) {
           return true;
         }
       }
@@ -129,10 +129,14 @@ namespace Craft.Recipes {
       return recipesDB.ItemsMap[id];
     }
 
+    public bool IsRecipeOfType(Recipe recipe, RecipeType stationType) {
+      return recipe.RecipeTypes.Count != 0 && recipe.RecipeTypes.Contains(stationType);
+    }
+
     private List<Recipe> GetAllStationRecipes(RecipeType stationType) {
       var recipes = new List<Recipe>();
       foreach (var (id, recipe) in recipesDB.ItemsMap) {
-        if (recipe.RecipeType != stationType) {
+        if (!IsRecipeOfType(recipe, stationType)) {
           continue;
         }
 
@@ -166,7 +170,7 @@ namespace Craft.Recipes {
       foreach (var (recipeId, state) in recipeStates) {
         var recipe = recipesDB.ItemsMap[recipeId];
 
-        if (recipe.RecipeType != stationType) {
+        if (!IsRecipeOfType(recipe, stationType)) {
           continue;
         }
 

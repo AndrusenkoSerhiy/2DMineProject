@@ -137,7 +137,7 @@ namespace Craft {
     }
 
     private void OnRecipeUnlockedHandler(Recipe recipe) {
-      if (recipe.RecipeType != station.RecipeType) {
+      if (!gameManager.RecipesManager.IsRecipeOfType(recipe, station.RecipeType)) {
         return;
       }
 

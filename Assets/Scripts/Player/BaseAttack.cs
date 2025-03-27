@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Animation;
 using Scriptables;
-using Settings;
 using UnityEngine;
 using World;
 
@@ -32,6 +32,8 @@ namespace Player {
     private Vector2 originalSize;
     private int lookDirection;
     private AnimatorParameters animParam;
+
+    private bool firstAttack;
     
     public bool shouldBeDamaging { get; private set; } = false;
     
@@ -45,6 +47,17 @@ namespace Player {
       attackTimeCounter = timeBtwAttacks;
       PrepareAttackParams();
       originalSize = attackCollider.size;
+      GameManager.Instance.UserInput.OnAttackPerformed += PressAttack;
+      GameManager.Instance.UserInput.OnAttackCanceled += CancelAttack;
+    }
+
+    private void PressAttack(object sender, EventArgs e) {
+      animator.SetBool(animParam.IsAttacking, true);
+    }
+    
+    private void CancelAttack(object sender, EventArgs e) {
+      animator.SetBool(animParam.IsAttacking, false);
+      firstAttack = false;
     }
 
     public void LockHighlight(bool state) {
@@ -91,8 +104,11 @@ namespace Player {
     private void TriggerAttack() {
       //Debug.LogError($"timeBtwAttacks {timeBtwAttacks}");
       attackTimeCounter = 0f;
-      animator.SetTrigger("Attack");
-      animator.SetInteger("WeaponID", attackID);
+      if (!firstAttack) {
+        firstAttack = true;
+        animator.SetTrigger("Attack");
+        animator.SetInteger("WeaponID", attackID); 
+      }
     }
     
     private void HandleAttack() {
@@ -204,6 +220,10 @@ namespace Player {
     protected virtual void OnDestroy() {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
       AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
+      if (GameManager.HasInstance) {
+        GameManager.Instance.UserInput.OnAttackPerformed -= PressAttack;
+        GameManager.Instance.UserInput.OnAttackCanceled -= CancelAttack;
+      }
     }
   }
 }

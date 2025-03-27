@@ -1,54 +1,57 @@
 miner.png
-size:874,1034
+size:826,1041
 filter:Linear,Linear
 pma:true
 Body
-bounds:673,431,175,218
-Left Arm
-bounds:740,210,89,121
-Left Hand
-bounds:704,10,75,82
+bounds:537,438,175,218
+EarL
+bounds:714,416,86,110
 rotate:90
+EarR
+bounds:691,332,114,82
+El
+bounds:615,2,69,62
+rotate:90
+Er
+bounds:705,101,66,61
+Left Arm
+bounds:614,196,89,121
+Left Hand
+bounds:705,248,75,82
 Left leg
-bounds:537,303,117,152
+bounds:537,319,117,152
 rotate:90
 Right Arm
-bounds:740,87,89,121
+bounds:614,73,89,121
 Right Hand
-bounds:788,3,75,82
+bounds:705,164,75,82
 Right Leg
-bounds:691,333,96,152
-rotate:90
+bounds:714,504,96,152
 Weapon
-bounds:300,286,360,235
-offsets:1,1,362,237
+bounds:298,293,362,237
 rotate:90
 cheeks
-bounds:680,651,192,39
+bounds:630,658,192,39
 eye brows 01
-bounds:704,132,199,34
+bounds:278,15,199,34
+eyeL
+bounds:479,2,47,66
 rotate:90
-eyes 01
-bounds:614,56,245,88
-rotate:90
-eyes 02
-bounds:278,8,215,34
-offsets:1,1,217,36
-eyes 03
-bounds:537,422,227,134
-offsets:1,1,229,136
+eyeR
+bounds:547,2,47,66
 rotate:90
 face
-bounds:2,290,296,356
+bounds:2,301,294,354
 front hair
-bounds:2,648,424,384
+bounds:2,657,374,382
+offsets:22,0,396,382
 glasses
-bounds:680,692,340,181
+bounds:630,699,340,181
 rotate:90
 left tail
-bounds:428,651,250,381
+bounds:378,658,250,381
 right tail
-bounds:278,44,240,334
+bounds:278,51,240,334
 rotate:90
 shadow on the face
-bounds:2,2,274,286
+bounds:2,13,274,286

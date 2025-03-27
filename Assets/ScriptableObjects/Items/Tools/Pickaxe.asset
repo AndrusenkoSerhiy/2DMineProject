@@ -15,13 +15,13 @@ MonoBehaviour:
   id: 744208fb-7732-4654-97ca-0f67e2171823
   Type: 2
   Name: Pickaxe
-  ParentType: 1
+  ParentType: 2
   UiDisplay: {fileID: 21300000, guid: f41e87b0f3fd49145803a568ad15a4c4, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 9a48c4710eaf00d4a8af3a8a02d149b4, type: 3}
   Stackable: 0
   MaxStackSize: 1
-  SpawnPosition: {x: -0.566, y: 1.566, z: 0}
-  SpawnRotation: {x: 0, y: 0, z: 0}
+  SpawnPosition: {x: 1.4, y: 0.59, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: -90.57}
   spawnPrefab: {fileID: 3890226224433729309, guid: bde57fcacc6cfef42ba78f67f161f657, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1

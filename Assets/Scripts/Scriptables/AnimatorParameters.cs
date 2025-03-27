@@ -11,6 +11,8 @@ namespace Scriptables {
     [SerializeField] private string isDead;
     [SerializeField] private string takeDamage;
     [SerializeField] private string die;
+    [SerializeField] private string grounded;
+    [SerializeField] private string lookDirection;
     
     public int FallHash => Animator.StringToHash(fall);
     public int VelocityXHash => Animator.StringToHash(velocityX);
@@ -20,5 +22,7 @@ namespace Scriptables {
     public int IsDeadHash => Animator.StringToHash(isDead);
     public int TakeDamage => Animator.StringToHash(takeDamage);
     public int Die => Animator.StringToHash(die);
+    public int GroundedHash => Animator.StringToHash(grounded);
+    public int LookDirection => Animator.StringToHash(lookDirection);
   }
 }

@@ -4,6 +4,8 @@ using Movement;
 using Pool;
 using Scriptables;
 using Settings;
+using Spine;
+using Spine.Unity;
 using UnityEngine;
 
 namespace Player {
@@ -50,6 +52,7 @@ namespace Player {
     private bool _coyoteUsable;
     private float _timeJumpWasPressed;
     private AnimatorParameters animParam;
+    [SerializeField] private SkeletonMecanim skeletonMecanim;
 
     #region Interface
 
@@ -81,6 +84,13 @@ namespace Player {
       animParam = GameManager.Instance.AnimatorParameters;
     }
 
+    private void Start() {
+      SetEmptyHand();
+    }
+
+    private void SetEmptyHand() {
+      skeletonMecanim.Skeleton.SetAttachment("Weapon", null);
+    }
 
     protected virtual void OnDestroy() {
       AnimationEventManager.onFootstep -= SpawnFootstepEffect;
@@ -180,8 +190,12 @@ namespace Player {
         _frameLeftGrounded = time;
         GroundedChanged?.Invoke(false, 0);
       }
-
+      SetAnimBool(animParam.GroundedHash, grounded);
       Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
+    }
+
+    private void SetAnimBool(int hash, bool state) {
+      _animator.SetBool(hash, state);
     }
 
     private void PlayLandingEffect() {

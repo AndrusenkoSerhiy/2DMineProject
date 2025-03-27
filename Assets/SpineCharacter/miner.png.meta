@@ -106,7 +106,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -116,15 +116,15 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 0
+  spriteExtrude: 1
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 0
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
-  alphaIsTransparency: 1
+  alphaIsTransparency: 0
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
@@ -173,7 +173,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 2
-        y: 746
+        y: 742
         width: 274
         height: 286
       alignment: 0
@@ -194,9 +194,9 @@ TextureImporter:
       name: miner_1
       rect:
         serializedVersion: 2
-        x: 277
-        y: 991
-        width: 95
+        x: 278
+        y: 992
+        width: 59
         height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -216,10 +216,10 @@ TextureImporter:
       name: miner_2
       rect:
         serializedVersion: 2
-        x: 416
-        y: 1000
-        width: 78
-        height: 27
+        x: 417
+        y: 1006
+        width: 60
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -238,10 +238,10 @@ TextureImporter:
       name: miner_3
       rect:
         serializedVersion: 2
-        x: 704
-        y: 949
-        width: 82
-        height: 75
+        x: 478
+        y: 991
+        width: 68
+        height: 49
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -260,10 +260,10 @@ TextureImporter:
       name: miner_4
       rect:
         serializedVersion: 2
-        x: 788
-        y: 949
-        width: 75
-        height: 82
+        x: 546
+        y: 991
+        width: 68
+        height: 49
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -282,10 +282,10 @@ TextureImporter:
       name: miner_5
       rect:
         serializedVersion: 2
-        x: 278
-        y: 750
-        width: 334
-        height: 240
+        x: 614
+        y: 969
+        width: 64
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -304,10 +304,10 @@ TextureImporter:
       name: miner_6
       rect:
         serializedVersion: 2
-        x: 614
-        y: 886
-        width: 75
-        height: 92
+        x: 278
+        y: 750
+        width: 334
+        height: 240
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -326,10 +326,10 @@ TextureImporter:
       name: miner_7
       rect:
         serializedVersion: 2
-        x: 704
-        y: 842
-        width: 20
-        height: 60
+        x: 614
+        y: 847
+        width: 89
+        height: 121
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -348,10 +348,10 @@ TextureImporter:
       name: miner_8
       rect:
         serializedVersion: 2
-        x: 740
-        y: 826
-        width: 89
-        height: 121
+        x: 704
+        y: 878
+        width: 68
+        height: 63
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -370,10 +370,10 @@ TextureImporter:
       name: miner_9
       rect:
         serializedVersion: 2
-        x: 2
-        y: 388
-        width: 296
-        height: 356
+        x: 614
+        y: 724
+        width: 89
+        height: 121
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -392,10 +392,10 @@ TextureImporter:
       name: miner_10
       rect:
         serializedVersion: 2
-        x: 299
-        y: 387
-        width: 237
-        height: 362
+        x: 705
+        y: 795
+        width: 75
+        height: 82
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -414,10 +414,10 @@ TextureImporter:
       name: miner_11
       rect:
         serializedVersion: 2
-        x: 626
-        y: 733
-        width: 76
-        height: 95
+        x: 1
+        y: 385
+        width: 296
+        height: 356
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -436,10 +436,10 @@ TextureImporter:
       name: miner_12
       rect:
         serializedVersion: 2
-        x: 715
-        y: 703
-        width: 23
-        height: 59
+        x: 298
+        y: 386
+        width: 237
+        height: 362
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -458,10 +458,10 @@ TextureImporter:
       name: miner_13
       rect:
         serializedVersion: 2
-        x: 740
-        y: 703
-        width: 89
-        height: 121
+        x: 537
+        y: 605
+        width: 152
+        height: 117
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -480,10 +480,10 @@ TextureImporter:
       name: miner_14
       rect:
         serializedVersion: 2
-        x: 537
-        y: 614
-        width: 152
-        height: 117
+        x: 705
+        y: 711
+        width: 75
+        height: 82
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -502,10 +502,10 @@ TextureImporter:
       name: miner_15
       rect:
         serializedVersion: 2
-        x: 691
-        y: 605
-        width: 152
-        height: 96
+        x: 690
+        y: 626
+        width: 116
+        height: 84
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -524,10 +524,10 @@ TextureImporter:
       name: miner_16
       rect:
         serializedVersion: 2
-        x: 546
-        y: 523
-        width: 117
-        height: 90
+        x: 713
+        y: 538
+        width: 112
+        height: 88
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -546,10 +546,10 @@ TextureImporter:
       name: miner_17
       rect:
         serializedVersion: 2
-        x: 673
-        y: 385
+        x: 537
+        y: 393
         width: 175
-        height: 218
+        height: 210
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -568,10 +568,10 @@ TextureImporter:
       name: miner_18
       rect:
         serializedVersion: 2
-        x: 2
-        y: 2
-        width: 424
-        height: 384
+        x: 714
+        y: 385
+        width: 96
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -590,10 +590,10 @@ TextureImporter:
       name: miner_19
       rect:
         serializedVersion: 2
-        x: 536
-        y: 384
-        width: 136
-        height: 105
+        x: 7
+        y: 1
+        width: 370
+        height: 384
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -612,10 +612,10 @@ TextureImporter:
       name: miner_20
       rect:
         serializedVersion: 2
-        x: 428
+        x: 378
         y: 2
         width: 250
-        height: 381
+        height: 386
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -634,7 +634,7 @@ TextureImporter:
       name: miner_21
       rect:
         serializedVersion: 2
-        x: 680
+        x: 630
         y: 344
         width: 38
         height: 32
@@ -656,7 +656,7 @@ TextureImporter:
       name: miner_22
       rect:
         serializedVersion: 2
-        x: 834
+        x: 784
         y: 351
         width: 38
         height: 32
@@ -678,7 +678,7 @@ TextureImporter:
       name: miner_23
       rect:
         serializedVersion: 2
-        x: 680
+        x: 630
         y: 2
         width: 181
         height: 340

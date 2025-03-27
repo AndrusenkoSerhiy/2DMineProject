@@ -30,12 +30,15 @@ namespace Player {
     private List<IDamageable> iDamageables = new();
     [SerializeField] private bool isHighlightLock;
     private Vector2 originalSize;
+    private int lookDirection;
+    private AnimatorParameters animParam;
     
     public bool shouldBeDamaging { get; private set; } = false;
     
     protected virtual void Awake() {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
+      animParam = GameManager.Instance.AnimatorParameters;
     }
     
     protected virtual void Start() {
@@ -65,9 +68,28 @@ namespace Player {
       
       UpdateColliderPos();
       HandleAttack();
+      GetDirection();
+    }
+
+    private void GetDirection() {
+      Vector2 direction = attackCollider.transform.position - transform.position;
+      //Debug.LogError($"directionY {direction.y}");
+      
+      //3f distance between player and mouse for top border 
+      if (direction.y > 3f) {
+        lookDirection = 1;
+      }
+      else if (direction.y < .3f) {
+        lookDirection = -1;
+      }
+      else {
+        lookDirection = 0;
+      }
+      animator.SetInteger(animParam.LookDirection, lookDirection);
     }
     
     private void TriggerAttack() {
+      //Debug.LogError($"timeBtwAttacks {timeBtwAttacks}");
       attackTimeCounter = 0f;
       animator.SetTrigger("Attack");
       animator.SetInteger("WeaponID", attackID);

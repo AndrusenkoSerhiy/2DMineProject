@@ -7,11 +7,12 @@ using Settings;
 using Spine;
 using Spine.Unity;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player {
   public class PlayerControllerBase : MonoBehaviour {
     [SerializeField] protected PlayerStats _stats;
-    private Rigidbody2D _rb;
+    protected Rigidbody2D _rb;
     private CapsuleCollider2D _col;
     private FrameInput _frameInput;
     [SerializeField]protected Vector2 _frameVelocity;
@@ -32,8 +33,8 @@ namespace Player {
     public PlayerCoords PlayerCoords => _playerCoords;
     public Vector2 FrameVelocity => _frameVelocity;
 
-    [SerializeField] protected Stamina _stamina;
-    public Stamina Stamina => _stamina;
+    [SerializeField] protected StaminaBase stamina;
+    public StaminaBase Stamina => stamina;
     public PlayerStats Stats => _stats;
     private float _frameLeftGrounded = float.MinValue;
     [SerializeField]private bool grounded;
@@ -89,6 +90,9 @@ namespace Player {
     }
 
     private void SetEmptyHand() {
+      if(skeletonMecanim == null)
+        return;
+      
       skeletonMecanim.Skeleton.SetAttachment("Weapon", null);
     }
 
@@ -233,7 +237,7 @@ namespace Player {
     }
 
     private void ExecuteJump() {
-      wasSprintingOnJump = _stamina.IsSprinting;
+      wasSprintingOnJump = stamina.IsSprinting;
       startFalling = false;
       _ladderMovement.SetClimbing(false, "jump");
       //Debug.LogError("start fall false");
@@ -274,7 +278,7 @@ namespace Player {
     protected virtual float GetMaxSpeed() {
       var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
       //var canSprintInAir = !grounded && wasSprintingOnJump;
-      return isMovingForward ? (_stamina.IsSprinting /*&& (grounded || canSprintInAir)*/) ? _stats.SprintSpeed : _stats.MaxSpeed
+      return isMovingForward ? (stamina.IsSprinting /*&& (grounded || canSprintInAir)*/) ? _stats.SprintSpeed : _stats.MaxSpeed
         : _stats.MaxBackSpeed;
     }
 

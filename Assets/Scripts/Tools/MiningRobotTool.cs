@@ -86,6 +86,8 @@ namespace Tools {
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
       playerController.ResetHeadPos();
+      playerController.Stamina.EnableSprintScript(false);
+      miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
 
@@ -104,6 +106,8 @@ namespace Tools {
       playerController.EnableController(true);
       playerController.SetLockHighlight(false);
       miningRobotController.SetLockHighlight(true);
+      playerController.Stamina.EnableSprintScript(true);
+      miningRobotController.Stamina.EnableSprintScript(false);
       GameManager.Instance.CurrPlayerController = playerController;
       GameManager.Instance.QuickSlotListener.Activate();
 

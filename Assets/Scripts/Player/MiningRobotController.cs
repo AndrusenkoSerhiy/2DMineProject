@@ -8,7 +8,7 @@ namespace Player {
       base.Awake();
       GameManager.Instance.MiningRobotController = this;
       EnableController(false);
-      _stamina.SetStaminaBarRef();
+      stamina.SetStaminaBarRef();
       _ladderMovement = GameManager.Instance.PlayerLadderMovement;
     }
 
@@ -39,14 +39,25 @@ namespace Player {
       }
     }
     
-    protected override float GetMaxSpeed() {
+    /*protected override float GetMaxSpeed() {
       return (Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x)))
         ? _stats.MaxSpeed : _stats.MaxBackSpeed;
+    }*/
+    protected override float GetMaxSpeed() {
+      var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
+      return isMovingForward ? (stamina.IsSprinting) ? _stats.SprintSpeed : _stats.MaxSpeed
+        : _stats.MaxBackSpeed;
     }
 
     public override void EnableController(bool state) {
+      ResetMovement();
       miningRobotAttack.enabled = state;
       enabled = state;
+    }
+
+    private void ResetMovement() {
+      _rb.linearVelocity = Vector2.zero;
+      _frameVelocity = Vector2.zero;
     }
   }
 }

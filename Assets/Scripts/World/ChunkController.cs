@@ -30,42 +30,9 @@ namespace World {
 
     private void Start() {
       InitStartChunk();
+      GameManager.Instance.MapController.GenerateTexture();
     }
-
-    #region TextureMap
-
-    [ContextMenu("Create TextureMap In Assets(PLAYMODE ONLY)")]
-    private void GenerateTexture() {
-      var width = GameManager.Instance.GameConfig.ChunkSizeX;
-      var height = GameManager.Instance.GameConfig.ChunkSizeY;
-      var texture = new Texture2D(width, height, TextureFormat.RGB24, false);
-      for (int i = 0; i < width; i++) {
-        for (int j = 0; j < height; j++) {
-          // Check the Perlin noise value
-          var color =
-            GameManager.Instance.ChunkController.ResourceDataLibrary.GetColor(chunkData.GetCellData(i, j).perlin);
-
-          // Set the pixel color at (j, i)
-          texture.SetPixel(width - 1 - i, height - 1 - j, color);
-        }
-      }
-
-      // Apply all SetPixel changes to the texture
-      texture.Apply();
-
-      byte[] pngData = texture.EncodeToPNG();
-      if (pngData != null) {
-        // Write the PNG file to the specified path
-        File.WriteAllBytes("Assets/GeneratedTexture.png", pngData);
-        Debug.Log("Texture saved");
-      }
-      else {
-        Debug.LogError("Failed to encode texture to PNG.");
-      }
-    }
-
-    #endregion
-
+    
     void SpawnChunk(int x, int y) {
       var startChunk = _chunkGenerator.GetChunk(x, y);
       if (startChunk == null) return;

@@ -36,8 +36,8 @@ namespace Scriptables {
         if (Resources[i].PerlinRange.y < perlinValue) continue;
         return Resources[i].Data.Color;
       }
-
-      return Color.white;
+      
+      return Color.black;
     }
   }
 }

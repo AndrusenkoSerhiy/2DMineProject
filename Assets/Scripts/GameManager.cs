@@ -51,6 +51,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private GameObject tempDragItem;
   [SerializeField] private ObjectPooler poolEffects;
   [SerializeField] private QuickSlotListener quickSlotListener;
+  [SerializeField] private MapController mapController;
   //TODO
   //robot don't need this param in own script
   [SerializeField] private StaminaBar staminaBar;
@@ -91,6 +92,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public QuickSlotListener QuickSlotListener => quickSlotListener;
   public StaminaBar StaminaBar => staminaBar;
   public LadderMovement PlayerLadderMovement => playerLadderMovement;
+  public MapController MapController => mapController;
 
   public PlayerController PlayerController {
     set => playerController = value;

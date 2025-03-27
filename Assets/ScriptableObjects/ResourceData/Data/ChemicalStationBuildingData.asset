@@ -13,11 +13,14 @@ MonoBehaviour:
   m_Name: ChemicalStationBuildingData
   m_EditorClassIdentifier: 
   Durability: 30
+  DropCount: 0
   tileDatas: []
   sortingOrder: 1
   itemData: {fileID: 0}
-  mapColor: {r: 0.41509432, g: 0.41509432, b: 0.41509432, a: 0}
+  mapColor: {r: 1, g: 1, b: 1, a: 1}
   colliderOffset: {x: 0, y: 0}
   colliderSize: {x: 3.44, y: 3.44}
   isBuilding: 1
   cellSize: {x: 1, y: 1}
+  bonusResources: []
+  debug: 0

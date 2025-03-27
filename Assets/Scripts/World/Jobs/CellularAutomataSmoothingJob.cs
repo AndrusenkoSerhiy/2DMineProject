@@ -25,9 +25,14 @@ namespace World.Jobs {
           // Ensure the neighbor is within bounds
           
           if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-            sum += noiseMap[nx + ny * height];
+            sum += noiseMap[nx + ny * width];
             count++;
           }
+          
+          /*if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+            sum += noiseMap[nx + ny * height];
+            count++;
+          }*/
         }
       }
 

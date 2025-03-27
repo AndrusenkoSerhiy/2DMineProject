@@ -60,11 +60,12 @@ namespace World {
       };
       var perlinHandle = perlinJob.Schedule(width * height, 64);
       perlinHandle.Complete();
+
       smoothedNoiseMap = new NativeArray<float>(width * height, Allocator.Persistent);
 
       var caSmoothingJob = new CellularAutomataSmoothingJob {
-        width = height, //width,
-        height = width, //height,
+        width = width,
+        height = height,
         noiseMap = noiseMap,
         smoothedNoiseMap = smoothedNoiseMap
       };
@@ -75,6 +76,7 @@ namespace World {
     void ApplyCells() {
       for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
+          var info = i + j * width;
           var perlin = smoothedNoiseMap[i + j * width];
           var data = GameManager.Instance.ChunkController.ResourceDataLibrary.GetData(perlin);
           _cellDatas[i, j] = new CellData(i, j, perlin, data ? data.Durability : 0, this);

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: EmptyData
   m_EditorClassIdentifier: 
   Durability: 0
+  DropCount: 0
   tileDatas:
   - sprite: {fileID: 21300000, guid: 2000096edcc590d48a6a8c5747b97955, type: 3}
     offsetSorting: 0
@@ -48,8 +49,10 @@ MonoBehaviour:
     offsetSorting: 0
   sortingOrder: 1
   itemData: {fileID: 0}
-  mapColor: {r: 0.41509432, g: 0.41509432, b: 0.41509432, a: 0}
+  mapColor: {r: 0.49019608, g: 0.49019608, b: 0.49019608, a: 1}
   colliderOffset: {x: 0, y: 0}
   colliderSize: {x: 0, y: 0}
   isBuilding: 0
   cellSize: {x: 1, y: 1}
+  bonusResources: []
+  debug: 0

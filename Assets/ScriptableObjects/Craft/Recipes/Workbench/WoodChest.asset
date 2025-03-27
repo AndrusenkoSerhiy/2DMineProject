@@ -15,10 +15,11 @@ MonoBehaviour:
   id: 86808b81-2868-4bf1-8904-3d0b2d25b028
   RecipeName: Wood chest
   RecipeType: 2
+  RecipeTypes: 02000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
-    Amount: 10
-  - Material: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
+    Amount: 3
+  - Material: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
     Amount: 5
   Fuel:
     Material: {fileID: 0}

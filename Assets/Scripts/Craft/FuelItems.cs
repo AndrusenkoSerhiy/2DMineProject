@@ -12,7 +12,7 @@ namespace Craft {
     [SerializeField] private float blinkTime = 1.5f;
 
     private Workstation station;
-    private InventoryObject fuelInventory;
+    private Inventory.Inventory fuelInventory;
 
     private void Awake() {
       station = ServiceLocator.For(this).Get<Workstation>();
@@ -68,13 +68,13 @@ namespace Craft {
     }
 
     private void AddFuelUpdateEvents() {
-      foreach (var slot in fuelInventory.GetSlots) {
+      foreach (var slot in fuelInventory.Slots) {
         slot.OnAfterUpdated += FuelSlotUpdateHandler;
       }
     }
 
     private void RemoveFuelUpdateEvents() {
-      foreach (var slot in fuelInventory.GetSlots) {
+      foreach (var slot in fuelInventory.Slots) {
         slot.OnAfterUpdated -= FuelSlotUpdateHandler;
       }
     }
@@ -96,7 +96,7 @@ namespace Craft {
     }
 
     private void UpdateInterface(Recipe recipe) {
-      var fuelSlots = fuelInventory.GetSlots;
+      var fuelSlots = fuelInventory.Slots;
       var currentFuel = recipe.Fuel.Material;
 
       //check current fuel items, move them to inventory if they are not in the recipe
@@ -148,7 +148,7 @@ namespace Craft {
 
       var setCurrent = false;
       for (var i = 0; i < items.Count; i++) {
-        var slot = fuelInventory.GetSlots[i];
+        var slot = fuelInventory.Slots[i];
         var fuelItem = items[i];
 
         if (slot.isEmpty || fuelAmountNeed <= 0) {

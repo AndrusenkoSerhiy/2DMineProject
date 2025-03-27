@@ -14,19 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 54755efb-6606-46b8-9546-a1ad1a15d576
   RecipeName: Forge
-  Code: forge
   RecipeType: 1
+  RecipeTypes: 01000000
   RequiredMaterials:
-  - Material: {fileID: 11400000, guid: 154e8ba0ea2911e40a9cf1f243c3d7ad, type: 2}
-    Amount: 20
   - Material: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
     Amount: 10
   - Material: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
     Amount: 10
+  - Material: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
+    Amount: 5
   Fuel:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: f1bef750166edcf41b0864c062106763, type: 2}
-  ResultAmount: 1
   CraftingTime: 20
   detailImg: {fileID: 0}

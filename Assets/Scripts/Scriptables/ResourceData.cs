@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Scriptables.Items;
 using UnityEngine;
@@ -16,6 +17,17 @@ namespace Scriptables {
     [SerializeField] private Vector2 colliderSize = new Vector2(3.44f, 3.44f);
     [SerializeField] private bool isBuilding;
     [SerializeField] private Vector2 cellSize = Vector3.one;
+    
+    [SerializeField] private List<BonusResource> bonusResources = new List<BonusResource>();
+
+    public List<BonusResource> GetBonusResources => bonusResources;
+
+    [Serializable]
+    public struct BonusResource {
+      public ItemObject item;
+      [Range(0, 1)] public float chance;
+      public Vector2 rndCount;
+    }
 
     public Sprite Sprite(int index) => tileDatas[index].Sprite;
     public int SortingOrder(int index) => sortingOrder + tileDatas[index].OffsetSorting;
@@ -28,5 +40,6 @@ namespace Scriptables {
     public Color Color => mapColor;
     public bool IsBuilding => isBuilding;
     public Vector2 CellSize => cellSize;
+    public bool debug;
   }
 }

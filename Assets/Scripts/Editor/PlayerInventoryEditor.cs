@@ -17,17 +17,14 @@ public class PlayerInventoryEditor : Editor {
     }
 
     var inventory = target?.GetComponent<PlayerInventory>()?.GetInventory();
-    if (inventory is not { type: InventoryType.Inventory }) {
+    if (inventory is not { Type: InventoryType.Inventory }) {
       return;
     }
 
-    if (inventory.database == null || inventory.database.ItemObjects == null) {
-      EditorGUILayout.HelpBox("Item Database is missing or empty!", MessageType.Warning);
-      return;
-    }
+    var db = GameManager.Instance.ItemDatabaseObject;
 
     // Generate buttons dynamically for each item in the database
-    foreach (var itemObject in inventory.database.ItemObjects) {
+    foreach (var itemObject in db.ItemObjects) {
       EditorGUILayout.LabelField(itemObject.name, EditorStyles.boldLabel);
       var item = new Item(itemObject);
       var maxAmount = itemObject.MaxStackSize;
@@ -47,7 +44,7 @@ public class PlayerInventoryEditor : Editor {
     }
   }
 
-  private void AddItemToInventory(InventoryObject inventory, Item item, int amount) {
+  private void AddItemToInventory(Inventory.Inventory inventory, Item item, int amount) {
     Undo.RecordObject(target, "Add Item to Inventory");
     // inventory.AddItem(item, amount, inventory.GetEmptySlot());
     GameManager.Instance.PlayerInventory.AddItemToInventoryWithOverflowDrop(item, amount);

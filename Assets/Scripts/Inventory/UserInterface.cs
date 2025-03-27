@@ -19,12 +19,10 @@ namespace Inventory {
     [SerializeField] private bool showTooltips;
 
     private GameManager gameManager;
-    private InventoryObject inventory;
-    private InventoryObject fastDropInventory;
+    private Inventory inventory;
+    private Inventory fastDropInventory;
     private string inventoryId;
-    private StorageType storageType;
     private string fastDropInventoryId;
-    private StorageType fastDropStorageType;
 
     private SplitItem splitItem;
     private GameObject tempDragItemObject;
@@ -36,7 +34,7 @@ namespace Inventory {
 
     // public GameObject[] slotsPrefabs;
     public SlotDisplay[] slotsPrefabs;
-    public InventoryObject Inventory => inventory;
+    public Inventory Inventory => inventory;
     public Dictionary<GameObject, InventorySlot> SlotsOnInterface => slotsOnInterface;
 
     public bool PreventItemDropIn => preventItemDropIn;
@@ -50,14 +48,9 @@ namespace Inventory {
       inventoryId = id;
     }
 
-    public void Setup(string Id, StorageType type) {
-      inventoryId = Id;
-      storageType = type;
-    }
-
-    public void SetupFastDrop(string fastDropStorageId, StorageType fastDropStorageType) {
-      fastDropInventoryId = fastDropStorageId;
-      this.fastDropStorageType = fastDropStorageType;
+    public void SetupFastDrop(InventoryType type, string id) {
+      fastDropInventoryId = id;
+      fastDropInventoryType = type;
     }
 
     public void Awake() {
@@ -69,32 +62,20 @@ namespace Inventory {
       gameManager = GameManager.Instance;
       var playerInventory = gameManager.PlayerInventory;
 
-      if (inventoryType == InventoryType.Storage && !string.IsNullOrEmpty(InventoryId)) {
-        inventory = playerInventory.GetStorageById(storageType, inventoryId);
-      }
-      else {
-        inventory = playerInventory.GetInventoryByTypeAndId(inventoryType, inventoryId);
-      }
-
-      if (fastDropInventoryType == InventoryType.Storage && !string.IsNullOrEmpty(fastDropInventoryId)) {
-        fastDropInventory = playerInventory.GetStorageById(fastDropStorageType, fastDropInventoryId);
-      }
-      else {
-        fastDropInventory = playerInventory.GetInventoryByTypeAndId(fastDropInventoryType, fastDropInventoryId);
-      }
+      inventory = playerInventory.GetInventoryByTypeAndId(inventoryType, inventoryId);
+      fastDropInventory = playerInventory.GetInventoryByTypeAndId(fastDropInventoryType, fastDropInventoryId);
 
       splitItem = gameManager.SplitItem;
       tempDragItemObject = gameManager.TempDragItem;
       tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
       tempDragParent = gameManager.Canvas.transform;
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
-
-      CheckSlotsUpdate();
-      CreateSlots();
     }
 
     public void OnEnable() {
-      UpdateSlotsGameObjects();
+      AddSlotsUpdateEvents();
+      CreateSlots();
+      // UpdateSlotsGameObjects();
 
       AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
       AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
@@ -105,36 +86,51 @@ namespace Inventory {
 
       OnLoaded?.Invoke();
       inventory.OnResorted += ResortHandler;
+      inventory.OnSlotsCountChanged += SlotsCountChangedHandler;
     }
 
     public void OnDisable() {
+      RemoveSlotsUpdateEvents();
       RemoveAllEvents(gameObject);
       RemoveAllEvents(gameObject);
 
       RemoveSlotsEvents();
 
+      inventory.OnSlotsCountChanged -= SlotsCountChangedHandler;
       inventory.OnResorted -= ResortHandler;
 
       HideTooltip();
     }
 
     public void CreateSlots() {
-      if (slotsPrefabs.Length < Inventory.GetSlots.Length) {
+      if (slotsPrefabs.Length < Inventory.Slots.Length) {
         Debug.LogError("Not enough slots in the interface");
         return;
       }
 
       for (var i = 0; i < slotsPrefabs.Length; i++) {
-        if (i > Inventory.GetSlots.Length - 1) {
-          // slotsPrefabs[i].GetComponent<Image>().color = disabledSlotColor;
-          slotsPrefabs[i].Background.color = disabledSlotColor;
+        var slotPrefab = slotsPrefabs[i];
+        var obj = slotPrefab.gameObject;
+
+        if (i > Inventory.Slots.Length - 1) {
+          slotPrefab.Disable(disabledSlotColor);
+          slotsOnInterface.Remove(obj);
           continue;
         }
 
-        var obj = slotsPrefabs[i].gameObject;
-        var slot = Inventory.GetSlots[i];
+        var slot = Inventory.Slots[i];
 
-        slotsOnInterface.Add(obj, slot);
+        if (!slotsOnInterface.ContainsKey(obj)) {
+          slotsOnInterface.Add(obj, slot);
+        }
+
+        if ((UserInterface)slot.Parent == this) {
+          continue;
+        }
+
+        slot.SetParent(this);
+        slot.SetSlotDisplay(slotPrefab);
+        slotsOnInterface[obj] = slot;
       }
     }
 
@@ -151,6 +147,10 @@ namespace Inventory {
     }
 
     private void ResortHandler() {
+      UpdateInventoryUI();
+    }
+
+    private void SlotsCountChangedHandler() {
       UpdateInventoryUI();
     }
 
@@ -172,18 +172,9 @@ namespace Inventory {
       AddEvent(obj, EventTriggerType.PointerClick, (data) => OnSlotClick(data, slot, obj));
     }
 
-    private void UpdateSlotsGameObjects() {
-      for (var i = 0; i < Inventory.GetSlots.Length; i++) {
-        var slot = Inventory.GetSlots[i];
-        slot.SetParent(this);
-        slot.SetSlotDisplay(slotsPrefabs[i]);
-        slotsOnInterface[slotsPrefabs[i].gameObject] = slot;
-      }
-    }
-
     public void UpdateInventoryUI() {
-      for (var i = 0; i < Inventory.GetSlots.Length; i++) {
-        var slot = Inventory.GetSlots[i];
+      for (var i = 0; i < Inventory.Slots.Length; i++) {
+        var slot = Inventory.Slots[i];
         UpdateSlotDisplay(slot);
       }
     }
@@ -193,33 +184,44 @@ namespace Inventory {
     }
 
     public void UpdateSlotDisplay(InventorySlot slot) {
-      var image = slot.SlotDisplay.Background;
-      var text = slot.SlotDisplay.Text;
+      var isMainInventorySlot = slot.InventoryId == inventory.Id;
+      var slotDisplay = slot.SlotDisplay;
+
+      if (!isMainInventorySlot) {
+        slotDisplay.SetTypeIcon(gameManager.PlayerInventory.GetInventoryIconByType(slot.InventoryObjectType));
+      }
+      else {
+        slotDisplay.ClearTypeIcon();
+      }
 
       if (slot.Item.info == null || slot.amount <= 0) {
-        text.text = string.Empty;
+        slotDisplay.ClearText();
 
         // If exactly one allowed item, show its sprite as a "ghost" with transparency
         if (slot.AllowedItem) {
           var ghostItem = slot.AllowedItem;
-          image.sprite = ghostItem.UiDisplay;
-          image.color = new Color(1, 1, 1, 0.3f);
+          slotDisplay.SetBackgroundGhost(ghostItem.UiDisplay);
         }
         else {
-          image.sprite = null;
-          image.color = new Color(1, 1, 1, 0);
+          slotDisplay.ClearBackground();
         }
       }
       else {
-        image.sprite = slot.Item.info.UiDisplay;
-        image.color = new Color(1, 1, 1, 1);
-        text.text = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
+        var text = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
+        slotDisplay.SetBackground(slot.Item.info.UiDisplay);
+        slotDisplay.SetText(text);
       }
     }
 
-    public void CheckSlotsUpdate() {
-      for (var i = 0; i < inventory.GetSlots.Length; i++) {
-        inventory.GetSlots[i].OnAfterUpdated += UpdateSlotHandler;
+    private void AddSlotsUpdateEvents() {
+      for (var i = 0; i < inventory.Slots.Length; i++) {
+        inventory.Slots[i].OnAfterUpdated += UpdateSlotHandler;
+      }
+    }
+
+    private void RemoveSlotsUpdateEvents() {
+      for (var i = 0; i < inventory.Slots.Length; i++) {
+        inventory.Slots[i].OnAfterUpdated -= UpdateSlotHandler;
       }
     }
 

@@ -10,21 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
-  m_Name: Pickaxe
+  m_Name: DirtBuildingBlock
   m_EditorClassIdentifier: 
-  id: 33aac404-ce8e-4008-9a98-a8068b978f04
-  RecipeName: Pickaxe
-  Code: pickaxe
-  RecipeType: 2
+  id: b95ff29e-2940-47f4-b4a2-a222e232306b
+  RecipeName: Dirt Building Block
+  RecipeType: 0
+  RecipeTypes: 0000000002000000
   RequiredMaterials:
-  - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
-    Amount: 5
-  - Material: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
-    Amount: 5
+  - Material: {fileID: 11400000, guid: 154e8ba0ea2911e40a9cf1f243c3d7ad, type: 2}
+    Amount: 1
   Fuel:
     Material: {fileID: 0}
     Amount: 0
-  Result: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
-  ResultAmount: 1
-  CraftingTime: 20
-  detailImg: {fileID: 0}
+  Result: {fileID: 11400000, guid: a010f0923177be745be9c5bb738870d4, type: 2}
+  CraftingTime: 3
+  detailImg: {fileID: 21300000, guid: 30318ec9f694aa741887f289232caeb4, type: 3}

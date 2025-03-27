@@ -13,5 +13,9 @@ namespace Animation {
     public void Footstep() {
       AnimationEventManager.StartFootstepEffect();
     }
+
+    public void RobotRepaired() {
+      AnimationEventManager.RobotRepaired();
+    }
   }
 }

@@ -7,8 +7,8 @@ namespace Inventory {
     [SerializeField] private UserInterface toInventoryUI;
     [SerializeField] private Button button;
 
-    private InventoryObject fromInventory;
-    private InventoryObject toInventory;
+    private Inventory fromInventory;
+    private Inventory toInventory;
 
     private void Start() {
       fromInventory = fromInventoryUI.Inventory;

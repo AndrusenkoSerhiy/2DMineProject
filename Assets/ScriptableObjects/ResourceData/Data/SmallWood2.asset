@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SmallWood2
   m_EditorClassIdentifier: 
   Durability: 30
-  DropCount: 5
+  DropCount: 3
   tileDatas:
   - sprite: {fileID: 21300000, guid: cb39aa25624545e4eab7aec7b4afe034, type: 3}
     offsetSorting: 0
@@ -54,3 +54,14 @@ MonoBehaviour:
   colliderSize: {x: 3.44, y: 3.44}
   isBuilding: 0
   cellSize: {x: 1, y: 1}
+  bonusResources:
+  - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+    chance: 0.2
+    rndCount: {x: 2, y: 3}
+  - item: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
+    chance: 0.2
+    rndCount: {x: 3, y: 5}
+  - item: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
+    chance: 0.2
+    rndCount: {x: 3, y: 5}
+  debug: 0

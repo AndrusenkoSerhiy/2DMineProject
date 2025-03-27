@@ -14,10 +14,7 @@ namespace SaveSystem {
     public SerializedDictionary<string, InventoryData> Inventories;
     public SerializedDictionary<string, WorkstationsData> Workstations;
     public RecipesData Recipes;
-  }
-
-  public interface ISaveable {
-    string Id { get; }
+    public SerializedDictionary<string, RobotData> Robots;
   }
 
   public interface ISaveLoad {
@@ -110,7 +107,8 @@ namespace SaveSystem {
         DefaultItemAdded = false,
         Inventories = new SerializedDictionary<string, InventoryData>(),
         Workstations = new SerializedDictionary<string, WorkstationsData>(),
-        Recipes = new RecipesData()
+        Recipes = new RecipesData(),
+        Robots = new SerializedDictionary<string, RobotData>(),
       };
     }
 

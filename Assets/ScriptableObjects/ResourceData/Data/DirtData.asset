@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DirtData
   m_EditorClassIdentifier: 
   Durability: 10
-  DropCount: 5
+  DropCount: 1
   tileDatas:
   - sprite: {fileID: 21300000, guid: a1179405da975474caa1d50cde691c7d, type: 3}
     offsetSorting: 0
@@ -54,3 +54,11 @@ MonoBehaviour:
   colliderSize: {x: 3.44, y: 3.44}
   isBuilding: 0
   cellSize: {x: 1, y: 1}
+  bonusResources:
+  - item: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
+    chance: 0.2
+    rndCount: {x: 1, y: 3}
+  - item: {fileID: 11400000, guid: 4b1b5842d64acf64bb321781def6db1e, type: 2}
+    chance: 0.2
+    rndCount: {x: 1, y: 2}
+  debug: 0

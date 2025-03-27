@@ -14,14 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 9ccf6022-ce17-4285-b32f-d0ac4c3a179c
   RecipeType: 2
-  OutputInventoryType: 5
+  ResourcePath: ScriptableObjects/Craft/Workbench
+  OutputInventoryType: 20
+  FuelInventoryType: 0
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Workbench
   Description: Workbench desc
-  OutputSlotsAmount: 5
-  PlayEffectsWhenOpened: 1
-  PlayEffectsWhenClosed: 1
-  CraftStartTimestampMillis: 0
-  MillisecondsLeft: 0
-  CraftingTasks: []
-  Inputs: []
+  ShowSuccessCraftMessages: 0
+  CraftSlotsCount: 5

@@ -8,15 +8,12 @@ namespace Inventory {
     [SerializeField] private GameObject interfacePrefab;
     [SerializeField] private string interactText;
     [SerializeField] private string interactHeader;
-    [SerializeField] private StorageType storageType;
+    [SerializeField] private InventoryType inventoryType;
     [SerializeField] private CellObject cellObject;
     public string InteractionText => interactText;
     public string InteractionHeader => interactHeader;
 
     private StorageWindow storageWindow;
-
-    private string id;
-    public string Id => id;
 
     public bool Interact(PlayerInteractor playerInteractor) {
       Init();
@@ -36,22 +33,15 @@ namespace Inventory {
         return;
       }
 
-      GenerateId();
+      var entityId = InventoryObject.GenerateEntityIdByCell(cellObject);
+      var id = InventoryObject.GenerateId(inventoryType, entityId);
       var storageWindowObj = Instantiate(interfacePrefab, GameManager.Instance.Canvas.transform);
 
       storageWindowObj.transform.SetSiblingIndex(0);
       storageWindow = storageWindowObj.GetComponent<StorageWindow>();
       GameManager.Instance.WindowsController.AddWindow(storageWindow);
-      storageWindow.StorageUI.Setup(id, storageType);
-      storageWindow.InventoryUI.SetupFastDrop(id, storageType);
-    }
-
-    private void GenerateId() {
-      if (cellObject == null) {
-        return;
-      }
-
-      id = $"storage_{storageType}_{cellObject.CellData.x}_{cellObject.CellData.y}";
+      storageWindow.StorageUI.Setup(inventoryType, id);
+      storageWindow.InventoryUI.SetupFastDrop(inventoryType, id);
     }
   }
 }

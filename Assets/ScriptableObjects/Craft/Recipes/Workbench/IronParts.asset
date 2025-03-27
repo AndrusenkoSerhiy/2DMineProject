@@ -14,15 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: b12b095c-26a3-4538-a074-60312352435b
   RecipeName: IronParts
-  Code: ironparts
   RecipeType: 2
+  RecipeTypes: 02000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: a6ec05e23db0ff6459f4e4b32ceda697, type: 2}
-    Amount: 5
+    Amount: 2
   Fuel:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
-  ResultAmount: 10
   CraftingTime: 30
   detailImg: {fileID: 0}

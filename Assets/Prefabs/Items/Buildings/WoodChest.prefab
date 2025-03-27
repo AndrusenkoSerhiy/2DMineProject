@@ -115,6 +115,10 @@ MonoBehaviour:
     x: 0
     y: 0
     perlin: 0
+    durability: 0
+    alreadyDroped: 0
+    fractionalResource: 0
+    canTakeDamage: 0
 --- !u!114 &7469849115667634943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,7 +134,7 @@ MonoBehaviour:
   interfacePrefab: {fileID: 2952217949748886116, guid: 16e8601439269834fb42824ccd0e89ce, type: 3}
   interactText: Open storage
   interactHeader: Storage
-  storageType: 0
+  inventoryType: 4
   cellObject: {fileID: 7309800373237914667}
 --- !u!1 &4769956217832086249
 GameObject:

@@ -1,11 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Windows;
 using Inventory;
 using Scriptables.Repair;
 using UnityEngine;
 using UnityEngine.UI;
-using World;
 
 namespace Repair {
   public class RepairWindow : MonoBehaviour {
@@ -15,20 +15,21 @@ namespace Repair {
     [SerializeField] private Color blinkBgColor;
     [SerializeField] private float blinkTime = 1.5f;
 
-    private RobotRepair robotRepair;
+    private Inventory.Inventory resourcesInventory;
+    private RobotObject robotObject;
     private Coroutine blinkCoroutine;
     private List<int> blinkItems;
-    private bool repaired;
+    public event Action OnRepaired;
 
-    public bool Repaired => repaired;
-
-    public void Setup(CellObject cellObject, RobotRepairObject repairSettings) {
-      robotRepair = new RobotRepair(cellObject, repairSettings);
+    public void Setup(RobotObject settings) {
+      robotObject = settings;
+      resourcesInventory =
+        GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(robotObject.InventoryType, robotObject.Id);
     }
 
     private void Awake() {
       DisableRepairButton();
-      resourcesInterface.Setup(robotRepair.RobotRepairObject.InventoryType, robotRepair.Id);
+      resourcesInterface.Setup(robotObject.InventoryType, robotObject.Id);
       InitItems();
       blinkItems = new List<int>();
     }
@@ -53,7 +54,7 @@ namespace Repair {
     }
 
     private void AddSlotsEvents() {
-      foreach (var slot in robotRepair.ResourcesInventory.GetSlots) {
+      foreach (var slot in resourcesInventory.Slots) {
         slot.OnAfterUpdated += OnSlotUpdatedHandler;
       }
     }
@@ -68,15 +69,13 @@ namespace Repair {
 
     private void OnRepairButtonClickHandler() {
       DisableRepairButton();
-      repaired = true;
       gameObject.GetComponent<WindowBase>().Hide();
 
-      Instantiate(robotRepair.RobotRepairObject.RobotPrefab,
-        GameManager.Instance.PlayerController.transform.position + new Vector3(6, 8, 0), Quaternion.identity);
+      OnRepaired?.Invoke();
     }
 
     private void RemoveSlotsEvents() {
-      foreach (var slot in robotRepair.ResourcesInventory.GetSlots) {
+      foreach (var slot in resourcesInventory.Slots) {
         slot.OnAfterUpdated -= OnSlotUpdatedHandler;
       }
     }
@@ -105,7 +104,7 @@ namespace Repair {
     private void CheckSlots() {
       for (var i = 0; i < items.Count; i++) {
         var item = items[i];
-        if (item.IsEnough()) {
+        if (item.IsEnough() || blinkItems.Contains(i)) {
           continue;
         }
 
@@ -116,23 +115,23 @@ namespace Repair {
     private void InitItems() {
       for (var i = 0; i < items.Count; i++) {
         var item = items[i];
-        var count = robotRepair.RobotRepairObject.RepairResourcesAmount[i];
-        item.Init(count, robotRepair.ResourcesInventory.GetSlots[i]);
+        var count = robotObject.RepairResourcesAmount[i];
+        item.Init(count, resourcesInventory.Slots[i]);
       }
     }
 
     private void PrepareResourcesInterface() {
-      var slots = robotRepair.ResourcesInventory.GetSlots;
+      var slots = resourcesInventory.Slots;
 
-      if (robotRepair.RobotRepairObject.RepairResources.Count != slots.Length) {
+      if (robotObject.RepairResources.Count != slots.Length) {
         Debug.LogError("Repair resources count doesn't match inventory slots count.");
         return;
       }
 
       for (var i = 0; i < slots.Length; i++) {
         var slot = slots[i];
-        var allowedItem = robotRepair.RobotRepairObject.RepairResources[i];
-        var requiredAmount = robotRepair.RobotRepairObject.RepairResourcesAmount[i];
+        var allowedItem = robotObject.RepairResources[i];
+        var requiredAmount = robotObject.RepairResourcesAmount[i];
         slot.AllowedItem = allowedItem;
         slot.MaxAllowedAmount = requiredAmount;
       }

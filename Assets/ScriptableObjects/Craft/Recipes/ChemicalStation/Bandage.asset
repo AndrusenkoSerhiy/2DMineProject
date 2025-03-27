@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 4c6f2c49-e417-4887-b63f-09e872e1fa41
   RecipeName: Bandage
-  Code: bandage
   RecipeType: 5
+  RecipeTypes: 05000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
     Amount: 10
@@ -25,6 +25,5 @@ MonoBehaviour:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: 4b5bd2c0f5f425542b9aa3f52aced800, type: 2}
-  ResultAmount: 1
   CraftingTime: 10
   detailImg: {fileID: 0}

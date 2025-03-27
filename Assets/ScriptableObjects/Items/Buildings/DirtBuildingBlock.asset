@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8bc6611c57a4211b23b3959ff98e207, type: 3}
-  m_Name: WoodBuildingBlock
+  m_Name: DirtBuildingBlock
   m_EditorClassIdentifier: 
-  id: d17a43af-61c1-4402-8cb6-e2646573a5e5
+  id: 33e027b8-24bc-46b8-8048-e657bc2f39fc
   Type: 10
-  Name: Wood block
+  Name: Dirt block
   ParentType: 0
-  UiDisplay: {fileID: 21300000, guid: cb39aa25624545e4eab7aec7b4afe034, type: 3}
-  CharacterDisplay: {fileID: 3890226224433729309, guid: 7a0f58293bb8a0741b562d630f1bad22, type: 3}
+  UiDisplay: {fileID: 21300000, guid: 30318ec9f694aa741887f289232caeb4, type: 3}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 629814632db31854cb736a6081af2393, type: 3}
   Stackable: 1
   MaxStackSize: 50
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
-  spawnPrefab: {fileID: 3890226224433729309, guid: 29b1a952a9d6cec4fa94d492dc501fc3, type: 3}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 7e59faa35c36db8408057d7af07b26de, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
   Description: 
-  ResourceData: {fileID: 11400000, guid: 563f6ef75ef5211469844e99c2383a96, type: 2}
+  ResourceData: {fileID: 11400000, guid: 0e1d357d10e34094fb8f72fa3e5fc3a0, type: 2}

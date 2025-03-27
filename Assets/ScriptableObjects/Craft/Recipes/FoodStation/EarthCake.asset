@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: b3b9fbc4-4e87-4ed6-b3a5-37eac8a35667
   RecipeName: Earth-cake
-  Code: earthcake
   RecipeType: 4
+  RecipeTypes: 04000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: 7684243e236b60b4dac023d5e8cdd7f6, type: 2}
     Amount: 1
@@ -27,6 +27,5 @@ MonoBehaviour:
     Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 1
   Result: {fileID: 11400000, guid: 4e6f2c31e85642a41863923b80003eff, type: 2}
-  ResultAmount: 1
   CraftingTime: 20
   detailImg: {fileID: 0}

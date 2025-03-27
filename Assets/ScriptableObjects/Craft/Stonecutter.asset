@@ -14,14 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 949f1b4f-bee4-4ccd-b91c-f341a3fc752b
   RecipeType: 1
-  OutputInventoryType: 6
+  ResourcePath: ScriptableObjects/Craft/Stonecutter
+  OutputInventoryType: 20
+  FuelInventoryType: 0
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Stonecutter
   Description: Workbench desc
-  OutputSlotsAmount: 5
-  PlayEffectsWhenOpened: 0
-  PlayEffectsWhenClosed: 1
-  CraftStartTimestampMillis: 0
-  MillisecondsLeft: 0
-  CraftingTasks: []
-  Inputs: []
+  ShowSuccessCraftMessages: 0
+  CraftSlotsCount: 5

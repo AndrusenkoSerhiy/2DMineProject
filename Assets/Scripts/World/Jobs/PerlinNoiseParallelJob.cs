@@ -12,8 +12,7 @@ namespace World.Jobs{
     public float seed;
     public NativeArray<float> noiseMap;
 
-    public void Execute(int index)
-    {
+    public void Execute(int index) {
       int x = index % width;
       int y = index / height;
       float xCoord = (float)x / width * scale + seed;

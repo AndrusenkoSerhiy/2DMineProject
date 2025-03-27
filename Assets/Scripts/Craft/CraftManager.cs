@@ -14,13 +14,7 @@ namespace Craft {
     [SerializeField] private SerializedDictionary<string, bool> windowOpenStates;
     // [SerializeField] private SerializedDictionary<string, bool> saving;
 
-    private InventoriesPool inventoriesPool;
-
-    public InventoriesPool InventoriesPool => inventoriesPool;
-
     private void Awake() {
-      inventoriesPool = new InventoriesPool();
-      inventoriesPool.Init();
       Load();
     }
 

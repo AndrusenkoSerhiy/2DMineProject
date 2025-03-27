@@ -1,118 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Inventory;
 using Scriptables.Items;
-using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Craft {
-  [Serializable]
   public class InventoriesPool {
-    private List<InventoryObject> checkInventories = new();
+    private PlayerInventory playerInventory;
+    private List<Inventory.Inventory> pool = new();
+    public List<Inventory.Inventory> Inventories => pool;
 
-    private SerializedDictionary<string, int> resourcesTotal = new();
-    public event Action<string> OnResourcesTotalUpdate;
-    public List<InventoryObject> Inventories => checkInventories;
-
-    /*public InventoriesPool() {
+    public InventoriesPool() {
+      playerInventory = GameManager.Instance.PlayerInventory;
       InitInventories();
-      CalculateResourcesTotal();
-      AddEvents();
-    }*/
-    
-    public void Init() {
-      InitInventories();
-      CalculateResourcesTotal();
       AddEvents();
     }
 
     public int GetResourceTotalAmount(string resourceId) {
-      return resourcesTotal.GetValueOrDefault(resourceId, 0);
+      var totalAmount = 0;
+      foreach (var inventory in pool) {
+        totalAmount += inventory.GetTotalCount(resourceId);
+      }
+
+      return totalAmount;
     }
 
-    public void RemoveFromInventoriesPool(string id, int amount) {
+    public int RemoveFromInventoriesPool(string id, int amount) {
       if (amount <= 0) {
-        return;
+        return amount;
       }
 
       var remainingAmount = amount;
-      foreach (var inventory in checkInventories) {
+      foreach (var inventory in pool) {
         remainingAmount = inventory.RemoveItem(id, remainingAmount);
         if (remainingAmount <= 0) {
           break;
         }
       }
+
+      return remainingAmount;
     }
 
-    public void AddItemToInventoriesPool(Item item, int amount) {
+    public int AddItemToInventoriesPool(Item item, int amount) {
       if (amount <= 0) {
-        return;
+        return amount;
       }
 
       var remainingAmount = amount;
-      foreach (var inventory in checkInventories) {
+      foreach (var inventory in pool) {
         remainingAmount = inventory.AddItem(item, remainingAmount);
         if (remainingAmount <= 0) {
           break;
         }
       }
+
+      return remainingAmount;
     }
 
-    private void InitInventories() {
-      var playerInventory = GameManager.Instance.PlayerInventory;
-      checkInventories.Add(playerInventory.GetInventory());
-      checkInventories.Add(playerInventory.GetQuickSlots());
-    }
-
-    private void CalculateResourcesTotal() {
-      resourcesTotal.Clear();
-
-      foreach (var inventory in checkInventories) {
-        foreach (var inventorySlot in inventory.GetSlots) {
-          var item = inventorySlot.Item;
-
-          if (item.isEmpty) {
-            continue;
-          }
-
-          UpdateResourceTotal(item.info.Id, inventorySlot.amount, false);
-        }
-      }
-    }
-
-    private void AddEvents() {
-      if (checkInventories.Count == 0) {
-        Debug.LogError("Craft TotalAmount: No inventories to check");
-        return;
-      }
-
-      foreach (var inventory in checkInventories) {
-        foreach (var inventorySlot in inventory.GetSlots) {
-          inventorySlot.OnAfterUpdated += SlotAmountUpdateHandler;
-        }
-      }
-    }
-
-    private void RemoveEvents() {
-      if (checkInventories.Count == 0) {
-        Debug.LogError("Craft TotalAmount: No inventories to check");
-        return;
-      }
-
-      foreach (var inventory in checkInventories) {
-        foreach (var inventorySlot in inventory.GetSlots) {
-          inventorySlot.OnAfterUpdated -= SlotAmountUpdateHandler;
-        }
-      }
-    }
-
-    private bool IsTypeInCheckInventories(InventoryType? inventoryType) {
-      if (inventoryType == null) {
-        return false;
-      }
-
-      foreach (var inventory in checkInventories) {
-        if (inventory.type == inventoryType) {
+    public bool CanAddItem(ItemObject item) {
+      foreach (var inventory in pool) {
+        if (inventory.CanAddItem(item)) {
           return true;
         }
       }
@@ -120,52 +65,22 @@ namespace Craft {
       return false;
     }
 
-    private void SlotAmountUpdateHandler(SlotUpdateEventData data) {
-      var before = data.before;
-      var after = data.after;
-      var from = data.from;
-      var itemBefore = before?.Item?.info;
-      var itemAfter = after?.Item?.info;
-
-      // Swap empty slots
-      if (!itemBefore && !itemAfter) {
-        return;
-      }
-
-      var itemsInSameInventoriesPool = IsTypeInCheckInventories(from?.InventoryType)
-                                       && IsTypeInCheckInventories(after?.InventoryType);
-      // Swap different in same inventory pool
-      if (itemsInSameInventoriesPool && itemBefore != itemAfter) {
-        return;
-      }
-
-      //Item amount changed
-      if (before?.amount == after?.amount) {
-        return;
-      }
-
-      var id = itemBefore?.Id ?? itemAfter?.Id;
-
-      var amountDelta = after.amount - before.amount;
-
-      UpdateResourceTotal(id, amountDelta);
+    private void InitInventories() {
+      pool.Add(playerInventory.GetInventory());
+      pool.Add(playerInventory.GetQuickSlots());
     }
 
-    private void UpdateResourceTotal(string resourceId, int amount, bool triggerEvent = true) {
-      if (resourcesTotal.ContainsKey(resourceId)) {
-        resourcesTotal[resourceId] += amount;
+    private void AddEvents() {
+      GameManager.Instance.QuickSlotListener.OnActivate += QuickSlotActivateHandler;
+      GameManager.Instance.QuickSlotListener.OnDeactivate += QuickSlotDeactivateHandler;
+    }
 
-        if (resourcesTotal[resourceId] <= 0) {
-          resourcesTotal.Remove(resourceId);
-        }
-      }
-      else if (amount > 0) {
-        resourcesTotal[resourceId] = amount;
-      }
+    private void QuickSlotDeactivateHandler() {
+      pool.Remove(playerInventory.GetQuickSlots());
+    }
 
-      if (triggerEvent) {
-        OnResourcesTotalUpdate?.Invoke(resourceId);
-      }
+    private void QuickSlotActivateHandler() {
+      pool.Add(playerInventory.GetQuickSlots());
     }
   }
 }

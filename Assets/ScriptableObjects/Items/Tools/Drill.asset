@@ -15,13 +15,13 @@ MonoBehaviour:
   id: 09bbb2b4-6209-402d-8c15-cb88452109ec
   Type: 2
   Name: Drill
-  ParentType: 3
+  ParentType: 2
   UiDisplay: {fileID: 21300000, guid: 991f36289d69a074facb0615fe02f667, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 9fa11686406cd03469b96a578e9c18cb, type: 3}
   Stackable: 0
   MaxStackSize: 1
-  SpawnPosition: {x: 0.4, y: -0.29, z: 0}
-  SpawnRotation: {x: 0, y: 0, z: -90}
+  SpawnPosition: {x: 0.338, y: -0.151, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 10}
   spawnPrefab: {fileID: 3890226224433729309, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1

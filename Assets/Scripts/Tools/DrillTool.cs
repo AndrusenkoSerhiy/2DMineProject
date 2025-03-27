@@ -52,6 +52,7 @@ namespace Tools {
     }
 
     private void LookAt() {
+      return;
       var mousePosition =
         GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
 

@@ -6,7 +6,12 @@ namespace Player {
       base.Awake();
       LockHighlight(true);
     }
-    
+
+    protected override void TriggerAttack() {
+      base.TriggerAttack();
+      animator.SetTrigger("Attack");
+      animator.SetInteger("WeaponID", attackID);
+    }
     //get param from robot stats
     protected override void PrepareAttackParams() {
       attackLayer = stats.AttackLayer;

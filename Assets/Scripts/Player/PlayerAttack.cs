@@ -22,6 +22,15 @@ namespace Player {
     private void SetDefaultAttackParam() {
       UpdateParams(.5f, stats.AttackRange, stats.AttackColliderSize.x, stats.AttackColliderSize.y);
     }
+    
+    protected override void TriggerAttack() {
+      base.TriggerAttack();
+      if (!firstAttack) {
+        firstAttack = true;
+        animator.SetTrigger("Attack");
+        animator.SetInteger("WeaponID", attackID); 
+      }
+    }
 
     //get param from equipped tool
     protected override void PrepareAttackParams() {

@@ -90,6 +90,8 @@ namespace Tools {
       miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
+      miningRobotController.EnableCollider(true);
+      miningRobotController.SetRBType(RigidbodyType2D.Dynamic);
 
       SetPlayerPosition(playerTransform, Vector3.zero);
       GameManager.Instance.CurrPlayerController = miningRobotController;
@@ -101,6 +103,8 @@ namespace Tools {
 
     private void ExitFromRobot() {
       SetPlayerPosition(null, exitTransforms[0].position);
+      miningRobotController.EnableCollider(false);
+      miningRobotController.SetRBType(RigidbodyType2D.Kinematic);
       miningRobotController.EnableController(false);
       playerController.EnableCollider(true);
       playerController.EnableController(true);

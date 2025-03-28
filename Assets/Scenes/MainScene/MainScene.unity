@@ -2293,6 +2293,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6044831921232538219, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6251728841341945271, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: staminaBar
       value: 
@@ -3441,7 +3445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8784970698859031047, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.3
+      value: 2.68
       objectReference: {fileID: 0}
     - target: {fileID: 8784970698859031047, guid: e4cb4371931d8564d871d62b350b72de, type: 3}
       propertyPath: m_LocalPosition.z

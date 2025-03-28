@@ -3,6 +3,7 @@ using UnityEngine;
 namespace Player {
   public class MiningRobotController : PlayerControllerBase, IPlayerController{
     [SerializeField] private MiningRobotAttack miningRobotAttack;
+    [SerializeField] private CapsuleCollider2D capsuleCollider;
 
     protected override void Awake() {
       base.Awake();
@@ -58,6 +59,14 @@ namespace Player {
     private void ResetMovement() {
       _rb.linearVelocity = Vector2.zero;
       _frameVelocity = Vector2.zero;
+    }
+
+    public void SetRBType(RigidbodyType2D bodyType) {
+      _rb.bodyType = bodyType;
+    }
+
+    public void EnableCollider(bool state) {
+      capsuleCollider.enabled = state;
     }
   }
 }

@@ -33,7 +33,7 @@ namespace Player {
     private int lookDirection;
     private AnimatorParameters animParam;
 
-    private bool firstAttack;
+    protected bool firstAttack;
     
     public bool shouldBeDamaging { get; private set; } = false;
     
@@ -101,14 +101,8 @@ namespace Player {
       animator.SetInteger(animParam.LookDirection, lookDirection);
     }
     
-    private void TriggerAttack() {
-      //Debug.LogError($"timeBtwAttacks {timeBtwAttacks}");
+    protected virtual void TriggerAttack() {
       attackTimeCounter = 0f;
-      if (!firstAttack) {
-        firstAttack = true;
-        animator.SetTrigger("Attack");
-        animator.SetInteger("WeaponID", attackID); 
-      }
     }
     
     private void HandleAttack() {

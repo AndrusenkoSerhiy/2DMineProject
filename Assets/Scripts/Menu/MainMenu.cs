@@ -17,7 +17,7 @@ namespace Menu {
 
     public void Hide() {
       GameManager.Instance.CurrPlayerController.SetLockPlayer(false);
-      GameManager.Instance.CurrPlayerController.SetLockHighlight(false);
+      //GameManager.Instance.CurrPlayerController.SetLockHighlight(false);
       gameObject.SetActive(false);
     }
 

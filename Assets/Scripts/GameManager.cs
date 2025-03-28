@@ -125,6 +125,23 @@ public class GameManager : PersistentSingleton<GameManager> {
 
     startGameCameraController.Init();
     mainMenu.Show();
+    EnableInput(false);
+    //need to subscribe for player grounded first time
+    playerController.GroundedChanged += ChangeGround;
+  }
+
+  //use for start cutscene fall to ground
+  private void EnableInput(bool state) {
+    userInput.EnableGamePlayControls(state);
+    userInput.EnableUIControls(state);
+    
+    playerController.SetLockHighlight(true);
+  }
+
+  private void ChangeGround(bool arg1, float arg2) {
+    playerController.GroundedChanged -= ChangeGround;
+    EnableInput(true);
+    playerController.SetLockHighlight(false);
   }
 
   public void StartNewGame() {

@@ -128,17 +128,16 @@ namespace Settings {
     #region Controls
 
     public void EnableUIControls(bool val) {
-      /*if (val) {
+      if (val) {
         controls.UI.Enable();
       }
       else {
         controls.UI.Disable();
-      }*/
+      }
     }
 
     public void EnableGamePlayControls(bool val) {
       if (val) {
-        //controls.GamePlay.Enable();
         EnableAllExceptBlocked();
       }
       else {

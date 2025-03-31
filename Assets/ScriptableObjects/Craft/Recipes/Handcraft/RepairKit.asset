@@ -10,19 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
-  m_Name: Mace
+  m_Name: RepairKit
   m_EditorClassIdentifier: 
-  id: 49f7ee79-c83d-4efe-9362-5661eb50eb86
-  RecipeName: Mace
+  id: dab44eb2-6030-4e46-9b6e-c71c8caf8c8f
+  RecipeName: Repair Kit
   RecipeTypes: 0000000002000000
   RequiredMaterials:
-  - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+  - Material: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
+    Amount: 1
+  - Material: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
     Amount: 5
+  - Material: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
+    Amount: 1
   - Material: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
     Amount: 5
   Fuel:
     Material: {fileID: 0}
     Amount: 0
-  Result: {fileID: 11400000, guid: b842459342758864ea8fd5dd1fc317ac, type: 2}
-  CraftingTime: 70
+  Result: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
+  CraftingTime: 20
   detailImg: {fileID: 0}

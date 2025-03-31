@@ -1,6 +1,7 @@
+using Interaction;
 using Player;
-using Settings;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Windows {
   public class WindowBase : MonoBehaviour {
@@ -9,21 +10,50 @@ namespace Windows {
     public delegate void ShowWindow(WindowBase window);
     public event ShowWindow OnShow;
     public event ShowWindow OnHide;
-    
-    // protected virtual void Start() {
-    //   Hide();
-    // }
+    public InteractionPrompt interactionPromtUI;
+
+    [SerializeField] private string actionName = string.Empty;
+    private string buttonName;
+
+    private void GetInteractionPrompt() {
+      if (!interactionPromtUI) {
+        interactionPromtUI = GameManager.Instance.InteractionPromptUI;
+        GetInteractionText();
+      }
+      
+      SetInteractionText();
+    }
+
+    private void GetInteractionText() {
+      //TODO index 0 use for keyboard
+      if (string.IsNullOrEmpty(actionName))
+        return;
+      interactionPromtUI.UpdateSpriteAsset();
+      buttonName = "<sprite name=" + GameManager.Instance.UserInput.controls.UI.Craft.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice) + ">";
+    }
+
+    private void SetInteractionText() {
+      interactionPromtUI.ShowPrompt(true, actionName + buttonName);
+    }
 
     private PlayerControllerBase GetCurrPlayerController() {
       return GameManager.Instance.CurrPlayerController;
     }
     
     public virtual void Show() {
+      GetInteractionPrompt();
       isShow = true;
       gameObject.SetActive(true);
       OnShow?.Invoke(this);
       LockPlayer(true);
       LockHighlight(true);
+      InputSystem.onActionChange += InputActionChangeCallback;
+    }
+
+    private void InputActionChangeCallback(object arg1, InputActionChange arg2) {
+      buttonName = "<sprite name=" + GameManager.Instance.UserInput.controls.UI.Craft.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice) + ">";
+      interactionPromtUI.UpdateSpriteAsset();
+      SetInteractionText();
     }
 
     public virtual void Hide() {
@@ -32,6 +62,8 @@ namespace Windows {
       OnHide?.Invoke(this);
       LockPlayer(false);
       LockHighlight(false);
+      interactionPromtUI.ShowPrompt(false);
+      InputSystem.onActionChange -= InputActionChangeCallback;
     }
     
     private void LockPlayer(bool state) {

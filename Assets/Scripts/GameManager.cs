@@ -4,6 +4,7 @@ using Audio;
 using Craft;
 using Craft.Recipes;
 using DG.Tweening;
+using Interaction;
 using Player;
 using Scriptables;
 using Scriptables.Items;
@@ -16,6 +17,7 @@ using Menu;
 using Messages;
 using Movement;
 using Pool;
+using ScriptableObjects;
 using Settings;
 using UI;
 using UnityEngine.Serialization;
@@ -52,9 +54,11 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private ObjectPooler poolEffects;
   [SerializeField] private QuickSlotListener quickSlotListener;
   [SerializeField] private MapController mapController;
+  [SerializeField] private StaminaBar staminaBar;
+  [SerializeField] private InteractionPrompt interactionPromtUI;
+  [SerializeField] private ListOfTmpSpriteAssets listOfTmpSpriteAssets;
   //TODO
   //robot don't need this param in own script
-  [SerializeField] private StaminaBar staminaBar;
   [SerializeField] private LadderMovement playerLadderMovement;
 
   private PlayerController playerController;
@@ -93,6 +97,10 @@ public class GameManager : PersistentSingleton<GameManager> {
   public StaminaBar StaminaBar => staminaBar;
   public LadderMovement PlayerLadderMovement => playerLadderMovement;
   public MapController MapController => mapController;
+  
+  public InteractionPrompt InteractionPromptUI => interactionPromtUI;
+  
+  public ListOfTmpSpriteAssets ListOfTmpSpriteAssets => listOfTmpSpriteAssets;
 
   public PlayerController PlayerController {
     set => playerController = value;

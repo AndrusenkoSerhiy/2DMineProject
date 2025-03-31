@@ -1056,6 +1056,8 @@ MonoBehaviour:
   interfacePrefab: {fileID: 1208913450436918581, guid: caaa36600c646d14ab21fae3a3cc6a15, type: 3}
   stationObject: {fileID: 11400000, guid: 33b923de99302004c8dda329339d3e62, type: 2}
   cellObject: {fileID: 0}
+  interactionPrompt: {fileID: 0}
+  actionName: Hand craft
 --- !u!50 &7677545041897933634
 Rigidbody2D:
   serializedVersion: 5

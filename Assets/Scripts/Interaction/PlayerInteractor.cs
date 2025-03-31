@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Interaction
 {
@@ -12,6 +14,18 @@ namespace Interaction
     [SerializeField] private int numFound;
 
     private IInteractable interactable;
+    private string actionName;
+
+    private void Start() {
+      GetActionName();
+      InputSystem.onActionChange += InputActionChangeCallback;
+    }
+
+    private void GetActionName() {
+      actionName = GameManager.Instance.UserInput.controls.GamePlay.Interact.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice);
+      interactionPromtUI.UpdateSpriteAsset();
+    }
+
     private void Update() {
       //if any window is open don't allow to find items and show interaction message
       if (GameManager.Instance.WindowsController.IsAnyWindowOpen) {
@@ -40,15 +54,23 @@ namespace Interaction
       if (interactable == null)
         return;
 
-      interactionPromtUI.ShowPrompt(true, interactable.InteractionText);
+      interactionPromtUI.ShowPrompt(true, interactable.InteractionText + "<sprite name=" + actionName + ">");
       if (GameManager.Instance.UserInput.controls.GamePlay.Interact.WasPressedThisFrame()) {
         interactable.Interact(this);
       }
+    }
+    
+    private void InputActionChangeCallback(object arg1, InputActionChange arg2) {
+      GetActionName();
     }
 
     private void OnDrawGizmos() {
       Gizmos.color = Color.red;
       Gizmos.DrawWireSphere(interactionPoint.position, radius);
+    }
+
+    private void OnDestroy() {
+      InputSystem.onActionChange -= InputActionChangeCallback;
     }
   }
 }

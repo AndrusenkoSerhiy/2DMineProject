@@ -24,6 +24,7 @@ namespace Settings {
 
     private GameDevice _activeGameDevice;
 
+    public GameDevice ActiveGameDevice => _activeGameDevice;
     private void Awake() {
       controls = new Controls();
 
@@ -80,6 +81,9 @@ namespace Settings {
     }
 
     private void ChangeActiveGameDevice(GameDevice activeGameDevice) {
+      if(_activeGameDevice == activeGameDevice)
+        return;
+      
       _activeGameDevice = activeGameDevice;
       //Debug.LogError($"activeGameDevice {activeGameDevice}");
       UnityEngine.Cursor.visible = _activeGameDevice == GameDevice.KeyboardAndMouse;

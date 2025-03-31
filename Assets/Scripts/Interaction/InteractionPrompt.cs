@@ -19,5 +19,10 @@ namespace Interaction
       promt.gameObject.SetActive(state);
       isDisplayed = state;
     }
+
+    public void UpdateSpriteAsset() {
+      var index = (int)GameManager.Instance.UserInput.GetActiveGameDevice();
+      promt.spriteAsset = GameManager.Instance.ListOfTmpSpriteAssets.SpriteAssets[index];
+    }
   }
 }

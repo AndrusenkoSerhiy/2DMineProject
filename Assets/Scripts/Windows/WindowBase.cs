@@ -1,3 +1,4 @@
+using System;
 using Interaction;
 using Player;
 using UnityEngine;
@@ -73,6 +74,10 @@ namespace Windows {
 
     private void LockHighlight(bool state) {
       GetCurrPlayerController().SetLockHighlight(state);
+    }
+
+    private void OnDestroy() {
+      InputSystem.onActionChange -= InputActionChangeCallback;
     }
   }
 }

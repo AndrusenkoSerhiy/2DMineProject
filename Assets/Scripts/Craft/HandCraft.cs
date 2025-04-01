@@ -1,3 +1,4 @@
+using System;
 using Interaction;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,9 +11,10 @@ namespace Craft {
     public void Start() {
       GameManager.Instance.UserInput.controls.UI.HandCraft.performed += ctx => CheckInteract();
       InputSystem.onActionChange += InputActionChangeCallback;
+      Debug.LogError($"name {GameManager.Instance.UserInput.controls.UI.HandCraft.bindings[0].action}");
       buttonName =
         GameManager.Instance.UserInput.controls.UI.HandCraft.GetBindingDisplayString(
-          (int)GameManager.Instance.UserInput.ActiveGameDevice);
+          (int)GameManager.Instance.UserInput.ActiveGameDevice, InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
       interactionPrompt.ShowPrompt(true, actionName + " " + "<sprite name=" + buttonName + ">");
     }
 
@@ -20,6 +22,10 @@ namespace Craft {
       buttonName = GameManager.Instance.UserInput.controls.UI.HandCraft.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice);
       interactionPrompt.UpdateSpriteAsset();
       interactionPrompt.ShowPrompt(true, actionName + " " + " " + "<sprite name=" + buttonName + ">");
+    }
+
+    private void OnDestroy() {
+      InputSystem.onActionChange -= InputActionChangeCallback;
     }
   }
 }

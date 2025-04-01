@@ -57,8 +57,9 @@ namespace Repair {
 
       RemoveSlotsEvents();
       repairButton.onClick.RemoveAllListeners();
-      GameManager.Instance.UserInput.controls.UI.Craft.performed -= ClickOnKeyboard;
-
+      if (GameManager.HasInstance) {
+        GameManager.Instance.UserInput.controls.UI.Craft.performed -= ClickOnKeyboard;
+      }
     }
 
     private void AddSlotsEvents() {

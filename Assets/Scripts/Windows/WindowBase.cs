@@ -19,24 +19,20 @@ namespace Windows {
     private void GetInteractionPrompt() {
       if (!interactionPromtUI) {
         interactionPromtUI = GameManager.Instance.InteractionPromptUI;
-        GetInteractionText();
       }
-      
+      GetInteractionText();
       SetInteractionText();
     }
 
     private void GetInteractionText() {
       if (string.IsNullOrEmpty(actionName))
         return;
+      
       interactionPromtUI.UpdateSpriteAsset();
-      //buttonName = "<sprite name=" + GameManager.Instance.UserInput.controls.UI.Craft.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice) + ">";
       buttonName = ButtonPromptSprite.GetSpriteName(GameManager.Instance.UserInput.controls.UI.Craft);
     }
 
-    private void SetInteractionText() {
-      /*if (actionName == string.Empty)
-        return;*/
-      
+    protected virtual void SetInteractionText() {
       interactionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(actionName, buttonName));
     }
 

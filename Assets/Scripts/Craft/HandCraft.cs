@@ -1,31 +1,30 @@
 using System;
 using Interaction;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Craft {
   public class HandCraft : Crafter {
     [SerializeField] private InteractionPrompt interactionPrompt;
     [SerializeField] private string actionName;
     private string buttonName;
+    private GameManager gameManager;
     public void Start() {
-      GameManager.Instance.UserInput.controls.UI.HandCraft.performed += ctx => CheckInteract();
-      InputSystem.onActionChange += InputActionChangeCallback;
-      Debug.LogError($"name {GameManager.Instance.UserInput.controls.UI.HandCraft.bindings[0].action}");
-      buttonName =
-        GameManager.Instance.UserInput.controls.UI.HandCraft.GetBindingDisplayString(
-          (int)GameManager.Instance.UserInput.ActiveGameDevice, InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
-      interactionPrompt.ShowPrompt(true, actionName + " " + "<sprite name=" + buttonName + ">");
+      gameManager = GameManager.Instance;
+      gameManager.UserInput.controls.UI.HandCraft.performed += ctx => CheckInteract();
+      gameManager.UserInput.OnGameDeviceChanged += OnGameDeviceChanged;
+      OnGameDeviceChanged(null, null);
     }
 
-    private void InputActionChangeCallback(object arg1, InputActionChange arg2) {
-      buttonName = GameManager.Instance.UserInput.controls.UI.HandCraft.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice);
+    private void OnGameDeviceChanged(object sender, EventArgs e) {
+      buttonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.UI.HandCraft);
       interactionPrompt.UpdateSpriteAsset();
-      interactionPrompt.ShowPrompt(true, actionName + " " + " " + "<sprite name=" + buttonName + ">");
+      interactionPrompt.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(actionName,buttonName));
     }
 
     private void OnDestroy() {
-      InputSystem.onActionChange -= InputActionChangeCallback;
+      if (GameManager.HasInstance) {
+        gameManager.UserInput.OnGameDeviceChanged -= OnGameDeviceChanged;
+      }
     }
   }
 }

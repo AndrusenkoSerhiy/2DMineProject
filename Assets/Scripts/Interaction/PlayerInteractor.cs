@@ -18,11 +18,16 @@ namespace Interaction
 
     private void Start() {
       GetActionName();
-      InputSystem.onActionChange += InputActionChangeCallback;
+      //InputSystem.onActionChange += InputActionChangeCallback;
+      GameManager.Instance.UserInput.OnGameDeviceChanged += OnGameDeviceChanged;
+    }
+
+    private void OnGameDeviceChanged(object sender, EventArgs e) {
+      GetActionName();
     }
 
     private void GetActionName() {
-      actionName = GameManager.Instance.UserInput.controls.GamePlay.Interact.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice);
+      actionName = ButtonPromptSprite.GetSpriteName(GameManager.Instance.UserInput.controls.GamePlay.Interact); 
       interactionPromtUI.UpdateSpriteAsset();
     }
 
@@ -54,15 +59,15 @@ namespace Interaction
       if (interactable == null)
         return;
 
-      interactionPromtUI.ShowPrompt(true, interactable.InteractionText + "<sprite name=" + actionName + ">");
+      interactionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName));
       if (GameManager.Instance.UserInput.controls.GamePlay.Interact.WasPressedThisFrame()) {
         interactable.Interact(this);
       }
     }
     
-    private void InputActionChangeCallback(object arg1, InputActionChange arg2) {
+    /*private void InputActionChangeCallback(object arg1, InputActionChange arg2) {
       GetActionName();
-    }
+    }*/
 
     private void OnDrawGizmos() {
       Gizmos.color = Color.red;
@@ -70,7 +75,10 @@ namespace Interaction
     }
 
     private void OnDestroy() {
-      InputSystem.onActionChange -= InputActionChangeCallback;
+      //InputSystem.onActionChange -= InputActionChangeCallback;
+      if (GameManager.HasInstance) {
+        GameManager.Instance.UserInput.OnGameDeviceChanged -= OnGameDeviceChanged;
+      }
     }
   }
 }

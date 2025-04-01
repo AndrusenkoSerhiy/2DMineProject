@@ -5,6 +5,7 @@ using Windows;
 using Inventory;
 using Scriptables.Repair;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Repair {
@@ -44,6 +45,11 @@ namespace Repair {
 
       repairButton.onClick.AddListener(OnRepairButtonClickHandler);
       AddSlotsEvents();
+      GameManager.Instance.UserInput.controls.UI.Craft.performed += ClickOnKeyboard;
+    }
+
+    private void ClickOnKeyboard(InputAction.CallbackContext obj) {
+      if (blinkItems.Count <= 0) OnRepairButtonClickHandler();
     }
 
     private void OnDisable() {
@@ -51,6 +57,8 @@ namespace Repair {
 
       RemoveSlotsEvents();
       repairButton.onClick.RemoveAllListeners();
+      GameManager.Instance.UserInput.controls.UI.Craft.performed -= ClickOnKeyboard;
+
     }
 
     private void AddSlotsEvents() {

@@ -1,4 +1,3 @@
-using System;
 using Interaction;
 using Player;
 using UnityEngine;
@@ -26,15 +25,18 @@ namespace Windows {
     }
 
     private void GetInteractionText() {
-      //TODO index 0 use for keyboard
       if (string.IsNullOrEmpty(actionName))
         return;
       interactionPromtUI.UpdateSpriteAsset();
-      buttonName = "<sprite name=" + GameManager.Instance.UserInput.controls.UI.Craft.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice) + ">";
+      //buttonName = "<sprite name=" + GameManager.Instance.UserInput.controls.UI.Craft.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice) + ">";
+      buttonName = ButtonPromptSprite.GetSpriteName(GameManager.Instance.UserInput.controls.UI.Craft);
     }
 
     private void SetInteractionText() {
-      interactionPromtUI.ShowPrompt(true, actionName + buttonName);
+      /*if (actionName == string.Empty)
+        return;*/
+      
+      interactionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(actionName, buttonName));
     }
 
     private PlayerControllerBase GetCurrPlayerController() {
@@ -52,7 +54,7 @@ namespace Windows {
     }
 
     private void InputActionChangeCallback(object arg1, InputActionChange arg2) {
-      buttonName = "<sprite name=" + GameManager.Instance.UserInput.controls.UI.Craft.GetBindingDisplayString((int)GameManager.Instance.UserInput.ActiveGameDevice) + ">";
+      buttonName = ButtonPromptSprite.GetSpriteName(GameManager.Instance.UserInput.controls.UI.Craft);
       interactionPromtUI.UpdateSpriteAsset();
       SetInteractionText();
     }

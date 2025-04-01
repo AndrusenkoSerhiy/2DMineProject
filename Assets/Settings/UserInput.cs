@@ -85,7 +85,7 @@ namespace Settings {
         return;
       
       _activeGameDevice = activeGameDevice;
-      //Debug.LogError($"activeGameDevice {activeGameDevice}");
+      //Debug.LogError($"activeGameDevice {activeGameDevice} | _activeGameDevice {_activeGameDevice}");
       UnityEngine.Cursor.visible = _activeGameDevice == GameDevice.KeyboardAndMouse;
 
       OnGameDeviceChanged?.Invoke(this, EventArgs.Empty);

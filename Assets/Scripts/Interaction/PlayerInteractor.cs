@@ -18,7 +18,6 @@ namespace Interaction
 
     private void Start() {
       GetActionName();
-      //InputSystem.onActionChange += InputActionChangeCallback;
       GameManager.Instance.UserInput.OnGameDeviceChanged += OnGameDeviceChanged;
     }
 
@@ -64,10 +63,6 @@ namespace Interaction
         interactable.Interact(this);
       }
     }
-    
-    /*private void InputActionChangeCallback(object arg1, InputActionChange arg2) {
-      GetActionName();
-    }*/
 
     private void OnDrawGizmos() {
       Gizmos.color = Color.red;
@@ -75,7 +70,6 @@ namespace Interaction
     }
 
     private void OnDestroy() {
-      //InputSystem.onActionChange -= InputActionChangeCallback;
       if (GameManager.HasInstance) {
         GameManager.Instance.UserInput.OnGameDeviceChanged -= OnGameDeviceChanged;
       }

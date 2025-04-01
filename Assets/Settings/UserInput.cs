@@ -96,8 +96,7 @@ namespace Settings {
     }
 
     public Vector3 GetMousePosition() {
-      return _activeGameDevice == GameDevice.KeyboardAndMouse ? Input.mousePosition : _virtualMouse.VirtualMousePos;
-      //return _virtualMouse.VirtualMousePos;
+      return _activeGameDevice == GameDevice.KeyboardAndMouse ? Input.mousePosition : _virtualMouse.GetVirtualMousePosition();
     }
 
     public Vector2 GetMovement() {

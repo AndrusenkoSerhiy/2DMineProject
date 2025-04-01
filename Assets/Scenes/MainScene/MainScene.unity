@@ -2080,7 +2080,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
   _virtualMouse: {fileID: 1267113462}
-  _activeGameDevice: 0
 --- !u!1 &1906431516
 GameObject:
   m_ObjectHideFlags: 0
@@ -4589,13 +4588,65 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Id
+      value: df09b7b6-9a8b-407e-b44d-614fa07d47fd
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Id
+      value: 006de49d-df96-4c44-b021-312537857e8a
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[2].m_Id
+      value: e248124f-c07f-4b6a-a2ab-d95966e14f22
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Name
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Gamepad>/rightStick
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Name
+      value: negative
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[2].m_Name
+      value: positive
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[0].m_Flags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Flags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[2].m_Flags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Action
+      value: Stick
+      objectReference: {fileID: 0}
+    - target: {fileID: 4930105231456965592, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
+      propertyPath: m_StickAction.m_Action.m_SingletonActionBindings.Array.data[2].m_Action
+      value: Stick
+      objectReference: {fileID: 0}
     - target: {fileID: 6056520492096786220, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
       propertyPath: m_Name
       value: VirtualMouseUI
       objectReference: {fileID: 0}
     - target: {fileID: 6056520492096786220, guid: 334a43249558d434cb85bed4d7e5cb06, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

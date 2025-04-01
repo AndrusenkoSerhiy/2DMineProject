@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class VirtualMouseUI : MonoBehaviour {
   private VirtualMouseInput _virtualMouseInput;
 
-  public Vector3 VirtualMousePos;
+  private Vector3 virtualMousePos;
   [SerializeField] private Image image;
   private void Awake() {
     _virtualMouseInput = GetComponent<VirtualMouseInput>();
@@ -27,7 +27,12 @@ public class VirtualMouseUI : MonoBehaviour {
     virtualMousePosition.x = Mathf.Clamp(virtualMousePosition.x, 30f, Screen.width - 30);
     virtualMousePosition.y = Mathf.Clamp(virtualMousePosition.y, 30f, Screen.height - 30);
     InputState.Change(_virtualMouseInput.virtualMouse.position, virtualMousePosition);
-    VirtualMousePos = new Vector3(virtualMousePosition.x, virtualMousePosition.y, 0);
+    virtualMousePos = new Vector3(virtualMousePosition.x, virtualMousePosition.y, 0);
+  }
+
+  public Vector3 GetVirtualMousePosition() {
+    //Debug.LogError($"virtualMousePos {virtualMousePos}");
+    return virtualMousePos;
   }
 
   private void OnGameDeviceChanged(object sender, EventArgs e) {

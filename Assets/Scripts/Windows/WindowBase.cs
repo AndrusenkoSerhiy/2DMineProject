@@ -1,3 +1,4 @@
+using System;
 using Interaction;
 using Player;
 using UnityEngine;
@@ -50,10 +51,10 @@ namespace Windows {
       OnShow?.Invoke(this);
       LockPlayer(true);
       LockHighlight(true);
-      InputSystem.onActionChange += InputActionChangeCallback;
+      GameManager.Instance.UserInput.OnGameDeviceChanged += InputActionChangeCallback;
     }
 
-    private void InputActionChangeCallback(object arg1, InputActionChange arg2) {
+    private void InputActionChangeCallback(object sender, EventArgs e) {
       buttonName = ButtonPromptSprite.GetSpriteName(GameManager.Instance.UserInput.controls.UI.Craft);
       interactionPromtUI.UpdateSpriteAsset();
       SetInteractionText();
@@ -66,7 +67,8 @@ namespace Windows {
       LockPlayer(false);
       LockHighlight(false);
       interactionPromtUI.ShowPrompt(false);
-      InputSystem.onActionChange -= InputActionChangeCallback;
+      GameManager.Instance.UserInput.OnGameDeviceChanged -= InputActionChangeCallback;
+
     }
     
     private void LockPlayer(bool state) {
@@ -79,7 +81,9 @@ namespace Windows {
     }
 
     private void OnDestroy() {
-      InputSystem.onActionChange -= InputActionChangeCallback;
+      if (GameManager.HasInstance) {
+        GameManager.Instance.UserInput.OnGameDeviceChanged -= InputActionChangeCallback;
+      }
     }
   }
 }

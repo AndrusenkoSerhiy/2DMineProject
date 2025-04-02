@@ -21,9 +21,9 @@ public class VirtualMouseUI : MonoBehaviour {
   }
 
   private void LateUpdate() {
-    if(/*GameManager.Instance.UserInput.GetActiveGameDevice() != UserInput.GameDevice.Gamepad &&*/
+    /*if(/*GameManager.Instance.UserInput.GetActiveGameDevice() != UserInput.GameDevice.Gamepad &&#1#
        !image.enabled)
-         return;
+         return;*/
     
     var virtualMousePosition = _virtualMouseInput.virtualMouse.position.value;
     virtualMousePosition.x = Mathf.Clamp(virtualMousePosition.x, 30f, canvasScaler.referenceResolution.x - 30);
@@ -59,8 +59,9 @@ public class VirtualMouseUI : MonoBehaviour {
   }
 
   private void Show() {
-    InputState.Change(_virtualMouseInput.virtualMouse.position, Input.mousePosition);
+    /*InputState.Change(_virtualMouseInput.virtualMouse.position, Input.mousePosition);
     virtualMousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
+    */
     image.enabled = true;
   }
 

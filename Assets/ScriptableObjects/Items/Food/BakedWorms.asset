@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
+  m_Script: {fileID: 11500000, guid: 158a47212d92487daa83dcfe8ddff8f5, type: 3}
   m_Name: BakedWorms
   m_EditorClassIdentifier: 
-  id: 039402fd-b504-484a-950d-0ed43b6f4c5e
+  id: 2ddbb327-b646-4583-b8f0-31a9e3bbca6f
   Type: 1
   Name: Baked Worms
   ParentType: 0
@@ -23,5 +23,25 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: 332ca2a28cdf1164fb95a4159c926695, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
   Description: 
-  bonusResources: []
+  statModifiers:
+  - type: 2
+    applyType: 1
+    operatorType: 1
+    value: 20
+    permanent: 0
+    duration: 30
+    canApplyWhenPreviousAt: 20
+    removePrevious: 5
+    modifierDisplayObject: {fileID: 11400000, guid: 35ea8439f87facd47992d91c251e335a, type: 2}
+  - type: 1
+    applyType: 1
+    operatorType: 1
+    value: 20
+    permanent: 1
+    duration: 0
+    canApplyWhenPreviousAt: 20
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}

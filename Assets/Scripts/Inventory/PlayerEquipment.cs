@@ -1,5 +1,6 @@
 ﻿using System;
 using Scriptables.Items;
+using Stats;
 using UnityEngine;
 
 namespace Inventory {
@@ -52,6 +53,9 @@ namespace Inventory {
               itemInHand.localPosition = itemObject.SpawnPosition;
               itemInHand.localEulerAngles = itemObject.SpawnRotation;
               itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
+
+              GameManager.Instance.PlayerController.EntityStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
+              
               OnEquippedWeapon?.Invoke();
               break;
           }
@@ -94,6 +98,9 @@ namespace Inventory {
 
               case ItemType.Tool:
                 Destroy(itemInHand.gameObject);
+                
+                GameManager.Instance.PlayerController.EntityStats.Mediator.RemoveModifiersByItemId(item.info.Id);
+                
                 OnUnequippedWeapon?.Invoke();
                 break;
               case ItemType.Weapon:

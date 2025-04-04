@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
+  m_Script: {fileID: 11500000, guid: 158a47212d92487daa83dcfe8ddff8f5, type: 3}
   m_Name: EarthCake
   m_EditorClassIdentifier: 
-  id: c4831a7a-a523-4f3d-83ce-205f28ed889f
+  id: 68002828-71cb-4de9-87f4-29f04e68bae0
   Type: 1
   Name: Earth-cake
   ParentType: 0
@@ -23,5 +23,15 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: 1817a31e58e35b64b80ef4de09c44d74, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
   Description: 
-  bonusResources: []
+  statModifiers:
+  - type: 2
+    applyType: 1
+    operatorType: 1
+    value: 10
+    duration: 60
+    canApplyWhenPreviousAt: 20
+    removePrevious: 5
+    modifierDisplayObject: {fileID: 11400000, guid: c54aaa7f91949184ab0c94ae995e4970, type: 2}

@@ -11,7 +11,7 @@ public class StaminaRobot : StaminaBase {
   
   public override void SetSprinting(bool value) {
     //block use stamina if she not enough 
-    if (value && (currentStamina < minStamina || Mathf.Sign(robotController.GetMoveForward()) < 0) ||
+    if (value && (stats.Stamina < minStamina || Mathf.Sign(robotController.GetMoveForward()) < 0) ||
         (value && userInput.GetMovement().Equals(Vector2.zero)) ||
         !robotController.Grounded && !robotController.WasSprintingOnJump) {
       return;

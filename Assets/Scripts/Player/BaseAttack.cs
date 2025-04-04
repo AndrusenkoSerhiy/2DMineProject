@@ -2,30 +2,34 @@ using System;
 using System.Collections.Generic;
 using Animation;
 using Scriptables;
+using Scriptables.Stats;
+using Stats;
 using UnityEngine;
 using World;
 
 namespace Player {
   public class BaseAttack : MonoBehaviour {
-    [SerializeField] protected PlayerStats stats;
+    // [SerializeField] protected PlayerStats stats;
+    [SerializeField] protected BaseStatsObject statsObject;
     [SerializeField] protected Animator animator;
     [SerializeField] protected ObjectHighlighter objectHighlighter;
     [SerializeField] protected BoxCollider2D attackCollider;
     [SerializeField] protected Transform attackTransform;
     [SerializeField] private float minDistance = 2f;
     [SerializeField] private float maxDistance = 5f;
-    
+
     private float attackTimeCounter;
+    protected LayerMask attackLayer;
+    protected int attackID;
+    protected int maxTargets;
+
+    protected Vector2 colliderSize;
     protected float timeBtwAttacks;
     protected float blockDamage;
-    protected LayerMask attackLayer;
     protected float entityDamage;
     protected float attackRange;
     protected float staminaUsage;
-    protected int attackID;
-    protected int maxTargets;
-    protected Vector2 colliderSize;
-    
+
     private List<IDamageable> targets = new();
     private List<IDamageable> iDamageables = new();
     [SerializeField] private bool isHighlightLock;
@@ -34,15 +38,15 @@ namespace Player {
     private AnimatorParameters animParam;
 
     protected bool firstAttack;
-    
+
     public bool shouldBeDamaging { get; private set; } = false;
-    
+
     protected virtual void Awake() {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
       animParam = GameManager.Instance.AnimatorParameters;
     }
-    
+
     protected virtual void Start() {
       attackTimeCounter = timeBtwAttacks;
       PrepareAttackParams();
@@ -51,10 +55,14 @@ namespace Player {
       GameManager.Instance.UserInput.OnAttackCanceled += CancelAttack;
     }
 
+    /*protected EntityStats GetEntityStats() {
+      return !GameManager.HasInstance ? null : GameManager.Instance.CurrPlayerController.EntityStats;
+    }*/
+
     private void PressAttack(object sender, EventArgs e) {
       animator.SetBool(animParam.IsAttacking, true);
     }
-    
+
     private void CancelAttack(object sender, EventArgs e) {
       animator.SetBool(animParam.IsAttacking, false);
       firstAttack = false;
@@ -70,15 +78,17 @@ namespace Player {
       else {
         attackCollider.size = originalSize;
       }
+
       objectHighlighter.EnableCrosshair(!state);
     }
 
-    protected virtual void PrepareAttackParams() { }
-    
+    protected virtual void PrepareAttackParams() {
+    }
+
     protected virtual void Update() {
-      if(isHighlightLock)
+      if (isHighlightLock)
         return;
-      
+
       UpdateColliderPos();
       HandleAttack();
       GetDirection();
@@ -87,7 +97,7 @@ namespace Player {
     private void GetDirection() {
       Vector2 direction = attackCollider.transform.position - transform.position;
       //Debug.LogError($"directionY {direction.y}");
-      
+
       //3f distance between player and mouse for top border 
       if (direction.y > 3f) {
         lookDirection = 1;
@@ -98,13 +108,14 @@ namespace Player {
       else {
         lookDirection = 0;
       }
+
       animator.SetInteger(animParam.LookDirection, lookDirection);
     }
-    
+
     protected virtual void TriggerAttack() {
       attackTimeCounter = 0f;
     }
-    
+
     private void HandleAttack() {
       if (GameManager.Instance.UserInput.IsAttacking() /*&& currentTarget != null*/
           && attackTimeCounter >= timeBtwAttacks) {
@@ -113,7 +124,7 @@ namespace Player {
 
       attackTimeCounter += Time.deltaTime;
     }
-    
+
     private void UpdateColliderPos() {
       var mousePos = GetMousePosition();
       // Calculate direction and distance from parent
@@ -133,13 +144,14 @@ namespace Player {
       maxDistance = maxDist;
       attackCollider.size = new Vector2(sizeX, sizeY);
     }
-    
+
     private Vector3 GetMousePosition() {
-      var mousePos = GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
+      var mousePos =
+        GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
       mousePos.z = 0f;
       return mousePos;
     }
-    
+
     private void Attack() {
       shouldBeDamaging = true;
       SetTargetsFromHighlight();
@@ -151,7 +163,7 @@ namespace Player {
 
       ReturnAttackableToDamageable();
     }
-    
+
     private void SetTargetsFromHighlight() {
       foreach (var elem in objectHighlighter.Highlights) {
         var pos = CoordsTransformer.WorldToGrid(elem.transform.position);
@@ -159,7 +171,7 @@ namespace Player {
         if (cell != null) targets.Add(cell);
       }
     }
-    
+
     private void ReturnAttackableToDamageable() {
       foreach (IDamageable damaged in iDamageables) {
         damaged.hasTakenDamage = false;
@@ -167,29 +179,29 @@ namespace Player {
 
       iDamageables.Clear();
     }
-    
+
     private void ShouldBeDamagingToFalse() {
       shouldBeDamaging = false;
     }
-    
+
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
       if (go != gameObject)
         return;
-      
+
       Attack();
 
       for (int i = 0; i < targets.Count; i++) {
         targets[i]?.AfterDamageReceived();
       }
     }
-    
+
     private void HandleAnimationEnded(AnimationEvent animationEvent, GameObject go) {
       if (go != gameObject)
         return;
       ShouldBeDamagingToFalse();
       DestroyTarget();
     }
-    
+
     private void DestroyTarget() {
       foreach (var t in targets) {
         if (t == null) continue;
@@ -201,16 +213,16 @@ namespace Player {
 
       ClearTarget();
     }
-    
+
     private void ClearTarget() {
       targets.Clear();
     }
-    
+
     private void OnDrawGizmosSelected() {
       Gizmos.DrawWireSphere(attackTransform.position, attackRange);
       Gizmos.color = Color.red;
     }
-    
+
     protected virtual void OnDestroy() {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
       AnimationEventManager.onAttackEnded -= HandleAnimationEnded;

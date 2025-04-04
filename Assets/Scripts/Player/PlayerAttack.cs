@@ -13,22 +13,26 @@ namespace Player {
       playerEquipment.OnEquippedWeapon += UpdateAttackParam;
       playerEquipment.OnUnequippedWeapon += SetParamsFromPlayerStats;
       playerEquipment = GetComponent<PlayerEquipment>();
+    }
+
+    protected override void Start() {
       //equipped item init before this awake, and we need to update param from this item
       UpdateAttackParam();
       //init max target count to 1
       objectHighlighter.SetMaxHighlights(1);
+      base.Start();
     }
 
     private void SetDefaultAttackParam() {
-      UpdateParams(.5f, stats.AttackRange, stats.AttackColliderSize.x, stats.AttackColliderSize.y);
+      UpdateParams(.5f, statsObject.attackRange, statsObject.attackColliderSize.x, statsObject.attackColliderSize.y);
     }
-    
+
     protected override void TriggerAttack() {
       base.TriggerAttack();
       if (!firstAttack) {
         firstAttack = true;
         animator.SetTrigger("Attack");
-        animator.SetInteger("WeaponID", attackID); 
+        animator.SetInteger("WeaponID", statsObject.attackID);
       }
     }
 
@@ -43,14 +47,23 @@ namespace Player {
     }
 
     private void SetParamsFromPlayerStats() {
-      attackLayer = stats.AttackLayer;
-      blockDamage = stats.BlockDamage;
-      entityDamage = stats.EntityDamage;
-      attackRange = stats.Range;
-      timeBtwAttacks = stats.TimeBtwAttacks;
-      staminaUsage = stats.StaminaUsage;
-      attackID = stats.AttackID;
-      colliderSize = stats.AttackColliderSize;
+      /*var entityStats = GetEntityStats();
+      attackLayer = statsObject.attackLayer;
+      blockDamage = entityStats.BlockDamage;
+      entityDamage = entityStats.EntityDamage;
+      attackRange = entityStats.AttackRange;
+      timeBtwAttacks = entityStats.TimeBtwAttacks;
+      staminaUsage = entityStats.AttackStaminaUsage;*/
+      
+      attackLayer = statsObject.attackLayer;
+      blockDamage = statsObject.blockDamage;
+      entityDamage = statsObject.entityDamage;
+      attackRange = statsObject.attackRange;
+      timeBtwAttacks = statsObject.timeBtwAttacks;
+      staminaUsage = statsObject.attackStaminaUsage;
+      
+      attackID = statsObject.attackID;
+      colliderSize = statsObject.attackColliderSize;
       SetDefaultAttackParam();
     }
 
@@ -58,7 +71,8 @@ namespace Player {
       SetAttackParamsFromEquipment();
       //try to activate tool
       TryActivateTool();
-      UpdateParams(.5f, attackRange, colliderSize.x, colliderSize.y);
+      // UpdateParams(.5f, GetEntityStats().AttackRange, colliderSize.x, colliderSize.y);
+      UpdateParams(.5f, statsObject.attackRange, colliderSize.x, colliderSize.y);
       objectHighlighter.SetMaxHighlights(maxTargets);
     }
 
@@ -89,11 +103,20 @@ namespace Player {
 
       //Debug.LogError("SetAttackParamsFromEquipment");
       attackLayer = attackableItem.AttackLayer;
-      blockDamage = attackableItem.BlockDamage;
+      /*var entityStats = GetEntityStats();
+      blockDamage = entityStats.BlockDamage;
+      entityDamage = entityStats.EntityDamage;
+      attackRange = entityStats.AttackRange;
+      timeBtwAttacks = entityStats.TimeBtwAttacks;
+      staminaUsage = entityStats.AttackStaminaUsage;*/
+      
+      //this moves to modifiers
+      /*blockDamage = attackableItem.BlockDamage;
       entityDamage = attackableItem.EntityDamage;
       attackRange = attackableItem.Range;
       timeBtwAttacks = attackableItem.TimeBtwAttacks;
-      staminaUsage = attackableItem.StaminaUsage;
+      staminaUsage = attackableItem.StaminaUsage;*/
+      
       attackID = attackableItem.AnimationAttackID;
       colliderSize = attackableItem.ColliderSize;
       maxTargets = attackableItem.MaxTargets;

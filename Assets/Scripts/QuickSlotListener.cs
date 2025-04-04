@@ -12,6 +12,7 @@ public class QuickSlotListener : MonoBehaviour {
   private InventorySlot[] slots;
   private Item selectedItem;
   private PlayerInventory playerInventory;
+  private ItemConsumer itemConsumer;
   [SerializeField] private int selectedSlotIndex = -1;
   private GameManager gameManager;
   public event Action OnActivate;
@@ -22,6 +23,7 @@ public class QuickSlotListener : MonoBehaviour {
     playerInventory = gameManager.PlayerInventory;
     quickSlots = playerInventory.GetQuickSlots();
     slots = quickSlots.Slots;
+    // itemConsumer = new ItemConsumer();
 
     //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
@@ -40,6 +42,8 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private void Start() {
+    itemConsumer = new ItemConsumer();
+    
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
@@ -68,7 +72,8 @@ public class QuickSlotListener : MonoBehaviour {
     selectedItem = slots[selectedSlotIndex].Item;
     selectedSlot.Select();
     gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
-    selectedSlot.Item?.info?.Use(selectedSlot);
+    // selectedSlot.Item?.info?.Use();
+    itemConsumer.SetActiveSlot(selectedSlot);
     OnActivate?.Invoke();
   }
 
@@ -135,7 +140,8 @@ public class QuickSlotListener : MonoBehaviour {
     selectedItem = targetSlot.Item;
     selectedSlot.Select();
     gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
-    selectedSlot.Item.info.Use(selectedSlot);
+    // selectedSlot.Item.info.Use();
+    itemConsumer.SetActiveSlot(selectedSlot);
   }
 
   private void DeactivateItem(InventorySlot slot) {
@@ -143,7 +149,8 @@ public class QuickSlotListener : MonoBehaviour {
       return;
 
     gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
-    selectedItem?.info?.Use(selectedSlot);
+    // selectedItem?.info?.Use();
+    itemConsumer.DeactivateItem(selectedItem);
     selectedItem = null;
   }
 
@@ -155,7 +162,8 @@ public class QuickSlotListener : MonoBehaviour {
         continue;
       }
 
-      slot.Item.info.Use(slots[i]);
+      // slot.Item.info.Use();
+      itemConsumer.SetActiveSlot(slot);
       SelectSlotByIndex(i);
     }
 
@@ -209,7 +217,8 @@ public class QuickSlotListener : MonoBehaviour {
     }
 
     selectedSlot?.Unselect();
-    selectedItem?.info?.Use(selectedSlot);
+    // selectedItem?.info?.Use();
+    itemConsumer.DeactivateItem(selectedItem);
     selectedSlot = null;
     selectedItem = null;
   }
@@ -221,7 +230,8 @@ public class QuickSlotListener : MonoBehaviour {
       gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
     }
 
-    selectedItem?.info?.Use(selectedSlot);
+    // selectedItem?.info?.Use();
+    itemConsumer.DeactivateItem(selectedItem);
     selectedItem = null;
   }
 
@@ -235,6 +245,7 @@ public class QuickSlotListener : MonoBehaviour {
       selectedSlot = slot;
       selectedItem = slot.Item;
       selectedSlot.Select();
+      itemConsumer.SetActiveSlot(selectedSlot);
 
       return;
     }
@@ -246,14 +257,16 @@ public class QuickSlotListener : MonoBehaviour {
     if (selectedSlot != null && selectedSlot.Item.info != null) {
       gameManager.PlayerEquipment.OnRemoveItem(selectedSlot);
       selectedSlot.Unselect();
-      selectedItem?.info?.Use(selectedSlot);
+      // selectedItem?.info?.Use();
+      itemConsumer.DeactivateItem(selectedItem);
     }
 
     selectedSlot = slot;
     selectedItem = slot.Item;
     selectedSlot.Select();
     gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
-    selectedSlot.Item.info.Use(selectedSlot);
+    // selectedSlot.Item.info.Use();
+    itemConsumer.SetActiveSlot(selectedSlot);
   }
 
   private void OnDestroy() {

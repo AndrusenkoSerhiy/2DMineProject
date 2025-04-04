@@ -23,6 +23,7 @@ namespace Tools {
     [SerializeField] private SpriteRenderer robotImage;
     [SerializeField] private SpriteRenderer brokenRobotImage;
     [SerializeField] private Animator animator;
+    [SerializeField] private bool broken = true;
 
     private bool isPlayerInside;
 
@@ -30,11 +31,12 @@ namespace Tools {
     private MiningRobotController miningRobotController;
 
     private string id;
-    private bool broken = true;
     private WindowBase window;
     private RepairWindow repairWindow;
 
     public static event Action OnPlayerEnteredRobot;
+    public static event Action OnPlayerSitOnRobot;
+    public static event Action OnPlayerExitFromRobot;
 
     private void Start() {
       id = robotObject.Id;
@@ -99,6 +101,7 @@ namespace Tools {
       playerController.ResetLocalScale();
 
       AddRobotInventoryToMainInventory();
+      OnPlayerSitOnRobot?.Invoke();
     }
 
     private void ExitFromRobot() {
@@ -116,6 +119,7 @@ namespace Tools {
       GameManager.Instance.QuickSlotListener.Activate();
 
       RemoveRobotInventoryFromMainInventory();
+      OnPlayerExitFromRobot?.Invoke();
     }
 
     private void SetPlayerPosition(Transform tr, Vector3 pos) {

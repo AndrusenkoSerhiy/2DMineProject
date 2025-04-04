@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
+  m_Script: {fileID: 11500000, guid: 158a47212d92487daa83dcfe8ddff8f5, type: 3}
   m_Name: MushroomStew
   m_EditorClassIdentifier: 
-  id: 18f08d67-cb3d-451b-9d21-8f6912196e2b
+  id: d0561f10-700f-43d6-8bdc-bc36c7922175
   Type: 1
   Name: Mushroom Stew
   ParentType: 0
@@ -23,5 +23,16 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: 30962a91421a93c4699e449ca2354709, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
   Description: 
-  bonusResources: []
+  statModifiers:
+  - type: 41
+    applyType: 1
+    operatorType: 1
+    value: 1
+    permanent: 0
+    duration: 40
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 11400000, guid: 19eb52a40b8a469488df55427cd5fea9, type: 2}

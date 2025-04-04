@@ -14,18 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: b3b9fbc4-4e87-4ed6-b3a5-37eac8a35667
   RecipeName: Earth-cake
-  RecipeType: 4
   RecipeTypes: 04000000
   RequiredMaterials:
-  - Material: {fileID: 11400000, guid: 7684243e236b60b4dac023d5e8cdd7f6, type: 2}
+  - Material: {fileID: 11400000, guid: 8bba1794d06b92b48adc9626fe1bd275, type: 2}
     Amount: 1
-  - Material: {fileID: 11400000, guid: 4b1b5842d64acf64bb321781def6db1e, type: 2}
+  - Material: {fileID: 11400000, guid: a87e42a0ac2a7b645985034cbec41d23, type: 2}
     Amount: 1
   - Material: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
     Amount: 1
   Fuel:
     Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 1
-  Result: {fileID: 11400000, guid: 4e6f2c31e85642a41863923b80003eff, type: 2}
+  Result: {fileID: 11400000, guid: 4a9d2b1894bcf6d41a676cfbc89be5f6, type: 2}
   CraftingTime: 20
   detailImg: {fileID: 0}

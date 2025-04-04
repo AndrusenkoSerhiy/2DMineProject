@@ -988,7 +988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e53a4acc64aaae940a8f27318db7058b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
+  baseStatsObject: {fileID: 11400000, guid: 8ca84249d46b2fa4eb1ea7cf6ba4cdea, type: 2}
   _frameVelocity: {x: 0, y: 0}
   _animator: {fileID: 4077487680828195514}
   Head: {fileID: 1976719180885785715}
@@ -1014,7 +1014,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ca3740a6c15bf4d8e32e916714be05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: d1f22083b44bf52459e78ee614545699, type: 2}
+  statsObject: {fileID: 11400000, guid: 8ca84249d46b2fa4eb1ea7cf6ba4cdea, type: 2}
   animator: {fileID: 4077487680828195514}
   objectHighlighter: {fileID: 4693703437365591432}
   attackCollider: {fileID: 4073543102474628644}
@@ -1188,10 +1188,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   staminaBar: {fileID: 0}
-  maxStamina: 100
-  currentStamina: 0
-  staminaDrain: 60
-  staminaRecovery: 30
   minStamina: 10
   isSprinting: 0
 --- !u!114 &7810780520715568834
@@ -1503,7 +1499,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4612203187092052450}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.6919424, w: 0.72195274}
+  m_LocalRotation: {x: -0, y: -0, z: -0.69194233, w: 0.7219528}
   m_LocalPosition: {x: 0.505373, y: 1.1168451, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1724,7 +1720,7 @@ Transform:
   m_GameObject: {fileID: 5549740774766015139}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.1922924, w: 0.9813377}
-  m_LocalPosition: {x: -0.7381973, y: 1.0929766, z: 0}
+  m_LocalPosition: {x: -0.7381973, y: 1.0929763, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

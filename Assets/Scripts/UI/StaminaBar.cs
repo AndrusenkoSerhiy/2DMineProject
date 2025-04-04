@@ -12,7 +12,6 @@ namespace UI {
 
     public void SetMaxStamina(float val) {
       staminaSlider.maxValue = val;
-      staminaSlider.value = val;
     }
   }
 }

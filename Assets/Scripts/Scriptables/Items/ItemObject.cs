@@ -1,11 +1,11 @@
 using System;
-using Inventory;
-using QuickSlots;
+using System.Collections.Generic;
 using UnityEngine;
+using StatModifier = Scriptables.Stats.StatModifier;
 
 namespace Scriptables.Items {
   [Serializable]
-  public abstract class ItemObject : BaseScriptableObject, IUsableItem {
+  public abstract class ItemObject : BaseScriptableObject {
     public ItemType Type;
     public string Name;
     public ParentType ParentType;
@@ -18,10 +18,8 @@ namespace Scriptables.Items {
     public GameObject spawnPrefab;
     public bool CanMoveToAnotherInventory = true;
     public bool CanDrop = true;
-
     [TextArea(15, 20)] public string Description;
 
-    public virtual void Use(InventorySlot slot) {
-    }
+    public List<StatModifier> statModifiers;
   }
 }

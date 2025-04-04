@@ -53,7 +53,7 @@ public class PlaceCell : MonoBehaviour {
     SetEnabled(true);
   }
 
-  private void DisableBuildMode() {
+  public void DisableBuildMode() {
     SetEnabled(false);
     resourceData = null;
   }

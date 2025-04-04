@@ -1083,7 +1083,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11ed2da3aae746e5bafe1bd7720edcd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats: {fileID: 11400000, guid: 2fc30522ece77a7449f377ea62d4e89c, type: 2}
+  baseStatsObject: {fileID: 11400000, guid: d12e960f26c27e344bbf71284bf80eb2, type: 2}
   _frameVelocity: {x: 0, y: 0}
   _animator: {fileID: 1494922837502640945}
   Head: {fileID: 6389406194773852909}
@@ -1172,7 +1172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f4f77b646d4893824608d4d5d52a1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 2fc30522ece77a7449f377ea62d4e89c, type: 2}
+  statsObject: {fileID: 11400000, guid: d12e960f26c27e344bbf71284bf80eb2, type: 2}
   animator: {fileID: 1494922837502640945}
   objectHighlighter: {fileID: 8874037024133986058}
   attackCollider: {fileID: 3696037249139049978}
@@ -1209,10 +1209,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   staminaBar: {fileID: 0}
-  maxStamina: 100
-  currentStamina: 0
-  staminaDrain: 50
-  staminaRecovery: 10
   minStamina: 10
   isSprinting: 0
 --- !u!1 &8974371386463895364

@@ -46,8 +46,8 @@ namespace Player {
     }*/
     protected override float GetMaxSpeed() {
       var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
-      return isMovingForward ? (stamina.IsSprinting) ? _stats.SprintSpeed : _stats.MaxSpeed
-        : _stats.MaxBackSpeed;
+      return isMovingForward ? (stamina.IsSprinting) ? baseStatsObject.sprintSpeed : baseStatsObject.maxSpeed
+        : baseStatsObject.maxBackSpeed;
     }
 
     public override void EnableController(bool state) {

@@ -26,6 +26,43 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 1
   Description: pickaxe description
+  statModifiers:
+  - type: 41
+    applyType: 2
+    operatorType: 1
+    value: 5
+    permanent: 0
+    duration: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 40
+    applyType: 2
+    operatorType: 1
+    value: 0.5
+    permanent: 0
+    duration: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 43
+    applyType: 2
+    operatorType: 1
+    value: -0.3
+    permanent: 0
+    duration: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 44
+    applyType: 2
+    operatorType: 1
+    value: 4
+    permanent: 0
+    duration: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
   useSelfAnim: 0
   attackLayer:
     serializedVersion: 2

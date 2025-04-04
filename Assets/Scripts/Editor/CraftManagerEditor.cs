@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 using Craft;
-using Inventory;
 using Scriptables.Items;
 using Unity.VisualScripting;
 using UnityEngine;

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Player {
   public class MiningRobotAttack : BaseAttack {
     protected override void Awake() {
@@ -12,15 +10,24 @@ namespace Player {
       animator.SetTrigger("Attack");
       animator.SetInteger("WeaponID", attackID);
     }
+
     //get param from robot stats
     protected override void PrepareAttackParams() {
-      attackLayer = stats.AttackLayer;
-      blockDamage = stats.BlockDamage;
-      entityDamage = stats.EntityDamage;
-      attackRange = stats.Range;
-      timeBtwAttacks = stats.TimeBtwAttacks;
-      staminaUsage = stats.StaminaUsage;
-      attackID = stats.AttackID;
+      attackLayer = statsObject.attackLayer;
+      /*var entityStats = GetEntityStats();
+      blockDamage = entityStats.BlockDamage;
+      entityDamage = entityStats.EntityDamage;
+      attackRange = entityStats.AttackRange;
+      timeBtwAttacks = entityStats.TimeBtwAttacks;
+      staminaUsage = entityStats.AttackStaminaUsage;*/
+      
+      blockDamage = statsObject.blockDamage;
+      entityDamage = statsObject.entityDamage;
+      attackRange = statsObject.attackRange;
+      timeBtwAttacks = statsObject.timeBtwAttacks;
+      staminaUsage = statsObject.attackStaminaUsage;
+      
+      attackID = statsObject.attackID;
     }
   }
 }

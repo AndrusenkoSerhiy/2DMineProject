@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5089754e014af7ba0c2b997b7706d6, type: 3}
+  m_Name: Armor
+  m_EditorClassIdentifier: 
+  id: ea11f8b6-4e57-4a7d-b8e4-d4cc91c9b812
+  modifierType: 1
+  modifierName: Armor
+  description: Armor
+  display: {fileID: 21300000, guid: cf31ab2a54c259d43b18ea69b99d8f44, type: 3}
+  border: {fileID: 21300000, guid: 77c92fe4244989948a4511f6be796842, type: 3}
+  borderColor: {r: 0.7764706, g: 0.5568628, b: 0.99215686, a: 1}
+  iconColor: {r: 0.7764706, g: 0.5568628, b: 0.99215686, a: 1}

@@ -1,21 +1,21 @@
 using System;
 using Animation;
 using Movement;
-using Pool;
 using Scriptables;
-using Settings;
-using Spine;
+using Scriptables.Stats;
 using Spine.Unity;
+using Stats;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Player {
   public class PlayerControllerBase : MonoBehaviour {
-    [SerializeField] protected PlayerStats _stats;
+    // [SerializeField] protected PlayerStats _stats;
+    [SerializeField] protected BaseStatsObject baseStatsObject;
+    protected EntityStats entityStats;
     protected Rigidbody2D _rb;
     private CapsuleCollider2D _col;
     private FrameInput _frameInput;
-    [SerializeField]protected Vector2 _frameVelocity;
+    [SerializeField] protected Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
     [SerializeField] private Animator _animator;
 
@@ -27,26 +27,32 @@ namespace Player {
     protected float rotationCoef = 1f;
 
     [SerializeField] private PlayerCoords _playerCoords;
-    
+
     [SerializeField] protected LadderMovement _ladderMovement;
     public LadderMovement LadderMovement => _ladderMovement;
     public PlayerCoords PlayerCoords => _playerCoords;
     public Vector2 FrameVelocity => _frameVelocity;
 
     [SerializeField] protected StaminaBase stamina;
+
     public StaminaBase Stamina => stamina;
-    public PlayerStats Stats => _stats;
+
+    // public PlayerStats PlayerStats => _stats;
+    public BaseStatsObject StatsObject => baseStatsObject;
     private float _frameLeftGrounded = float.MinValue;
-    [SerializeField]private bool grounded;
+    [SerializeField] private bool grounded;
+
     private float time;
+
     //lock player when ui window is open
     protected bool lockPlayer;
-    [SerializeField]private bool startFalling;
+    [SerializeField] private bool startFalling;
     private bool wasSprintingOnJump;
     public bool WasSprintingOnJump => wasSprintingOnJump;
-    
+
     public bool Grounded => grounded;
-    
+    public EntityStats EntityStats => entityStats;
+
     private bool _jumpToConsume;
     private bool _bufferedJumpUsable;
     private bool _endedJumpEarly;
@@ -62,16 +68,16 @@ namespace Player {
     public event Action Jumped;
 
     #endregion
-    
+
     public void SetLockPlayer(bool state) {
       lockPlayer = state;
     }
 
     public virtual void SetLockHighlight(bool state) {
-      
     }
-    
+
     protected virtual void Awake() {
+      entityStats = new EntityStats(new StatsMediator(), baseStatsObject);
       _rb = GetComponent<Rigidbody2D>();
       _col = GetComponent<CapsuleCollider2D>();
 
@@ -90,9 +96,9 @@ namespace Player {
     }
 
     private void SetEmptyHand() {
-      if(skeletonMecanim == null)
+      if (skeletonMecanim == null)
         return;
-      
+
       skeletonMecanim.Skeleton.SetAttachment("Weapon", null);
     }
 
@@ -110,6 +116,9 @@ namespace Player {
       time += Time.deltaTime;
       GatherInput();
       LookAtMouse();
+
+      entityStats.UpdateStats(Time.deltaTime);
+      entityStats.Mediator.Update(Time.deltaTime);
     }
 
     protected virtual void LookAtMouse() {
@@ -133,16 +142,18 @@ namespace Player {
 
     private void GatherInput() {
       _frameInput = new FrameInput {
-        JumpDown = GameManager.Instance.UserInput.controls.GamePlay.Jump.WasPerformedThisFrame(), //Input.GetButtonDown("Jump"),
+        JumpDown = GameManager.Instance.UserInput.controls.GamePlay.Jump
+          .WasPerformedThisFrame(), //Input.GetButtonDown("Jump"),
         JumpHeld = GameManager.Instance.UserInput.controls.GamePlay.Jump.IsPressed(), //Input.GetButton("Jump"),
-        Move = GameManager.Instance.UserInput.GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+        Move = GameManager.Instance.UserInput
+          .GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
       };
 
-      if (_stats.SnapInput) {
-        _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < _stats.HorizontalDeadZoneThreshold
+      if (baseStatsObject.snapInput) {
+        _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < baseStatsObject.horizontalDeadZoneThreshold
           ? 0
           : Mathf.Sign(_frameInput.Move.x);
-        _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < _stats.VerticalDeadZoneThreshold
+        _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < baseStatsObject.verticalDeadZoneThreshold
           ? 0
           : Mathf.Sign(_frameInput.Move.y);
       }
@@ -170,10 +181,10 @@ namespace Player {
 
       // Ground and Ceiling
       RaycastHit2D hit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down,
-        _stats.GrounderDistance, ~_stats.PlayerLayer);
+        baseStatsObject.grounderDistance, ~baseStatsObject.playerLayer);
       bool groundHit = hit.collider != null && !hit.collider.isTrigger;
       bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up,
-        _stats.GrounderDistance, ~_stats.PlayerLayer);
+        baseStatsObject.grounderDistance, ~baseStatsObject.playerLayer);
 
       // Hit a Ceiling
       if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
@@ -194,6 +205,7 @@ namespace Player {
         _frameLeftGrounded = time;
         GroundedChanged?.Invoke(false, 0);
       }
+
       SetAnimBool(animParam.GroundedHash, grounded);
       Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
     }
@@ -218,8 +230,8 @@ namespace Player {
 
     #region Jumping
 
-    private bool HasBufferedJump => _bufferedJumpUsable && time < _timeJumpWasPressed + _stats.JumpBuffer;
-    private bool CanUseCoyote => _coyoteUsable && !grounded && time < _frameLeftGrounded + _stats.CoyoteTime;
+    private bool HasBufferedJump => _bufferedJumpUsable && time < _timeJumpWasPressed + baseStatsObject.jumpBuffer;
+    private bool CanUseCoyote => _coyoteUsable && !grounded && time < _frameLeftGrounded + baseStatsObject.coyoteTime;
 
     private void HandleJump() {
       if (!_endedJumpEarly && !grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
@@ -247,7 +259,7 @@ namespace Player {
       _timeJumpWasPressed = 0;
       _bufferedJumpUsable = false;
       _coyoteUsable = false;
-      _frameVelocity.y = _stats.JumpPower;
+      _frameVelocity.y = baseStatsObject.jumpPower;
       Jumped?.Invoke();
     }
 
@@ -258,12 +270,14 @@ namespace Player {
     private void HandleDirection() {
       if (_frameInput.Move.x == 0) {
         //if we are on the ladder need to calculate deceleration like on ground
-        var deceleration = grounded || _ladderMovement.IsOnLadder ? _stats.GroundDeceleration : _stats.AirDeceleration;
+        var deceleration = grounded || _ladderMovement.IsOnLadder
+          ? baseStatsObject.groundDeceleration
+          : baseStatsObject.airDeceleration;
         _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
       }
       else {
-        _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x,_frameInput.Move.x * GetMaxSpeed(),
-          _stats.Acceleration * Time.fixedDeltaTime);
+        _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _frameInput.Move.x * GetMaxSpeed(),
+          baseStatsObject.acceleration * Time.fixedDeltaTime);
       }
 
       if (_frameVelocity.x == 0) {
@@ -278,8 +292,11 @@ namespace Player {
     protected virtual float GetMaxSpeed() {
       var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
       //var canSprintInAir = !grounded && wasSprintingOnJump;
-      return isMovingForward ? (stamina.IsSprinting /*&& (grounded || canSprintInAir)*/) ? _stats.SprintSpeed : _stats.MaxSpeed
-        : _stats.MaxBackSpeed;
+      return isMovingForward
+        ? (stamina.IsSprinting /*&& (grounded || canSprintInAir)*/)
+          ? baseStatsObject.sprintSpeed
+          : baseStatsObject.maxSpeed
+        : baseStatsObject.maxBackSpeed;
     }
 
     private void SetAnimVelocityX(float value) {
@@ -318,25 +335,26 @@ namespace Player {
 
     private void HandleGravity() {
       if (grounded && _frameVelocity.y <= 0f) {
-        _frameVelocity.y = _stats.GroundingForce;
+        _frameVelocity.y = baseStatsObject.groundingForce;
       }
       else {
-        var inAirGravity = _stats.FallAcceleration;
-        if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
+        var inAirGravity = baseStatsObject.fallAcceleration;
+        if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= baseStatsObject.jumpEndEarlyGravityModifier;
         _frameVelocity.y =
-          Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+          Mathf.MoveTowards(_frameVelocity.y, -baseStatsObject.maxFallSpeed, inAirGravity * Time.fixedDeltaTime);
         SetFall();
       }
     }
-    
+
     //start falling down set animator param
     private void SetFall() {
-      if (!(_frameVelocity.y < 0 /*&& !_ladderMovement.IsOnLadder*/) || startFalling /*|| _ladderMovement.IsOnLadder*/) 
+      if (!(_frameVelocity.y < 0 /*&& !_ladderMovement.IsOnLadder*/) || startFalling /*|| _ladderMovement.IsOnLadder*/)
         return;
 
       if (_ladderMovement.IsOnLadder) {
         _ladderMovement.SetClimbing(true, "fall");
       }
+
       startFalling = true;
       _animator.SetBool(animParam.FallHash, true);
     }
@@ -344,12 +362,12 @@ namespace Player {
     #endregion
 
     private void ApplyMovement() {
-      if(!_ladderMovement.IsClimbing) _rb.linearVelocity = _frameVelocity;
+      if (!_ladderMovement.IsClimbing) _rb.linearVelocity = _frameVelocity;
     }
 
 #if UNITY_EDITOR
     private void OnValidate() {
-      if (_stats == null)
+      if (baseStatsObject == null)
         Debug.LogWarning("Please assign a ScriptableStats asset to the Player Controller's Stats slot", this);
     }
 #endif

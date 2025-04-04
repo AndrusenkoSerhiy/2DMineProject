@@ -14,14 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: a9cdc917-f618-4f58-900a-c9f01796533c
   RecipeName: Baked worm
-  RecipeType: 4
   RecipeTypes: 04000000
   RequiredMaterials:
-  - Material: {fileID: 11400000, guid: 4b1b5842d64acf64bb321781def6db1e, type: 2}
+  - Material: {fileID: 11400000, guid: a87e42a0ac2a7b645985034cbec41d23, type: 2}
     Amount: 1
   Fuel:
     Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 1
-  Result: {fileID: 11400000, guid: 8061b28efb8c15f499dd8dcc93297e3e, type: 2}
+  Result: {fileID: 11400000, guid: 17c91b937474e6345968eb301aa39aea, type: 2}
   CraftingTime: 10
   detailImg: {fileID: 0}

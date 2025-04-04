@@ -23,7 +23,7 @@ namespace Windows {
       gameObject.SetActive(true);
       OnShow?.Invoke(this);
       LockPlayer(true);
-      LockHighlight(true);
+      // LockHighlight(true);
     }
 
     public virtual void Hide() {
@@ -31,7 +31,7 @@ namespace Windows {
       gameObject.SetActive(false);
       OnHide?.Invoke(this);
       LockPlayer(false);
-      LockHighlight(false);
+      // LockHighlight(false);
     }
     
     private void LockPlayer(bool state) {

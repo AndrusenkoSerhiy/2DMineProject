@@ -18,6 +18,12 @@ namespace UI {
       showCoroutine = StartCoroutine(ShowWithDelay(content, header, delay));
     }
 
+    public void UpdateTooltip(string content, string header = "") {
+      if (tooltip.gameObject.activeSelf) {
+        tooltip.SetText(content, header);
+      }
+    }
+
     public void Hide() {
       if (showCoroutine != null) {
         StopCoroutine(showCoroutine);

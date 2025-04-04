@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Scriptables;
+using Scriptables.Stats;
+using Stats;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,7 +15,8 @@ namespace Settings {
     [HideInInspector] public Controls controls;
 
     private bool attacking;
-    [SerializeField] private PlayerStats _stats;
+    // [SerializeField] private PlayerStats _stats;
+    [SerializeField] private BaseStatsObject statsObject;
     [SerializeField] private VirtualMouseUI _virtualMouse;
     private Dictionary<string, List<string>> blockedActions = new ();
 
@@ -98,9 +101,9 @@ namespace Settings {
 
     public Vector2 GetMovement() {
       var movement = controls.GamePlay.Movement.ReadValue<Vector2>();
-      if (_stats.SnapInput) {
-        movement.x = Mathf.Abs(movement.x) < _stats.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(movement.x);
-        movement.y = Mathf.Abs(movement.y) < _stats.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(movement.y);
+      if (statsObject.snapInput) {
+        movement.x = Mathf.Abs(movement.x) < statsObject.horizontalDeadZoneThreshold ? 0 : Mathf.Sign(movement.x);
+        movement.y = Mathf.Abs(movement.y) < statsObject.verticalDeadZoneThreshold ? 0 : Mathf.Sign(movement.y);
       }
 
       //Debug.LogError($"movement {movement}");

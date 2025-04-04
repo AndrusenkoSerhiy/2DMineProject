@@ -1,4 +1,3 @@
-using System;
 using Windows;
 using Audio;
 using Craft;
@@ -17,8 +16,9 @@ using Messages;
 using Movement;
 using Pool;
 using Settings;
+using Stats;
 using UI;
-using UnityEngine.Serialization;
+using UnityServiceLocator;
 using Utility;
 
 [DefaultExecutionOrder(-5)]
@@ -51,7 +51,9 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private GameObject tempDragItem;
   [SerializeField] private ObjectPooler poolEffects;
   [SerializeField] private QuickSlotListener quickSlotListener;
+
   [SerializeField] private MapController mapController;
+
   //TODO
   //robot don't need this param in own script
   [SerializeField] private StaminaBar staminaBar;
@@ -61,6 +63,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   private PlayerControllerBase currPlayerController;
   private MiningRobotController miningRobotController;
   private GameStage gameStage = GameStage.MainMenu;
+  private IStatModifierFactory statModifierFactory;
 
   public StartGameCameraController StartGameCameraController => startGameCameraController;
   public MainMenu MainMenu => mainMenu;
@@ -93,6 +96,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public StaminaBar StaminaBar => staminaBar;
   public LadderMovement PlayerLadderMovement => playerLadderMovement;
   public MapController MapController => mapController;
+  public IStatModifierFactory StatModifierFactory => statModifierFactory;
 
   public PlayerController PlayerController {
     set => playerController = value;
@@ -116,6 +120,8 @@ public class GameManager : PersistentSingleton<GameManager> {
 
     DOTween.Init();
     UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
+
+    statModifierFactory = new StatModifierFactory();
   }
 
   private void Start() {
@@ -134,7 +140,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   private void EnableInput(bool state) {
     userInput.EnableGamePlayControls(state);
     userInput.EnableUIControls(state);
-    
+
     playerController.SetLockHighlight(true);
   }
 

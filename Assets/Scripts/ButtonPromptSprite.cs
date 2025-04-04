@@ -1,0 +1,20 @@
+using System;
+using UnityEngine.InputSystem;
+
+public static class ButtonPromptSprite {
+  public static string GetSpriteName(InputAction action) {
+    var index = (int)GameManager.Instance.UserInput.GetActiveGameDevice();
+    var inputBinding = action.GetBindingForControl(action.controls[index]);
+    if (inputBinding == null)
+      return string.Empty;
+
+    var buttonName = inputBinding.Value.path;
+    buttonName = buttonName.Replace("<Keyboard>/", "Keyboard_");
+    buttonName = buttonName.Replace("<Gamepad>/", "Gamepad_");
+    return buttonName;
+  }
+
+  public static string GetFullPrompt(string actionName, string buttonName) {
+    return actionName + " " + "<sprite name=" + buttonName + ">";
+  }
+}

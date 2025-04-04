@@ -24,13 +24,19 @@ namespace Menu {
     }
 
     public void Hide() {
-      GameManager.Instance.CurrPlayerController.SetLockPlayer(false);
+      LockPlayer(false);
       gameObject.SetActive(false);
     }
 
     public void Show() {
-      GameManager.Instance.CurrPlayerController.SetLockPlayer(true);
+      LockPlayer(true);
       gameObject.SetActive(true);
+    }
+    
+    private void LockPlayer(bool state) {
+      GameManager.Instance.CurrPlayerController.SetLockPlayer(state);
+      GameManager.Instance.CurrPlayerController.SetLockHighlight(state);
+      GameManager.Instance.UserInput.EnableGamePlayControls(!state);
     }
 
     private void HandleEsc() {

@@ -27,12 +27,20 @@ namespace Settings {
 
     private GameDevice _activeGameDevice;
 
+    public GameDevice ActiveGameDevice => _activeGameDevice;
     private void Awake() {
       controls = new Controls();
 
       controls.GamePlay.Attack.performed += AttackPerformed;
       controls.GamePlay.Attack.canceled += AttackCanceled;
-      InputSystem.onActionChange += InputActionChangeCallback;
+      //InputSystem.onActionChange += InputActionChangeCallback;
+      SubscribeToChangeInputType();
+    }
+
+    //check what a key is pressed and change activeDevice
+    private void SubscribeToChangeInputType() {
+      controls.InputType.Keyboard.performed += ctx => ChangeActiveGameDevice(GameDevice.KeyboardAndMouse);
+      controls.InputType.Gamepad.performed += ctx => ChangeActiveGameDevice(GameDevice.Gamepad);
     }
 
     public void BlockAction(string actionName, string reason) {
@@ -59,7 +67,7 @@ namespace Settings {
       }
     }
 
-    private void InputActionChangeCallback(object arg1, InputActionChange inputActionChange) {
+    /*private void InputActionChangeCallback(object arg1, InputActionChange inputActionChange) {
       if (inputActionChange == InputActionChange.ActionPerformed && arg1 is InputAction) {
         //
         InputAction inputAction = arg1 as InputAction;
@@ -80,11 +88,14 @@ namespace Settings {
           }
         }
       }
-    }
+    }*/
 
     private void ChangeActiveGameDevice(GameDevice activeGameDevice) {
+      if(_activeGameDevice == activeGameDevice)
+        return;
+      
       _activeGameDevice = activeGameDevice;
-      //Debug.LogError($"activeGameDevice {activeGameDevice}");
+      //Debug.LogError($"activeGameDevice {activeGameDevice} | _activeGameDevice {_activeGameDevice}");
       UnityEngine.Cursor.visible = _activeGameDevice == GameDevice.KeyboardAndMouse;
 
       OnGameDeviceChanged?.Invoke(this, EventArgs.Empty);
@@ -95,8 +106,7 @@ namespace Settings {
     }
 
     public Vector3 GetMousePosition() {
-      return _activeGameDevice == GameDevice.KeyboardAndMouse ? Input.mousePosition : _virtualMouse.VirtualMousePos;
-      //return _virtualMouse.VirtualMousePos;
+      return _activeGameDevice == GameDevice.KeyboardAndMouse ? Input.mousePosition : _virtualMouse.GetVirtualMousePosition();
     }
 
     public Vector2 GetMovement() {
@@ -167,7 +177,7 @@ namespace Settings {
 
     private void OnDisable() {
       controls?.Disable();
-      InputSystem.onActionChange -= InputActionChangeCallback;
+      //InputSystem.onActionChange -= InputActionChangeCallback;
     }
   }
 }

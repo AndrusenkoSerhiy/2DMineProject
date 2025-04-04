@@ -10,19 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
-  m_Name: Mace
+  m_Name: Nailgun
   m_EditorClassIdentifier: 
-  id: 49f7ee79-c83d-4efe-9362-5661eb50eb86
-  RecipeName: Mace
-  RecipeTypes: 0000000002000000
+  id: 38950a26-1cfc-446a-a071-766c8c47c2e9
+  RecipeName: Nailgun
+  RecipeTypes: 02000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 5
-  - Material: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
+  - Material: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
+    Amount: 10
+  - Material: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
+    Amount: 20
+  - Material: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
     Amount: 5
   Fuel:
     Material: {fileID: 0}
     Amount: 0
-  Result: {fileID: 11400000, guid: b842459342758864ea8fd5dd1fc317ac, type: 2}
-  CraftingTime: 70
+  Result: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
+  CraftingTime: 120
   detailImg: {fileID: 0}

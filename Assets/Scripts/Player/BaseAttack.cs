@@ -215,11 +215,11 @@ namespace Player {
       targets.Clear();
     }
 
-    private void OnDrawGizmosSelected() {
+    /*private void OnDrawGizmosSelected() {
       var range = PlayerStats?.AttackRange ?? statsObject.attackRange;
       Gizmos.DrawWireSphere(attackTransform.position, range);
       Gizmos.color = Color.red;
-    }
+    }*/
 
     protected virtual void OnDestroy() {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;

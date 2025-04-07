@@ -11,10 +11,10 @@ public class StatModifiersUI : MonoBehaviour {
   [SerializeField] private GameObject modifierPrefab;
 
   private Dictionary<string, StatModifierUI> activeModifiers = new();
-  private EntityStats playerStats;
+  private PlayerStats playerStats;
 
   private void Start() {
-    playerStats = GameManager.Instance.PlayerController.EntityStats;
+    playerStats = GameManager.Instance.PlayerController.PlayerStats;
     playerStats.Mediator.OnModifierAdded += OnModifierAddedHandler;
     playerStats.Mediator.OnModifierRemoved += OnModifierRemovedHandler;
   }

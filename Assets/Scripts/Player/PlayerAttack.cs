@@ -32,7 +32,7 @@ namespace Player {
       if (!firstAttack) {
         firstAttack = true;
         animator.SetTrigger("Attack");
-        animator.SetInteger("WeaponID", statsObject.attackID);
+        animator.SetInteger("WeaponID", attackID);
       }
     }
 
@@ -56,11 +56,11 @@ namespace Player {
       staminaUsage = entityStats.AttackStaminaUsage;*/
       
       attackLayer = statsObject.attackLayer;
-      blockDamage = statsObject.blockDamage;
+      /*blockDamage = statsObject.blockDamage;
       entityDamage = statsObject.entityDamage;
       attackRange = statsObject.attackRange;
       timeBtwAttacks = statsObject.timeBtwAttacks;
-      staminaUsage = statsObject.attackStaminaUsage;
+      staminaUsage = statsObject.attackStaminaUsage;*/
       
       attackID = statsObject.attackID;
       colliderSize = statsObject.attackColliderSize;
@@ -72,7 +72,7 @@ namespace Player {
       //try to activate tool
       TryActivateTool();
       // UpdateParams(.5f, GetEntityStats().AttackRange, colliderSize.x, colliderSize.y);
-      UpdateParams(.5f, statsObject.attackRange, colliderSize.x, colliderSize.y);
+      UpdateParams(.5f, PlayerStats.AttackRange, colliderSize.x, colliderSize.y);
       objectHighlighter.SetMaxHighlights(maxTargets);
     }
 

@@ -54,7 +54,7 @@ namespace Inventory {
               itemInHand.localEulerAngles = itemObject.SpawnRotation;
               itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
 
-              GameManager.Instance.PlayerController.EntityStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
+              GameManager.Instance.PlayerController.PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
               
               OnEquippedWeapon?.Invoke();
               break;
@@ -99,7 +99,7 @@ namespace Inventory {
               case ItemType.Tool:
                 Destroy(itemInHand.gameObject);
                 
-                GameManager.Instance.PlayerController.EntityStats.Mediator.RemoveModifiersByItemId(item.info.Id);
+                GameManager.Instance.PlayerController.PlayerStats.Mediator.RemoveModifiersByItemId(item.info.Id);
                 
                 OnUnequippedWeapon?.Invoke();
                 break;

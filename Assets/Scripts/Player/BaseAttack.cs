@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using Animation;
 using Scriptables;
 using Scriptables.Stats;
-using Stats;
 using UnityEngine;
 using World;
 
 namespace Player {
   public class BaseAttack : MonoBehaviour {
     // [SerializeField] protected PlayerStats stats;
-    [SerializeField] protected BaseStatsObject statsObject;
+    [SerializeField] protected PlayerStatsObject statsObject;
     [SerializeField] protected Animator animator;
     [SerializeField] protected ObjectHighlighter objectHighlighter;
     [SerializeField] protected BoxCollider2D attackCollider;
@@ -24,11 +23,11 @@ namespace Player {
     protected int maxTargets;
 
     protected Vector2 colliderSize;
-    protected float timeBtwAttacks;
+    /*protected float timeBtwAttacks;
     protected float blockDamage;
     protected float entityDamage;
     protected float attackRange;
-    protected float staminaUsage;
+    protected float staminaUsage;*/
 
     private List<IDamageable> targets = new();
     private List<IDamageable> iDamageables = new();
@@ -37,7 +36,9 @@ namespace Player {
     private int lookDirection;
     private AnimatorParameters animParam;
 
+    protected PlayerStats playerStats;
     protected bool firstAttack;
+    public PlayerStats PlayerStats => playerStats ??= GameManager.Instance.CurrPlayerController.PlayerStats;
 
     public bool shouldBeDamaging { get; private set; } = false;
 
@@ -48,16 +49,12 @@ namespace Player {
     }
 
     protected virtual void Start() {
-      attackTimeCounter = timeBtwAttacks;
+      attackTimeCounter = PlayerStats.TimeBtwAttacks;
       PrepareAttackParams();
       originalSize = attackCollider.size;
       GameManager.Instance.UserInput.OnAttackPerformed += PressAttack;
       GameManager.Instance.UserInput.OnAttackCanceled += CancelAttack;
     }
-
-    /*protected EntityStats GetEntityStats() {
-      return !GameManager.HasInstance ? null : GameManager.Instance.CurrPlayerController.EntityStats;
-    }*/
 
     private void PressAttack(object sender, EventArgs e) {
       animator.SetBool(animParam.IsAttacking, true);
@@ -118,7 +115,7 @@ namespace Player {
 
     private void HandleAttack() {
       if (GameManager.Instance.UserInput.IsAttacking() /*&& currentTarget != null*/
-          && attackTimeCounter >= timeBtwAttacks) {
+          && attackTimeCounter >= PlayerStats.TimeBtwAttacks) {
         TriggerAttack();
       }
 
@@ -157,7 +154,7 @@ namespace Player {
       SetTargetsFromHighlight();
       foreach (var target in targets) {
         if (target == null || target.hasTakenDamage) continue;
-        target.Damage(blockDamage);
+        target.Damage(PlayerStats.BlockDamage);
         iDamageables.Add(target);
       }
 
@@ -219,7 +216,8 @@ namespace Player {
     }
 
     private void OnDrawGizmosSelected() {
-      Gizmos.DrawWireSphere(attackTransform.position, attackRange);
+      var range = PlayerStats?.AttackRange ?? statsObject.attackRange;
+      Gizmos.DrawWireSphere(attackTransform.position, range);
       Gizmos.color = Color.red;
     }
 

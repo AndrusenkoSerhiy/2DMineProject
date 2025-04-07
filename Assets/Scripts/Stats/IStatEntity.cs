@@ -1,5 +1,5 @@
 ﻿namespace Stats {
   public interface IStatEntity {
-    public EntityStats Stats { get; }
+    public PlayerStats Stats { get; }
   }
 }

@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 public class StaminaBase : MonoBehaviour {
   [SerializeField] protected StaminaBar staminaBar;
 
-  protected EntityStats stats;
+  protected PlayerStats stats;
   // [SerializeField] protected float maxStamina = 100f;
   // [SerializeField] protected float currentStamina;
   // [SerializeField] protected float staminaDrain = 20f;
@@ -24,7 +24,7 @@ public class StaminaBase : MonoBehaviour {
   public bool IsSprinting => isSprinting;
 
   public virtual void Start() {
-    stats = GetComponent<PlayerControllerBase>().EntityStats;
+    stats = GetComponent<PlayerControllerBase>().PlayerStats;
     // currentStamina = stats.Stamina;
     staminaBar.SetMaxStamina(stats.MaxStamina);
     staminaBar.SetStamina(stats.Stamina);

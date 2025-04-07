@@ -16,7 +16,7 @@ namespace Settings {
 
     private bool attacking;
     // [SerializeField] private PlayerStats _stats;
-    [SerializeField] private BaseStatsObject statsObject;
+    [SerializeField] private PlayerStatsObject statsObject;
     [SerializeField] private VirtualMouseUI _virtualMouse;
     private Dictionary<string, List<string>> blockedActions = new ();
 

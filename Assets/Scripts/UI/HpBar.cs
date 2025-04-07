@@ -11,15 +11,15 @@ namespace UI {
     [SerializeField] private float maxBarWidth = 600f;
     [SerializeField] private float barWidthUpdateDuration = 2f;
 
-    private EntityStats entityStats;
+    private PlayerStats playerStats;
     private RectTransform sliderRectTransform;
     private float widthCoefficient;
 
     private void Awake() {
       sliderRectTransform = hpSlider.GetComponent<RectTransform>();
 
-      // MiningRobotTool.OnPlayerSitOnRobot += UpdateEntityStats;
-      // MiningRobotTool.OnPlayerExitFromRobot += UpdateEntityStats;
+      MiningRobotTool.OnPlayerSitOnRobot += UpdateEntityStats;
+      MiningRobotTool.OnPlayerExitFromRobot += UpdateEntityStats;
     }
 
     private void Start() {
@@ -27,17 +27,17 @@ namespace UI {
     }
 
     private void AddStatsListeners() {
-      entityStats.Mediator.OnModifierAdded += OnMaxHealthChanged;
-      entityStats.Mediator.OnModifierRemoved += OnMaxHealthChanged;
+      playerStats.Mediator.OnModifierAdded += OnMaxHealthChanged;
+      playerStats.Mediator.OnModifierRemoved += OnMaxHealthChanged;
     }
 
     private void RemoveStatsListeners() {
-      entityStats.Mediator.OnModifierAdded -= OnMaxHealthChanged;
-      entityStats.Mediator.OnModifierRemoved -= OnMaxHealthChanged;
+      playerStats.Mediator.OnModifierAdded -= OnMaxHealthChanged;
+      playerStats.Mediator.OnModifierRemoved -= OnMaxHealthChanged;
     }
 
     private void Update() {
-      if (entityStats == null) {
+      if (playerStats == null) {
         return;
       }
 
@@ -45,9 +45,9 @@ namespace UI {
     }
 
     private void UpdateEntityStats() {
-      entityStats = GameManager.Instance.CurrPlayerController.EntityStats;
+      playerStats = GameManager.Instance.CurrPlayerController.PlayerStats;
       RemoveStatsListeners();
-      widthCoefficient = initialBarWidth / entityStats.BaseStatsObject.health;
+      widthCoefficient = initialBarWidth / playerStats.StatsObject.health;
       AddStatsListeners();
       UpdateUI();
     }
@@ -67,7 +67,7 @@ namespace UI {
     }
 
     private IEnumerator UpdateBarWidth() {
-      var width = Mathf.Min(maxBarWidth, entityStats.MaxHealth * widthCoefficient);
+      var width = Mathf.Min(maxBarWidth, playerStats.MaxHealth * widthCoefficient);
       var startWidth = sliderRectTransform.sizeDelta.x;
       var elapsed = 0f;
 
@@ -86,11 +86,11 @@ namespace UI {
     }
 
     private void UpdateValue() {
-      hpSlider.value = entityStats.Health;
+      hpSlider.value = playerStats.Health;
     }
 
     private void UpdateMaxValue() {
-      hpSlider.maxValue = entityStats.MaxHealth;
+      hpSlider.maxValue = playerStats.MaxHealth;
     }
   }
 }

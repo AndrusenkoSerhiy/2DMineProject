@@ -9,10 +9,10 @@ public class FoodModifiersUI : MonoBehaviour {
   [SerializeField] private List<FoodModifierUI> modifiersItems;
 
   private Dictionary<string, FoodModifierUI> modifiersMap = new();
-  private EntityStats playerStats;
+  private PlayerStats playerStats;
 
   private void Start() {
-    playerStats = GameManager.Instance.PlayerController.EntityStats;
+    playerStats = GameManager.Instance.PlayerController.PlayerStats;
     playerStats.Mediator.OnModifierAdded += OnModifierAddedHandler;
     playerStats.Mediator.OnModifierRemoved += OnModifierRemovedHandler;
     FillMap();

@@ -1,7 +1,6 @@
 ﻿using Player;
 using Scriptables.Items;
 using Stats;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Inventory {
@@ -9,7 +8,7 @@ namespace Inventory {
   public class ItemConsumer {
     private readonly GameManager gameManager;
     private readonly PlayerController playerController;
-    private readonly EntityStats playerStats;
+    private readonly PlayerStats playerStats;
     private readonly System.Action<InputAction.CallbackContext> leftClickHandler;
     private InventorySlot activeSlot;
     private bool isClickHandlerAdded;
@@ -17,7 +16,7 @@ namespace Inventory {
     public ItemConsumer() {
       gameManager = GameManager.Instance;
       playerController = gameManager.PlayerController;
-      playerStats = playerController.EntityStats;
+      playerStats = playerController.PlayerStats;
       leftClickHandler = ctx => DefaultConsume();
     }
 

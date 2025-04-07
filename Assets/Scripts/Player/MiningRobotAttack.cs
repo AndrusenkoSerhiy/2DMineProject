@@ -21,12 +21,6 @@ namespace Player {
       timeBtwAttacks = entityStats.TimeBtwAttacks;
       staminaUsage = entityStats.AttackStaminaUsage;*/
       
-      blockDamage = statsObject.blockDamage;
-      entityDamage = statsObject.entityDamage;
-      attackRange = statsObject.attackRange;
-      timeBtwAttacks = statsObject.timeBtwAttacks;
-      staminaUsage = statsObject.attackStaminaUsage;
-      
       attackID = statsObject.attackID;
     }
   }

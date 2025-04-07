@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7ab266f921b4af6a6aec8e3a2d8c4a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ca1dfb1e5494a3da12a4e182dd59407, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
   health: 100
@@ -25,9 +25,8 @@ MonoBehaviour:
   attackRange: 2.5
   blockDamage: 1
   entityDamage: 3
-  range: 1.8
   timeBtwAttacks: 0.7
-  staminaUsage: 1
+  attackStaminaUsage: 1
   attackID: 0
   attackColliderSize: {x: 0.5, y: 0.5}
   armor: 1

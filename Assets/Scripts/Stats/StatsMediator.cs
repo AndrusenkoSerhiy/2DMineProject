@@ -11,21 +11,21 @@ namespace Stats {
     private readonly List<StatModifier> listModifiers = new();
     private readonly Dictionary<StatType, IEnumerable<StatModifier>> modifiersCache = new();
     private readonly IStatModifierApplicationOrder order = new NormalStatModifierOrder();
-    private EntityStats stats;
+    private StatsBase stats;
 
     public event Action<StatModifier> OnModifierAdded = delegate { };
     public event Action<StatModifier> OnModifierRemoved = delegate { };
 
-    public void SetStats(EntityStats entityStats) {
-      stats = entityStats;
+    public void SetStats(StatsBase playerStats) {
+      stats = playerStats;
     }
 
-    public void PerformQuery(object sender, Query query) {
-      if (!modifiersCache.ContainsKey(query.StatType)) {
-        modifiersCache[query.StatType] = listModifiers.Where(modifier => modifier.Type == query.StatType).ToList();
+    public float Calculate(StatType type, float value) {
+      if (!modifiersCache.ContainsKey(type)) {
+        modifiersCache[type] = listModifiers.Where(modifier => modifier.Type == type).ToList();
       }
 
-      query.Value = order.Apply(modifiersCache[query.StatType], query.Value);
+      return order.Apply(modifiersCache[type], value);
     }
 
     private void InvalidateCache(StatType statType) {

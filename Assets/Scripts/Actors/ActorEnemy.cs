@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Animation;
-using Scriptables;
+using Enemy;
 using UnityEngine;
+using Utils;
 
 namespace Actors {
   public class ActorEnemy : ActorBase {
@@ -10,7 +11,19 @@ namespace Actors {
     public bool shouldBeDamaging { get; private set; } = false;
     private List<IDamageable> iDamageables = new List<IDamageable>();
     private IDamageable currentTarget;
+    
+    [SerializeField] private NPCMovement.NPCMovement npcMovement;
+    [SerializeField] private EnemyCoords coords;
+    
+    public Coords GetCoords => coords.GetCoords();
 
+    public void SetPatrolPosition(Vector3 pos) {
+      npcMovement.SetTarget(pos);
+    }
+
+    public bool HasArrived() {
+      return npcMovement.HasArrived;
+    }
     private void Awake() {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
@@ -76,7 +89,7 @@ namespace Actors {
 
         return;
       }
-      Debug.LogError("ATTACK");
+      
       currentTarget.Damage(_damage);
       iDamageables.Add(currentTarget);
     }

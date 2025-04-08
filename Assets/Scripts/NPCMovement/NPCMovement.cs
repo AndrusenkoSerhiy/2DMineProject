@@ -4,32 +4,46 @@ using UnityEngine;
 namespace NPCMovement
 {
   public class NPCMovement : MonoBehaviour {
-    public Transform target;
+    [SerializeField] private Vector3 target;
+    //public Transform target;
     public float speed = 3f;
     public float jumpForce = 5f;
     public float stopingDistance = 1;
     public LayerMask groundLayer;
     private Rigidbody2D rb;
     BoxCollider2D boxCollider2D;
-    [SerializeField] private bool _isGrounded;
+    [SerializeField] private bool isGrounded;
     [SerializeField] private ActorEnemy _actor;
     public float sphereRadius = 1f;
     public float maxDistance = 1f;
     private Vector3 localScale;
-
+    [SerializeField] private bool hasArrived;
+    [SerializeField] private Animator animator;
+    [SerializeField] private ActorEnemy actor;
+    
+    public bool HasArrived => hasArrived;
     void Start() {
       rb = GetComponent<Rigidbody2D>();
       boxCollider2D = GetComponent<BoxCollider2D>();
       localScale = transform.localScale;
     }
 
+    public void SetTarget(Vector3 pos) {
+      target = pos;
+      hasArrived = false;
+    }
+
     private void FixedUpdate() {
+      IsGrounded();
+      
       MoveTowardsTarget();
 
       // Check for obstacles in front of the NPC
-      RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(1, 1, 0), transform.right, 1, groundLayer);
-
-      if (hit.collider != null && !CheckUP()) {//&& hit.collider != boxCollider2D
+      var dir = transform.localScale.x * Vector2.right;
+      RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(dir.x * -1, 1, 0), dir, 1, groundLayer);
+      
+      Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
+      if (hit.collider != null && !CheckUP()) {
         //Debug.LogError($"hit {gameObject.name}");
         Jump();
       }
@@ -64,18 +78,31 @@ namespace NPCMovement
 
     private void MoveTowardsTarget() {
       // Calculate direction and move towards target
-      if (target == null || _actor != null && _actor.IsDead) {
+      if (/*target == null || */target.Equals(Vector3.zero) || _actor != null && _actor.IsDead) {
         return;
       }
-      if (Vector2.Distance(transform.position, target.transform.position) <= stopingDistance) {
+      //Debug.LogError($"{Vector2.Distance(transform.position, target)} | {stopingDistance}");
+      if (Vector2.Distance(transform.position, target) <= stopingDistance) {
+        //Debug.LogError("has arrived!!!!!!!!!!");
+        target = Vector3.zero;
+        hasArrived = true;
         rb.linearVelocity = new Vector2(0, 0);
-        _actor?.TriggerAttack();
+        SetAnimVelocityX(0);
+        //TODO 
+        //attack only when target player, if just patrol dont use attack
+        //_actor?.TriggerAttack();
         return;
       }
 
-      Vector2 direction = (target.position - transform.position).normalized;
+      hasArrived = false;
+      Vector2 direction = (target - transform.position).normalized;
       FlipX(direction.x);
       rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocity.y);
+      SetAnimVelocityX(rb.linearVelocity.x);
+    }
+    
+    private void SetAnimVelocityX(float value) {
+      //animator.SetFloat(actor.animatorParam.VelocityXHash, value);
     }
 
     private void FlipX(float direction) {
@@ -84,19 +111,20 @@ namespace NPCMovement
     }
 
     private void Jump() {
-      if (target == null || _actor != null && _actor.IsDead) {
+      if (/*target == null ||*/ _actor != null && _actor.IsDead) {
         return;
       }
 
       if (IsGrounded()) {
+        Debug.LogError("add force");
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
       }
     }
 
     private bool IsGrounded() {
       // Check if NPC is on the ground
-      _isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.3f, groundLayer);
-      return _isGrounded;
+      isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.3f, groundLayer);
+      return isGrounded;
     }
   }
 }

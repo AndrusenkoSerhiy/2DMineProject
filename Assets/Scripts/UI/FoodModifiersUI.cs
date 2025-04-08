@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Scriptables.Stats;
-using Stats;
 using UnityEngine;
 using StatModifier = Stats.StatModifier;
 
@@ -10,12 +9,58 @@ public class FoodModifiersUI : MonoBehaviour {
 
   private Dictionary<string, FoodModifierUI> modifiersMap = new();
   private PlayerStats playerStats;
+  private bool started;
 
   private void Start() {
     playerStats = GameManager.Instance.PlayerController.PlayerStats;
+    FillMap();
+    AddModifiersListeners();
+    CheckActiveModifiers();
+    started = true;
+  }
+
+  private void OnEnable() {
+    if (!started) {
+      return;
+    }
+
+    AddModifiersListeners();
+    CheckActiveModifiers();
+  }
+
+  private void OnDisable() {
+    RemoveModifiersListeners();
+    HideAll();
+  }
+
+  private void AddModifiersListeners() {
     playerStats.Mediator.OnModifierAdded += OnModifierAddedHandler;
     playerStats.Mediator.OnModifierRemoved += OnModifierRemovedHandler;
-    FillMap();
+  }
+
+  private void RemoveModifiersListeners() {
+    playerStats.Mediator.OnModifierAdded -= OnModifierAddedHandler;
+    playerStats.Mediator.OnModifierRemoved -= OnModifierRemovedHandler;
+  }
+
+  private void CheckActiveModifiers() {
+    foreach (var modifier in playerStats.Mediator.ListModifiers) {
+      if (!NeedHandleModifier(modifier)) {
+        continue;
+      }
+
+      if (!modifiersMap.TryGetValue(modifier.modifierDisplayObject.Id, out var item)) {
+        return;
+      }
+
+      item.Show(modifier);
+    }
+  }
+
+  private void HideAll() {
+    foreach (var modifierUI in modifiersMap) {
+      modifierUI.Value.Hide();
+    }
   }
 
   private void FillMap() {
@@ -54,10 +99,5 @@ public class FoodModifiersUI : MonoBehaviour {
     }
 
     return modifier.modifierDisplayObject.display != null;
-  }
-
-  private void OnDisable() {
-    playerStats.Mediator.OnModifierAdded -= OnModifierAddedHandler;
-    playerStats.Mediator.OnModifierRemoved -= OnModifierRemovedHandler;
   }
 }

@@ -1,12 +1,10 @@
 using Player;
 using Settings;
-using Stats;
-using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class StaminaBase : MonoBehaviour {
-  [SerializeField] protected StaminaBar staminaBar;
+  // [SerializeField] protected StaminaBar staminaBar;
 
   protected PlayerStats stats;
   // [SerializeField] protected float maxStamina = 100f;
@@ -19,15 +17,11 @@ public class StaminaBase : MonoBehaviour {
 
   [SerializeField] protected bool isSprinting;
 
-  // protected float previousStamina;
   protected UserInput userInput;
   public bool IsSprinting => isSprinting;
 
   public virtual void Start() {
     stats = GetComponent<PlayerControllerBase>().PlayerStats;
-    // currentStamina = stats.Stamina;
-    staminaBar.SetMaxStamina(stats.MaxStamina);
-    staminaBar.SetStamina(stats.Stamina);
     userInput = GameManager.Instance.UserInput;
     userInput.controls.GamePlay.Sprint.performed += SprintPerformed;
     userInput.controls.GamePlay.Sprint.canceled += SprintCanceled;
@@ -37,21 +31,20 @@ public class StaminaBase : MonoBehaviour {
     enabled = state;
   }
 
-  public void SetStaminaBarRef() {
+  /*public void SetStaminaBarRef() {
     staminaBar = GameManager.Instance.StaminaBar;
-  }
+  }*/
 
   private void Update() {
     StopSprinting();
     UpdateStaminaValue();
-    UpdateStaminaUI();
   }
 
   private void SprintPerformed(InputAction.CallbackContext context) => SetSprinting(true);
 
   private void SprintCanceled(InputAction.CallbackContext context) => SetSprinting(false);
 
-  public virtual void SetSprinting(bool value) {
+  protected virtual void SetSprinting(bool value) {
     isSprinting = value;
   }
 
@@ -62,32 +55,19 @@ public class StaminaBase : MonoBehaviour {
   }
 
   private void UpdateStaminaValue() {
-    // previousStamina = stats.Stamina;
     if (isSprinting && stats.Stamina > 0) {
       stats.UseStamina(Time.deltaTime);
-    } /*
-    else {
-      stats.RecoverStamina(Time.deltaTime);
-    }*/
+    }
 
-    // currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
     if (stats.Stamina <= 0) {
       SetSprinting(false);
     }
   }
 
-  private void UpdateStaminaUI() {
-    /*if (!Mathf.Approximately(previousStamina, stats.Stamina)) {
-      staminaBar.SetStamina(stats.Stamina);
-    }*/
-    if (!Mathf.Approximately(stats.Stamina, stats.MaxStamina)) {
-      staminaBar.SetStamina(stats.Stamina);
-    }
-  }
-
   private void OnDestroy() {
-    if (!GameManager.HasInstance || userInput == null)
+    if (!GameManager.HasInstance || userInput == null) {
       return;
+    }
 
     userInput.controls.GamePlay.Sprint.performed -= SprintPerformed;
     userInput.controls.GamePlay.Sprint.canceled -= SprintCanceled;

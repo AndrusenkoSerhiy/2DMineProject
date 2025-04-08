@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerStats : StatsBase {
   private bool staminaInUse;
 
+  public PlayerStatsObject StatsObject => (PlayerStatsObject)statsObject;
+
   public float Stamina => Mathf.Min(baseValues[StatType.Stamina], MaxStamina);
   public float MaxStamina => GetStatValue(StatType.MaxStamina);
   public float StaminaDrain => GetStatValue(StatType.StaminaDrain);
@@ -16,21 +18,23 @@ public class PlayerStats : StatsBase {
   public float AttackStaminaUsage => GetStatValue(StatType.AttackStaminaUsage);
   public float Armor => GetStatValue(StatType.Armor);
 
-  public PlayerStats(StatsMediator mediator, PlayerStatsObject statsObject) : base(mediator, statsObject) {
-    baseValues[StatType.Stamina] = statsObject.stamina;
-    baseValues[StatType.MaxStamina] = statsObject.maxStamina;
-    baseValues[StatType.StaminaDrain] = statsObject.staminaDrain;
-    baseValues[StatType.StaminaRecovery] = statsObject.staminaRecovery;
+  protected override void Awake() {
+    base.Awake();
 
-    baseValues[StatType.AttackRange] = statsObject.attackRange;
-    baseValues[StatType.BlockDamage] = statsObject.blockDamage;
-    baseValues[StatType.EntityDamage] = statsObject.entityDamage;
-    baseValues[StatType.TimeBtwAttacks] = statsObject.timeBtwAttacks;
-    baseValues[StatType.AttackStaminaUsage] = statsObject.attackStaminaUsage;
-    baseValues[StatType.Armor] = statsObject.armor;
+    baseValues[StatType.Stamina] = StatsObject.stamina;
+    baseValues[StatType.MaxStamina] = StatsObject.maxStamina;
+    baseValues[StatType.StaminaDrain] = StatsObject.staminaDrain;
+    baseValues[StatType.StaminaRecovery] = StatsObject.staminaRecovery;
+
+    baseValues[StatType.AttackRange] = StatsObject.attackRange;
+    baseValues[StatType.BlockDamage] = StatsObject.blockDamage;
+    baseValues[StatType.EntityDamage] = StatsObject.entityDamage;
+    baseValues[StatType.TimeBtwAttacks] = StatsObject.timeBtwAttacks;
+    baseValues[StatType.AttackStaminaUsage] = StatsObject.attackStaminaUsage;
+    baseValues[StatType.Armor] = StatsObject.armor;
   }
 
-  public override void UpdateStats(float deltaTime) {
+  protected override void UpdateStats(float deltaTime) {
     base.UpdateStats(deltaTime);
     RecoverStamina(deltaTime);
   }
@@ -52,10 +56,11 @@ public class PlayerStats : StatsBase {
 
   protected override float? GetMaxValueByType(StatType type) => type switch {
     StatType.Stamina => MaxStamina,
+    StatType.MaxStamina => StatsObject.staminaMaxPossibleValue,
     _ => base.GetMaxValueByType(type)
   };
 
-  public override float GetValueByType(StatType type) => type switch {
+  protected override float GetValueByType(StatType type) => type switch {
     StatType.Stamina => Stamina,
     StatType.MaxStamina => MaxStamina,
     StatType.StaminaRecovery => StaminaRecovery,

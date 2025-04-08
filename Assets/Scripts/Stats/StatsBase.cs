@@ -4,13 +4,16 @@ using Stats;
 using UnityEngine;
 using StatModifier = Stats.StatModifier;
 
-public class StatsBase {
-  private readonly StatsMediator mediator;
-  private readonly BaseStatsObject statsObject;
+public class StatsBase : MonoBehaviour {
+  [SerializeField] protected BaseStatsObject statsObject;
+
+  private StatsMediator mediator;
   private readonly Dictionary<StatType, float> statValueCache = new();
   private readonly HashSet<StatType> dirtyStats = new();
 
   protected readonly Dictionary<StatType, float> baseValues = new();
+
+  private bool canHeal = true;
 
   public StatsMediator Mediator => mediator;
   public BaseStatsObject StatsObject => statsObject;
@@ -19,22 +22,39 @@ public class StatsBase {
   public float MaxHealth => GetStatValue(StatType.MaxHealth);
   public float HealthRegen => GetStatValue(StatType.HealthRegen);
 
-  public StatsBase(StatsMediator mediator, BaseStatsObject statsObject) {
-    this.mediator = mediator;
-    this.statsObject = statsObject;
-    this.mediator.SetStats(this);
+  protected virtual void Awake() {
+    mediator = new StatsMediator();
+    mediator.SetStats(this);
 
     baseValues[StatType.Health] = statsObject.health;
     baseValues[StatType.MaxHealth] = statsObject.maxHealth;
     baseValues[StatType.HealthRegen] = statsObject.healthRegen;
   }
 
-  public void AddHealth(float amount) {
-    baseValues[StatType.Health] = Mathf.Clamp(baseValues[StatType.Health] + amount, 0, MaxHealth);
+  private void Update() {
+    UpdateStats(Time.deltaTime);
+    mediator.Update(Time.deltaTime);
   }
 
-  public virtual void UpdateStats(float deltaTime) {
+  protected virtual void UpdateStats(float deltaTime) {
     RecoverHp(deltaTime);
+  }
+
+  public float AddHealth(float amount) {
+    var health = Mathf.Clamp(baseValues[StatType.Health] + amount, 0, MaxHealth);
+    baseValues[StatType.Health] = health;
+    return health;
+  }
+
+  public float TakeDamage(float damage) {
+    canHeal = false;
+
+    var health = AddHealth(-damage);
+    if (health > 0) {
+      canHeal = true;
+    }
+
+    return health;
   }
 
   public virtual bool IsValueReachMax(StatType type) {
@@ -42,7 +62,32 @@ public class StatsBase {
     return max.HasValue && GetValueByType(type) >= max.Value;
   }
 
+  public void InvalidateStatCache(StatType type) {
+    dirtyStats.Add(type);
+  }
+
+  public virtual void UpdateClearValueByModifier(StatModifier modifier) {
+    if (!baseValues.ContainsKey(modifier.Type)) {
+      return;
+    }
+
+    var currentValue = baseValues[modifier.Type];
+    var max = GetMaxValueByType(modifier.Type);
+
+    var newValue = modifier.Strategy.Calculate(currentValue);
+
+    if (max.HasValue) {
+      newValue = Mathf.Min(newValue, max.Value);
+    }
+
+    baseValues[modifier.Type] = newValue;
+  }
+
   protected virtual void RecoverHp(float deltaTime) {
+    if (!canHeal) {
+      return;
+    }
+
     var max = MaxHealth;
     var current = baseValues[StatType.Health];
     if (current >= max) {
@@ -60,6 +105,10 @@ public class StatsBase {
 
     var baseValue = baseValues.ContainsKey(type) ? baseValues[type] : 0f;
     var result = mediator.Calculate(type, baseValue);
+    var max = GetMaxValueByType(type);
+    if (max.HasValue) {
+      result = Mathf.Min(result, max.Value);
+    }
 
     statValueCache[type] = result;
     dirtyStats.Remove(type);
@@ -67,23 +116,7 @@ public class StatsBase {
     return result;
   }
 
-  public void InvalidateStatCache(StatType type) {
-    dirtyStats.Add(type);
-  }
-
-  public virtual void UpdateClearValueByModifier(StatModifier modifier) {
-    if (!baseValues.ContainsKey(modifier.Type)) {
-      return;
-    }
-
-    var currentValue = baseValues[modifier.Type];
-    var max = GetMaxValueByType(modifier.Type) ?? float.MaxValue;
-
-    var newValue = modifier.Strategy.Calculate(currentValue);
-    baseValues[modifier.Type] = Mathf.Clamp(newValue, 0, max);
-  }
-
-  public virtual float GetValueByType(StatType type) {
+  protected virtual float GetValueByType(StatType type) {
     return type switch {
       StatType.Health => Health,
       StatType.MaxHealth => MaxHealth,
@@ -95,6 +128,7 @@ public class StatsBase {
   protected virtual float? GetMaxValueByType(StatType type) {
     return type switch {
       StatType.Health => MaxHealth,
+      StatType.MaxHealth => statsObject.healthMaxPossibleValue,
       _ => null
     };
   }

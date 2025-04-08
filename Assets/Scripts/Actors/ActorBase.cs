@@ -3,29 +3,34 @@ using UnityEngine;
 
 namespace Actors {
   public class ActorBase : MonoBehaviour, IDamageable {
-    [SerializeField] protected float _currHP;
-    [SerializeField] protected float _maxHP;
+    // [SerializeField] protected float _currHP;
+    // [SerializeField] protected float _maxHP;
     [SerializeField] protected Animator _animator;
+
     [SerializeField] private bool _isDead;
-    private UnitHealth unitHealth;
+
+    // private UnitHealth unitHealth;
     protected AnimatorParameters animParam;
+    private StatsBase stats;
+    private bool _hasTakenDamage;
 
     public bool IsDead => _isDead;
+
     private void Awake() {
-      _currHP = _maxHP;
-      unitHealth = new UnitHealth(_currHP);
+      // _currHP = _maxHP;
+      // unitHealth = new UnitHealth(_currHP);
+      stats = GetComponent<StatsBase>();
       animParam = GameManager.Instance.AnimatorParameters;
     }
 
     public bool hasTakenDamage {
-      get { return unitHealth.hasTakenDamage; }
-      set { unitHealth.hasTakenDamage = value; }
+      get { return _hasTakenDamage; }
+      set { _hasTakenDamage = value; }
     }
+
     public void Damage(float damage) {
-      unitHealth.TakeDamage(damage);
-      _currHP -= damage;
-      Debug.LogError($"Damage {_currHP}");
-      if (_currHP <= 0) {
+      hasTakenDamage = true;
+      if (stats.TakeDamage(damage) <= 0) {
         _isDead = true;
         PlayDeathAnim();
       }
@@ -37,26 +42,25 @@ namespace Actors {
     private void PlayTakeDamage() {
       _animator.SetTrigger(animParam.TakeDamage);
     }
-    
+
     private void PlayDeathAnim() {
-      Debug.LogError($"PlayDeathAnim");
+      // Debug.LogError($"PlayDeathAnim");
       _animator.SetLayerWeight(1, 0);
       _animator.SetTrigger(animParam.Die);
     }
 
     public float GetHealth() {
-      return _currHP;
+      return stats.Health;
     }
 
     public float GetMaxHealth() {
-      return _maxHP;
+      return stats.MaxHealth;
     }
 
     public void AfterDamageReceived() {
     }
 
     public void DestroyObject() {
-      
     }
   }
 }

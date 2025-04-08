@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Scriptables.Stats;
-using Stats;
 using UnityEngine;
 using StatModifier = Stats.StatModifier;
 
@@ -12,11 +11,55 @@ public class StatModifiersUI : MonoBehaviour {
 
   private Dictionary<string, StatModifierUI> activeModifiers = new();
   private PlayerStats playerStats;
+  private bool started;
 
   private void Start() {
-    playerStats = GameManager.Instance.PlayerController.PlayerStats;
-    playerStats.Mediator.OnModifierAdded += OnModifierAddedHandler;
-    playerStats.Mediator.OnModifierRemoved += OnModifierRemovedHandler;
+    playerStats = GameManager.Instance.CurrPlayerController.PlayerStats;
+    AddModifiersListeners();
+    CheckActiveModifiers();
+    started = true;
+  }
+
+  private void OnEnable() {
+    if (!started) {
+      return;
+    }
+
+    AddModifiersListeners();
+    CheckActiveModifiers();
+  }
+
+  private void OnDisable() {
+    RemoveModifiersListeners();
+    HideAll();
+  }
+
+  public void UpdateController() {
+    RemoveModifiersListeners();
+    HideAll();
+    playerStats = GameManager.Instance.CurrPlayerController.PlayerStats;
+    AddModifiersListeners();
+    CheckActiveModifiers();
+  }
+
+  private void CheckActiveModifiers() {
+    foreach (var modifier in playerStats.Mediator.ListModifiers) {
+      if (!NeedHandleModifier(modifier)) {
+        continue;
+      }
+
+      Add(modifier);
+    }
+  }
+
+  private void HideAll() {
+    foreach (var modifierUI in activeModifiers) {
+      var item = modifierUI.Value;
+      item.Hide();
+      freeModifiersItems.Add(item);
+    }
+
+    activeModifiers.Clear();
   }
 
   private void OnModifierAddedHandler(StatModifier modifier) {
@@ -24,6 +67,10 @@ public class StatModifiersUI : MonoBehaviour {
       return;
     }
 
+    Add(modifier);
+  }
+
+  private void Add(StatModifier modifier) {
     var item = GetFreeModifierItem();
     activeModifiers.Add(modifier.Id, item);
     SetPosition(item);
@@ -67,7 +114,12 @@ public class StatModifiersUI : MonoBehaviour {
     return modifier.modifierDisplayObject.display != null;
   }
 
-  private void OnDisable() {
+  private void AddModifiersListeners() {
+    playerStats.Mediator.OnModifierAdded += OnModifierAddedHandler;
+    playerStats.Mediator.OnModifierRemoved += OnModifierRemovedHandler;
+  }
+
+  private void RemoveModifiersListeners() {
     playerStats.Mediator.OnModifierAdded -= OnModifierAddedHandler;
     playerStats.Mediator.OnModifierRemoved -= OnModifierRemovedHandler;
   }

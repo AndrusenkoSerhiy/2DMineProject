@@ -19,7 +19,7 @@ namespace Player {
       playerAttack.LockHighlight(state);
     }
     
-    protected override void LookAtMouse() {
+    /*protected override void LookAtMouse() {
       if (lockPlayer) {
         return;
       }
@@ -36,6 +36,6 @@ namespace Player {
 
       // Apply the clamped angle to the head
       Head.rotation = Quaternion.Euler(0, 0, clampedAngle + Mathf.Sign(transform.localScale.x) * 90);
-    }
+    }*/
   }
 }

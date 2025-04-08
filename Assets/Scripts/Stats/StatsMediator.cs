@@ -15,6 +15,7 @@ namespace Stats {
 
     public event Action<StatModifier> OnModifierAdded = delegate { };
     public event Action<StatModifier> OnModifierRemoved = delegate { };
+    public List<StatModifier> ListModifiers => listModifiers;
 
     public void SetStats(StatsBase playerStats) {
       stats = playerStats;

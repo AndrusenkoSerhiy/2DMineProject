@@ -87,7 +87,7 @@ namespace Tools {
       playerController.EnableController(false);
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
-      playerController.ResetHeadPos();
+      //playerController.ResetHeadPos();
       playerController.Stamina.EnableSprintScript(false);
       miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);

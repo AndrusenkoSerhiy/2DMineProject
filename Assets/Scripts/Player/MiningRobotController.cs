@@ -9,7 +9,7 @@ namespace Player {
       base.Awake();
       GameManager.Instance.MiningRobotController = this;
       EnableController(false);
-      stamina.SetStaminaBarRef();
+      // stamina.SetStaminaBarRef();
       _ladderMovement = GameManager.Instance.PlayerLadderMovement;
     }
 
@@ -27,9 +27,9 @@ namespace Player {
 
     protected override void FlipX() {
       Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-      var direction = (mousePosition - (Vector2)Head.position).normalized;
+      var direction = (mousePosition - (Vector2)transform.position).normalized;
 
-      if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone) {
+      if (Mathf.Abs(mousePosition.x - transform.position.x) > _flipDeadZone) {
         // Flip player
         var localScale = transform.localScale;
         localScale.x = Mathf.Sign(direction.x);
@@ -46,8 +46,8 @@ namespace Player {
     }*/
     protected override float GetMaxSpeed() {
       var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
-      return isMovingForward ? (stamina.IsSprinting) ? statsObject.sprintSpeed : statsObject.maxSpeed
-        : statsObject.maxBackSpeed;
+      return isMovingForward ? (stamina.IsSprinting) ? PlayerStats.StatsObject.sprintSpeed : PlayerStats.StatsObject.maxSpeed
+        : PlayerStats.StatsObject.maxBackSpeed;
     }
 
     public override void EnableController(bool state) {

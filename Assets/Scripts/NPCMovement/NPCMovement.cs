@@ -102,7 +102,7 @@ namespace NPCMovement
     }
     
     private void SetAnimVelocityX(float value) {
-      //animator.SetFloat(actor.animatorParam.VelocityXHash, value);
+      animator.SetFloat(actor.AnimParam.VelocityXHash, value);
     }
 
     private void FlipX(float direction) {

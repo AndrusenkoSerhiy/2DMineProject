@@ -14,15 +14,19 @@ namespace Actors {
     private StatsBase stats;
     private bool _hasTakenDamage;
 
+    public AnimatorParameters AnimParam => animParam;
     public bool IsDead => _isDead;
 
     private void Awake() {
       // _currHP = _maxHP;
       // unitHealth = new UnitHealth(_currHP);
       stats = GetComponent<StatsBase>();
-      animParam = GameManager.Instance.AnimatorParameters;
     }
 
+    private void Start() {
+      animParam = GameManager.Instance.AnimatorParameters;
+    }
+    
     public bool hasTakenDamage {
       get { return _hasTakenDamage; }
       set { _hasTakenDamage = value; }

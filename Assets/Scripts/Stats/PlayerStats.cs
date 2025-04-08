@@ -60,7 +60,7 @@ public class PlayerStats : StatsBase {
     _ => base.GetMaxValueByType(type)
   };
 
-  public override float GetValueByType(StatType type) => type switch {
+  protected override float GetValueByType(StatType type) => type switch {
     StatType.Stamina => Stamina,
     StatType.MaxStamina => MaxStamina,
     StatType.StaminaRecovery => StaminaRecovery,

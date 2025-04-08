@@ -16,7 +16,7 @@ namespace Player {
     private bool _cachedQueryStartInColliders;
     [SerializeField] private Animator _animator;
 
-    [SerializeField] protected Transform Head;
+    //[SerializeField] protected Transform Head;
     [SerializeField] protected float _flipDeadZone = 1;
 
     protected Camera _camera;
@@ -120,9 +120,9 @@ namespace Player {
 
     protected virtual void FlipX() {
       Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
-      var direction = (mousePosition - (Vector2)Head.position).normalized;
+      var direction = (mousePosition - (Vector2)transform.position).normalized;
 
-      if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone) {
+      if (Mathf.Abs(mousePosition.x - transform.position.x) > _flipDeadZone) {
         // Flip player
         Vector3 localScale = transform.localScale;
         localScale.x = Mathf.Sign(direction.x);
@@ -321,9 +321,9 @@ namespace Player {
       transform.localScale = Vector3.one;
     }
 
-    public void ResetHeadPos() {
+    /*public void ResetHeadPos() {
       Head.localEulerAngles = new Vector3(0f, 0f, 0f);
-    }
+    }*/
 
     #endregion
 

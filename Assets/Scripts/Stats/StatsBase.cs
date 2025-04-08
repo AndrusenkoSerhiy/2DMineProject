@@ -13,6 +13,8 @@ public class StatsBase : MonoBehaviour {
 
   protected readonly Dictionary<StatType, float> baseValues = new();
 
+  private bool canHeal = true;
+
   public StatsMediator Mediator => mediator;
   public BaseStatsObject StatsObject => statsObject;
 
@@ -34,12 +36,25 @@ public class StatsBase : MonoBehaviour {
     mediator.Update(Time.deltaTime);
   }
 
-  public void AddHealth(float amount) {
-    baseValues[StatType.Health] = Mathf.Clamp(baseValues[StatType.Health] + amount, 0, MaxHealth);
-  }
-
   protected virtual void UpdateStats(float deltaTime) {
     RecoverHp(deltaTime);
+  }
+
+  public float AddHealth(float amount) {
+    var health = Mathf.Clamp(baseValues[StatType.Health] + amount, 0, MaxHealth);
+    baseValues[StatType.Health] = health;
+    return health;
+  }
+
+  public float TakeDamage(float damage) {
+    canHeal = false;
+
+    var health = AddHealth(-damage);
+    if (health > 0) {
+      canHeal = true;
+    }
+
+    return health;
   }
 
   public virtual bool IsValueReachMax(StatType type) {
@@ -47,7 +62,32 @@ public class StatsBase : MonoBehaviour {
     return max.HasValue && GetValueByType(type) >= max.Value;
   }
 
+  public void InvalidateStatCache(StatType type) {
+    dirtyStats.Add(type);
+  }
+
+  public virtual void UpdateClearValueByModifier(StatModifier modifier) {
+    if (!baseValues.ContainsKey(modifier.Type)) {
+      return;
+    }
+
+    var currentValue = baseValues[modifier.Type];
+    var max = GetMaxValueByType(modifier.Type);
+
+    var newValue = modifier.Strategy.Calculate(currentValue);
+
+    if (max.HasValue) {
+      newValue = Mathf.Min(newValue, max.Value);
+    }
+
+    baseValues[modifier.Type] = newValue;
+  }
+
   protected virtual void RecoverHp(float deltaTime) {
+    if (!canHeal) {
+      return;
+    }
+
     var max = MaxHealth;
     var current = baseValues[StatType.Health];
     if (current >= max) {
@@ -76,28 +116,7 @@ public class StatsBase : MonoBehaviour {
     return result;
   }
 
-  public void InvalidateStatCache(StatType type) {
-    dirtyStats.Add(type);
-  }
-
-  public virtual void UpdateClearValueByModifier(StatModifier modifier) {
-    if (!baseValues.ContainsKey(modifier.Type)) {
-      return;
-    }
-
-    var currentValue = baseValues[modifier.Type];
-    var max = GetMaxValueByType(modifier.Type);
-
-    var newValue = modifier.Strategy.Calculate(currentValue);
-
-    if (max.HasValue) {
-      newValue = Mathf.Min(newValue, max.Value);
-    }
-
-    baseValues[modifier.Type] = newValue;
-  }
-
-  public virtual float GetValueByType(StatType type) {
+  protected virtual float GetValueByType(StatType type) {
     return type switch {
       StatType.Health => Health,
       StatType.MaxHealth => MaxHealth,

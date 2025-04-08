@@ -27,9 +27,9 @@ namespace Player {
 
     protected override void FlipX() {
       Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-      var direction = (mousePosition - (Vector2)Head.position).normalized;
+      var direction = (mousePosition - (Vector2)transform.position).normalized;
 
-      if (Mathf.Abs(mousePosition.x - Head.transform.position.x) > _flipDeadZone) {
+      if (Mathf.Abs(mousePosition.x - transform.position.x) > _flipDeadZone) {
         // Flip player
         var localScale = transform.localScale;
         localScale.x = Mathf.Sign(direction.x);

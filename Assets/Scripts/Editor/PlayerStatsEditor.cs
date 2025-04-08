@@ -1,10 +1,14 @@
 ﻿#if UNITY_EDITOR
+using Actors;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(PlayerStats), true)]
 public class PlayerStatsEditor : Editor {
+  private int[] values = new[] { 20, 50, 100 };
   private PlayerStats stats;
+  private ActorBase actor;
 
   public override void OnInspectorGUI() {
     DrawDefaultInspector();
@@ -14,6 +18,7 @@ public class PlayerStatsEditor : Editor {
     }
 
     stats = (PlayerStats)target;
+    actor = target.GetComponent<ActorBase>();
 
     // Display the stats in the inspector
     EditorGUILayout.Space();
@@ -35,25 +40,27 @@ public class PlayerStatsEditor : Editor {
       EditorStyles.label);
     EditorGUILayout.LabelField($"Armor: {stats.Armor}", EditorStyles.label);
 
-    // Add a button to simulate taking damage
-    if (GUILayout.Button("Take Damage")) {
-      TakeDamage();
+    foreach (var val in values) {
+      if (GUILayout.Button($"Remove {val} hp")) {
+        stats.AddHealth(-val);
+      }
     }
 
-    // Add a button to simulate healing
-    if (GUILayout.Button("Heal")) {
-      Heal();
+    foreach (var val in values) {
+      if (GUILayout.Button($"Add {val} hp")) {
+        stats.AddHealth(val);
+      }
     }
-  }
 
-  // Button click simulation method for taking damage
-  private void TakeDamage() {
-    stats.AddHealth(-20f);
-  }
+    if (actor == null) {
+      return;
+    }
 
-  // Button click simulation method for healing
-  private void Heal() {
-    stats.AddHealth(20f);
+    foreach (var val in values) {
+      if (GUILayout.Button($"Actor take {val} damage")) {
+        actor.Damage(val);
+      }
+    }
   }
 }
 #endif

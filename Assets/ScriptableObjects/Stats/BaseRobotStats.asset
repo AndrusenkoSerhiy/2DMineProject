@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ca1dfb1e5494a3da12a4e182dd59407, type: 3}
   m_Name: BaseRobotStats
   m_EditorClassIdentifier: 
-  health: 200
-  maxHealth: 200
+  health: 300
+  maxHealth: 300
   healthRegen: 1
-  stamina: 100
-  maxStamina: 100
+  healthMaxPossibleValue: 400
+  stamina: 120
+  maxStamina: 120
   staminaDrain: 50
   staminaRecovery: 10
+  staminaMaxPossibleValue: 200
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280

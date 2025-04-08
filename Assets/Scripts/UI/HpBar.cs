@@ -7,13 +7,12 @@ using UnityEngine.UI;
 namespace UI {
   public class HpBar : MonoBehaviour {
     [SerializeField] private Slider hpSlider;
-    [SerializeField] private float initialBarWidth = 300f;
-    [SerializeField] private float maxBarWidth = 600f;
-    [SerializeField] private float barWidthUpdateDuration = 2f;
+    [SerializeField] private float maxBarHeight = 600f;
+    [SerializeField] private float barHeightUpdateDuration = 2f;
 
     private PlayerStats playerStats;
     private RectTransform sliderRectTransform;
-    private float widthCoefficient;
+    private float heightCoefficient;
 
     private void Awake() {
       sliderRectTransform = hpSlider.GetComponent<RectTransform>();
@@ -47,7 +46,7 @@ namespace UI {
     private void UpdateEntityStats() {
       playerStats = GameManager.Instance.CurrPlayerController.PlayerStats;
       RemoveStatsListeners();
-      widthCoefficient = initialBarWidth / playerStats.StatsObject.health;
+      heightCoefficient = maxBarHeight / playerStats.StatsObject.healthMaxPossibleValue;
       AddStatsListeners();
       UpdateUI();
     }
@@ -61,24 +60,24 @@ namespace UI {
     }
 
     private void UpdateUI() {
-      StartCoroutine(UpdateBarWidth());
+      StartCoroutine(UpdateBarHeight());
       UpdateMaxValue();
       UpdateValue();
     }
 
-    private IEnumerator UpdateBarWidth() {
-      var width = Mathf.Min(maxBarWidth, playerStats.MaxHealth * widthCoefficient);
-      var startWidth = sliderRectTransform.sizeDelta.x;
+    private IEnumerator UpdateBarHeight() {
+      var height = Mathf.Min(maxBarHeight, playerStats.MaxHealth * heightCoefficient);
+      var startHeight = sliderRectTransform.sizeDelta.y;
       var elapsed = 0f;
 
-      while (elapsed < barWidthUpdateDuration) {
+      while (elapsed < barHeightUpdateDuration) {
         elapsed += Time.deltaTime;
-        var newWidth = Mathf.Lerp(startWidth, width, elapsed / barWidthUpdateDuration);
-        sliderRectTransform.sizeDelta = new Vector2(newWidth, sliderRectTransform.sizeDelta.y);
+        var newHeight = Mathf.Lerp(startHeight, height, elapsed / barHeightUpdateDuration);
+        sliderRectTransform.sizeDelta = new Vector2(sliderRectTransform.sizeDelta.x, newHeight);
         yield return null;
       }
 
-      sliderRectTransform.sizeDelta = new Vector2(width, sliderRectTransform.sizeDelta.y);
+      sliderRectTransform.sizeDelta = new Vector2(sliderRectTransform.sizeDelta.x, height);
     }
 
     private bool NeedHandleModifier(StatModifier modifier) {

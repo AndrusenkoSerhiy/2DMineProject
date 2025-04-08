@@ -2,15 +2,12 @@ using System;
 using Animation;
 using Movement;
 using Scriptables;
-using Scriptables.Stats;
 using Spine.Unity;
-using Stats;
 using UnityEngine;
 
 namespace Player {
   public class PlayerControllerBase : MonoBehaviour {
     // [SerializeField] protected PlayerStats _stats;
-    [SerializeField] protected PlayerStatsObject statsObject;
     protected PlayerStats playerStats;
     protected Rigidbody2D _rb;
     private CapsuleCollider2D _col;
@@ -38,7 +35,6 @@ namespace Player {
     public StaminaBase Stamina => stamina;
 
     // public PlayerStats PlayerStats => _stats;
-    public PlayerStatsObject StatsObject => statsObject;
     private float _frameLeftGrounded = float.MinValue;
     [SerializeField] private bool grounded;
 
@@ -77,7 +73,7 @@ namespace Player {
     }
 
     protected virtual void Awake() {
-      playerStats = new PlayerStats(new StatsMediator(), statsObject);
+      playerStats = GetComponent<PlayerStats>();
       _rb = GetComponent<Rigidbody2D>();
       _col = GetComponent<CapsuleCollider2D>();
 
@@ -116,9 +112,6 @@ namespace Player {
       time += Time.deltaTime;
       GatherInput();
       LookAtMouse();
-
-      PlayerStats.UpdateStats(Time.deltaTime);
-      PlayerStats.Mediator.Update(Time.deltaTime);
     }
 
     protected virtual void LookAtMouse() {
@@ -149,11 +142,11 @@ namespace Player {
           .GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
       };
 
-      if (statsObject.snapInput) {
-        _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < statsObject.horizontalDeadZoneThreshold
+      if (PlayerStats.StatsObject.snapInput) {
+        _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < PlayerStats.StatsObject.horizontalDeadZoneThreshold
           ? 0
           : Mathf.Sign(_frameInput.Move.x);
-        _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < statsObject.verticalDeadZoneThreshold
+        _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < PlayerStats.StatsObject.verticalDeadZoneThreshold
           ? 0
           : Mathf.Sign(_frameInput.Move.y);
       }
@@ -181,10 +174,10 @@ namespace Player {
 
       // Ground and Ceiling
       RaycastHit2D hit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down,
-        statsObject.grounderDistance, ~statsObject.playerLayer);
+        PlayerStats.StatsObject.grounderDistance, ~PlayerStats.StatsObject.playerLayer);
       bool groundHit = hit.collider != null && !hit.collider.isTrigger;
       bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up,
-        statsObject.grounderDistance, ~statsObject.playerLayer);
+        PlayerStats.StatsObject.grounderDistance, ~PlayerStats.StatsObject.playerLayer);
 
       // Hit a Ceiling
       if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
@@ -230,8 +223,11 @@ namespace Player {
 
     #region Jumping
 
-    private bool HasBufferedJump => _bufferedJumpUsable && time < _timeJumpWasPressed + statsObject.jumpBuffer;
-    private bool CanUseCoyote => _coyoteUsable && !grounded && time < _frameLeftGrounded + statsObject.coyoteTime;
+    private bool HasBufferedJump =>
+      _bufferedJumpUsable && time < _timeJumpWasPressed + PlayerStats.StatsObject.jumpBuffer;
+
+    private bool CanUseCoyote =>
+      _coyoteUsable && !grounded && time < _frameLeftGrounded + PlayerStats.StatsObject.coyoteTime;
 
     private void HandleJump() {
       if (!_endedJumpEarly && !grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
@@ -259,7 +255,7 @@ namespace Player {
       _timeJumpWasPressed = 0;
       _bufferedJumpUsable = false;
       _coyoteUsable = false;
-      _frameVelocity.y = statsObject.jumpPower;
+      _frameVelocity.y = PlayerStats.StatsObject.jumpPower;
       Jumped?.Invoke();
     }
 
@@ -271,13 +267,13 @@ namespace Player {
       if (_frameInput.Move.x == 0) {
         //if we are on the ladder need to calculate deceleration like on ground
         var deceleration = grounded || _ladderMovement.IsOnLadder
-          ? statsObject.groundDeceleration
-          : statsObject.airDeceleration;
+          ? PlayerStats.StatsObject.groundDeceleration
+          : PlayerStats.StatsObject.airDeceleration;
         _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
       }
       else {
         _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _frameInput.Move.x * GetMaxSpeed(),
-          statsObject.acceleration * Time.fixedDeltaTime);
+          PlayerStats.StatsObject.acceleration * Time.fixedDeltaTime);
       }
 
       if (_frameVelocity.x == 0) {
@@ -294,9 +290,9 @@ namespace Player {
       //var canSprintInAir = !grounded && wasSprintingOnJump;
       return isMovingForward
         ? (stamina.IsSprinting /*&& (grounded || canSprintInAir)*/)
-          ? statsObject.sprintSpeed
-          : statsObject.maxSpeed
-        : statsObject.maxBackSpeed;
+          ? PlayerStats.StatsObject.sprintSpeed
+          : PlayerStats.StatsObject.maxSpeed
+        : PlayerStats.StatsObject.maxBackSpeed;
     }
 
     private void SetAnimVelocityX(float value) {
@@ -335,13 +331,15 @@ namespace Player {
 
     private void HandleGravity() {
       if (grounded && _frameVelocity.y <= 0f) {
-        _frameVelocity.y = statsObject.groundingForce;
+        _frameVelocity.y = PlayerStats.StatsObject.groundingForce;
       }
       else {
-        var inAirGravity = statsObject.fallAcceleration;
-        if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= statsObject.jumpEndEarlyGravityModifier;
+        var inAirGravity = PlayerStats.StatsObject.fallAcceleration;
+        if (_endedJumpEarly && _frameVelocity.y > 0)
+          inAirGravity *= PlayerStats.StatsObject.jumpEndEarlyGravityModifier;
         _frameVelocity.y =
-          Mathf.MoveTowards(_frameVelocity.y, -statsObject.maxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+          Mathf.MoveTowards(_frameVelocity.y, -PlayerStats.StatsObject.maxFallSpeed,
+            inAirGravity * Time.fixedDeltaTime);
         SetFall();
       }
     }
@@ -365,12 +363,12 @@ namespace Player {
       if (!_ladderMovement.IsClimbing) _rb.linearVelocity = _frameVelocity;
     }
 
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
     private void OnValidate() {
-      if (statsObject == null)
+      if (PlayerStats.StatsObject == null)
         Debug.LogWarning("Please assign a ScriptableStats asset to the Player Controller's Stats slot", this);
     }
-#endif
+#endif*/
   }
 
   public struct FrameInput {

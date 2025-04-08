@@ -7,5 +7,6 @@ namespace Scriptables.Stats {
     public float health = 100f;
     public float maxHealth = 100f;
     public float healthRegen = 0.5f;
+    public float healthMaxPossibleValue = 200f;
   }
 }

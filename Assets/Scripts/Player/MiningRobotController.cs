@@ -9,7 +9,7 @@ namespace Player {
       base.Awake();
       GameManager.Instance.MiningRobotController = this;
       EnableController(false);
-      stamina.SetStaminaBarRef();
+      // stamina.SetStaminaBarRef();
       _ladderMovement = GameManager.Instance.PlayerLadderMovement;
     }
 
@@ -46,8 +46,8 @@ namespace Player {
     }*/
     protected override float GetMaxSpeed() {
       var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
-      return isMovingForward ? (stamina.IsSprinting) ? statsObject.sprintSpeed : statsObject.maxSpeed
-        : statsObject.maxBackSpeed;
+      return isMovingForward ? (stamina.IsSprinting) ? PlayerStats.StatsObject.sprintSpeed : PlayerStats.StatsObject.maxSpeed
+        : PlayerStats.StatsObject.maxBackSpeed;
     }
 
     public override void EnableController(bool state) {

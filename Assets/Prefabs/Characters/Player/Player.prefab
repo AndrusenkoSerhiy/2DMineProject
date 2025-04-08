@@ -916,6 +916,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4355495910406124574}
+  - component: {fileID: 1042398915219048539}
   - component: {fileID: 7303212890507108493}
   - component: {fileID: 4951586190832703889}
   - component: {fileID: 3203884702869887430}
@@ -960,6 +961,19 @@ Transform:
   - {fileID: 9042367649378296757}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1042398915219048539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2428154648203464867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cbb0cb04a934c85a867df4977948408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statsObject: {fileID: 11400000, guid: 03c8a7983ff79074a89bf04d5190d9ba, type: 2}
 --- !u!114 &7303212890507108493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -988,7 +1002,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e53a4acc64aaae940a8f27318db7058b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseStatsObject: {fileID: 11400000, guid: 8ca84249d46b2fa4eb1ea7cf6ba4cdea, type: 2}
   _frameVelocity: {x: 0, y: 0}
   _animator: {fileID: 4077487680828195514}
   Head: {fileID: 1976719180885785715}
@@ -1014,7 +1027,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ca3740a6c15bf4d8e32e916714be05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statsObject: {fileID: 11400000, guid: 8ca84249d46b2fa4eb1ea7cf6ba4cdea, type: 2}
+  statsObject: {fileID: 11400000, guid: 03c8a7983ff79074a89bf04d5190d9ba, type: 2}
   animator: {fileID: 4077487680828195514}
   objectHighlighter: {fileID: 4693703437365591432}
   attackCollider: {fileID: 4073543102474628644}

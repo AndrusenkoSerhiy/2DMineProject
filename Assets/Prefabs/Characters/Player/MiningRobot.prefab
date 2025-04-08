@@ -94,6 +94,7 @@ MonoBehaviour:
   robotImage: {fileID: 1656752220913763334}
   brokenRobotImage: {fileID: 4882709179876227092}
   animator: {fileID: 1494922837502640945}
+  broken: 0
 --- !u!1 &2775448591728752450
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,6 +1037,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8784970698859031047}
+  - component: {fileID: 3768578396950336233}
   - component: {fileID: 685068843818948794}
   - component: {fileID: 4114749698386090115}
   - component: {fileID: 6949316742863476391}
@@ -1071,6 +1073,19 @@ Transform:
   - {fileID: 8693525456019494876}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3768578396950336233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8299954890877120637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cbb0cb04a934c85a867df4977948408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statsObject: {fileID: 11400000, guid: b45d6523e928bc74f83f5593d74bb406, type: 2}
 --- !u!114 &685068843818948794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,7 +1098,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11ed2da3aae746e5bafe1bd7720edcd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseStatsObject: {fileID: 11400000, guid: d12e960f26c27e344bbf71284bf80eb2, type: 2}
   _frameVelocity: {x: 0, y: 0}
   _animator: {fileID: 1494922837502640945}
   Head: {fileID: 6389406194773852909}
@@ -1172,7 +1186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f4f77b646d4893824608d4d5d52a1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statsObject: {fileID: 11400000, guid: d12e960f26c27e344bbf71284bf80eb2, type: 2}
+  statsObject: {fileID: 11400000, guid: b45d6523e928bc74f83f5593d74bb406, type: 2}
   animator: {fileID: 1494922837502640945}
   objectHighlighter: {fileID: 8874037024133986058}
   attackCollider: {fileID: 3696037249139049978}
@@ -1208,7 +1222,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 848a9d6d59f94a40bed1affcf6143768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staminaBar: {fileID: 0}
   minStamina: 10
   isSprinting: 0
 --- !u!1 &8974371386463895364

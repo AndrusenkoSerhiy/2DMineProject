@@ -8,6 +8,7 @@ namespace Scriptables.Stats {
     public float maxStamina = 100f;
     public float staminaDrain = 20f;
     public float staminaRecovery = 10f;
+    public float staminaMaxPossibleValue = 200f;
     
     [Header("Attack")]
     public LayerMask attackLayer;

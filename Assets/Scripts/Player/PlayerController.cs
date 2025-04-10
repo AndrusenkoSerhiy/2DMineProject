@@ -1,3 +1,4 @@
+using Actors;
 using Settings;
 using Stats;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace Player {
     [SerializeField] private float topAngleLimit = 20;
     [SerializeField] private float bottomAngleLimit = -20;
     [SerializeField] private PlayerAttack playerAttack;
+    //[SerializeField] private ActorPlayer actor;
 
     protected override void Awake() {
       base.Awake();
@@ -17,6 +19,24 @@ namespace Player {
     
     public override void SetLockHighlight(bool state) {
       playerAttack.LockHighlight(state);
+    }
+    
+    protected override void FlipX() {
+      if(GameManager.Instance.WindowsController.IsAnyWindowOpen)
+        return;
+      
+      Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
+      var direction = (mousePosition - (Vector2)transform.position).normalized;
+
+      if (Mathf.Abs(mousePosition.x - transform.position.x) > _flipDeadZone) {
+        // Flip player
+        Vector3 localScale = transform.localScale;
+        localScale.x = Mathf.Sign(direction.x);
+        transform.localScale = localScale;
+
+        rotationCoef = isFlipped ? -1f : 1f;
+        direction.x *= rotationCoef;
+      }
     }
     
     /*protected override void LookAtMouse() {

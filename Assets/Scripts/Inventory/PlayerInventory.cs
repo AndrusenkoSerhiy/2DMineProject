@@ -116,6 +116,12 @@ namespace Inventory {
         inventoryWindow.Hide();
       }
       else {
+        //TODO 
+        //need to replace this condition
+        var activeWindow = GameManager.Instance.WindowsController.WindowsList.Find(e => e.IsShow);
+        if(activeWindow && activeWindow.name.Equals("RespawnWindow"))
+          return;
+        
         inventoryWindow.Show();
       }
     }

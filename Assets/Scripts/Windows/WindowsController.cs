@@ -28,6 +28,10 @@ namespace Windows {
 
     private void Start() {
       WindowsEvents();
+      //init windows (use for subscribe to player death in respawnWindow)
+      foreach (var window in windowsList) {
+        window.Init();
+      }
     }
 
     private void WindowsEvents() {
@@ -58,6 +62,11 @@ namespace Windows {
     private void HandleEsc() {
       if (GameManager.Instance.UserInput.controls.UI.Cancel.triggered) {
         var window = windowsList.Find(e => e.IsShow);
+        //TODO 
+        //need to replace this condition
+        if(window && window.name.Equals("RespawnWindow"))
+          return;
+        
         if (window) {
           window.Hide();
         }

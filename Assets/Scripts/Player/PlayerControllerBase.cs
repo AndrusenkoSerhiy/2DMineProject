@@ -119,7 +119,7 @@ namespace Player {
     }
 
     protected virtual void FlipX() {
-      Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
+      /*Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
       var direction = (mousePosition - (Vector2)transform.position).normalized;
 
       if (Mathf.Abs(mousePosition.x - transform.position.x) > _flipDeadZone) {
@@ -130,7 +130,7 @@ namespace Player {
 
         rotationCoef = isFlipped ? -1f : 1f;
         direction.x *= rotationCoef;
-      }
+      }*/
     }
 
     private void GatherInput() {
@@ -244,6 +244,10 @@ namespace Player {
       _animator.SetFloat(animParam.VelocityYHash, 0f);
     }
 
+    public void SetAnimatorRespawn() {
+      _animator.SetTrigger("Respawn");
+    }
+
     private void ExecuteJump() {
       wasSprintingOnJump = stamina.IsSprinting;
       startFalling = false;
@@ -257,6 +261,10 @@ namespace Player {
       _coyoteUsable = false;
       _frameVelocity.y = PlayerStats.StatsObject.jumpPower;
       Jumped?.Invoke();
+    }
+
+    public void RestoreHealth() {
+      playerStats.AddHealth(playerStats.MaxHealth);
     }
 
     #endregion

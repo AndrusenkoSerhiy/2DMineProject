@@ -17,4 +17,9 @@ public static class ButtonPromptSprite {
   public static string GetFullPrompt(string actionName, string buttonName) {
     return actionName + " " + "<sprite name=" + buttonName + ">";
   }
+
+  //use for respawn window
+  public static string GetSpriteTag(string buttonName) {
+    return "<sprite name=" + buttonName + ">";
+  }
 }

@@ -14,8 +14,11 @@ namespace Windows {
     public InteractionPrompt interactionPromtUI;
 
     [SerializeField] private string actionName = string.Empty;
-    private string buttonName;
+    protected string buttonName;
 
+    public virtual void Init() {
+      
+    }
     private void GetInteractionPrompt() {
       if (!interactionPromtUI) {
         interactionPromtUI = GameManager.Instance.InteractionPromptUI;
@@ -51,6 +54,10 @@ namespace Windows {
     }
 
     private void InputActionChangeCallback(object sender, EventArgs e) {
+      OnChangeDevice();
+    }
+
+    protected virtual void OnChangeDevice() {
       buttonName = ButtonPromptSprite.GetSpriteName(GameManager.Instance.UserInput.controls.UI.Craft);
       interactionPromtUI.UpdateSpriteAsset();
       SetInteractionText();
@@ -62,7 +69,7 @@ namespace Windows {
       OnHide?.Invoke(this);
       LockPlayer(false);
       LockHighlight(false);
-      interactionPromtUI.ShowPrompt(false);
+      interactionPromtUI?.ShowPrompt(false);
       GameManager.Instance.UserInput.OnGameDeviceChanged -= InputActionChangeCallback;
 
     }

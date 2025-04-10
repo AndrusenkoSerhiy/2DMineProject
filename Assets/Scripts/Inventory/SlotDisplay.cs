@@ -64,5 +64,10 @@ namespace Inventory {
       Clear();
       background.color = disabledSlotColor;
     }
+
+    public void Disable() {
+      Clear();
+      gameObject.SetActive(false);
+    }
   }
 }

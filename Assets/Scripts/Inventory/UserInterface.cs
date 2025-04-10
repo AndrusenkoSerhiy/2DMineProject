@@ -113,9 +113,13 @@ namespace Inventory {
         var obj = slotPrefab.gameObject;
 
         if (i > Inventory.Slots.Length - 1) {
-          slotPrefab.Disable(disabledSlotColor);
+          slotPrefab.Disable();
           slotsOnInterface.Remove(obj);
           continue;
+        }
+
+        if (!obj.activeSelf) {
+          obj.SetActive(true);
         }
 
         var slot = Inventory.Slots[i];

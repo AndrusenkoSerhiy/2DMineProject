@@ -56,8 +56,8 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private MapController mapController;
   [SerializeField] private InteractionPrompt interactionPromtUI;
   [SerializeField] private ListOfTmpSpriteAssets listOfTmpSpriteAssets;
-
-  //TODO
+  [SerializeField] private RespawnManager respawnManager;
+  //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
 
@@ -102,6 +102,7 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   public ListOfTmpSpriteAssets ListOfTmpSpriteAssets => listOfTmpSpriteAssets;
 
+  public RespawnManager RespawnManager => respawnManager;
   public PlayerController PlayerController {
     set => playerController = value;
     get => playerController;

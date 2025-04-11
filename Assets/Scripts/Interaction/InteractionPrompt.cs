@@ -20,7 +20,7 @@ namespace Interaction
         return;
 
       promt.text = str;
-      promt.gameObject.SetActive(state);
+      /*promt.*/gameObject.SetActive(state);
       isDisplayed = state;
     }
 

@@ -11,7 +11,7 @@ namespace Actors {
 
     // private UnitHealth unitHealth;
     protected AnimatorParameters animParam;
-    private StatsBase stats;
+    protected StatsBase stats;
     private bool _hasTakenDamage;
 
     public AnimatorParameters AnimParam => animParam;
@@ -32,7 +32,7 @@ namespace Actors {
       set { _hasTakenDamage = value; }
     }
 
-    public void Damage(float damage) {
+    public virtual void Damage(float damage) {
       hasTakenDamage = true;
       if (stats.TakeDamage(damage) <= 0) {
         _isDead = true;

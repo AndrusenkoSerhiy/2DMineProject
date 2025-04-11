@@ -580,6 +580,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Respawn"",
+                    ""type"": ""Button"",
+                    ""id"": ""2e66d8b0-4089-4de0-88ce-24df3ee614de"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1121,6 +1130,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""HandCraft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""03a8840f-e246-46d7-8895-df60404baf21"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""Respawn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5a8320c4-7f2b-4b2a-97d0-20332656819e"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Respawn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1434,6 +1465,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_UI_Shift = m_UI.FindAction("Shift", throwIfNotFound: true);
         m_UI_Ctrl = m_UI.FindAction("Ctrl", throwIfNotFound: true);
         m_UI_HandCraft = m_UI.FindAction("HandCraft", throwIfNotFound: true);
+        m_UI_Respawn = m_UI.FindAction("Respawn", throwIfNotFound: true);
         // InputType
         m_InputType = asset.FindActionMap("InputType", throwIfNotFound: true);
         m_InputType_Keyboard = m_InputType.FindAction("Keyboard", throwIfNotFound: true);
@@ -1708,6 +1740,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Shift;
     private readonly InputAction m_UI_Ctrl;
     private readonly InputAction m_UI_HandCraft;
+    private readonly InputAction m_UI_Respawn;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -1780,6 +1813,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @HandCraft => m_Wrapper.m_UI_HandCraft;
         /// <summary>
+        /// Provides access to the underlying input action "UI/Respawn".
+        /// </summary>
+        public InputAction @Respawn => m_Wrapper.m_UI_Respawn;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -1850,6 +1887,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @HandCraft.started += instance.OnHandCraft;
             @HandCraft.performed += instance.OnHandCraft;
             @HandCraft.canceled += instance.OnHandCraft;
+            @Respawn.started += instance.OnRespawn;
+            @Respawn.performed += instance.OnRespawn;
+            @Respawn.canceled += instance.OnRespawn;
         }
 
         /// <summary>
@@ -1906,6 +1946,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @HandCraft.started -= instance.OnHandCraft;
             @HandCraft.performed -= instance.OnHandCraft;
             @HandCraft.canceled -= instance.OnHandCraft;
+            @Respawn.started -= instance.OnRespawn;
+            @Respawn.performed -= instance.OnRespawn;
+            @Respawn.canceled -= instance.OnRespawn;
         }
 
         /// <summary>
@@ -2248,6 +2291,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHandCraft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Respawn" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRespawn(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "InputType" which allows adding and removing callbacks.

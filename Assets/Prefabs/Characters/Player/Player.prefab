@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 7303212890507108493}
   - component: {fileID: 4951586190832703889}
   - component: {fileID: 3203884702869887430}
-  - component: {fileID: 7031630810253708057}
+  - component: {fileID: 4383261363474124888}
   - component: {fileID: 1255239565477947570}
   - component: {fileID: 7677545041897933634}
   - component: {fileID: 1626194104983258937}
@@ -167,6 +167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 4077487680828195514}
   _isDead: 0
+  rigidbody: {fileID: 0}
 --- !u!114 &4951586190832703889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,8 +212,8 @@ MonoBehaviour:
   minDistance: 2
   maxDistance: 5
   isHighlightLock: 0
-  playerEquipment: {fileID: 7031630810253708057}
---- !u!114 &7031630810253708057
+  playerEquipment: {fileID: 4383261363474124888}
+--- !u!114 &4383261363474124888
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -221,7 +222,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2428154648203464867}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5614467bd372950449b9fc321bf61b7f, type: 3}
+  m_Script: {fileID: 11500000, guid: c184c9a0bb8748ce90d8f68823b5479f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   userInterface: {fileID: 0}
@@ -246,6 +247,8 @@ MonoBehaviour:
   cellObject: {fileID: 0}
   interactionPrompt: {fileID: 0}
   actionName: Hand craft
+  inventoryPrompt: {fileID: 0}
+  inventoryActionName: Inventory
 --- !u!50 &7677545041897933634
 Rigidbody2D:
   serializedVersion: 5

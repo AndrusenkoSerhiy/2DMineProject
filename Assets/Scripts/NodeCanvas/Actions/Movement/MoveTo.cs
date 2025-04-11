@@ -14,6 +14,7 @@ namespace NodeCanvas.Actions.Movement {
 
     protected override void OnUpdate() {
       if(agent.HasArrived()) EndAction(true);
+      if(agent.IsDead) EndAction(false);
     }
   }
 }

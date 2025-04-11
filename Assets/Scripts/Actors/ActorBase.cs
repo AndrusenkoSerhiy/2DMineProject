@@ -8,16 +8,15 @@ namespace Actors {
     [SerializeField] protected Animator _animator;
 
     [SerializeField] private bool _isDead;
-
+[SerializeField] protected Rigidbody2D rigidbody;
     // private UnitHealth unitHealth;
     protected AnimatorParameters animParam;
     protected StatsBase stats;
     private bool _hasTakenDamage;
-
     public AnimatorParameters AnimParam => animParam;
     public bool IsDead => _isDead;
 
-    private void Awake() {
+    protected virtual void Awake() {
       // _currHP = _maxHP;
       // unitHealth = new UnitHealth(_currHP);
       stats = GetComponent<StatsBase>();

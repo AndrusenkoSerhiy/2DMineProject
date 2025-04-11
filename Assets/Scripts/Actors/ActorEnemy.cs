@@ -14,7 +14,7 @@ namespace Actors {
     
     [SerializeField] private NPCMovement.NPCMovement npcMovement;
     [SerializeField] private EnemyCoords coords;
-    
+    [SerializeField] private LayerMask layerAfterDeath;
     public Coords GetCoords => coords.GetCoords();
 
     public void SetPatrolPosition(Vector3 pos) {
@@ -24,7 +24,8 @@ namespace Actors {
     public bool HasArrived() {
       return npcMovement.HasArrived;
     }
-    private void Awake() {
+    protected override void Awake() {
+      base.Awake();
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
     }
@@ -92,6 +93,17 @@ namespace Actors {
       
       currentTarget.Damage(_damage);
       iDamageables.Add(currentTarget);
+    }
+
+    public override void Damage(float damage) {
+      base.Damage(damage);
+      if(stats.Health > 0)
+        return;
+      //work only 1 layer selected in inspector
+      var layerIndex = Mathf.RoundToInt(Mathf.Log(layerAfterDeath.value, 2));
+      
+      gameObject.layer = layerIndex;
+      Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Character"), layerIndex);
     }
   }
 }

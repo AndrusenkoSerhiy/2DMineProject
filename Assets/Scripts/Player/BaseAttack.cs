@@ -163,9 +163,11 @@ namespace Player {
 
     private void SetTargetsFromHighlight() {
       foreach (var elem in objectHighlighter.Highlights) {
-        var pos = CoordsTransformer.WorldToGrid(elem.transform.position);
+        //Debug.LogError($"elem {elem.damageableRef}");
+        /*var pos = CoordsTransformer.WorldToGrid(elem.transform.position);
         var cell = GameManager.Instance.ChunkController.GetCell(pos.X, pos.Y);
-        if (cell != null) targets.Add(cell);
+        if (cell != null) targets.Add(cell);*/
+        targets.Add(elem.damageableRef);
       }
     }
 

@@ -4,12 +4,15 @@ namespace Scriptables.Items {
     Food = 1,
     Tool = 2,
     Weapon = 3,
-    Helmet = 4,
-    Chest = 5,
-    Pants = 6,
-    Boots = 7,
     Shield = 8,
-    Gloves = 9,
     BuildingBlock = 10,
+    
+    Helmet = 20,
+    Chest = 21,
+    Pants = 22,
+    LeftHand = 22,
+    RightHand = 23,
+    LeftLeg = 24,
+    RightLeg = 25,
   }
 }

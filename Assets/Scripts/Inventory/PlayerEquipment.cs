@@ -1,67 +1,73 @@
 ﻿using System;
+using Player;
 using Scriptables.Items;
 using Stats;
 using UnityEngine;
 
 namespace Inventory {
   public class PlayerEquipment : MonoBehaviour {
-    //private InventoryObject _equipment;
-    private Inventory quickSlots;
-
-    [Header("Equip Transforms")] [SerializeField]
-    private Transform offhandWristTransform;
-
-    [SerializeField] private Transform offhandHandTransform;
+    [SerializeField] private UserInterface userInterface;
+    [SerializeField] private Transform itemInHand;
+    [SerializeField] private Transform bodyTransform;
     [SerializeField] private Transform leftHandTransform;
     [SerializeField] private Transform rightHandTransform;
-    [SerializeField] private Transform bodyTransform;
 
-    private Transform _pants;
-    private Transform _gloves;
-    private Transform _boots;
-    private Transform _chest;
-    private Transform _helmet;
-    private Transform _offhand;
-    [SerializeField] private Transform itemInHand;
-    public event Action OnEquippedWeapon;
-    public event Action OnUnequippedWeapon;
+    private GameManager gameManager;
+    private PlayerController playerController;
 
     public Transform ItemInHand {
       get => itemInHand;
       private set => itemInHand = value;
     }
 
+    public event Action OnEquippedWeapon;
+    public event Action OnUnequippedWeapon;
+
     private void Start() {
-      quickSlots = GameManager.Instance.PlayerInventory.GetQuickSlots();
-      /*for (int i = 0; i < quickSlots.GetSlots.Length; i++) {
-        if (quickSlots.GetSlots[i].IsSelected) {
-          OnEquipItem(quickSlots.GetSlots[i]);
-        }
-      }*/
+      gameManager = GameManager.Instance;
+      playerController = gameManager.PlayerController;
+
+      userInterface.OnLoaded += AddEvents;
+      userInterface.OnDisabled += RemoveEvents;
     }
 
-    public void OnEquipItem(InventorySlot slot) {
-      var itemObject = slot.GetItemObject();
-      if (itemObject == null)
+    private void OnDisable() {
+      userInterface.OnLoaded -= AddEvents;
+      userInterface.OnDisabled -= RemoveEvents;
+    }
+
+    public void EquipTool(ItemObject itemObject) {
+      if (itemObject == null) {
         return;
-
-      switch (slot.Parent.Inventory.Type) {
-        case InventoryType.QuickSlots: //InterfaceType.Equipment
-          switch (slot.GetItemObject().Type) {
-            case ItemType.Tool:
-              itemInHand = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
-              itemInHand.localPosition = itemObject.SpawnPosition;
-              itemInHand.localEulerAngles = itemObject.SpawnRotation;
-              itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
-
-              GameManager.Instance.PlayerController.PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
-              
-              OnEquippedWeapon?.Invoke();
-              break;
-          }
-
-          break;
       }
+
+      if (itemObject.Type != ItemType.Tool) {
+        return;
+      }
+
+      itemInHand = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
+      itemInHand.localPosition = itemObject.SpawnPosition;
+      itemInHand.localEulerAngles = itemObject.SpawnRotation;
+      itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
+
+      playerController.PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
+
+      OnEquippedWeapon?.Invoke();
+    }
+
+    public void UnEquipTool(ItemObject itemObject) {
+      if (itemObject == null) {
+        return;
+      }
+
+      if (itemObject.Type != ItemType.Tool) {
+        return;
+      }
+
+      Destroy(itemInHand.gameObject);
+      playerController.PlayerStats.Mediator.RemoveModifiersByItemId(itemObject.Id);
+
+      OnUnequippedWeapon?.Invoke();
     }
 
     private Transform GetParent(ItemObject item) {
@@ -83,39 +89,29 @@ namespace Inventory {
       return tr;
     }
 
-    public void OnRemoveItem(Item item, InventoryType type) {
-      if (item.info == null) {
+    private void EquipArmor(SlotUpdateEventData data) {
+      if (data.before.amount == data.after.amount) {
         return;
       }
 
-      switch (type) {
-        case InventoryType.QuickSlots: //InterfaceType.Equipment
-          if (item.info.CharacterDisplay != null) {
-            switch (item.info.Type) {
-              case ItemType.Shield:
-                Destroy(_offhand.gameObject);
-                break;
-
-              case ItemType.Tool:
-                Destroy(itemInHand.gameObject);
-                
-                GameManager.Instance.PlayerController.PlayerStats.Mediator.RemoveModifiersByItemId(item.info.Id);
-                
-                OnUnequippedWeapon?.Invoke();
-                break;
-              case ItemType.Weapon:
-                //Destroy(Weapon.gameObject);
-                //OnUnequippedWeapon?.Invoke();
-                break;
-            }
-          }
-
-          break;
+      if (data.after.amount == 0) {
+        playerController.PlayerStats.Mediator.RemoveModifiersByItemId(data.before.Item.id);
+      }
+      else {
+        playerController.PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, data.after.Item.info);
       }
     }
 
-    public void OnRemoveItem(InventorySlot slot) {
-      OnRemoveItem(slot.Item, slot.InventoryType);
+    private void AddEvents() {
+      foreach (var (_, slot) in userInterface.SlotsOnInterface) {
+        slot.OnAfterUpdated += EquipArmor;
+      }
+    }
+
+    private void RemoveEvents() {
+      foreach (var (_, slot) in userInterface.SlotsOnInterface) {
+        slot.OnAfterUpdated -= EquipArmor;
+      }
     }
   }
 }

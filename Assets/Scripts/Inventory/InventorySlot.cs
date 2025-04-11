@@ -11,9 +11,10 @@ namespace Inventory {
     [field: NonSerialized] public event Action<InventorySlot> OnBeforeUpdated;
     [field: NonSerialized] public event Action<InventorySlot> OnAfterItemAdd;
     [field: NonSerialized] public event Action<InventorySlot> OnAfterItemRemoved;
+
     [field: NonSerialized] public event Action<InventorySlot> OnAfterAmountChanged;
-    public ItemObject AllowedItem;
-    public int MaxAllowedAmount = -1;
+    // public ItemObject AllowedItem;
+    // public int MaxAllowedAmount = -1;
 
     public Item Item;
     public int amount;
@@ -50,7 +51,7 @@ namespace Inventory {
     }
 
     public bool IsItemAllowed(ItemObject item) {
-      return AllowedItem == null || AllowedItem == item || item == null;
+      return SlotDisplay == null || SlotDisplay.IsAllowedItem(item);
     }
 
     public void SetSlotDisplay(SlotDisplay display) {
@@ -89,12 +90,12 @@ namespace Inventory {
       itemObject ??= Item.info;
 
       if (!itemObject) {
-        return MaxAllowedAmount == -1 ? 0 : MaxAllowedAmount;
+        return SlotDisplay.MaxAllowedAmount == -1 ? 0 : SlotDisplay.MaxAllowedAmount;
       }
 
-      return MaxAllowedAmount == -1
+      return !SlotDisplay || SlotDisplay.MaxAllowedAmount == -1
         ? itemObject.MaxStackSize
-        : Math.Min(itemObject.MaxStackSize, MaxAllowedAmount);
+        : Math.Min(itemObject.MaxStackSize, SlotDisplay.MaxAllowedAmount);
     }
 
     public int AddItem(int addAmount, Item item, InventorySlot formSlot = null) {

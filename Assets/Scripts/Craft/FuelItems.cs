@@ -100,7 +100,7 @@ namespace Craft {
       var currentFuel = recipe.Fuel.Material;
 
       //check current fuel items, move them to inventory if they are not in the recipe
-      if (fuelSlots[0].AllowedItem == currentFuel) {
+      if (fuelSlots[0].SlotDisplay.IsItemInAllowed(currentFuel)) {
         RunFuelEffect(recipe);
         return;
       }
@@ -111,7 +111,9 @@ namespace Craft {
       }
 
       foreach (var slot in fuelSlots) {
-        slot.AllowedItem = currentFuel;
+        slot.SlotDisplay.AllowedItems.Clear();
+        slot.SlotDisplay.AllowedItems.Add(currentFuel);
+        slot.SlotDisplay.EmptySlotIcon = currentFuel.UiDisplay;
       }
 
       fuelInterface.UpdateInventoryUI();

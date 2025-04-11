@@ -16,7 +16,9 @@ namespace Inventory {
     public InventorySlot[] Slots => container.Slots;
 
     public static string GenerateId(InventoryType type, string entityId) {
-      if (type == InventoryType.Inventory || type == InventoryType.QuickSlots) {
+      if (type is InventoryType.Inventory
+          or InventoryType.QuickSlots
+          or InventoryType.Equipment) {
         entityId = "";
       }
 

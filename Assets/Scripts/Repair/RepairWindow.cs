@@ -141,8 +141,9 @@ namespace Repair {
         var slot = slots[i];
         var allowedItem = robotObject.RepairResources[i];
         var requiredAmount = robotObject.RepairResourcesAmount[i];
-        slot.AllowedItem = allowedItem;
-        slot.MaxAllowedAmount = requiredAmount;
+        slot.SlotDisplay.AllowedItems.Add(allowedItem);
+        slot.SlotDisplay.MaxAllowedAmount = requiredAmount;
+        slot.SlotDisplay.EmptySlotIcon = allowedItem.UiDisplay;
       }
 
       resourcesInterface.UpdateInventoryUI();

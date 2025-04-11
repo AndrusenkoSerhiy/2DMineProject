@@ -54,7 +54,6 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private QuickSlotListener quickSlotListener;
 
   [SerializeField] private MapController mapController;
-  [SerializeField] private StaminaBar staminaBar;
   [SerializeField] private InteractionPrompt interactionPromtUI;
   [SerializeField] private ListOfTmpSpriteAssets listOfTmpSpriteAssets;
 
@@ -96,7 +95,6 @@ public class GameManager : PersistentSingleton<GameManager> {
   public AnimatorParameters AnimatorParameters => animatorParameters;
   public ObjectPooler PoolEffects => poolEffects;
   public QuickSlotListener QuickSlotListener => quickSlotListener;
-  public StaminaBar StaminaBar => staminaBar;
   public LadderMovement PlayerLadderMovement => playerLadderMovement;
   public MapController MapController => mapController;
   public IStatModifierFactory StatModifierFactory => statModifierFactory;

@@ -16,7 +16,6 @@ public class PlayerStats : StatsBase {
   public float EntityDamage => GetStatValue(StatType.EntityDamage);
   public float TimeBtwAttacks => GetStatValue(StatType.TimeBtwAttacks);
   public float AttackStaminaUsage => GetStatValue(StatType.AttackStaminaUsage);
-  public float Armor => GetStatValue(StatType.Armor);
 
   protected override void Awake() {
     base.Awake();
@@ -31,7 +30,6 @@ public class PlayerStats : StatsBase {
     baseValues[StatType.EntityDamage] = StatsObject.entityDamage;
     baseValues[StatType.TimeBtwAttacks] = StatsObject.timeBtwAttacks;
     baseValues[StatType.AttackStaminaUsage] = StatsObject.attackStaminaUsage;
-    baseValues[StatType.Armor] = StatsObject.armor;
   }
 
   protected override void UpdateStats(float deltaTime) {
@@ -45,7 +43,7 @@ public class PlayerStats : StatsBase {
     staminaInUse = false;
   }
 
-  public void RecoverStamina(float time) {
+  private void RecoverStamina(float time) {
     if (staminaInUse || Stamina >= MaxStamina) {
       return;
     }
@@ -70,7 +68,6 @@ public class PlayerStats : StatsBase {
     StatType.EntityDamage => EntityDamage,
     StatType.TimeBtwAttacks => TimeBtwAttacks,
     StatType.AttackStaminaUsage => AttackStaminaUsage,
-    StatType.Armor => Armor,
     _ => base.GetValueByType(type)
   };
 }

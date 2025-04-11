@@ -199,7 +199,7 @@ namespace Stats {
       }
 
       var appliedModifiers = listModifiers
-        .Where(modifier => modifier.modifierDisplayObject.Id == modifierDisplayObject.Id)
+        .Where(modifier => modifier.HasDisplay() && modifier.modifierDisplayObject.Id == modifierDisplayObject.Id)
         .ToList();
 
       foreach (var appliedModifier in appliedModifiers) {
@@ -213,7 +213,7 @@ namespace Stats {
       }
 
       var appliedModifier =
-        listModifiers.LastOrDefault(modifier => modifier.modifierDisplayObject.Id == modifierDisplayObject.Id);
+        listModifiers.LastOrDefault(modifier => modifier.HasDisplay() && modifier.modifierDisplayObject.Id == modifierDisplayObject.Id);
 
       appliedModifier?.Dispose();
     }

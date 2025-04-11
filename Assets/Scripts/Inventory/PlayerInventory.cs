@@ -92,6 +92,7 @@ namespace Inventory {
     public Sprite GetInventoryIconByType(InventoryType type) => settings[type].slotIcon;
 
     public Inventory GetQuickSlots() => GetInventoryByTypeAndId(InventoryType.QuickSlots, "");
+    public Inventory GetEquipment() => GetInventoryByTypeAndId(InventoryType.Equipment, "");
 
     public Inventory GetInventory() => GetInventoryByTypeAndId(InventoryType.Inventory, "");
 

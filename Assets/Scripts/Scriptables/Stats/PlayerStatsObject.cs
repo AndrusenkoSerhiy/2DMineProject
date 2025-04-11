@@ -19,9 +19,6 @@ namespace Scriptables.Stats {
     public float attackStaminaUsage = 1f;
     public int attackID;
     public Vector2 attackColliderSize = Vector2.one;
-    
-    [Header("Armor")]
-    public float armor = 1f;
 
     [Header("LAYERS")]
     [Tooltip("Set this to the layer your player is on")]

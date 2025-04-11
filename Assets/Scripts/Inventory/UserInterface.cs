@@ -10,7 +10,7 @@ namespace Inventory {
     [SerializeField] private InventoryType inventoryType;
     [SerializeField] private InventoryType fastDropInventoryType;
 
-    [SerializeField] private Color disabledSlotColor;
+    // [SerializeField] private Color disabledSlotColor;
     [SerializeField] private bool preventItemDropIn;
     [SerializeField] private bool preventDropOnGround;
     [SerializeField] private bool preventSwapIn;
@@ -31,6 +31,7 @@ namespace Inventory {
     private Dictionary<GameObject, InventorySlot> slotsOnInterface;
 
     public event Action OnLoaded;
+    public event Action OnDisabled;
 
     // public GameObject[] slotsPrefabs;
     public SlotDisplay[] slotsPrefabs;
@@ -100,6 +101,7 @@ namespace Inventory {
       inventory.OnResorted -= ResortHandler;
 
       HideTooltip();
+      OnDisabled?.Invoke();
     }
 
     public void CreateSlots() {
@@ -200,15 +202,7 @@ namespace Inventory {
 
       if (slot.Item.info == null || slot.amount <= 0) {
         slotDisplay.ClearText();
-
-        // If exactly one allowed item, show its sprite as a "ghost" with transparency
-        if (slot.AllowedItem) {
-          var ghostItem = slot.AllowedItem;
-          slotDisplay.SetBackgroundGhost(ghostItem.UiDisplay);
-        }
-        else {
-          slotDisplay.ClearBackground();
-        }
+        slotDisplay.ClearBackground();
       }
       else {
         var text = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
@@ -413,7 +407,7 @@ namespace Inventory {
         return false;
       }
 
-      if (!targetSlot.IsItemAllowed(slot.Item.info) || !slot.IsItemAllowed(targetSlot.Item.info)) {
+      if (!targetSlot.SlotDisplay.IsAllowedItem(slot.Item.info) || !slot.SlotDisplay.IsAllowedItem(targetSlot.Item.info)) {
         gameManager.MessagesManager.ShowSimpleMessage("Item not allowed.");
         return false;
       }

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be81ea0e0eba4b798f5f539945e4727b, type: 3}
+  m_Name: Helmet
+  m_EditorClassIdentifier: 
+  id: 3686893a-a0ae-402d-a1f7-49d37c6d1702
+  Type: 20
+  Name: Helmet
+  ParentType: 0
+  UiDisplay: {fileID: 21300000, guid: 917787f99ea451c4aa7d5d9f52c0791e, type: 3}
+  CharacterDisplay: {fileID: 0}
+  Stackable: 0
+  MaxStackSize: 1
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 0}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: +1 Armor
+  statModifiers:
+  - type: 60
+    applyType: 2
+    operatorType: 1
+    value: 1
+    permanent: 0
+    duration: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}

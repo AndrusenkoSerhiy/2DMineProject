@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using Scriptables.Items;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,10 +10,44 @@ namespace Inventory {
     [SerializeField] private Image background;
     [SerializeField] private Image typeIcon;
     [SerializeField] private TextMeshProUGUI text;
+    public Sprite EmptySlotIcon;
+    public List<ItemType> AllowedTypes;
+    public List<ItemObject> AllowedItems;
+    public int MaxAllowedAmount = -1;
 
     public TextMeshProUGUI Text => text;
     public Image Background => background;
     public Image TypeIcon => typeIcon;
+
+    public bool IsAllowedItem(ItemObject item) {
+      if (item == null) {
+        return true;
+      }
+
+      if (AllowedTypes is { Count: > 0 } && !AllowedTypes.Contains(item.Type)) {
+        return false;
+      }
+
+      if (AllowedItems == null || AllowedItems.Count == 0) {
+        return true;
+      }
+
+      foreach (var allowedItem in AllowedItems) {
+        if (allowedItem == item) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    public bool IsItemInAllowed(ItemObject item) {
+      if (AllowedItems == null || AllowedItems.Count == 0) {
+        return false;
+      }
+
+      return AllowedItems.Contains(item);
+    }
 
     public void ActivateOutline() {
       outline.SetActive(true);
@@ -40,6 +76,11 @@ namespace Inventory {
     }
 
     public void ClearBackground() {
+      if (EmptySlotIcon != null) {
+        SetBackgroundGhost(EmptySlotIcon);
+        return;
+      }
+
       background.sprite = null;
       background.color = new Color(1, 1, 1, 0);
     }

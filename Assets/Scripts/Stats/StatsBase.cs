@@ -22,6 +22,8 @@ public class StatsBase : MonoBehaviour {
   public float MaxHealth => GetStatValue(StatType.MaxHealth);
   public float HealthRegen => GetStatValue(StatType.HealthRegen);
 
+  public float Armor => GetStatValue(StatType.Armor);
+
   protected virtual void Awake() {
     mediator = new StatsMediator();
     mediator.SetStats(this);
@@ -29,6 +31,7 @@ public class StatsBase : MonoBehaviour {
     baseValues[StatType.Health] = statsObject.health;
     baseValues[StatType.MaxHealth] = statsObject.maxHealth;
     baseValues[StatType.HealthRegen] = statsObject.healthRegen;
+    baseValues[StatType.Armor] = StatsObject.armor;
   }
 
   private void Update() {
@@ -49,7 +52,12 @@ public class StatsBase : MonoBehaviour {
   public float TakeDamage(float damage) {
     canHeal = false;
 
-    var health = AddHealth(-damage);
+    var damageReduction = Armor * 0.04f;
+    var finalDamage = damage * (1 - damageReduction);
+
+    Debug.Log($"damage -> finalDamage: {damage} -> {finalDamage}");
+
+    var health = AddHealth(-finalDamage);
     if (health > 0) {
       canHeal = true;
     }
@@ -121,6 +129,7 @@ public class StatsBase : MonoBehaviour {
       StatType.Health => Health,
       StatType.MaxHealth => MaxHealth,
       StatType.HealthRegen => HealthRegen,
+      StatType.Armor => Armor,
       _ => baseValues.GetValueOrDefault(type, 0f)
     };
   }
@@ -129,6 +138,7 @@ public class StatsBase : MonoBehaviour {
     return type switch {
       StatType.Health => MaxHealth,
       StatType.MaxHealth => statsObject.healthMaxPossibleValue,
+      StatType.Armor => statsObject.armorMaxPossibleValue,
       _ => null
     };
   }

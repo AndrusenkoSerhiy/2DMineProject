@@ -25,8 +25,8 @@ namespace Inventory {
       return $"{type.ToString()}_{entityId}".ToLower();
     }
 
-    public static string GenerateEntityIdByCell(CellObject cellObject) {
-      return $"{cellObject.CellData.x}_{cellObject.CellData.y}";
+    public static string GenerateEntityIdByCell(BuildingDataObject buildObject) {
+      return $"{buildObject.transform.position.x}_{buildObject.transform.position.y}";
     }
 
     public InventoryObject(InventoryType inventoryType, string inventoryId) {

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1532416506178691415}
   - component: {fileID: 8373353163446511298}
   - component: {fileID: 4823139061779360901}
-  - component: {fileID: 7264757973071991012}
+  - component: {fileID: 5100434093915601852}
   m_Layer: 3
   m_Name: FoodStation
   m_TagString: Untagged
@@ -51,7 +51,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4470986188835931539}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -104,10 +104,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interfacePrefab: {fileID: 1208913450436918581, guid: e73402fd722c5c741bee34ac848b61ac, type: 3}
   stationObject: {fileID: 11400000, guid: 94252aade6eb85842b9b04735ee5edad, type: 2}
-  cellObject: {fileID: 7264757973071991012}
+  buildObject: {fileID: 5100434093915601852}
   interactText: Craft
   interactHeader: 
---- !u!114 &7264757973071991012
+--- !u!114 &5100434093915601852
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,22 +116,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4470986188835931539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5e6f369da1b4ceca204d884cd707fb6, type: 3}
+  m_Script: {fileID: 11500000, guid: b6dd93fed44d4051a14ec415c4121ebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IsActive: 0
-  cellStats: {fileID: 11400000, guid: fa1f1480960c2b74f8aced5eacbdddb9, type: 2}
-  atlasRef: {fileID: 100100200, guid: 9d027d435f30db14aa6a42b0ffda83e6, type: 3}
-  sprite: {fileID: 4423727987069519656}
-  boxCollider2D: {fileID: 8373353163446511298}
-  highlight: {fileID: 0}
-  damageOverlay: {fileID: 0}
-  damageOverlays: []
-  resourceData: {fileID: 0}
-  _cellData:
-    x: 0
-    y: 0
-    perlin: 0
+  Building: {fileID: 11400000, guid: 5e8f7d7929b320f4a95748b3cb37573b, type: 2}
 --- !u!1 &6834258844564947058
 GameObject:
   m_ObjectHideFlags: 0

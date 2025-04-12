@@ -7,7 +7,7 @@ namespace Craft {
   public class Crafter : MonoBehaviour {
     [SerializeField] private GameObject interfacePrefab;
     [SerializeField] protected WorkstationObject stationObject;
-    [SerializeField] private CellObject cellObject;
+    [SerializeField] private BuildingDataObject buildObject;
 
     private CraftWindow craftWindow;
     private Window window;
@@ -22,7 +22,7 @@ namespace Craft {
         return;
       }
 
-      id = Workstation.GenerateId(cellObject, stationObject);
+      id = Workstation.GenerateId(buildObject, stationObject);
       station = GameManager.Instance.CraftManager.GetWorkstation(id, stationObject.Id);
       var craftWindowObj = Instantiate(interfacePrefab, GameManager.Instance.Canvas.transform);
       window = craftWindowObj.GetComponent<Window>();

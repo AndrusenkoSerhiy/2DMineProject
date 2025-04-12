@@ -8,6 +8,7 @@ using Utils;
 using World;
 
 public class PlaceCell : MonoBehaviour {
+  [SerializeField] private Building buildingData;
   [SerializeField] private ResourceData resourceData;
   [SerializeField] private GameObject prefab;
   [SerializeField] private GameObject previewInstance;
@@ -34,10 +35,10 @@ public class PlaceCell : MonoBehaviour {
     return GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
   }
 
-  public void ActivateBuildMode(ResourceData rData, GameObject sPrefab) {
+  public void ActivateBuildMode(Building bData, ResourceData rData, GameObject sPrefab) {
     spawnPrefab = sPrefab;
     if (!isPreviewing){
-      EnableBuildMode(GetSelectedSlot(), rData);
+      EnableBuildMode(GetSelectedSlot(), bData, rData);
     }
     else {
       DisableBuildMode();
@@ -48,13 +49,15 @@ public class PlaceCell : MonoBehaviour {
     return GameManager.Instance.QuickSlotListener.GetSelectedSlot();
   }
 
-  private void EnableBuildMode(InventorySlot slot, ResourceData rData) {
+  private void EnableBuildMode(InventorySlot slot, Building bData, ResourceData rData) {
+    buildingData = bData;
     resourceData = rData;
     SetEnabled(true);
   }
 
   public void DisableBuildMode() {
     SetEnabled(false);
+    buildingData = null;
     resourceData = null;
   }
 
@@ -139,11 +142,13 @@ public class PlaceCell : MonoBehaviour {
 
   private bool ShouldUseBlockColor(Vector3 worldPosition) {
     var grid = CoordsTransformer.WorldToGrid(worldPosition);
-    var canPlace = CanPlaceObject(grid.X, grid.Y, (int)resourceData.CellSize.x, (int)resourceData.CellSize.y);
+    var sizeX = buildingData ? buildingData.SizeX : 1;
+    var sizeY = buildingData ? buildingData.SizeY : 1;
+    var canPlace = CanPlaceObject(grid.X, grid.Y, sizeX, sizeY);
     var isPlayerOnGrid = GetPlayerCoords().Equals(grid);
-    var hasGround = HasGround(grid.X, grid.Y, (int)resourceData.CellSize.x);
+    var hasGround = HasGround(grid.X, grid.Y, sizeX);
     //if we place building we just need to know the all cells is empty
-    if (resourceData.IsBuilding) {
+    if (buildingData) {
       return !canPlace || !hasGround;
     }
 
@@ -155,7 +160,6 @@ public class PlaceCell : MonoBehaviour {
       for (var y = 0; y < objectSizeY; y++) {
         var checkX = startX + x;
         var checkY = startY - y;
-
         if (chunkController.ChunkData.GetCellFill(checkX, checkY) == 1) {
           return false;
         }
@@ -171,7 +175,7 @@ public class PlaceCell : MonoBehaviour {
       var checkY = startY + 1;
       var cellObj = chunkController.GetCell(checkX, checkY);
       if (chunkController.ChunkData.GetCellFill(checkX, checkY) == 0 ||
-          cellObj.resourceData.Equals(emptyResourceData) || cellObj.resourceData.IsBuilding) {
+          cellObj.resourceData.Equals(emptyResourceData) /*|| cellObj.resourceData.IsBuilding*/) {
         return false;
       }
     }
@@ -189,7 +193,7 @@ public class PlaceCell : MonoBehaviour {
 
   private void PlaceCellOnScene() {
     //for forge, stoneCutter etc
-    if (resourceData.IsBuilding) {
+    if (buildingData) {
       PlaceBuilding();
     }
     else {
@@ -201,12 +205,11 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void PlaceBuilding() {
-    var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
-    chunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
-    FillBuildingCells(coords.X, coords.Y, (int)resourceData.CellSize.x, (int)resourceData.CellSize.y);
-    var cell = chunkController.SpawnBuild(coords, resourceData);
-    cell.BoxCollider2D.enabled = true;
-    AfterPlaceCellActions(cell);
+    
+    var coords = CoordsTransformer.WorldToGridBuildings(GetSnappedWorldPosition());
+    var build = chunkController.SpawnBuild(coords, buildingData);
+    AfterPlaceCellActions(build);
+    SetCellsUndamegable(coords.X, coords.Y, build.Building.SizeX);
   }
 
   private void PlaceBuildingBlock() {
@@ -241,8 +244,8 @@ public class PlaceCell : MonoBehaviour {
     }
   }
 
-  private void AfterPlaceCellActions(CellObject cell) {
-    cell.TryGetComponent<Workbench>(out var worckbench);
+  private void AfterPlaceCellActions(BuildingDataObject build) {
+    build.TryGetComponent<Workbench>(out var worckbench);
     if (!worckbench) {
       return;
     }
@@ -261,7 +264,7 @@ public class PlaceCell : MonoBehaviour {
 
     OnSlotReset?.Invoke();
     SetEnabled(false);
-    resourceData = null;
+    buildingData = null;
   }
 
   private Vector3 GetMousePosition() {

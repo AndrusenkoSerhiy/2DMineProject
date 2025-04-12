@@ -9,22 +9,27 @@ using Utils;
 
 namespace World {
   public class ChunkController : MonoBehaviour {
-    [SerializeField] private ChunkGenerator _chunkGenerator;
+    //Resources
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
     public ResourceDataLibrary ResourceDataLibrary => _resourceDataLib;
 
+    //Points of interest
     [SerializeField] private POIDataLibrary _poiDataLibrary;
     public POIDataLibrary POIDataLibrary => _poiDataLibrary;
 
+    //ChunkInfo
+    [SerializeField] private ChunkGenerator _chunkGenerator;
     private Dictionary<Coords, CellObject> _activeCellObjects = new();
+    private Dictionary<Coords, BuildingDataObject> _activeBuildObjects = new();
     private ChunkData chunkData;
     public ChunkData ChunkData => chunkData;
+
+
     private bool isInited = false;
 
-    [SerializeField] private ObjectPooler testPool;
-
     private void Awake() {
-      getCellObjectsPool().Init();
+      CellObjectsPool.Init();
+      BuildingsDataController.Initialize();
       _chunkGenerator.Init();
     }
 
@@ -32,7 +37,7 @@ namespace World {
       InitStartChunk();
       GameManager.Instance.MapController.GenerateTexture();
     }
-    
+
     void SpawnChunk(int x, int y) {
       var startChunk = _chunkGenerator.GetChunk(x, y);
       if (startChunk == null) return;
@@ -50,7 +55,7 @@ namespace World {
       var max_x = Mathf.Clamp(playerCoords.X + visionOffsetX, 0, cols - 1);
       var min_y = Mathf.Clamp(playerCoords.Y - visionOffsetY, 0, rows - 1);
       var max_y = Mathf.Clamp(playerCoords.Y + visionOffsetY, 0, rows - 1);
-      //var keys = _activeCellObjects.Keys;
+      //cells
       for (var i = min_x; i < max_x; i++) {
         for (var j = min_y; j < max_y; j++) {
           _proxyCoords.X = i;
@@ -66,45 +71,59 @@ namespace World {
 
           var cellData = chunkData.GetCellData(i, j);
           var data = _resourceDataLib.GetData(cellData.perlin);
-          if (!data.IsBuilding) {
-            var pos = CoordsTransformer.GridToWorld(i, j);
-            var cell = getCellObjectsPool().Get(pos);
-            if (!cell) {
-              continue;
-            }
-
-            cell.Init(cellData, data);
-            cell.InitSprite();
-            _activeCellObjects[_proxyCoords] = cell;
+          var pos = CoordsTransformer.GridToWorld(i, j);
+          var cell = CellObjectsPool.Get(pos);
+          if (!cell) {
+            continue;
           }
-          //use to place building
-          else {
-            var cell = (CellObject)testPool.SpawnFromPool(data.name, Vector3.zero, Quaternion.identity);
-            if (!cell) {
-              continue;
-            }
 
-            cell.gameObject.SetActive(true);
-            cell.Init(cellData, data);
-            cell.transform.position = CoordsTransformer.GridToWorld(i, j);
-            //cell.InitSprite();
-            _activeCellObjects[_proxyCoords] = cell;
-          }
+          cell.Init(cellData, data);
+          cell.InitSprite();
+          _activeCellObjects[_proxyCoords] = cell;
         }
       }
 
+      //buildings
+      var playersBuildingsCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      playersBuildingsCoords = CoordsTransformer.GridToBuildingsGrid(playersBuildingsCoords);
+
+      cols = GameManager.Instance.GameConfig.BuildingAreaSizeX;
+      rows = GameManager.Instance.GameConfig.BuildingAreaSizeY;
+
+      min_x = Mathf.Clamp(playersBuildingsCoords.X - visionOffsetX, 0, cols - 1);
+      max_x = Mathf.Clamp(playersBuildingsCoords.X + visionOffsetX, 0, cols - 1);
+      min_y = Mathf.Clamp(playersBuildingsCoords.Y - visionOffsetY, 0, rows - 1);
+      max_y = Mathf.Clamp(playersBuildingsCoords.Y + visionOffsetY, 0, rows - 1);
+
+      for (var i = min_x; i < max_x; i++) {
+        for (var j = min_y; j < max_y; j++) {
+          _proxyCoords.X = i;
+          _proxyCoords.Y = j;
+          _proxyCoords.GetHashCode();
+
+          if (_activeBuildObjects.ContainsKey(_proxyCoords)) {
+            continue;
+          }
+          
+          if (GameManager.Instance.BuildingsDataController.BuildFillDatas[i, j] == 0) {
+            continue;
+          }
+
+          var buildData = GameManager.Instance.BuildingsDataController.GetBuildData(i, j);
+          _activeBuildObjects[_proxyCoords] = SpawnBuild(_proxyCoords, buildData);
+        }
+      }
 
       isInited = true;
     }
 
     //get building from another pool
-    public CellObject SpawnBuild(Coords coords, ResourceData resourceData) {
-      var cell = (CellObject)testPool.SpawnFromPool(resourceData.name, Vector3.zero, Quaternion.identity);
-      cell.transform.position = CoordsTransformer.GridToWorld(coords.X, coords.Y);
-      var cellData = chunkData.GetCellData(coords.X, coords.Y);
-      cell.Init(cellData, resourceData);
-      _activeCellObjects[new Coords(coords.X, coords.Y)] = cell;
-      return cell;
+    public BuildingDataObject SpawnBuild(Coords coords, Building type) {
+      var pos = CoordsTransformer.GridToWorldBuildings(coords.X, coords.Y);
+      var build = BuildPoolsController.Get(type, pos);
+      BuildingsDataController.SetBuildData(build.Building, pos);
+      _activeBuildObjects[new Coords(coords.X, coords.Y)] = build;
+      return build;
     }
 
     private List<Coords> clearList = new();
@@ -117,15 +136,30 @@ namespace World {
       foreach (var coord in _activeCellObjects.Keys) {
         if (Mathf.Abs(playerCoords.X - coord.X) > visionOffsetX ||
             Mathf.Abs(playerCoords.Y - coord.Y) > visionOffsetY) {
-          if (!_activeCellObjects[coord].resourceData.IsBuilding)
-            getCellObjectsPool().ReturnObject(_activeCellObjects[coord]);
-          else _activeCellObjects[coord].ReturnToPool();
+          //if (!_activeCellObjects[coord].resourceData.IsBuilding)
+          CellObjectsPool.ReturnObject(_activeCellObjects[coord]);
+          //else _activeCellObjects[coord].ReturnToPool();
           clearList.Add(coord);
         }
       }
 
       for (int i = 0; i < clearList.Count; i++) {
         _activeCellObjects.Remove(clearList[i]);
+      }
+
+      clearList.Clear();
+
+      var playerCoordsBuild = CoordsTransformer.GridToBuildingsGrid(playerCoords);
+      foreach (var coord in _activeBuildObjects.Keys) {
+        if (Mathf.Abs(playerCoordsBuild.X - coord.X) > visionOffsetX ||
+            Mathf.Abs(playerCoordsBuild.Y - coord.Y) > visionOffsetY) {
+          BuildPoolsController.ReturnObject(_activeBuildObjects[coord]);
+          clearList.Add(coord);
+        }
+      }
+
+      for (int i = 0; i < clearList.Count; i++) {
+        _activeBuildObjects.Remove(clearList[i]);
       }
 
       clearList.Clear();
@@ -175,12 +209,13 @@ namespace World {
           chunkData.SetCellFill(i, 0);
         }
       }
+
       //set first help
       var dataWood = ResourceDataLibrary.GetData(0.3f);
       var cellWood = chunkData.GetCellData(258, 0);
       cellWood.perlin = -1f;
       cellWood.durability = dataWood.Durability;
-      
+
       //POI
       GeneratePOI(chunkData);
       SpawnChunk(0, 0);
@@ -221,8 +256,8 @@ namespace World {
     }
 
 
-    private CellObjectsPool getCellObjectsPool() {
-      return GameManager.Instance.CellObjectsPool;
-    }
+    private CellObjectsPool CellObjectsPool => GameManager.Instance.CellObjectsPool;
+    private BuildPoolsController BuildPoolsController => GameManager.Instance.BuildPoolsController;
+    private BuildingsDataController BuildingsDataController => GameManager.Instance.BuildingsDataController;
   }
 }

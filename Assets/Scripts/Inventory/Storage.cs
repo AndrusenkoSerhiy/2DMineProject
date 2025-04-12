@@ -9,7 +9,7 @@ namespace Inventory {
     [SerializeField] private string interactText;
     [SerializeField] private string interactHeader;
     [SerializeField] private InventoryType inventoryType;
-    [SerializeField] private CellObject cellObject;
+    [SerializeField] private BuildingDataObject buildObject;
     public string InteractionText => interactText;
     public string InteractionHeader => interactHeader;
 
@@ -33,7 +33,7 @@ namespace Inventory {
         return;
       }
 
-      var entityId = InventoryObject.GenerateEntityIdByCell(cellObject);
+      var entityId = InventoryObject.GenerateEntityIdByCell(buildObject);
       var id = InventoryObject.GenerateId(inventoryType, entityId);
       var storageWindowObj = Instantiate(interfacePrefab, GameManager.Instance.Canvas.transform);
 

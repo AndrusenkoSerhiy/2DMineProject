@@ -108,7 +108,7 @@ namespace Inventory {
 
     private void UseBuildingBlock(BuildingBlock buildingBlock) {
       var prefab = buildingBlock.CharacterDisplay ? buildingBlock.CharacterDisplay : buildingBlock.spawnPrefab;
-      gameManager.PlaceCell.ActivateBuildMode(buildingBlock.ResourceData, prefab);
+      gameManager.PlaceCell.ActivateBuildMode(buildingBlock.BuildingData,buildingBlock.ResourceData, prefab);
     }
   }
 }

@@ -3,14 +3,8 @@ using UnityEngine;
 
 namespace Scriptables.Items {
   [CreateAssetMenu(menuName = "Inventory System/Items/BuildingBlock", fileName = "BuildingBlock")]
-  public class BuildingBlock : ItemObject {
+  public class BuildingBlock : ItemObject, IConsumableItem {
     public ResourceData ResourceData;
     public Building BuildingData;
-
-    public override void Use(InventorySlot slot) {
-      //Debug.LogError($"use {ResourceData.ItemData.name}");
-      var prefab = CharacterDisplay ? CharacterDisplay : spawnPrefab;
-      GameManager.Instance.PlaceCell.ActivateBuildMode(BuildingData,ResourceData, prefab);
-    }
   }
 }

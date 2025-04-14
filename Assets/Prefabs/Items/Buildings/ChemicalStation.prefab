@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 8289387002311438905}
   - component: {fileID: 7420453258784481367}
   - component: {fileID: 6416641150901862863}
-  - component: {fileID: 7534508023238997413}
+  - component: {fileID: 6617150267907033082}
   m_Layer: 3
   m_Name: ChemicalStation
   m_TagString: Untagged
@@ -147,7 +147,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9194511913274475197}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -200,10 +200,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interfacePrefab: {fileID: 1208913450436918581, guid: abbc60578dfa33f41b51b3768e65e5e7, type: 3}
   stationObject: {fileID: 11400000, guid: 8c59846aeb63aa741b392d468811fa88, type: 2}
-  cellObject: {fileID: 7534508023238997413}
+  buildObject: {fileID: 6617150267907033082}
   interactText: Craft
   interactHeader: 
---- !u!114 &7534508023238997413
+--- !u!114 &6617150267907033082
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -212,20 +212,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 9194511913274475197}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5e6f369da1b4ceca204d884cd707fb6, type: 3}
+  m_Script: {fileID: 11500000, guid: b6dd93fed44d4051a14ec415c4121ebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IsActive: 0
-  cellStats: {fileID: 11400000, guid: fa1f1480960c2b74f8aced5eacbdddb9, type: 2}
-  atlasRef: {fileID: 100100200, guid: 9d027d435f30db14aa6a42b0ffda83e6, type: 3}
-  sprite: {fileID: 6370714567193328122}
-  boxCollider2D: {fileID: 7420453258784481367}
-  highlight: {fileID: 0}
-  damageOverlay: {fileID: 0}
-  damageOverlays: []
-  resourceData: {fileID: 0}
-  _cellData:
-    x: 0
-    y: 0
-    perlin: 0
-    durability: 0
+  Building: {fileID: 11400000, guid: 47dec7647ccb2cb4a9c477b7ccf8881b, type: 2}

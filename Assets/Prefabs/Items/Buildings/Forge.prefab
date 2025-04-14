@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 6668474803497008179}
   - component: {fileID: 2292073947769524504}
   - component: {fileID: 3773624294396459548}
-  - component: {fileID: 1084987504351908000}
+  - component: {fileID: 196086049113472044}
   m_Layer: 3
   m_Name: Forge
   m_TagString: Untagged
@@ -147,7 +147,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5121348168510077464}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -200,10 +200,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interfacePrefab: {fileID: 1208913450436918581, guid: e73402fd722c5c741bee34ac848b61ac, type: 3}
   stationObject: {fileID: 11400000, guid: 43c0c4c50d7cc5a4da0d15bc6e03fa14, type: 2}
-  cellObject: {fileID: 1084987504351908000}
+  buildObject: {fileID: 196086049113472044}
   interactText: Craft
   interactHeader: 
---- !u!114 &1084987504351908000
+--- !u!114 &196086049113472044
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -212,19 +212,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 5121348168510077464}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5e6f369da1b4ceca204d884cd707fb6, type: 3}
+  m_Script: {fileID: 11500000, guid: b6dd93fed44d4051a14ec415c4121ebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IsActive: 0
-  cellStats: {fileID: 11400000, guid: fa1f1480960c2b74f8aced5eacbdddb9, type: 2}
-  atlasRef: {fileID: 100100200, guid: 9d027d435f30db14aa6a42b0ffda83e6, type: 3}
-  sprite: {fileID: 7892092391370634825}
-  boxCollider2D: {fileID: 2292073947769524504}
-  highlight: {fileID: 0}
-  damageOverlay: {fileID: 0}
-  damageOverlays: []
-  resourceData: {fileID: 11400000, guid: d247485ea928eba42851805c562eb60e, type: 2}
-  _cellData:
-    x: 0
-    y: 0
-    perlin: 0
+  Building: {fileID: 11400000, guid: 9e3eaeb17a8169d4da4ef1b6ddfb38c1, type: 2}

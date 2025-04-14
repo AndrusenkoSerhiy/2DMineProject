@@ -58,8 +58,8 @@ namespace World {
     }
 
     public void InitSprite() {
-      if (resourceData.IsBuilding)
-        return;
+      /*if (resourceData.IsBuilding)
+        return;*/
 
       var neighbourIndex = _cellData.NeighboursIndex;
       var targetSprite = resourceData.Sprite(neighbourIndex);

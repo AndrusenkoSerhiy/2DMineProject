@@ -1,5 +1,6 @@
 using Scriptables;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Actors {
   public class ActorBase : MonoBehaviour, IDamageable {
@@ -7,14 +8,14 @@ namespace Actors {
     // [SerializeField] protected float _maxHP;
     [SerializeField] protected Animator _animator;
 
-    [SerializeField] private bool _isDead;
-[SerializeField] protected Rigidbody2D rigidbody;
+    [SerializeField] private bool isDead;
+    [SerializeField] protected Rigidbody2D rigidbody;
     // private UnitHealth unitHealth;
     protected AnimatorParameters animParam;
     protected StatsBase stats;
     private bool _hasTakenDamage;
     public AnimatorParameters AnimParam => animParam;
-    public bool IsDead => _isDead;
+    public bool IsDead => isDead;
 
     protected virtual void Awake() {
       // _currHP = _maxHP;
@@ -34,7 +35,7 @@ namespace Actors {
     public virtual void Damage(float damage) {
       hasTakenDamage = true;
       if (stats.TakeDamage(damage) <= 0) {
-        _isDead = true;
+        isDead = true;
         PlayDeathAnim();
       }
       else {

@@ -13,7 +13,6 @@ namespace NPCMovement
     private Rigidbody2D rb;
     BoxCollider2D boxCollider2D;
     [SerializeField] private bool isGrounded;
-    [SerializeField] private ActorEnemy _actor;
     public float sphereRadius = 1f;
     public float maxDistance = 1f;
     private Vector3 localScale;
@@ -78,7 +77,7 @@ namespace NPCMovement
 
     private void MoveTowardsTarget() {
       // Calculate direction and move towards target
-      if (/*target == null || */target.Equals(Vector3.zero) || _actor != null && _actor.IsDead) {
+      if (/*target == null || */target.Equals(Vector3.zero) || actor != null && actor.IsDead) {
         return;
       }
       //Debug.LogError($"{Vector2.Distance(transform.position, target)} | {stopingDistance}");
@@ -111,7 +110,7 @@ namespace NPCMovement
     }
 
     private void Jump() {
-      if (/*target == null ||*/ _actor != null && _actor.IsDead) {
+      if (/*target == null ||*/ actor != null && actor.IsDead) {
         return;
       }
 

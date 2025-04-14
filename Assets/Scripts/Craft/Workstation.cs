@@ -89,9 +89,9 @@ namespace Craft {
       CurrentProgress = new CurrentProgress();
     }
 
-    public static string GenerateId(CellObject cellObject, WorkstationObject stationObject) {
-      return cellObject != null
-        ? $"{stationObject.name}_{cellObject.CellData.x}_{cellObject.CellData.y}".ToLower()
+    public static string GenerateId(BuildingDataObject buildObject, WorkstationObject stationObject) {
+      return buildObject != null
+        ? $"{stationObject.name}_{buildObject.transform.position.x}_{buildObject.transform.position.y}".ToLower()
         : stationObject.name.ToLower();
     }
 

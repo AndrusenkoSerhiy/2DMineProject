@@ -39,5 +39,15 @@ namespace Scriptables {
 
     [SerializeField] private float checkAreaStep = 10f;
     public float CheckAreaStep => checkAreaStep;
+
+    [Header("Building Area Parameters")]
+    
+    [SerializeField]private int buildingAreaYDiff = 100;
+
+    public int BuildingAreaYDiff => buildingAreaYDiff;
+    [SerializeField] private int buildingAreSizeX = 1000;
+    [SerializeField] private int buildingAreSizeY = 1000;
+    public int BuildingAreaSizeX => buildingAreSizeX + buildingAreaYDiff;
+    public int BuildingAreaSizeY => buildingAreSizeY + buildingAreaYDiff;
   }
 }

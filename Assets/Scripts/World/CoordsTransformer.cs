@@ -22,5 +22,25 @@ namespace World {
       row = Mathf.Clamp(row, 0, GameManager.Instance.GameConfig.ChunkSizeY - 1);
       return new Coords(col, row);
     }
+    
+    //buildings converter
+    public static Vector3 GridToWorldBuildings(int col, int rowOffset) {
+      int row = rowOffset - GameManager.Instance.GameConfig.BuildingAreaYDiff;
+      //Debug.Log("GridToWorldBuildings : "+col + "," + row);
+      return GridToWorld(col, row);
+    }
+    
+    public static Coords WorldToGridBuildings(Vector3 position) {
+      var original = WorldToGrid(position);
+      return new Coords(original.X, original.Y + GameManager.Instance.GameConfig.BuildingAreaYDiff); // convert back from real to offset
+    }
+    
+    public static Coords GridToBuildingsGrid(Coords original) {
+      return new Coords(original.X, original.Y + GameManager.Instance.GameConfig.BuildingAreaYDiff);
+    }
+    
+    public static Coords GridToBuildingsGrid(int x_original, int y_original) {
+      return new Coords(x_original, y_original + GameManager.Instance.GameConfig.BuildingAreaYDiff);
+    }
   }
 }

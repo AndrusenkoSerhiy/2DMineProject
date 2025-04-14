@@ -1,4 +1,5 @@
 using System;
+using Actors;
 using Animation;
 using Movement;
 using Scriptables;
@@ -19,6 +20,7 @@ namespace Player {
     //[SerializeField] protected Transform Head;
     [SerializeField] protected float _flipDeadZone = 1;
 
+    [SerializeField] protected ActorBase actor;
     protected Camera _camera;
     protected bool isFlipped;
     protected float rotationCoef = 1f;
@@ -265,6 +267,7 @@ namespace Player {
 
     public void RestoreHealth() {
       playerStats.AddHealth(playerStats.MaxHealth);
+      actor.Respawn();
     }
 
     #endregion

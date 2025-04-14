@@ -98,9 +98,18 @@ namespace Player {
       //3f distance between player and mouse for top border 
       if (direction.y > 3f) {
         lookDirection = 1;
+        
+        //use only for drill upside attack
+        if (animator.GetInteger("WeaponID") == 1 && Mathf.Abs(direction.x) > 1) {
+          lookDirection = 2;
+        }
       }
       else if (direction.y < .3f) {
         lookDirection = -1;
+        //use only for drill upside attack
+        if (animator.GetInteger("WeaponID") == 1 && Mathf.Abs(direction.x) > 1) {
+          lookDirection = -2;
+        }
       }
       else {
         lookDirection = 0;

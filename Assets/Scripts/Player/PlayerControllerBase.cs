@@ -292,8 +292,15 @@ namespace Player {
         return;
       }
 
-      var direction = Mathf.Sign(_frameVelocity.x);
+      
+      var direction = Mathf.Sign(_frameVelocity.x) * GetVelocityParam();
       SetAnimVelocityX(direction);
+    }
+
+    //get animator param depend on currentMaxSpeed
+    //1(-1) for walk and 2(-2) for sprint
+    private int GetVelocityParam() {
+      return GetMaxSpeed() > PlayerStats.StatsObject.maxSpeed ? 2 : 1;
     }
 
     protected virtual float GetMaxSpeed() {

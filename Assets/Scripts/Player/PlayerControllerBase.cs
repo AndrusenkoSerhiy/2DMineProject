@@ -33,7 +33,7 @@ namespace Player {
     public Vector2 FrameVelocity => _frameVelocity;
 
     [SerializeField] protected StaminaBase stamina;
-
+    public ActorBase Actor => actor;
     public StaminaBase Stamina => stamina;
 
     // public PlayerStats PlayerStats => _stats;

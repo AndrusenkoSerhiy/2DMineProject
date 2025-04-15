@@ -20,6 +20,10 @@ namespace Actors {
     public void SetPatrolPosition(Vector3 pos) {
       npcMovement.SetTarget(pos);
     }
+    
+    public void SetTargetTransform(Transform tr) {
+      npcMovement.SetTargetTransform(tr);
+    }
 
     public bool HasArrived() {
       return npcMovement.HasArrived;
@@ -37,8 +41,9 @@ namespace Actors {
     public void TriggerAttack() {
       if (_animator.GetBool(animParam.IsDeadHash))
         return;
-
+      
       currentTarget = GameManager.Instance.PlayerController.GetComponent<IDamageable>();
+      //Debug.LogError($"trigger attack {currentTarget.GetHealth()}");
       if (currentTarget.GetHealth() <= 0)
         return;
 

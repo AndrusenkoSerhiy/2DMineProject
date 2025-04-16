@@ -93,8 +93,15 @@ public class QuickSlotListener : MonoBehaviour {
   }
 
   private void OnSlotUpdateHandler(SlotSwappedEventData data) {
-    var slot = data.slot;
-    var target = data.target;
+    //Always quickslot
+    var slot = data.slot.InventoryType == InventoryType.QuickSlots ? data.slot : data.target;
+    //Quickslot or inventory slot
+    var target = slot == data.slot ? data.target : data.slot;
+
+    if (slot.InventoryType == target.InventoryType && slot.InventoryType != InventoryType.QuickSlots) {
+      return;
+    }
+
     // If neither slot is selected, ignore
     if (!slot.isSelected && !target.isSelected) {
       return;
@@ -128,7 +135,9 @@ public class QuickSlotListener : MonoBehaviour {
     if (target.InventoryType == InventoryType.Inventory) {
       DeactivateItem(target);
       //only when we swap not empty slots
-      if (!slot.Item.isEmpty) ActivateItem(target, slot);
+      if (!slot.isEmpty) {
+        ActivateItem(target, slot);
+      }
     }
   }
 
@@ -152,6 +161,7 @@ public class QuickSlotListener : MonoBehaviour {
 
     // gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
     gameManager.PlayerEquipment.UnEquipTool();
+    slot.Unselect();
     // selectedItem?.info?.Use();
     itemConsumer.DeactivateItem(selectedItem);
     selectedItem = null;

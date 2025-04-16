@@ -1,4 +1,5 @@
 using System;
+using Actors;
 using Animation;
 using Movement;
 using Scriptables;
@@ -19,6 +20,7 @@ namespace Player {
     //[SerializeField] protected Transform Head;
     [SerializeField] protected float _flipDeadZone = 1;
 
+    [SerializeField] protected ActorBase actor;
     protected Camera _camera;
     protected bool isFlipped;
     protected float rotationCoef = 1f;
@@ -31,7 +33,7 @@ namespace Player {
     public Vector2 FrameVelocity => _frameVelocity;
 
     [SerializeField] protected StaminaBase stamina;
-
+    public ActorBase Actor => actor;
     public StaminaBase Stamina => stamina;
 
     // public PlayerStats PlayerStats => _stats;
@@ -265,6 +267,7 @@ namespace Player {
 
     public void RestoreHealth() {
       playerStats.AddHealth(playerStats.MaxHealth);
+      actor.Respawn();
     }
 
     #endregion
@@ -289,8 +292,15 @@ namespace Player {
         return;
       }
 
-      var direction = Mathf.Sign(_frameVelocity.x);
+      
+      var direction = Mathf.Sign(_frameVelocity.x) * GetVelocityParam();
       SetAnimVelocityX(direction);
+    }
+
+    //get animator param depend on currentMaxSpeed
+    //1(-1) for walk and 2(-2) for sprint
+    private int GetVelocityParam() {
+      return GetMaxSpeed() > PlayerStats.StatsObject.maxSpeed ? 2 : 1;
     }
 
     protected virtual float GetMaxSpeed() {

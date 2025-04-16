@@ -57,21 +57,7 @@ namespace Player {
 
     private void SetParamsFromPlayerStats() {
       CancelAttack(null, null);
-      /*var entityStats = GetEntityStats();
       attackLayer = statsObject.attackLayer;
-      blockDamage = entityStats.BlockDamage;
-      entityDamage = entityStats.EntityDamage;
-      attackRange = entityStats.AttackRange;
-      timeBtwAttacks = entityStats.TimeBtwAttacks;
-      staminaUsage = entityStats.AttackStaminaUsage;*/
-
-      attackLayer = statsObject.attackLayer;
-      /*blockDamage = statsObject.blockDamage;
-      entityDamage = statsObject.entityDamage;
-      attackRange = statsObject.attackRange;
-      timeBtwAttacks = statsObject.timeBtwAttacks;
-      staminaUsage = statsObject.attackStaminaUsage;*/
-
       attackID = statsObject.attackID;
       colliderSize = statsObject.attackColliderSize;
       SetDefaultAttackParam();
@@ -113,20 +99,7 @@ namespace Player {
 
       //Debug.LogError("SetAttackParamsFromEquipment");
       attackLayer = attackableItem.AttackLayer;
-      /*var entityStats = GetEntityStats();
-      blockDamage = entityStats.BlockDamage;
-      entityDamage = entityStats.EntityDamage;
-      attackRange = entityStats.AttackRange;
-      timeBtwAttacks = entityStats.TimeBtwAttacks;
-      staminaUsage = entityStats.AttackStaminaUsage;*/
-
-      //this moves to modifiers
-      /*blockDamage = attackableItem.BlockDamage;
-      entityDamage = attackableItem.EntityDamage;
-      attackRange = attackableItem.Range;
-      timeBtwAttacks = attackableItem.TimeBtwAttacks;
-      staminaUsage = attackableItem.StaminaUsage;*/
-
+      
       attackID = attackableItem.AnimationAttackID;
       colliderSize = attackableItem.ColliderSize;
       maxTargets = attackableItem.MaxTargets;

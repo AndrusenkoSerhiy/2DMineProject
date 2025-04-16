@@ -20,7 +20,7 @@ MonoBehaviour:
   CharacterDisplay: {fileID: 3890226224433729309, guid: ba37f20683a118f43a63bbab6267138d, type: 3}
   Stackable: 0
   MaxStackSize: 1
-  SpawnPosition: {x: 0.19, y: -0.42, z: 0}
+  SpawnPosition: {x: 0, y: -1, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: fda3618cb86a07f45b997bf9a8fb994b, type: 3}
   CanMoveToAnotherInventory: 1
@@ -32,7 +32,7 @@ MonoBehaviour:
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280
-  animationattackID: 0
+  animationattackID: 2
   colliderSize: {x: 0.5, y: 0.5}
   maxTargets: 1
   repairCost: 1

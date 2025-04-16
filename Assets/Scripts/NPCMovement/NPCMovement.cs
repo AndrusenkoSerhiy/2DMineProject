@@ -5,6 +5,7 @@ namespace NPCMovement
 {
   public class NPCMovement : MonoBehaviour {
     [SerializeField] private Vector3 target;
+    [SerializeField] private Transform targetTransform;
     //public Transform target;
     public float speed = 3f;
     public float jumpForce = 5f;
@@ -27,21 +28,28 @@ namespace NPCMovement
       localScale = transform.localScale;
     }
 
+    //for patrol
     public void SetTarget(Vector3 pos) {
       target = pos;
       hasArrived = false;
+    }
+
+    //set player like a target
+    public void SetTargetTransform(Transform transform) {
+      targetTransform = transform;
     }
 
     private void FixedUpdate() {
       IsGrounded();
       
       MoveTowardsTarget();
+      MoveTowardsTargetTransform();
 
       // Check for obstacles in front of the NPC
       var dir = transform.localScale.x * Vector2.right;
       RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(dir.x * -1, 1, 0), dir, 1, groundLayer);
       
-      Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
+      //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
       if (hit.collider != null && !CheckUP()) {
         //Debug.LogError($"hit {gameObject.name}");
         Jump();
@@ -75,9 +83,10 @@ namespace NPCMovement
       Gizmos.DrawWireSphere(endPoint, sphereRadius);
     }
 
+    
     private void MoveTowardsTarget() {
       // Calculate direction and move towards target
-      if (/*target == null || */target.Equals(Vector3.zero) || actor != null && actor.IsDead) {
+      if (target.Equals(Vector3.zero) || actor != null && actor.IsDead) {
         return;
       }
       //Debug.LogError($"{Vector2.Distance(transform.position, target)} | {stopingDistance}");
@@ -89,12 +98,33 @@ namespace NPCMovement
         SetAnimVelocityX(0);
         //TODO 
         //attack only when target player, if just patrol dont use attack
-        //_actor?.TriggerAttack();
+        actor?.TriggerAttack();
         return;
       }
 
       hasArrived = false;
       Vector2 direction = (target - transform.position).normalized;
+      FlipX(direction.x);
+      rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocity.y);
+      SetAnimVelocityX(rb.linearVelocity.x);
+    }
+    
+    private void MoveTowardsTargetTransform() {
+      if (targetTransform == null || actor != null && actor.IsDead) {
+        return;
+      }
+      
+      if (Vector2.Distance(transform.position, targetTransform.position) <= stopingDistance) {
+        //Debug.LogError("has arrived!!!!!!!!!!");
+        hasArrived = true;
+        rb.linearVelocity = new Vector2(0, 0);
+        SetAnimVelocityX(0);
+        actor?.TriggerAttack();
+        return;
+      }
+
+      hasArrived = false;
+      Vector2 direction = (targetTransform.position - transform.position).normalized;
       FlipX(direction.x);
       rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocity.y);
       SetAnimVelocityX(rb.linearVelocity.x);

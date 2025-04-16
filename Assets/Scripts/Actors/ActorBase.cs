@@ -53,6 +53,11 @@ namespace Actors {
       _animator.SetTrigger(animParam.Die);
     }
 
+    public void Respawn() {
+      isDead = false;
+      _animator.SetLayerWeight(1, 1);
+    }
+
     public float GetHealth() {
       return stats.Health;
     }

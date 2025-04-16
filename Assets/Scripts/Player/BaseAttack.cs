@@ -32,7 +32,7 @@ namespace Player {
     private List<IDamageable> targets = new();
     private List<IDamageable> iDamageables = new();
     [SerializeField] private bool isHighlightLock;
-    private Vector2 originalSize;
+    [SerializeField] private Vector2 originalSize;
     private int lookDirection;
     private AnimatorParameters animParam;
 
@@ -69,7 +69,9 @@ namespace Player {
       isHighlightLock = state;
       if (state) {
         attackCollider.transform.localPosition = new Vector3(0, 1, 0);
-        originalSize = attackCollider.size;
+        if (originalSize.Equals(Vector2.zero)) {
+          originalSize = attackCollider.size;
+        }
         attackCollider.size = new Vector2(.2f, .2f);
       }
       else {

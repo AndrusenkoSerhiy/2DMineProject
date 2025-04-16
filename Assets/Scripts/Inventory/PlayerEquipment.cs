@@ -120,6 +120,10 @@ namespace Inventory {
     }
 
     private void OnItemRepairedHandler() {
+      if (itemInHand != null) {
+        return;
+      }
+
       PlaceItemInHand(equippedItem);
     }
 

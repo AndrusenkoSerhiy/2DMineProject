@@ -15,6 +15,9 @@ namespace NodeCanvas.Actions.Movement {
       if(agent.HasArrived()) EndAction(true);
       if(agent.IsDead) EndAction(false);
     }
-    
+
+    protected override void OnStop() {
+      agent.SetTargetTransform(null);
+    }
   }
 }

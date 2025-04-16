@@ -1,6 +1,7 @@
 using Actors;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
+using UnityEngine;
 using Utils;
 using World;
 
@@ -13,8 +14,17 @@ namespace NodeCanvas.Actions.Movement {
     }
 
     protected override void OnUpdate() {
-      if(agent.HasArrived()) EndAction(true);
-      if(agent.IsDead) EndAction(false);
+      if (agent.HasArrived()) {
+        EndAction(true);
+      }
+
+      if (agent.IsDead) {
+        EndAction(false);
+      }
+    }
+
+    protected override void OnStop() {
+      agent.SetPatrolPosition(Vector3.zero);
     }
   }
 }

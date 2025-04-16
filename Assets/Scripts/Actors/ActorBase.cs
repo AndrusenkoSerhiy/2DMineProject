@@ -4,13 +4,10 @@ using UnityEngine.Serialization;
 
 namespace Actors {
   public class ActorBase : MonoBehaviour, IDamageable {
-    // [SerializeField] protected float _currHP;
-    // [SerializeField] protected float _maxHP;
     [SerializeField] protected Animator _animator;
-
     [SerializeField] private bool isDead;
     [SerializeField] protected Rigidbody2D rigidbody;
-    // private UnitHealth unitHealth;
+
     protected AnimatorParameters animParam;
     protected StatsBase stats;
     private bool _hasTakenDamage;
@@ -18,8 +15,6 @@ namespace Actors {
     public bool IsDead => isDead;
 
     protected virtual void Awake() {
-      // _currHP = _maxHP;
-      // unitHealth = new UnitHealth(_currHP);
       stats = GetComponent<StatsBase>();
     }
 

@@ -1,8 +1,10 @@
 using System;
 using Inventory;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+using Slider = UnityEngine.UI.Slider;
 
 namespace Interaction {
   public class PlayerInteractor : MonoBehaviour {
@@ -11,6 +13,8 @@ namespace Interaction {
     [SerializeField] private LayerMask interactableMask;
     [SerializeField] private InteractionPrompt interactionPromtUI;
     [SerializeField] private InteractionPrompt holdInteractionPromtUI;
+    [SerializeField] private TextMeshProUGUI holdActionProgressText;
+    [SerializeField] private Slider holdActionProgressSlider;
 
     private Collider2D[] colliders = new Collider2D[3];
     [SerializeField] private int numFound;
@@ -19,6 +23,10 @@ namespace Interaction {
     private IInteractable interactable;
     private string actionName;
     private PlayerEquipment playerEquipment;
+
+    private bool isHolding;
+    private float holdTime;
+    private float requiredHoldDuration;
 
     private void Start() {
       gameManager = GameManager.Instance;
@@ -47,6 +55,7 @@ namespace Interaction {
       }
 
       UpdateInteractionPrompt();
+      HandleHoldProgress();
     }
 
     private void UpdateInteractionPrompt() {
@@ -80,9 +89,6 @@ namespace Interaction {
 
       holdInteractionPromtUI.ShowPrompt(true,
         ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName));
-      /*if (GameManager.Instance.UserInput.controls.GamePlay.Interact.WasPressedThisFrame()) {
-        interactable.Interact(this);
-      }*/
     }
 
     private void ShowEquipmentHoldActionPrompt() {
@@ -96,21 +102,67 @@ namespace Interaction {
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext context) {
-      if (context.interaction is HoldInteraction) {
-        HoldInteract();
+      if (context.interaction is HoldInteraction holdInteraction) {
+        HoldInteract(holdInteraction);
       }
       else {
         SimpleInteract();
       }
     }
 
-    private void HoldInteract() {
+    private void HoldInteract(HoldInteraction holdInteraction) {
+      StartHoldProgress(holdInteraction);
+    }
+
+    private void HoldAction() {
       if (interactable is { HasHoldInteraction: true }) {
         interactable.HoldInteract(this);
       }
       else {
         playerEquipment.EquippedItemHoldAction();
       }
+    }
+
+    private string HoldText() {
+      return interactable is { HasHoldInteraction: true }
+        ? interactable.HoldInteractionText
+        : playerEquipment.EquippedItemHoldActionText();
+    }
+
+    private void HandleHoldProgress() {
+      if (!isHolding) {
+        return;
+      }
+
+      holdTime += Time.deltaTime;
+      holdActionProgressSlider.value = holdTime / requiredHoldDuration;
+
+      if (holdTime >= requiredHoldDuration) {
+        HoldAction();
+        CancelHoldProgress();
+      }
+
+      // Cancel if button released early
+      if (!gameManager.UserInput.controls.GamePlay.Interact.IsPressed()) {
+        CancelHoldProgress();
+      }
+    }
+
+    private void StartHoldProgress(HoldInteraction holdInteraction) {
+      requiredHoldDuration = holdInteraction.duration;
+      isHolding = true;
+      holdTime = 0f;
+
+      holdActionProgressSlider.gameObject.SetActive(true);
+      holdActionProgressText.gameObject.SetActive(true);
+      holdActionProgressText.text = HoldText();
+    }
+
+    private void CancelHoldProgress() {
+      isHolding = false;
+      holdActionProgressSlider.value = 0f;
+      holdActionProgressSlider.gameObject.SetActive(false);
+      holdActionProgressText.gameObject.SetActive(false);
     }
 
     private void SimpleInteract() {

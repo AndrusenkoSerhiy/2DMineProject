@@ -96,9 +96,6 @@ namespace NPCMovement
         hasArrived = true;
         rb.linearVelocity = new Vector2(0, 0);
         SetAnimVelocityX(0);
-        //TODO 
-        //attack only when target player, if just patrol dont use attack
-        actor?.TriggerAttack();
         return;
       }
 
@@ -107,6 +104,11 @@ namespace NPCMovement
       FlipX(direction.x);
       rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocity.y);
       SetAnimVelocityX(rb.linearVelocity.x);
+    }
+    
+    //attack only when target player
+    public void AttackPlayer() {
+      actor?.TriggerAttack();
     }
     
     private void MoveTowardsTargetTransform() {
@@ -119,7 +121,6 @@ namespace NPCMovement
         hasArrived = true;
         rb.linearVelocity = new Vector2(0, 0);
         SetAnimVelocityX(0);
-        actor?.TriggerAttack();
         return;
       }
 

@@ -28,6 +28,11 @@ namespace Actors {
     public bool HasArrived() {
       return npcMovement.HasArrived;
     }
+    
+    public void AttackPlayer() {
+      npcMovement.AttackPlayer();
+    }
+    
     protected override void Awake() {
       base.Awake();
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
@@ -62,8 +67,6 @@ namespace Actors {
       if (go != gameObject)
         return;
       ShouldBeDamagingToFalse();
-      // Debug.Log("Attack ended");
-      //DestroyTarget();
     }
 
     public IEnumerator DamageWhileSlashIsActive() {

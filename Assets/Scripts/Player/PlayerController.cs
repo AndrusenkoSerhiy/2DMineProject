@@ -1,6 +1,3 @@
-using Actors;
-using Settings;
-using Stats;
 using UnityEngine;
 
 namespace Player {

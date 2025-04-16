@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Scriptables.Stats;
 using Stats;
 using UnityEngine;
@@ -24,6 +25,8 @@ public class StatsBase : MonoBehaviour {
 
   public float Armor => GetStatValue(StatType.Armor);
 
+  public event Action<float, float> OnAddHealth;
+
   protected virtual void Awake() {
     mediator = new StatsMediator();
     mediator.SetStats(this);
@@ -44,8 +47,12 @@ public class StatsBase : MonoBehaviour {
   }
 
   public float AddHealth(float amount) {
+    var before = Health;
     var health = Mathf.Clamp(baseValues[StatType.Health] + amount, 0, MaxHealth);
     baseValues[StatType.Health] = health;
+
+    OnAddHealth?.Invoke(before, health);
+
     return health;
   }
 
@@ -54,8 +61,6 @@ public class StatsBase : MonoBehaviour {
 
     var damageReduction = Armor * 0.04f;
     var finalDamage = damage * (1 - damageReduction);
-
-    Debug.Log($"damage -> finalDamage: {damage} -> {finalDamage}");
 
     var health = AddHealth(-finalDamage);
     if (health > 0) {

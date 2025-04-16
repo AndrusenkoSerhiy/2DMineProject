@@ -17,12 +17,12 @@ namespace Repair {
     [SerializeField] private float blinkTime = 1.5f;
 
     private Inventory.Inventory resourcesInventory;
-    private RobotObject robotObject;
+    private RobotRepairObject robotObject;
     private Coroutine blinkCoroutine;
     private List<int> blinkItems;
     public event Action OnRepaired;
 
-    public void Setup(RobotObject settings) {
+    public void Setup(RobotRepairObject settings) {
       robotObject = settings;
       resourcesInventory =
         GameManager.Instance.PlayerInventory.GetInventoryByTypeAndId(robotObject.InventoryType, robotObject.Id);

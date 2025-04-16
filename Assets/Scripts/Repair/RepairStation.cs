@@ -7,16 +7,17 @@ using World;
 
 namespace Repair {
   public class RepairStation : MonoBehaviour, IInteractable {
-    [FormerlySerializedAs("robotRepairObject")] [SerializeField] private RobotObject robotObject;
+    [SerializeField] private RobotRepairObject robotObject;
     [SerializeField] private CellObject cellObject;
     [SerializeField] private string interactText;
-    [SerializeField] private string interactHeader;
+    [SerializeField] private string holdInteractText;
 
     private WindowBase window;
     private RepairWindow repairWindow;
 
     public string InteractionText => interactText;
-    public string InteractionHeader => interactHeader;
+    public bool HasHoldInteraction { get; }
+    public string HoldInteractionText => holdInteractText;
 
     public bool Interact(PlayerInteractor playerInteractor) {
       Init();
@@ -34,6 +35,10 @@ namespace Repair {
       }
 
       return true;
+    }
+
+    public bool HoldInteract(PlayerInteractor playerInteractor) {
+      return false;
     }
 
     private void Init() {

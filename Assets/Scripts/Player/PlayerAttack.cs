@@ -23,6 +23,15 @@ namespace Player {
       base.Start();
     }
 
+    protected override void AfterTargetsTakenDamage(int targetsCount) {
+      if (playerEquipment.EquippedItem == null) {
+        return;
+      }
+
+      var isHit = targetsCount > 0;
+      playerEquipment.EquippedItem.ApplyDurabilityLoss(isHit);
+    }
+
     private void SetDefaultAttackParam() {
       UpdateParams(.5f, statsObject.attackRange, statsObject.attackColliderSize.x, statsObject.attackColliderSize.y);
     }
@@ -47,6 +56,7 @@ namespace Player {
     }
 
     private void SetParamsFromPlayerStats() {
+      CancelAttack(null, null);
       /*var entityStats = GetEntityStats();
       attackLayer = statsObject.attackLayer;
       blockDamage = entityStats.BlockDamage;
@@ -54,14 +64,14 @@ namespace Player {
       attackRange = entityStats.AttackRange;
       timeBtwAttacks = entityStats.TimeBtwAttacks;
       staminaUsage = entityStats.AttackStaminaUsage;*/
-      
+
       attackLayer = statsObject.attackLayer;
       /*blockDamage = statsObject.blockDamage;
       entityDamage = statsObject.entityDamage;
       attackRange = statsObject.attackRange;
       timeBtwAttacks = statsObject.timeBtwAttacks;
       staminaUsage = statsObject.attackStaminaUsage;*/
-      
+
       attackID = statsObject.attackID;
       colliderSize = statsObject.attackColliderSize;
       SetDefaultAttackParam();
@@ -109,14 +119,14 @@ namespace Player {
       attackRange = entityStats.AttackRange;
       timeBtwAttacks = entityStats.TimeBtwAttacks;
       staminaUsage = entityStats.AttackStaminaUsage;*/
-      
+
       //this moves to modifiers
       /*blockDamage = attackableItem.BlockDamage;
       entityDamage = attackableItem.EntityDamage;
       attackRange = attackableItem.Range;
       timeBtwAttacks = attackableItem.TimeBtwAttacks;
       staminaUsage = attackableItem.StaminaUsage;*/
-      
+
       attackID = attackableItem.AnimationAttackID;
       colliderSize = attackableItem.ColliderSize;
       maxTargets = attackableItem.MaxTargets;

@@ -1,66 +1,88 @@
 using System;
 using System.Collections.Generic;
-using Windows;
 using Animation;
 using Interaction;
 using Inventory;
 using Player;
-using Repair;
-using SaveSystem;
 using Scriptables.Repair;
 using UnityEngine;
 
 namespace Tools {
-  public class MiningRobotTool : MonoBehaviour, IInteractable, ISaveLoad {
+  public class MiningRobotTool : MonoBehaviour, IInteractable /*, ISaveLoad*/ {
     [SerializeField] private string interactEnterName;
     [SerializeField] private string interactExitName;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private List<Transform> exitTransforms;
-    [SerializeField] private string interactHeader;
+    [SerializeField] private string holdInteractText;
 
     [SerializeField] private RobotObject robotObject;
-    [SerializeField] private string repairText;
     [SerializeField] private SpriteRenderer robotImage;
     [SerializeField] private SpriteRenderer brokenRobotImage;
     [SerializeField] private Animator animator;
-    [SerializeField] private bool broken = true;
+    [SerializeField] private PlayerStats stats;
+    // [SerializeField] private bool broken = true;
 
     private bool isPlayerInside;
 
+    private GameManager gameManager;
     private PlayerController playerController;
     private MiningRobotController miningRobotController;
+    private PlayerInventory playerInventory;
 
     private string id;
-    private WindowBase window;
-    private RepairWindow repairWindow;
+    private bool broken;
+
+    private int repairValue;
+
+    private bool playerInRobot;
+    // private WindowBase window;
+    // private RepairWindow repairWindow;
 
     public static event Action OnPlayerEnteredRobot;
     public static event Action OnPlayerSitOnRobot;
     public static event Action OnPlayerExitFromRobot;
 
+    public string InteractionText => isPlayerInside
+      ? $"{interactExitName}"
+      : $"{interactEnterName}";
+
+    public bool HasHoldInteraction => !playerInRobot && CanRepair();
+    public string HoldInteractionText => holdInteractText;
+
     private void Start() {
       id = robotObject.Id;
 
-      Load();
+      // Load();
+      broken = IsBroken();
       CheckRobotRepaired();
 
-      playerController = GameManager.Instance.PlayerController;
-      miningRobotController = GameManager.Instance.MiningRobotController;
+      gameManager = GameManager.Instance;
+      playerController = gameManager.PlayerController;
+      miningRobotController = gameManager.MiningRobotController;
+      playerInventory = gameManager.PlayerInventory;
       animator.SetBool("IsBroken", broken);
+      stats.OnAddHealth += OnAddHealthHandler;
     }
 
-    public string InteractionText => broken
-      ? $"{repairText}"
-      : isPlayerInside
-        ? $"{interactExitName}"
-        : $"{interactEnterName}";
+    private void OnDisable() {
+      stats.OnAddHealth -= OnAddHealthHandler;
+    }
 
-    public string InteractionHeader => interactHeader;
+    private void OnAddHealthHandler(float before, float after) {
+      var brokenBefore = broken;
+      broken = after <= 0;
+
+      if (brokenBefore == broken) {
+        return;
+      }
+
+      animator.SetBool("IsBroken", broken);
+      CheckRobotRepaired();
+    }
 
     public bool Interact(PlayerInteractor playerInteractor) {
       if (broken) {
-        InitRepairWindow();
-        window.Show();
+        GameManager.Instance.MessagesManager.ShowSimpleMessage("Robot is broken.");
         return true;
       }
 
@@ -73,6 +95,11 @@ namespace Tools {
         ExitFromRobot();
       }
 
+      return true;
+    }
+
+    public bool HoldInteract(PlayerInteractor playerInteractor) {
+      Repair();
       return true;
     }
 
@@ -101,6 +128,7 @@ namespace Tools {
       playerController.ResetLocalScale();
 
       AddRobotInventoryToMainInventory();
+      playerInRobot = true;
       OnPlayerSitOnRobot?.Invoke();
     }
 
@@ -119,6 +147,7 @@ namespace Tools {
       GameManager.Instance.QuickSlotListener.Activate();
 
       RemoveRobotInventoryFromMainInventory();
+      playerInRobot = false;
       OnPlayerExitFromRobot?.Invoke();
     }
 
@@ -139,7 +168,7 @@ namespace Tools {
       GameManager.Instance.PlayerInventory.GetInventory().RemoveInventoryObject(robotInventory.MainInventoryObject);
     }
 
-    private void InitRepairWindow() {
+    /*private void InitRepairWindow() {
       if (window != null) {
         return;
       }
@@ -154,32 +183,71 @@ namespace Tools {
 
       window = windowObj.GetComponent<WindowBase>();
       GameManager.Instance.WindowsController.AddWindow(window);
-    }
+    }*/
 
-    private void OnRobotRepairedHandler() {
-      broken = false;
-      AnimationEventManager.onRobotRepaired += RobotRepaired;
-      animator.SetBool("IsBroken", broken);
-      animator.SetTrigger("Repair");
+    private void Repair() {
+      if (!CanRepair()) {
+        return;
+      }
+
+      repairValue = playerInventory.Repair(stats.MaxHealth, stats.Health, robotObject.RepairCost);
+
+      if (repairValue == 0) {
+        return;
+      }
+
+      if (broken) {
+        AnimationEventManager.onRobotRepaired += RobotRepaired;
+        animator.SetBool("IsBroken", false);
+        animator.SetTrigger("Repair");
+      }
+      else {
+        stats.AddHealth(repairValue);
+      }
     }
 
     private void RobotRepaired() {
-      Repair();
+      stats.AddHealth(repairValue);
+      ShowNormalTexture();
       AnimationEventManager.onRobotRepaired -= RobotRepaired;
     }
 
     private void CheckRobotRepaired() {
       if (!broken) {
-        Repair();
+        ShowNormalTexture();
+      }
+      else {
+        ShowBrokenTexture();
       }
     }
 
-    private void Repair() {
+    private void ShowNormalTexture() {
       robotImage.enabled = true;
       brokenRobotImage.enabled = false;
     }
 
-    public void Save() {
+    private void ShowBrokenTexture() {
+      brokenRobotImage.enabled = true;
+      robotImage.enabled = false;
+    }
+
+    private bool CanRepair() {
+      if (stats == null) {
+        return false;
+      }
+
+      return stats.Health < stats.MaxHealth;
+    }
+
+    private bool IsBroken() {
+      if (stats == null) {
+        return false;
+      }
+
+      return stats.Health == 0;
+    }
+
+    /*public void Save() {
       SaveLoadSystem.Instance.gameData.Robots[id] = new RobotData {
         Id = id,
         Broken = broken
@@ -197,6 +265,6 @@ namespace Tools {
       }
 
       broken = data.Broken;
-    }
+    }*/
   }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Inventory;
 using Scriptables.Items;
+using UnityEngine;
 
 namespace Craft {
   public class InventoriesPool {
@@ -63,6 +64,38 @@ namespace Craft {
       }
 
       return false;
+    }
+
+    public bool IsItemInInventory(ItemObject itemObject) {
+      foreach (var inventory in pool) {
+        if (inventory.IsItemInInventory(itemObject)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    public bool HasRepairKits() {
+      Debug.Log("HasRepairKits");
+      foreach (var inventory in pool) {
+        if (inventory.HasRepairKits()) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    public int UseRepairKits(int amount) {
+      foreach (var inventory in pool) {
+        amount = inventory.UseRepairKits(amount);
+        if (amount == 0) {
+          return 0;
+        }
+      }
+
+      return amount;
     }
 
     private void InitInventories() {

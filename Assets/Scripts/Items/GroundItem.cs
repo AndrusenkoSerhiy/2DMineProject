@@ -7,7 +7,7 @@ namespace Items {
   public class GroundItem : MonoBehaviour, IInteractable {
     [SerializeField] private int count = 1;
     [SerializeField] private string interactName;
-    [SerializeField] private string interactHeader;
+    [SerializeField] private string holdInteractText;
     [SerializeField] private ItemObject item;
     [SerializeField] private bool isPicked;
 
@@ -21,7 +21,8 @@ namespace Items {
     }
 
     public string InteractionText => $"Pickup {item.name}";
-    public string InteractionHeader => interactHeader;
+    public bool HasHoldInteraction { get; }
+    public string HoldInteractionText => holdInteractText;
 
     public ItemObject Item => item;
 
@@ -123,6 +124,10 @@ namespace Items {
       gameManager.GroundItemPool.ReturnItem(this);
 
       return true;
+    }
+
+    public bool HoldInteract(PlayerInteractor playerInteractor) {
+      return false;
     }
   }
 }

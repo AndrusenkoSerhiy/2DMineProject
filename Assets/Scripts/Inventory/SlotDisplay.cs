@@ -14,10 +14,27 @@ namespace Inventory {
     public List<ItemType> AllowedTypes;
     public List<ItemObject> AllowedItems;
     public int MaxAllowedAmount = -1;
+    public Item currentItem;
+    public InventoryType type;
 
     public TextMeshProUGUI Text => text;
     public Image Background => background;
     public Image TypeIcon => typeIcon;
+
+    public virtual void UpdateUI(InventorySlot slot) {
+      currentItem = slot.Item;
+      type = slot.InventoryType;
+
+      if (!currentItem.info || slot.amount <= 0) {
+        ClearText();
+        ClearBackground();
+      }
+      else {
+        var newText = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
+        SetBackground(currentItem.info.UiDisplay);
+        SetText(newText);
+      }
+    }
 
     public bool IsAllowedItem(ItemObject item) {
       if (item == null) {

@@ -120,9 +120,9 @@ namespace Inventory {
         //TODO 
         //need to replace this condition
         var activeWindow = GameManager.Instance.WindowsController.WindowsList.Find(e => e.IsShow);
-        if(activeWindow && activeWindow.name.Equals("RespawnWindow"))
+        if (activeWindow && activeWindow.name.Equals("RespawnWindow"))
           return;
-        
+
         inventoryWindow.Show();
       }
     }
@@ -207,6 +207,26 @@ namespace Inventory {
 
       GameManager.Instance.MessagesManager.ShowDroppedResourceMessage(item.info, amount);
       return true;
+    }
+
+    public int Repair(float max, float currentValue, int repairCost) {
+      if (!InventoriesPool.HasRepairKits()) {
+        GameManager.Instance.MessagesManager.ShowSimpleMessage("You don't have repair kits.");
+        return 0;
+      }
+
+      var valuePerKit = max / repairCost;
+      Debug.Log($"MaxHealth: {max}, repairCost: {repairCost}, valuePerKit: {valuePerKit}");
+      var kitsNeeded = Mathf.CeilToInt((max - currentValue) / valuePerKit);
+
+      var remainingKits = InventoriesPool.UseRepairKits(kitsNeeded);
+      var kitsUsed = kitsNeeded - remainingKits;
+      var repairValue = Mathf.CeilToInt(kitsUsed * valuePerKit);
+
+      Debug.Log(
+        $"kitsNeeded: {kitsNeeded}, remainingKits: {remainingKits}, kitsUsed: {kitsUsed}, repairValue: {repairValue}");
+
+      return repairValue;
     }
 
     #region Save/Load

@@ -29,6 +29,7 @@ namespace Inventory {
     private TempDragItem tempDragItem;
     private Transform tempDragParent;
     private Dictionary<GameObject, InventorySlot> slotsOnInterface;
+    private int activeSlotsCount;
 
     public event Action OnLoaded;
     public event Action OnDisabled;
@@ -110,6 +111,12 @@ namespace Inventory {
         return;
       }
 
+      if (Inventory.Slots.Length == activeSlotsCount) {
+        return;
+      }
+
+      activeSlotsCount = 0;
+
       for (var i = 0; i < slotsPrefabs.Length; i++) {
         var slotPrefab = slotsPrefabs[i];
         var obj = slotPrefab.gameObject;
@@ -122,6 +129,7 @@ namespace Inventory {
 
         if (!obj.activeSelf) {
           obj.SetActive(true);
+          activeSlotsCount++;
         }
 
         var slot = Inventory.Slots[i];
@@ -193,6 +201,8 @@ namespace Inventory {
       var isMainInventorySlot = slot.InventoryId == inventory.Id;
       var slotDisplay = slot.SlotDisplay;
 
+      slotDisplay.UpdateUI(slot);
+
       if (!isMainInventorySlot) {
         slotDisplay.SetTypeIcon(gameManager.PlayerInventory.GetInventoryIconByType(slot.InventoryObjectType));
       }
@@ -200,7 +210,7 @@ namespace Inventory {
         slotDisplay.ClearTypeIcon();
       }
 
-      if (slot.Item.info == null || slot.amount <= 0) {
+      /*if (slot.Item.info == null || slot.amount <= 0) {
         slotDisplay.ClearText();
         slotDisplay.ClearBackground();
       }
@@ -208,7 +218,7 @@ namespace Inventory {
         var text = slot.amount == 1 ? string.Empty : slot.amount.ToString("n0");
         slotDisplay.SetBackground(slot.Item.info.UiDisplay);
         slotDisplay.SetText(text);
-      }
+      }*/
     }
 
     private void AddSlotsUpdateEvents() {
@@ -407,7 +417,8 @@ namespace Inventory {
         return false;
       }
 
-      if (!targetSlot.SlotDisplay.IsAllowedItem(slot.Item.info) || !slot.SlotDisplay.IsAllowedItem(targetSlot.Item.info)) {
+      if (!targetSlot.SlotDisplay.IsAllowedItem(slot.Item.info) ||
+          !slot.SlotDisplay.IsAllowedItem(targetSlot.Item.info)) {
         gameManager.MessagesManager.ShowSimpleMessage("Item not allowed.");
         return false;
       }
@@ -420,7 +431,7 @@ namespace Inventory {
       }
 
       // Handle merging items
-      if (!targetUI.PreventMergeIn && slot.SlotsHasSameItems(targetSlot)) {
+      if (!targetUI.PreventMergeIn && slot.CanMerge(targetSlot)) {
         Debug.Log("Merging items");
         return targetInventory.MergeItems(slot, targetSlot);
       }

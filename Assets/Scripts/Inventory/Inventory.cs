@@ -159,10 +159,6 @@ namespace Inventory {
     }
 
     public bool MergeItems(InventorySlot slot, InventorySlot targetSlot) {
-      if (!slot.CanMerge(targetSlot)) {
-        return false;
-      }
-
       var remainingAmount = AddItemBySlot(slot, targetSlot);
 
       if (remainingAmount <= 0) {
@@ -402,5 +398,38 @@ namespace Inventory {
 
       return null;
     }
+
+    public bool IsItemInInventory(ItemObject itemObject) {
+      if (itemObject == null) {
+        return false;
+      }
+
+      foreach (var slot in Slots) {
+        if (!slot.isEmpty && slot.Item.info.Id == itemObject.Id) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    #region Repair
+
+    public bool HasRepairKits() {
+      var repairKitObject = gameManager?.ItemDatabaseObject?.RepairKit;
+      return IsItemInInventory(repairKitObject);
+    }
+
+    /// <summary>
+    /// Uses repair kits in the inventory. Returns the amount that couldn't be used.
+    /// </summary>
+    /// <param name="amount">The amount of repair kits to use.</param>
+    /// <returns>The amount that couldn't be used due to not enough repair kits.</returns>
+    public int UseRepairKits(int amount) {
+      var repairKitObject = gameManager?.ItemDatabaseObject?.RepairKit;
+      return repairKitObject == null ? amount : RemoveItem(repairKitObject.Id, amount);
+    }
+
+    #endregion
   }
 }

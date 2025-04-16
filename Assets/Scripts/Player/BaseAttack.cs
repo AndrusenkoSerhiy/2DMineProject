@@ -60,7 +60,7 @@ namespace Player {
       animator.SetBool(animParam.IsAttacking, true);
     }
 
-    private void CancelAttack(object sender, EventArgs e) {
+    protected void CancelAttack(object sender, EventArgs e) {
       animator.SetBool(animParam.IsAttacking, false);
       firstAttack = false;
     }
@@ -158,7 +158,12 @@ namespace Player {
         iDamageables.Add(target);
       }
 
+      AfterTargetsTakenDamage(targets.Count);
+
       ReturnAttackableToDamageable();
+    }
+
+    protected virtual void AfterTargetsTakenDamage(int targetsCount) {
     }
 
     private void SetTargetsFromHighlight() {

@@ -26,15 +26,16 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 1
   Description: pickaxe description
+  statModifiers: []
+  weaponType: 20
   useSelfAnim: 0
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280
-  blockDamage: 6
-  entityDamage: 3
-  range: 3
-  timeBtwAttacks: 0.4
-  staminaUsage: 5
   animationattackID: 0
   colliderSize: {x: 0.5, y: 0.5}
   maxTargets: 1
+  repairCost: 1
+  maxDurability: 100
+  durabilityUse: 0.4
+  durabilityUsageType: 0

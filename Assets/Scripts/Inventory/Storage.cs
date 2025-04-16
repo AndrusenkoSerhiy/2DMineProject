@@ -7,11 +7,12 @@ namespace Inventory {
   public class Storage : MonoBehaviour, IInteractable {
     [SerializeField] private GameObject interfacePrefab;
     [SerializeField] private string interactText;
-    [SerializeField] private string interactHeader;
+    [SerializeField] private string holdInteractText;
     [SerializeField] private InventoryType inventoryType;
     [SerializeField] private BuildingDataObject buildObject;
     public string InteractionText => interactText;
-    public string InteractionHeader => interactHeader;
+    public bool HasHoldInteraction { get; }
+    public string HoldInteractionText => holdInteractText;
 
     private StorageWindow storageWindow;
 
@@ -26,6 +27,10 @@ namespace Inventory {
       }
 
       return true;
+    }
+
+    public bool HoldInteract(PlayerInteractor playerInteractor) {
+      return false;
     }
 
     private void Init() {

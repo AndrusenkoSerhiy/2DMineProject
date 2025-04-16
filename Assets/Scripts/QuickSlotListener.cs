@@ -43,7 +43,7 @@ public class QuickSlotListener : MonoBehaviour {
 
   private void Start() {
     itemConsumer = new ItemConsumer();
-    
+
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
@@ -72,7 +72,7 @@ public class QuickSlotListener : MonoBehaviour {
     selectedItem = slots[selectedSlotIndex].Item;
     selectedSlot.Select();
     // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
-    gameManager.PlayerEquipment.EquipTool(selectedSlot.Item.info);
+    gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
     // selectedSlot.Item?.info?.Use();
     itemConsumer.SetActiveSlot(selectedSlot);
     OnActivate?.Invoke();
@@ -141,7 +141,7 @@ public class QuickSlotListener : MonoBehaviour {
     selectedItem = targetSlot.Item;
     selectedSlot.Select();
     // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
-    gameManager.PlayerEquipment.EquipTool(selectedSlot.Item.info);
+    gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
     // selectedSlot.Item.info.Use();
     itemConsumer.SetActiveSlot(selectedSlot);
   }
@@ -151,7 +151,7 @@ public class QuickSlotListener : MonoBehaviour {
       return;
 
     // gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
-    gameManager.PlayerEquipment.UnEquipTool(selectedItem.info);
+    gameManager.PlayerEquipment.UnEquipTool();
     // selectedItem?.info?.Use();
     itemConsumer.DeactivateItem(selectedItem);
     selectedItem = null;
@@ -217,7 +217,7 @@ public class QuickSlotListener : MonoBehaviour {
     if (selectedSlot != null && !selectedSlot.Item.isEmpty) {
       //(selectedItem != null) {
       // gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
-      gameManager.PlayerEquipment.UnEquipTool(selectedItem.info);
+      gameManager.PlayerEquipment.UnEquipTool();
     }
 
     selectedSlot?.Unselect();
@@ -232,7 +232,7 @@ public class QuickSlotListener : MonoBehaviour {
     if (selectedSlot != null && !selectedSlot.Item.isEmpty) {
       //(selectedItem != null) {
       // gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
-      gameManager.PlayerEquipment.UnEquipTool(selectedItem.info);
+      gameManager.PlayerEquipment.UnEquipTool();
     }
 
     // selectedItem?.info?.Use();
@@ -261,7 +261,7 @@ public class QuickSlotListener : MonoBehaviour {
 
     if (selectedSlot != null && selectedSlot.Item.info != null) {
       // gameManager.PlayerEquipment.OnRemoveItem(selectedSlot);
-      gameManager.PlayerEquipment.UnEquipTool(selectedSlot.Item.info);
+      gameManager.PlayerEquipment.UnEquipTool();
       selectedSlot.Unselect();
       // selectedItem?.info?.Use();
       itemConsumer.DeactivateItem(selectedItem);
@@ -271,7 +271,7 @@ public class QuickSlotListener : MonoBehaviour {
     selectedItem = slot.Item;
     selectedSlot.Select();
     // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
-    gameManager.PlayerEquipment.EquipTool(selectedSlot.Item.info);
+    gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
     // selectedSlot.Item.info.Use();
     itemConsumer.SetActiveSlot(selectedSlot);
   }

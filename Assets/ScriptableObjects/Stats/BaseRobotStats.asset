@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 300
   maxHealth: 300
-  healthRegen: 1
+  healthRegen: 0
   healthMaxPossibleValue: 400
+  armor: 5
+  armorMaxPossibleValue: 20
   stamina: 120
   maxStamina: 120
   staminaDrain: 50
@@ -31,7 +33,6 @@ MonoBehaviour:
   attackStaminaUsage: 1
   attackID: 0
   attackColliderSize: {x: 1, y: 1}
-  armor: 5
   playerLayer:
     serializedVersion: 2
     m_Bits: 64

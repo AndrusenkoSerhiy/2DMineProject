@@ -63,6 +63,7 @@ MonoBehaviour:
     canApplyWhenPreviousAt: 100
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}
+  weaponType: 10
   useSelfAnim: 1
   attackLayer:
     serializedVersion: 2
@@ -70,3 +71,7 @@ MonoBehaviour:
   animationattackID: 1
   colliderSize: {x: 1, y: 1}
   maxTargets: 1
+  repairCost: 2
+  maxDurability: 100
+  durabilityUse: 5
+  durabilityUsageType: 1

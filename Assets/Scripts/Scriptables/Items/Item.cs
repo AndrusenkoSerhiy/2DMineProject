@@ -80,14 +80,12 @@ namespace Scriptables.Items {
 
       durability = MathF.Max(0, durability - durableItemRef.DurabilityUse);
 
-      OnDurabilityChanged?.Invoke(before, durability);
-
-      if (durability != 0) {
-        return;
+      if (durability == 0) {
+        isBroken = true;
+        OnItemBroken?.Invoke();
       }
 
-      isBroken = true;
-      OnItemBroken?.Invoke();
+      OnDurabilityChanged?.Invoke(before, durability);
     }
 
     public void AddDurability(int repairValue) {
@@ -99,14 +97,12 @@ namespace Scriptables.Items {
 
       durability = MathF.Min(maxDurability, durability + repairValue);
 
-      OnDurabilityChanged?.Invoke(before, durability);
-
-      if (durability == 0) {
-        return;
+      if (durability > 0 && isBroken) {
+        isBroken = false;
+        OnItemRepaired?.Invoke();
       }
 
-      isBroken = false;
-      OnItemRepaired?.Invoke();
+      OnDurabilityChanged?.Invoke(before, durability);
     }
   }
 }

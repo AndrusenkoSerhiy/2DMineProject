@@ -59,6 +59,7 @@ namespace Inventory {
 
       if (isFullDurability && isSliderVisible) {
         HideSlider();
+        UpdateBgColor();
         return;
       }
 

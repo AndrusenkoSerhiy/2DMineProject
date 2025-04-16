@@ -39,6 +39,9 @@ public class FoodModifiersUI : MonoBehaviour {
   }
 
   private void RemoveModifiersListeners() {
+    if(playerStats == null)
+      return;
+    
     playerStats.Mediator.OnModifierAdded -= OnModifierAddedHandler;
     playerStats.Mediator.OnModifierRemoved -= OnModifierRemovedHandler;
   }

@@ -195,7 +195,7 @@ public class QuickSlotListener : MonoBehaviour {
 
   private void ChooseSlotByMouseWheel(InputAction.CallbackContext obj) {
     var mouseScrollY = obj.ReadValue<float>();
-    var index = (int)(selectedSlotIndex + mouseScrollY);
+    var index = (int)(selectedSlotIndex - mouseScrollY);
 
     if (index == selectedSlotIndex)
       return;

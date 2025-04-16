@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Windows;
 using Audio;
 using Craft;
@@ -20,6 +21,7 @@ using ScriptableObjects;
 using Settings;
 using Stats;
 using UI;
+using UnityEngine.Serialization;
 using Utility;
 
 [DefaultExecutionOrder(-5)]
@@ -62,7 +64,11 @@ public class GameManager : PersistentSingleton<GameManager> {
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
-
+  public bool showMenuOnStart = true;
+  [FormerlySerializedAs("objectList")]
+  [Tooltip("UI object that need to be disabled when we start from menu")]
+  [SerializeField] private List<GameObject> uiObjectList;
+  
   private PlayerController playerController;
   private PlayerControllerBase currPlayerController;
   private MiningRobotController miningRobotController;
@@ -122,9 +128,7 @@ public class GameManager : PersistentSingleton<GameManager> {
     set => currPlayerController = value;
     get => currPlayerController;
   }
-
-  public bool showMenuOnStart = true;
-
+  
   protected override void Awake() {
     base.Awake();
 
@@ -136,14 +140,22 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   private void Start() {
     if (!showMenuOnStart) {
+      mainMenu.Hide();
       return;
     }
-
+    
+    EnableUIElements(false);
     startGameCameraController.Init();
     mainMenu.Show();
     EnableInput(false);
     //need to subscribe for player grounded first time
     playerController.GroundedChanged += ChangeGround;
+  }
+
+  private void EnableUIElements(bool state) {
+    foreach (var obj in uiObjectList) {
+      obj.SetActive(state);
+    }
   }
 
   //use for start cutscene fall to ground
@@ -156,8 +168,10 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   private void ChangeGround(bool arg1, float arg2) {
     playerController.GroundedChanged -= ChangeGround;
+    
     EnableInput(true);
     playerController.SetLockHighlight(false);
+    EnableUIElements(true);
   }
 
   public void StartNewGame() {

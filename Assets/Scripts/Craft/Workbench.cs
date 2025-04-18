@@ -5,9 +5,10 @@ namespace Craft {
   public class Workbench : Crafter, IInteractable {
     [SerializeField] private string interactText;
     [SerializeField] private string holdInteractText;
+    [SerializeField] private bool hasHoldInteraction = true;
 
     public string InteractionText => interactText;
-    public bool HasHoldInteraction { get; }
+    public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
 
     public bool Interact(PlayerInteractor playerInteractor) {
@@ -17,7 +18,9 @@ namespace Craft {
     }
 
     public bool HoldInteract(PlayerInteractor playerInteractor) {
-      return false;
+      CheckHoldInteract();
+
+      return true;
     }
   }
 }

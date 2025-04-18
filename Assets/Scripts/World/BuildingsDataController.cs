@@ -21,7 +21,7 @@ namespace World {
       var convertedCoords = CoordsTransformer.GridToBuildingsGrid(xCoord, yCoord);
       return _buildDatas[convertedCoords.X, convertedCoords.Y];
     }
-    
+
     public Building GetBuildData(int xCoord, int yCoord) {
       return _buildDatas[xCoord, yCoord];
     }
@@ -40,6 +40,13 @@ namespace World {
       var buildCoords = CoordsTransformer.WorldToGridBuildings(pos);
       _buildDatas[buildCoords.X, buildCoords.Y] = data;
       SetBuildFill(data, worldCoords.X, worldCoords.Y);
+    }
+
+    public void RemoveBuildData(Building data, Vector3 pos) {
+      var worldCoords = CoordsTransformer.WorldToGrid(pos);
+      var buildCoords = CoordsTransformer.WorldToGridBuildings(pos);
+      _buildDatas[buildCoords.X, buildCoords.Y] = null;
+      SetBuildFill(data, worldCoords.X, worldCoords.Y, 0);
     }
 
     public int GetCellFill(int x, int y) {

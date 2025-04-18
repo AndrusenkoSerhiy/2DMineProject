@@ -21,7 +21,7 @@ public class PlaceCell : MonoBehaviour {
 
   [SerializeField] private int radius = 1;
   public static event Action OnSlotReset;
-  
+
   private PlayerControllerBase playerController;
   private GameObject spawnPrefab;
   private ChunkController chunkController;
@@ -37,7 +37,7 @@ public class PlaceCell : MonoBehaviour {
 
   public void ActivateBuildMode(Building bData, ResourceData rData, GameObject sPrefab) {
     spawnPrefab = sPrefab;
-    if (!isPreviewing){
+    if (!isPreviewing) {
       EnableBuildMode(GetSelectedSlot(), bData, rData);
     }
     else {
@@ -205,11 +205,16 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void PlaceBuilding() {
-    
     var coords = CoordsTransformer.WorldToGridBuildings(GetSnappedWorldPosition());
     var build = chunkController.SpawnBuild(coords, buildingData);
     AfterPlaceCellActions(build);
     SetCellsUndamegable(coords.X, coords.Y, build.Building.SizeX);
+  }
+
+  public bool RemoveBuilding(BuildingDataObject buildObject) {
+    chunkController.RemoveBuild(buildObject);
+
+    return true;
   }
 
   private void PlaceBuildingBlock() {
@@ -222,24 +227,25 @@ public class PlaceCell : MonoBehaviour {
     var firstCellSkipped = false;
     for (var x = 0; x < objectSizeX; x++) {
       for (var y = 0; y < objectSizeY; y++) {
-        var coordX = startX + x; 
+        var coordX = startX + x;
         var coordY = startY - y;
         if (!firstCellSkipped) {
           firstCellSkipped = true;
           continue;
         }
+
         //chunkController.ChunkData.SetCellFill(coordX, coordY);
         chunkController.ChunkData.ForceCellFill(emptyResourceData, coordX, coordY);
       }
     }
-    
+
     SetCellsUndamegable(startX, startY, objectSizeX);
   }
 
   private void SetCellsUndamegable(int startX, int startY, int objectSizeX) {
     var coordY = startY + 1;
     for (var x = 0; x < objectSizeX; x++) {
-      var coordX = startX + x; 
+      var coordX = startX + x;
       chunkController.ChunkData.GetCellData(coordX, coordY).canTakeDamage = false;
     }
   }

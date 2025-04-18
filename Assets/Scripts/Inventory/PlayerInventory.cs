@@ -5,6 +5,7 @@ using Scriptables.Items;
 using UnityEngine;
 using SaveSystem;
 using Scriptables;
+using World;
 
 namespace Inventory {
   [DefaultExecutionOrder(-1)]
@@ -15,6 +16,7 @@ namespace Inventory {
     private Dictionary<string, Inventory> inventories = new();
     private Dictionary<InventoryType, InventorySettings> settings = new();
     private InventoriesPool inventoriesPool;
+    private GameManager gameManager;
 
     //Inventories that are used in farm/craft
     public InventoriesPool InventoriesPool => inventoriesPool;
@@ -41,6 +43,8 @@ namespace Inventory {
     }
 
     private void Awake() {
+      gameManager = GameManager.Instance;
+
       foreach (var inventorySettings in inventoriesSettings) {
         settings.Add(inventorySettings.type, inventorySettings);
       }
@@ -49,8 +53,8 @@ namespace Inventory {
     }
 
     private void Start() {
-      inventoryWindow = GameManager.Instance.WindowsController.GetWindow<PlayerInventoryWindow>();
-      GameManager.Instance.UserInput.controls.UI.Inventory.performed += ctx => ShowInventory();
+      inventoryWindow = gameManager.WindowsController.GetWindow<PlayerInventoryWindow>();
+      gameManager.UserInput.controls.UI.Inventory.performed += ctx => ShowInventory();
 
       AddDefaultItemOnFirstStart();
     }
@@ -98,7 +102,7 @@ namespace Inventory {
 
     private void AddDefaultItemOnFirstStart() {
       var itemAlreadyAdded = SaveLoadSystem.Instance.gameData.DefaultItemAdded;
-      var defaultItems = GameManager.Instance.ItemDatabaseObject.DefaultItemsOnStart;
+      var defaultItems = gameManager.ItemDatabaseObject.DefaultItemsOnStart;
 
       if (itemAlreadyAdded || defaultItems.Count == 0) {
         return;
@@ -119,7 +123,7 @@ namespace Inventory {
       else {
         //TODO 
         //need to replace this condition
-        var activeWindow = GameManager.Instance.WindowsController.WindowsList.Find(e => e.IsShow);
+        var activeWindow = gameManager.WindowsController.WindowsList.Find(e => e.IsShow);
         if (activeWindow && activeWindow.name.Equals("RespawnWindow"))
           return;
 
@@ -130,12 +134,12 @@ namespace Inventory {
     public void AddItemToInventory(ItemObject item, int count, Vector3 cellPos) {
       var addedAmount = AddItemToInventoryWithOverflowDrop(new Item(item), count);
 
-      // GameManager.Instance.RecipesManager.DiscoverMaterial(item);
-      GameManager.Instance.MessagesManager.ShowAddResourceMessage(item, addedAmount);
+      // gameManager.RecipesManager.DiscoverMaterial(item);
+      gameManager.MessagesManager.ShowAddResourceMessage(item, addedAmount);
 
       //ObjectPooler.Instance.SpawnFlyEffect(item, cellPos);
       if (count != 0) {
-        GameManager.Instance.PoolEffects.SpawnFlyEffect(item, cellPos);
+        gameManager.PoolEffects.SpawnFlyEffect(item, cellPos);
       }
 
       //if (withAdditional) AddAdditionalItem(item, cellPos);
@@ -158,11 +162,11 @@ namespace Inventory {
         var count = Random.Range((int)currentResource.rndCount.x, (int)currentResource.rndCount.y);
         var addedAmount = AddItemToInventoryWithOverflowDrop(new Item(currentResource.item), count);
 
-        // GameManager.Instance.RecipesManager.DiscoverMaterial(currentResource.item);
-        GameManager.Instance.MessagesManager.ShowAddResourceMessage(currentResource.item, addedAmount);
+        // gameManager.RecipesManager.DiscoverMaterial(currentResource.item);
+        gameManager.MessagesManager.ShowAddResourceMessage(currentResource.item, addedAmount);
 
         //ObjectPooler.Instance.SpawnFlyEffect(currentResource.item, cellPos);
-        GameManager.Instance.PoolEffects.SpawnFlyEffect(currentResource.item, cellPos);
+        gameManager.PoolEffects.SpawnFlyEffect(currentResource.item, cellPos);
       }
     }
 
@@ -194,39 +198,54 @@ namespace Inventory {
         return false;
       }
 
-      var groundObj = GameManager.Instance.GroundItemPool.GetItem(item.info);
+      var groundObj = gameManager.GroundItemPool.GetItem(item.info);
 
       if (groundObj == null) {
-        GameManager.Instance.MessagesManager.ShowSimpleMessage("Cant spawn item on the ground");
+        gameManager.MessagesManager.ShowSimpleMessage("Cant spawn item on the ground");
         return false;
       }
 
-      groundObj.transform.position = GameManager.Instance.PlayerController.transform.position + new Vector3(0, 3, 0);
+      groundObj.transform.position = gameManager.PlayerController.transform.position + new Vector3(0, 3, 0);
       groundObj.transform.rotation = Quaternion.identity;
       groundObj.Count = amount;
 
-      GameManager.Instance.MessagesManager.ShowDroppedResourceMessage(item.info, amount);
+      gameManager.MessagesManager.ShowDroppedResourceMessage(item.info, amount);
       return true;
     }
 
     public int Repair(float max, float currentValue, int repairCost) {
       if (!InventoriesPool.HasRepairKits()) {
-        GameManager.Instance.MessagesManager.ShowSimpleMessage("You don't have repair kits.");
+        gameManager.MessagesManager.ShowSimpleMessage("You don't have repair kits.");
         return 0;
       }
 
       var valuePerKit = max / repairCost;
-      Debug.Log($"MaxHealth: {max}, repairCost: {repairCost}, valuePerKit: {valuePerKit}");
       var kitsNeeded = Mathf.CeilToInt((max - currentValue) / valuePerKit);
 
       var remainingKits = InventoriesPool.UseRepairKits(kitsNeeded);
       var kitsUsed = kitsNeeded - remainingKits;
       var repairValue = Mathf.CeilToInt(kitsUsed * valuePerKit);
 
-      Debug.Log(
-        $"kitsNeeded: {kitsNeeded}, remainingKits: {remainingKits}, kitsUsed: {kitsUsed}, repairValue: {repairValue}");
-
       return repairValue;
+    }
+
+    public bool TakeBuildingToInventory(BuildingDataObject buildObject, ItemObject itemObject) {
+      if (!itemObject || !buildObject) {
+        return false;
+      }
+
+      if (!InventoriesPool.CanAddItem(itemObject)) {
+        gameManager.MessagesManager.ShowSimpleMessage("Inventory is full");
+        return false;
+      }
+
+      if (!gameManager.PlaceCell.RemoveBuilding(buildObject)) {
+        return false;
+      }
+
+      var amountLeft = InventoriesPool.AddItemToInventoriesPool(new Item(itemObject), 1);
+
+      return amountLeft == 0;
     }
 
     #region Save/Load

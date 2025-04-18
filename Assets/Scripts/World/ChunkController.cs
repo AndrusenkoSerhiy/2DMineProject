@@ -126,6 +126,15 @@ namespace World {
       return build;
     }
 
+    public void RemoveBuild(BuildingDataObject buildObject) {
+      var pos = buildObject.transform.position;
+      var coords = CoordsTransformer.WorldToGridBuildings(buildObject.transform.position);
+
+      BuildPoolsController.ReturnObject(_activeBuildObjects[coords]);
+      BuildingsDataController.RemoveBuildData(buildObject.Building, pos);
+      _activeBuildObjects.Remove(coords);
+    }
+
     private List<Coords> clearList = new();
 
     public void CheckArea() {

@@ -53,7 +53,7 @@ namespace Craft {
 
     private Recipe currentRecipe;
     private string[] recipeIngredientsIds;
-    
+
     public CurrentProgress CurrentProgress;
     public List<Input> Inputs = new();
     public WorkstationObject WorkstationObject => workstationObject;
@@ -160,6 +160,10 @@ namespace Craft {
       foreach (var inventory in inventoriesPool.Inventories) {
         outputInventory.MoveAllItemsTo(inventory);
       }
+    }
+
+    public bool IsOutputEmpty() {
+      return outputInventories[0].IsEmpty();
     }
 
     #endregion

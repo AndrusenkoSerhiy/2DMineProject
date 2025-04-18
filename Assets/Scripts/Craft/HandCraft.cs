@@ -7,7 +7,7 @@ namespace Craft {
     [SerializeField] private InteractionPrompt interactionPrompt;
     [SerializeField] private string actionName;
     private string buttonName;
-    private GameManager gameManager;
+    // private GameManager gameManager;
     
     //TODO
     //for inventory prompt
@@ -16,7 +16,7 @@ namespace Craft {
     [SerializeField] private string inventoryActionName;
     private string inventoryButtonName;
     public void Start() {
-      gameManager = GameManager.Instance;
+      // gameManager = GameManager.Instance;
       gameManager.UserInput.controls.UI.HandCraft.performed += ctx => CheckInteract();
       gameManager.UserInput.OnGameDeviceChanged += OnGameDeviceChanged;
       

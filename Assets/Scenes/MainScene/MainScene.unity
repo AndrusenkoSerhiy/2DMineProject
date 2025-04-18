@@ -588,7 +588,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipesDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   defaultUnlockedStations: 00000000
-  unlockAllRecipes: 0
+  unlockAllRecipes: 1
 --- !u!114 &425212838 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 263804862651814355, guid: 13536b19579612846a4b433fb9b73179, type: 3}
@@ -3533,7 +3533,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739819385077777237, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.0929766
+      value: 1.0929763
       objectReference: {fileID: 0}
     - target: {fileID: 1739819385077777237, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3557,11 +3557,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4035622805259001127, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.72195274
+      value: 0.7219528
       objectReference: {fileID: 0}
     - target: {fileID: 4035622805259001127, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.6919424
+      value: -0.69194233
       objectReference: {fileID: 0}
     - target: {fileID: 4355495910406124574, guid: 381f1132b02784146ba0a1bc33acbe57, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5210,6 +5210,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1040991176}
     m_Modifications:
+    - target: {fileID: 518545805585970232, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 667199909402759861, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: canvas
       value: 
@@ -5338,9 +5346,61 @@ PrefabInstance:
       propertyPath: 'uiObjectList.Array.data[2]'
       value: 
       objectReference: {fileID: 1359145305}
+    - target: {fileID: 836732319019884106, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029291834280729629, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089001302562095569, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 1272993002990673127, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 1356141396421285405, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 2055704225413077833, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548043326350414315, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 2548043326350414315, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: storageItemObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
+    - target: {fileID: 2769575990967133884, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 2910734340289657498, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 3697009846474195805, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
     - target: {fileID: 4001951038154339777, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4054968426102256807, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 4326547245931714894, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
       objectReference: {fileID: 0}
     - target: {fileID: 4967005012125498651, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: player
@@ -5354,6 +5414,70 @@ PrefabInstance:
       propertyPath: cinemachineCamera
       value: 
       objectReference: {fileID: 1036104629}
+    - target: {fileID: 5012584814883224004, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 5698292973606798102, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 5874702100534917950, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961880529736495681, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 6090555208108361671, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 6185184206800856640, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 6596614056874622219, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 6596614056874622219, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: storageItemObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
+    - target: {fileID: 7079744699289385865, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 7109252927662780216, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 7109252927662780216, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: storageItemObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
+    - target: {fileID: 7377115339508229323, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 7597282567205828165, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084140130582763917, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 8084140130582763917, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: storageItemObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
+    - target: {fileID: 8414013545617189724, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
     - target: {fileID: 8842004981100853932, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.3310423
@@ -5394,6 +5518,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9025138808710360995, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 9077455106984905103, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 9123659350371041130, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: holdInteractText
+      value: Take to inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 9123659350371041130, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: storageItemObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

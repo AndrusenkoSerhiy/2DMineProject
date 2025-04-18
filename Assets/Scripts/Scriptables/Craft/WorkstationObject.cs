@@ -6,6 +6,7 @@ namespace Scriptables.Craft {
   [CreateAssetMenu(menuName = "Crafting System/Workstation", fileName = "New Workstation")]
   public class WorkstationObject : BaseScriptableObject {
     public RecipeType RecipeType;
+    public ItemObject InventoryItem;
     public string ResourcePath;
     public InventoryType OutputInventoryType;
     public InventoryType FuelInventoryType;

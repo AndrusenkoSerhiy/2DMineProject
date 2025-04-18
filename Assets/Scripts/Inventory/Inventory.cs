@@ -413,6 +413,16 @@ namespace Inventory {
       return false;
     }
 
+    public bool IsEmpty() {
+      foreach (var slot in Slots) {
+        if (!slot.isEmpty) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
     #region Repair
 
     public bool HasRepairKits() {

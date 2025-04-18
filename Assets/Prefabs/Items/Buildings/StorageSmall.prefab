@@ -104,9 +104,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interfacePrefab: {fileID: 2952217949748886116, guid: 16e8601439269834fb42824ccd0e89ce, type: 3}
   interactText: Open storage
-  interactHeader: Storage
+  holdInteractText: Take to inventory
   inventoryType: 4
   buildObject: {fileID: 2364684023117025971}
+  storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
+  hasHoldInteraction: 1
 --- !u!114 &2364684023117025971
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,5 @@
 using Scriptables;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Actors {
   public class ActorBase : MonoBehaviour, IDamageable {
@@ -30,12 +29,16 @@ namespace Actors {
     public virtual void Damage(float damage) {
       hasTakenDamage = true;
       if (stats.TakeDamage(damage) <= 0) {
-        isDead = true;
-        PlayDeathAnim();
+        DeathActions();
       }
       else {
         PlayTakeDamage();
       }
+    }
+
+    protected virtual void DeathActions() {
+      isDead = true;
+      PlayDeathAnim();
     }
 
     private void PlayTakeDamage() {

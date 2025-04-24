@@ -1,10 +1,12 @@
 using Inventory;
+using Scriptables;
 using Scriptables.Items;
 using Tools;
 using UnityEngine;
 
 namespace Player {
   public class PlayerAttack : BaseAttack {
+    [SerializeField] private AudioData audioData;
     [SerializeField] protected PlayerEquipment playerEquipment;
 
     protected override void Awake() {
@@ -24,11 +26,16 @@ namespace Player {
     }
 
     protected override void AfterTargetsTakenDamage(int targetsCount) {
+      var isHit = targetsCount > 0;
+      //play sound when we hit something
+      if (isHit && audioData) {
+        GameManager.Instance.AudioController.PlayAudio(audioData);
+      }
+      
       if (playerEquipment.EquippedItem == null) {
         return;
       }
-
-      var isHit = targetsCount > 0;
+      
       playerEquipment.EquippedItem.ApplyDurabilityLoss(isHit);
     }
 

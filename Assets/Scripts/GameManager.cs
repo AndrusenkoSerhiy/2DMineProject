@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Windows;
 using Audio;
@@ -23,6 +24,7 @@ using Stats;
 using UI;
 using UnityEngine.Serialization;
 using Utility;
+using Input = UnityEngine.Input;
 
 [DefaultExecutionOrder(-5)]
 public class GameManager : PersistentSingleton<GameManager> {
@@ -31,7 +33,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private InGameMenu inGameMenu;
   [SerializeField] private UserInput userInput;
   [SerializeField] private TaskManager taskManagerRef;
-  [SerializeField] private AudioManager audioManager;
+  [SerializeField] private AudioController audioController;
   [SerializeField] private MessagesManager messagesManager;
   [SerializeField] private RecipesManager recipesManager;
   [SerializeField] private TooltipManager tooltipManager;
@@ -68,7 +70,8 @@ public class GameManager : PersistentSingleton<GameManager> {
   [FormerlySerializedAs("objectList")]
   [Tooltip("UI object that need to be disabled when we start from menu")]
   [SerializeField] private List<GameObject> uiObjectList;
-  
+
+  [SerializeField] private AudioData mainTheme;
   private PlayerController playerController;
   private PlayerControllerBase currPlayerController;
   private MiningRobotController miningRobotController;
@@ -79,7 +82,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public MainMenu MainMenu => mainMenu;
   public InGameMenu InGameMenu => inGameMenu;
   public UserInput UserInput => userInput;
-  public AudioManager AudioManager => audioManager;
+  public AudioController AudioController => audioController;
   public MessagesManager MessagesManager => messagesManager;
   public RecipesManager RecipesManager => recipesManager;
   public TooltipManager TooltipManager => tooltipManager;
@@ -139,6 +142,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   }
 
   private void Start() {
+    audioController.PlayAudio(mainTheme);
     if (!showMenuOnStart) {
       mainMenu.Hide();
       return;

@@ -1399,6 +1399,7 @@ GameObject:
   - component: {fileID: 1036104627}
   - component: {fileID: 1036104629}
   - component: {fileID: 1036104630}
+  - component: {fileID: 1036104631}
   m_Layer: 0
   m_Name: Virtual Camera
   m_TagString: Untagged
@@ -1495,6 +1496,20 @@ MonoBehaviour:
     Time: 0
     Smoothing: 0
     IgnoreY: 0
+--- !u!114 &1036104631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036104625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59bdbfde71e4b72be7c5340a575b47d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockX: 0
+  lockedXPosition: 0
 --- !u!1 &1040991175
 GameObject:
   m_ObjectHideFlags: 0
@@ -3499,9 +3514,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2458299169233427372, guid: 6b0e4c47203c5274bb9f7e1ef17280c7, type: 3}
+      propertyPath: border
+      value: 
+      objectReference: {fileID: 6037267588730635817, guid: 41582cfb1a96f8c468720f4facd82e02, type: 3}
+    - target: {fileID: 2458299169233427372, guid: 6b0e4c47203c5274bb9f7e1ef17280c7, type: 3}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 1770018257}
+    - target: {fileID: 2458299169233427372, guid: 6b0e4c47203c5274bb9f7e1ef17280c7, type: 3}
+      propertyPath: borderPrefab
+      value: 
+      objectReference: {fileID: 8375862946578343728, guid: 428f56d87f36f0548bf1d1af3730bda8, type: 3}
     - target: {fileID: 4097460593135981626, guid: 6b0e4c47203c5274bb9f7e1ef17280c7, type: 3}
       propertyPath: m_Name
       value: bg

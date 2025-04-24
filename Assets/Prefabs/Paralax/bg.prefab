@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c792c5ee5c14d86488b70e8e313b10ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  border: {fileID: 8375862946578343728, guid: 428f56d87f36f0548bf1d1af3730bda8, type: 3}
   layers:
   - prefab: {fileID: 8375862946578343728, guid: 58a00e809b5bf744f9e165f52e762d35, type: 3}
     speedMultiplier: 0.2

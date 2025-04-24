@@ -62,6 +62,7 @@ namespace PoolSound {
       objectToSpawn.audioSource.clip = data.AudioClips[0];
       objectToSpawn.audioSource.outputAudioMixerGroup = data.mixerGroup;
       objectToSpawn.audioSource.volume = data.DecibelToLinear(data.volume);
+      objectToSpawn.audioSource.loop = data.type == AudioData.AudioTypeE.Looped;
       objectToSpawn.audioSource.Play();
       poolDictionary[data].Enqueue(objectToSpawn);
 

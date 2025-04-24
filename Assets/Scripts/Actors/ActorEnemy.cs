@@ -113,5 +113,10 @@ namespace Actors {
       gameObject.layer = layerIndex;
       Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Character"), layerIndex);
     }
+
+    protected override void DeathActions() {
+      base.DeathActions();
+      rigidbody.linearVelocity = Vector3.zero;
+    }
   }
 }

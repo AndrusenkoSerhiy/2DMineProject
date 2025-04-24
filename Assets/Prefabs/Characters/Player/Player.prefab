@@ -213,6 +213,8 @@ MonoBehaviour:
   minDistance: 2
   maxDistance: 5
   isHighlightLock: 0
+  originalSize: {x: 0, y: 0}
+  audioData: {fileID: 11400000, guid: acaa05c5e2f065e4aa255ea5ca0542dd, type: 2}
   playerEquipment: {fileID: 4383261363474124888}
 --- !u!114 &4383261363474124888
 MonoBehaviour:
@@ -231,6 +233,7 @@ MonoBehaviour:
   bodyTransform: {fileID: 9042367649378296757}
   leftHandTransform: {fileID: 4035622805259001127}
   rightHandTransform: {fileID: 1739819385077777237}
+  repairItemText: Repair item (hold)
 --- !u!114 &1255239565477947570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,6 +335,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   interactionPromtUI: {fileID: 0}
+  holdInteractionPromtUI: {fileID: 0}
+  holdActionProgressText: {fileID: 0}
+  holdActionProgressSlider: {fileID: 0}
   numFound: 0
 --- !u!114 &4285968199683070401
 MonoBehaviour:

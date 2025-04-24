@@ -51,11 +51,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   listener: {fileID: 1975331073012669737}
   mixer: {fileID: 24100000, guid: df8089a68cd1ecd4cae74ae2fac20991, type: 2}
-  audioReferences:
-  - {fileID: 11400000, guid: e911428106529624181bc9a2208c84aa, type: 2}
   loopRoot: {fileID: 9169723480621143624}
   shotRoot: {fileID: 4628647822985763446}
-  audioSource: {fileID: 2535160462728290291}
   soundPooler: {fileID: 260293375569361681}
 --- !u!1 &1201469009489140599
 GameObject:
@@ -279,6 +276,8 @@ MonoBehaviour:
   - data: {fileID: 11400000, guid: e911428106529624181bc9a2208c84aa, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: 927b35f42f5953b49a7c0907b674e607, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: acaa05c5e2f065e4aa255ea5ca0542dd, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
 --- !u!1 &6473485979532965659
 GameObject:

@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 2145118225
   m_SortingLayer: 4
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 6eedcadf735a45e4ea4a900204b2aec7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4a0d1677415a51748b4cb469cd3b76b8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -137,8 +137,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 1
   interactName: 
-  interactHeader: 
-  item: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
+  holdInteractText: 
+  item: {fileID: 11400000, guid: 8bba1794d06b92b48adc9626fe1bd275, type: 2}
   isPicked: 0
 --- !u!50 &6351974111320827852
 Rigidbody2D:

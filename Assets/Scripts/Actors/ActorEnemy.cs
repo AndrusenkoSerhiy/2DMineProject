@@ -117,6 +117,11 @@ namespace Actors {
     protected override void DeathActions() {
       base.DeathActions();
       rigidbody.linearVelocity = Vector3.zero;
+      SpawnDrop();
+    }
+
+    private void SpawnDrop() {
+      GameManager.Instance.DropZombieData.DropItems(1);
     }
   }
 }

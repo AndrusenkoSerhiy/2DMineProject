@@ -5369,6 +5369,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1679368944}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: dropZombieData
+      value: 
+      objectReference: {fileID: 11400000, guid: 1a2086b6c6456074bb756d549f8aaf82, type: 2}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: groundItemPool
       value: 
       objectReference: {fileID: 396774651}
@@ -5402,7 +5406,7 @@ PrefabInstance:
       objectReference: {fileID: 1944342543}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: showMenuOnStart
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: quickSlotListener

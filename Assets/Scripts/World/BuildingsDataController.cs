@@ -1,5 +1,6 @@
 using Scriptables;
 using UnityEngine;
+using Utils;
 
 namespace World {
   public class BuildingsDataController : MonoBehaviour {
@@ -23,23 +24,28 @@ namespace World {
     }
 
     public Building GetBuildData(int xCoord, int yCoord) {
-      return _buildDatas[xCoord, yCoord];
+      var buildCoords = CoordsTransformer.GridToBuildingsGrid(new Coords(xCoord, yCoord));
+      return _buildDatas[buildCoords.X, buildCoords.Y];
     }
 
     public void SetBuildFill(Building data, int xCoord, int yCoord, int value = 1) {
       var convertedCoords = CoordsTransformer.GridToBuildingsGrid(xCoord, yCoord);
-      for (int i = convertedCoords.X; i < convertedCoords.X + data.SizeX; i++) {
-        for (int j = convertedCoords.Y; j < convertedCoords.Y + data.SizeY; j++) {
-          _buildFillDatas[i, j] = value;
+      for (var x = 0; x < data.SizeX; x++) {
+        for (var y = 0; y < data.SizeY; y++) {
+          var coordX = convertedCoords.X + x;
+          var coordY = convertedCoords.Y - y;
+          _buildFillDatas[coordX, coordY] = value;
+          //Debug.DrawRay(CoordsTransformer.GridToWorldBuildings(coordX,coordY), Vector3.up, Color.green, 100f);
         }
       }
     }
 
     public void SetBuildData(Building data, Vector3 pos) {
-      var worldCoords = CoordsTransformer.WorldToGrid(pos);
+      var worldCoords = CoordsTransformer.MouseToGridPosition(pos);
       var buildCoords = CoordsTransformer.WorldToGridBuildings(pos);
       _buildDatas[buildCoords.X, buildCoords.Y] = data;
       SetBuildFill(data, worldCoords.X, worldCoords.Y);
+      //Debug.DrawRay(pos, Vector3.up * 10f, Color.green, 100f);
     }
 
     public void RemoveBuildData(Building data, Vector3 pos) {

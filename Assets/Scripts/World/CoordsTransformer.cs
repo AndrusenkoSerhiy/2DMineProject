@@ -23,6 +23,16 @@ namespace World {
       return new Coords(col, row);
     }
     
+    //can get coord outside the array boundaries for cell object
+    //use to place building on the same level then player spawned
+    public static Coords MouseToGridPosition(Vector3 position) {
+      var col = Mathf.RoundToInt(position.x / GameManager.Instance.GameConfig.CellSizeX) +
+                GameManager.Instance.GameConfig.OriginCol;
+      var row = Mathf.RoundToInt(position.y / (-GameManager.Instance.GameConfig.CellSizeY)) +
+                GameManager.Instance.GameConfig.OriginRow;
+      return new Coords(col, row);
+    }
+    
     //buildings converter
     public static Vector3 GridToWorldBuildings(int col, int rowOffset) {
       int row = rowOffset - GameManager.Instance.GameConfig.BuildingAreaYDiff;
@@ -31,7 +41,7 @@ namespace World {
     }
     
     public static Coords WorldToGridBuildings(Vector3 position) {
-      var original = WorldToGrid(position);
+      var original = MouseToGridPosition(position);
       return new Coords(original.X, original.Y + GameManager.Instance.GameConfig.BuildingAreaYDiff); // convert back from real to offset
     }
     

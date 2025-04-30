@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Scriptables.Items;
+using Scriptables.Siege;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -43,6 +44,8 @@ namespace Scriptables.DropZombieData {
   
   [Serializable]
   public class DropData {
+    //TODO: use difficulty profile instead of stageRange SiegeManager.GetDifficultyProfilesByWeight()
+    public ZombieDifficultyProfile difficultyProfile;
     public Vector2 stageRange;
     public int maxItems;
     public List<DropResource> possibleItems;

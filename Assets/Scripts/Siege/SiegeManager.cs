@@ -1,24 +1,57 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Actors;
 using Scriptables.Siege;
+using UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Siege {
   public class SiegeManager : MonoBehaviour {
     [SerializeField] private SiegesSettings siegesSettings;
+    [SerializeField] private ZombieDifficultyDatabase zombieDifficultyDatabase;
+    [SerializeField] private SiegeTimelineUI siegeTimelineUI;
+    [SerializeField] private bool calculateWithWeightAndCycle = true;
 
     public event Action<ActiveSiegeTemplate> OnSiegeStarted;
     public event Action<ActiveSiegeTemplate> OnSiegeEnded;
     public event Action<ActiveSiegeTemplate> OnZombieSpawn;
 
-    private List<SiegeTemplate> siegeQueue = new();
-    private int currentSiegeСycle = 1;
+    private List<ActiveSiegeTemplate> siegeQueue = new();
+    private int currentSiegeCycle = 1;
     private int currentSiegeIndex = 0;
-    private bool siegesStarted = false;
-    private float siegeTimer = 0f;
+
     private ActiveSiegeTemplate currentSiege;
+    private GameManager gameManager;
+
+    private bool siegesStarted = false;
+    private bool isSiegeInProgress;
+    private bool isPaused = false;
+
+    private float durationTimer = 0f;
+    private float siegeCycleElapsedTime = 0f;
+    private float totalCycleTime = 0f;
+    private float timeToNextSegment = 0f;
+
+    public bool IsSiegeInProgress => isSiegeInProgress;
+    public float TimeToNextSegment => timeToNextSegment;
+    public float SiegeCycleElapsedTime => siegeCycleElapsedTime;
+    public float TotalCycleTime => totalCycleTime;
+
+    private Coroutine activeSiegeCoroutine;
+
+    private void Start() {
+      gameManager = GameManager.Instance;
+      ActorPlayer.OnPlayerDeath += OnPlayerDeathHandler;
+      ActorPlayer.OnPlayerRespawn += OnPlayerRespawnHandler;
+
+      // StartSieges();
+    }
+
+    public DifficultyEntry GetDifficultyProfilesByWeight() {
+      return zombieDifficultyDatabase.GetProfileByWeight(gameManager.PlayerInventory.Weight);
+    }
 
     public void StartSieges() {
       if (siegesStarted) {
@@ -26,72 +59,133 @@ namespace Siege {
       }
 
       siegeQueue.Clear();
-      siegeQueue.Add(siegesSettings.FirstSiege);
+      siegeQueue.Add(GetActiveTemplate(siegesSettings.FirstSiege));
 
-      var maxRandomSiegesCount = siegesSettings.SiegesCountMax - 2; //max - first - final
-      var randomSiegesCount = Random.Range(siegesSettings.SiegesCountMin, maxRandomSiegesCount + 1);
+      var min = (int)siegesSettings.SiegesCount.x - 2;
+      var max = (int)siegesSettings.SiegesCount.y - 2;
+      var count = Random.Range(min, max + 1);
 
-      for (var i = 0; i < randomSiegesCount; i++) {
-        var randomTemplate =
-          siegesSettings.RandomSiegeTemplates[Random.Range(0, siegesSettings.RandomSiegeTemplates.Count)];
-        siegeQueue.Add(randomTemplate);
+      for (var i = 0; i < count; i++) {
+        siegeQueue.Add(GetActiveTemplate(siegesSettings.RandomSiegeTemplate));
       }
 
+      siegeQueue.Add(GetActiveTemplate(siegesSettings.FinalSiege));
+
+      totalCycleTime = 0f;
+      foreach (var siege in siegeQueue) {
+        totalCycleTime += siege.TimeBeforeSiege + siege.Duration;
+      }
+
+      siegeCycleElapsedTime = 0f;
+      siegeTimelineUI.SetupTimeline(siegeQueue);
+
       siegesStarted = true;
-      StartCoroutine(RunNextSiege());
+      activeSiegeCoroutine = StartCoroutine(RunNextSiege());
+    }
+
+    private ActiveSiegeTemplate GetActiveTemplate(SiegeTemplate template) {
+      var weight = gameManager.PlayerInventory.Weight;
+      return calculateWithWeightAndCycle
+        ? new ActiveSiegeTemplate(template, weight, currentSiegeCycle)
+        : new ActiveSiegeTemplate(template);
     }
 
     private IEnumerator RunNextSiege() {
       if (currentSiegeIndex >= siegeQueue.Count) {
-        Debug.Log("All sieges completed. Restarting...");
         siegesStarted = false;
         currentSiegeIndex = 0;
-        currentSiegeСycle++;
+        currentSiegeCycle++;
         StartSieges();
         yield break;
       }
 
-      currentSiege = new ActiveSiegeTemplate(siegeQueue[currentSiegeIndex]);
+      currentSiege = siegeQueue[currentSiegeIndex];
+      var waitTime = currentSiege.TimeBeforeSiege;
 
-      OnSiegeStarted?.Invoke(currentSiege);
-
-      var spawnTimer = 0f;
-      var siegeDurationTimer = 0f;
-
-      while (siegeDurationTimer < currentSiege.Duration) {
-        siegeDurationTimer += Time.deltaTime;
-        spawnTimer += Time.deltaTime;
-
-        if (spawnTimer >= currentSiege.SpawnInterval) {
-          spawnTimer = 0f;
-
-          OnZombieSpawn?.Invoke(currentSiege);
+      while (waitTime > 0f) {
+        if (!isPaused) {
+          var delta = Time.deltaTime;
+          waitTime -= delta;
+          timeToNextSegment = Mathf.Max(waitTime, 0f);
+          siegeCycleElapsedTime += delta;
         }
 
         yield return null;
       }
 
-      OnSiegeEnded?.Invoke(currentSiege);
+      StartSiege();
 
+      var wavesSpawned = 0;
+      durationTimer = 0f;
+      var nextWaveTime = 0f;
+      var interval = currentSiege.Duration / currentSiege.WavesOfZombies;
+
+      while (durationTimer < currentSiege.Duration) {
+        if (!isPaused) {
+          var delta = Time.deltaTime;
+          durationTimer += delta;
+          siegeCycleElapsedTime += delta;
+          timeToNextSegment = Mathf.Max(currentSiege.Duration - durationTimer, 0f);
+
+          if (durationTimer >= nextWaveTime && wavesSpawned < currentSiege.WavesOfZombies) {
+            ZombieSpawn();
+            wavesSpawned++;
+            nextWaveTime += interval;
+          }
+        }
+
+        yield return null;
+      }
+
+      EndSiege();
       currentSiegeIndex++;
-
-      yield return new WaitForSeconds(currentSiege.TimeBetweenSiege);
-      StartCoroutine(RunNextSiege());
+      activeSiegeCoroutine = StartCoroutine(RunNextSiege());
     }
 
-    private void SkipCurrentSiege() {
-      if (currentSiege == null) {
+    private void StartSiege() {
+      isSiegeInProgress = true;
+      OnSiegeStarted?.Invoke(currentSiege);
+      gameManager.MessagesManager.ShowSimpleMessage("Siege started!");
+    }
+
+    private void EndSiege() {
+      isSiegeInProgress = false;
+      OnSiegeEnded?.Invoke(currentSiege);
+      gameManager.MessagesManager.ShowSimpleMessage("Siege ended!");
+    }
+
+    private void ZombieSpawn() {
+      OnZombieSpawn?.Invoke(currentSiege);
+      Debug.Log($"Zombie spawned: {currentSiege.ZombieCount}");
+    }
+
+    private void ResumeSiege() {
+      if (!isPaused || currentSiege == null) {
         return;
       }
 
-      StopAllCoroutines();
-      currentSiege = null;
-      OnSiegeEnded?.Invoke(currentSiege);
-      currentSiegeIndex++;
+      isPaused = false;
 
-      if (currentSiegeIndex < siegeQueue.Count) {
-        StartCoroutine(RunNextSiege());
+      if (!isSiegeInProgress) {
+        return;
       }
+
+      var remainingTime = Mathf.Max(currentSiege.Duration - durationTimer, 0f);
+      siegeCycleElapsedTime += remainingTime;
+      timeToNextSegment = 0f;
+
+      StopCoroutine(activeSiegeCoroutine);
+      EndSiege();
+      currentSiegeIndex++;
+      activeSiegeCoroutine = StartCoroutine(RunNextSiege());
+    }
+
+    private void OnPlayerDeathHandler() {
+      isPaused = true;
+    }
+
+    private void OnPlayerRespawnHandler() {
+      ResumeSiege();
     }
   }
 }

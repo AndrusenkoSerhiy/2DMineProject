@@ -34,7 +34,7 @@ namespace Windows {
     }
 
     private void Respawn(InputAction.CallbackContext obj) {
-      Debug.LogError("respawn");
+      // Debug.LogError("respawn");
       GameManager.Instance.PlayerController.transform.position = GameManager.Instance.RespawnManager.GetRespawnPoint();
       GameManager.Instance.PlayerController.SetAnimatorRespawn();
       GameManager.Instance.PlayerController.RestoreHealth();

@@ -20,7 +20,7 @@ namespace Tools {
     [SerializeField] private SpriteRenderer brokenRobotImage;
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
-    // [SerializeField] private bool broken = true;
+    // [SerializeField] private bool broken = false;
 
     private bool isPlayerInside;
 
@@ -195,6 +195,8 @@ namespace Tools {
       if (repairValue == 0) {
         return;
       }
+
+      gameManager.SiegeManager.StartSieges();
 
       if (broken) {
         AnimationEventManager.onRobotRepaired += RobotRepaired;

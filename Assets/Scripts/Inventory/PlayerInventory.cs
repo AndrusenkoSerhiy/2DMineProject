@@ -18,8 +18,12 @@ namespace Inventory {
     private InventoriesPool inventoriesPool;
     private GameManager gameManager;
 
+    private List<string> weightItems = new();
+    private float weight = 0f;
+
     //Inventories that are used in farm/craft
     public InventoriesPool InventoriesPool => inventoriesPool;
+    public float Weight => weight;
 
     private List<InventorySettings> GetDefaultInventoriesSettings() {
       return new List<InventorySettings> {
@@ -178,6 +182,9 @@ namespace Inventory {
     /// <returns>Amount of items that was added to inventory</returns>
     public int AddItemToInventoryWithOverflowDrop(Item item, int amount) {
       var overflow = inventoriesPool.AddItemToInventoriesPool(item, amount);
+
+      AddWeight(item.info);
+
       if (overflow <= 0) {
         return amount;
       }
@@ -246,6 +253,19 @@ namespace Inventory {
       var amountLeft = InventoriesPool.AddItemToInventoriesPool(new Item(itemObject), 1);
 
       return amountLeft == 0;
+    }
+
+    private void AddWeight(ItemObject itemObject) {
+      if (!itemObject || itemObject.Weight <= 0f) {
+        return;
+      }
+
+      if (weightItems.Contains(itemObject.Id)) {
+        return;
+      }
+
+      weightItems.Add(itemObject.Id);
+      weight += itemObject.Weight;
     }
 
     #region Save/Load

@@ -1,3 +1,4 @@
+using System;
 using Scriptables;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ namespace Actors {
     [SerializeField] protected Animator _animator;
     [SerializeField] private bool isDead;
     [SerializeField] protected Rigidbody2D rigidbody;
+    
+    public static event Action OnPlayerRespawn;
 
     protected AnimatorParameters animParam;
     protected StatsBase stats;
@@ -54,6 +57,7 @@ namespace Actors {
     public void Respawn() {
       isDead = false;
       _animator.SetLayerWeight(1, 1);
+      OnPlayerRespawn?.Invoke();
     }
 
     public float GetHealth() {

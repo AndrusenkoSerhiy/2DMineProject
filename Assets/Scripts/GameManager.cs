@@ -21,6 +21,7 @@ using Pool;
 using ScriptableObjects;
 using Scriptables.DropZombieData;
 using Settings;
+using Siege;
 using Stats;
 using UI;
 using UnityEngine.Serialization;
@@ -65,6 +66,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private BuildPoolsController buildPoolsController;
   [SerializeField] private BuildingsDataController buildingsDataController;
   [SerializeField] private DropZombieData dropZombieData;
+  [SerializeField] private SiegeManager siegeManager;
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
@@ -117,6 +119,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public BuildPoolsController BuildPoolsController => buildPoolsController;
   public BuildingsDataController BuildingsDataController => buildingsDataController;
   public DropZombieData DropZombieData => dropZombieData;
+  public SiegeManager SiegeManager => siegeManager;
 
   public RespawnManager RespawnManager => respawnManager;
   public PlayerController PlayerController {

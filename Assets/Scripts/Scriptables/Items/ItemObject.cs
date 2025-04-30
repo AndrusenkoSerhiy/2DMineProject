@@ -8,6 +8,7 @@ namespace Scriptables.Items {
   public abstract class ItemObject : BaseScriptableObject {
     public ItemType Type;
     public string Name;
+    public float Weight = 0f;
     public ParentType ParentType;
     public Sprite UiDisplay;
     public GameObject CharacterDisplay;

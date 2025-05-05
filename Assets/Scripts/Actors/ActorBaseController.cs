@@ -14,7 +14,6 @@ namespace Actors {
     }
     
     private void SpawnSiegeZombie(ActiveSiegeTemplate siege) {
-       Debug.LogError($"spawn {siege.ZombieCount} zombies ");
        for (int i = 0; i < siege.ZombieCount; i++) {
          Spawn();
        }

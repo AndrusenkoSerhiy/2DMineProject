@@ -37,6 +37,7 @@ namespace NPCMovement
     //set player like a target
     public void SetTargetTransform(Transform transform) {
       targetTransform = transform;
+      hasArrived = false;
     }
 
     private void FixedUpdate() {

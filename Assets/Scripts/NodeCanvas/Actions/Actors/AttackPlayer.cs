@@ -7,6 +7,7 @@ namespace NodeCanvas.Actions.Actors {
   public class AttackPlayer : ActionTask<ActorEnemy>{
     protected override void OnExecute() {
       agent.AttackPlayer();
+      agent.SetTargetTransform(null);
       EndAction(true);
     }
   }

@@ -52,5 +52,14 @@ namespace World {
     public static Coords GridToBuildingsGrid(int x_original, int y_original) {
       return new Coords(x_original, y_original + GameManager.Instance.GameConfig.BuildingAreaYDiff);
     }
+    
+    public static Coords GetPlayerCoords() {
+      var position = GameManager.Instance.PlayerController.transform.position + new Vector3(0,1,0);
+      var col = Mathf.RoundToInt(position.x / GameManager.Instance.GameConfig.CellSizeX) +
+                GameManager.Instance.GameConfig.OriginCol;
+      var row = Mathf.RoundToInt(position.y / (-GameManager.Instance.GameConfig.CellSizeY));
+      //Debug.DrawRay(position, Vector3.up*10, Color.red);
+      return new Coords(col, row);
+    }
   }
 }

@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 4141543556025107183}
-  _isDead: 0
+  isDead: 0
   rigidbody: {fileID: 8148056154536312960}
   _damage: 3
   npcMovement: {fileID: 6852139997247226084}
@@ -128,6 +128,7 @@ MonoBehaviour:
   layerAfterDeath:
     serializedVersion: 2
     m_Bits: 2048
+  behaviourTreeOwner: {fileID: 1260485521753335071}
 --- !u!61 &5323630564359519687
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -187,6 +188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {x: 0, y: 0, z: 0}
+  targetTransform: {fileID: 0}
   speed: 3
   jumpForce: 9
   stopingDistance: 2
@@ -194,7 +196,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   isGrounded: 0
-  _actor: {fileID: 8562245207658300178}
   sphereRadius: 0.5
   maxDistance: 1
   hasArrived: 0
@@ -243,7 +244,7 @@ MonoBehaviour:
   _lockBoundGraphPrefabOverrides: 1
   _preInitializeSubGraphs: 0
   _updateMode: 0
-  _graph: {fileID: 11400000, guid: 8bf162def9e7b904d9465d3af406ed8e, type: 2}
+  _graph: {fileID: 0}
   _blackboard: {fileID: -5946940393681573436}
 --- !u!114 &4278888900822443520
 MonoBehaviour:

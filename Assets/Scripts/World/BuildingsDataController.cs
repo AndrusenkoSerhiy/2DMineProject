@@ -28,7 +28,8 @@ namespace World {
     }
 
     public Building GetBuildData(int xCoord, int yCoord) {
-      var buildCoords = CoordsTransformer.GridToBuildingsGrid(new Coords(xCoord, yCoord));
+      var buildCoords = new Coords(xCoord, yCoord);
+      //Debug.LogError($"build data {xCoord} | {yCoord} | {_buildDatas[buildCoords.X, buildCoords.Y]}");
       return _buildDatas[buildCoords.X, buildCoords.Y];
     }
 
@@ -49,7 +50,8 @@ namespace World {
       var buildCoords = CoordsTransformer.WorldToGridBuildings(pos);
       _buildDatas[buildCoords.X, buildCoords.Y] = data;
       SetBuildFill(data, worldCoords.X, worldCoords.Y);
-      //Debug.DrawRay(pos, Vector3.up * 10f, Color.green, 100f);
+      //Debug.DrawRay(pos, Vector3.up * 10f, Color.red, 100f);
+      //Debug.LogError($"spawn {buildCoords.X} | {buildCoords.Y} | data {data}");
     }
 
     public void RemoveBuildData(Building data, Vector3 pos) {

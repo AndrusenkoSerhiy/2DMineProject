@@ -87,7 +87,7 @@ namespace World {
       }
 
       //buildings
-      var playersBuildingsCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var playersBuildingsCoords = CoordsTransformer.GetPlayerCoords();//GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
       playersBuildingsCoords = CoordsTransformer.GridToBuildingsGrid(playersBuildingsCoords);
 
       cols = GameManager.Instance.GameConfig.BuildingAreaSizeX;
@@ -113,7 +113,8 @@ namespace World {
           }
 
           var buildData = GameManager.Instance.BuildingsDataController.GetBuildData(i, j);
-          _activeBuildObjects[_proxyCoords] = SpawnBuild(_proxyCoords, buildData);
+          if(buildData)
+            _activeBuildObjects[_proxyCoords] = SpawnBuild(_proxyCoords, buildData); 
         }
       }
 
@@ -126,6 +127,7 @@ namespace World {
       var build = BuildPoolsController.Get(type, pos);
       BuildingsDataController.SetBuildData(build.Building, pos);
       _activeBuildObjects[new Coords(coords.X, coords.Y)] = build;
+      //Debug.LogError($"spawn build {coords.X} | {coords.Y}");
       return build;
     }
 

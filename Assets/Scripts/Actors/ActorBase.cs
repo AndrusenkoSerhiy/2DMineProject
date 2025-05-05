@@ -73,5 +73,10 @@ namespace Actors {
 
     public void DestroyObject() {
     }
+    
+    public void SetAnimVelocityX(float val) {
+      _animator.SetFloat(animParam.VelocityXHash, val);
+      Debug.LogError("stop zombie movement");
+    }
   }
 }

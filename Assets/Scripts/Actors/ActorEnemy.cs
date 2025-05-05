@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Animation;
 using Enemy;
+using NodeCanvas.BehaviourTrees;
 using UnityEngine;
 using Utils;
 
@@ -15,8 +16,13 @@ namespace Actors {
     [SerializeField] private NPCMovement.NPCMovement npcMovement;
     [SerializeField] private EnemyCoords coords;
     [SerializeField] private LayerMask layerAfterDeath;
+    [SerializeField] private BehaviourTreeOwner behaviourTreeOwner;
     public Coords GetCoords => coords.GetCoords();
 
+    public void SetBehaviour(BehaviourTree tree) {
+      behaviourTreeOwner.behaviour = tree;
+      behaviourTreeOwner.StartBehaviour();
+    }
     public void SetPatrolPosition(Vector3 pos) {
       npcMovement.SetTarget(pos);
     }

@@ -15,6 +15,7 @@ namespace SaveSystem {
     public SerializedDictionary<string, WorkstationsData> Workstations;
     public RecipesData Recipes;
     public SerializedDictionary<string, RobotData> Robots;
+    public WorldData WorldData;
   }
 
   public interface ISaveLoad {
@@ -109,6 +110,7 @@ namespace SaveSystem {
         Workstations = new SerializedDictionary<string, WorkstationsData>(),
         Recipes = new RecipesData(),
         Robots = new SerializedDictionary<string, RobotData>(),
+        WorldData = new WorldData()
       };
     }
 

@@ -1,4 +1,5 @@
 using System;
+using SaveSystem;
 using Scriptables;
 using Unity.Collections;
 using Unity.Jobs;
@@ -50,12 +51,11 @@ namespace World {
 
     void GenerateNoise() {
       noiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
-      var randomSeed = UnityEngine.Random.Range(0f, 10000f);
       var perlinJob = new PerlinNoiseParallelJob {
         width = width,
         height = height,
         scale = GameManager.Instance.GameConfig.PerlinScale,
-        seed = randomSeed,
+        seed = GameManager.Instance.ChunkController.Seed,
         noiseMap = noiseMap
       };
       var perlinHandle = perlinJob.Schedule(width * height, 64);
@@ -76,9 +76,11 @@ namespace World {
     void ApplyCells() {
       for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
+          var removed = GameManager.Instance.ChunkController.IsRemoved(i, j);
+
           var info = i + j * width;
           var perlin = smoothedNoiseMap[i + j * width];
-          var data = GameManager.Instance.ChunkController.ResourceDataLibrary.GetData(perlin);
+          var data = !removed ? GameManager.Instance.ChunkController.ResourceDataLibrary.GetData(perlin) : null;
           _cellDatas[i, j] = new CellData(i, j, perlin, data ? data.Durability : 0, this);
           if (data) {
             SetCellFill(i, j);

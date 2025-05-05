@@ -12,22 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de8abc41bf24826970567086cf2700e, type: 3}
   m_Name: BuildingDataLibrary
   m_EditorClassIdentifier: 
-  Buildings:
-  - Building: {fileID: 11400000, guid: 47dec7647ccb2cb4a9c477b7ccf8881b, type: 2}
-    SizeX: 0
-    SizeY: 0
-  - Building: {fileID: 11400000, guid: 5e8f7d7929b320f4a95748b3cb37573b, type: 2}
-    SizeX: 0
-    SizeY: 0
-  - Building: {fileID: 11400000, guid: 9e3eaeb17a8169d4da4ef1b6ddfb38c1, type: 2}
-    SizeX: 0
-    SizeY: 0
-  - Building: {fileID: 11400000, guid: b0fa504aebffc7044862d2d7cb597d52, type: 2}
-    SizeX: 0
-    SizeY: 0
-  - Building: {fileID: 11400000, guid: e532957c013640c48a9b81200947c6d4, type: 2}
-    SizeX: 0
-    SizeY: 0
-  - Building: {fileID: 11400000, guid: a357dd1d6b6817c489374977e466d13b, type: 2}
-    SizeX: 0
-    SizeY: 0
+  ItemObjects:
+  - {fileID: 11400000, guid: 47dec7647ccb2cb4a9c477b7ccf8881b, type: 2}
+  - {fileID: 11400000, guid: 5e8f7d7929b320f4a95748b3cb37573b, type: 2}
+  - {fileID: 11400000, guid: 9e3eaeb17a8169d4da4ef1b6ddfb38c1, type: 2}
+  - {fileID: 11400000, guid: b0fa504aebffc7044862d2d7cb597d52, type: 2}
+  - {fileID: 11400000, guid: e532957c013640c48a9b81200947c6d4, type: 2}
+  - {fileID: 11400000, guid: a357dd1d6b6817c489374977e466d13b, type: 2}

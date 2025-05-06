@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &299194035380027741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2661763737350751410}
+  - component: {fileID: 810811911268583935}
+  m_Layer: 0
+  m_Name: SaveLoadSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2661763737350751410
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299194035380027741}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &810811911268583935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299194035380027741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6641b9479b64c5c8fece137d7e7a1b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnparentOnAwake: 1
+  gameData:
+    FileName: 
+    Name: Game
+    DefaultItemAdded: 0
+    Inventories:
+      m_Keys: []
+      m_Values: []
+    Workstations:
+      m_Keys: []
+      m_Values: []
+    Recipes:
+      RecipeStates:
+        m_Keys: []
+        m_Values: 
+      DiscoveredMaterials: []
+      UnlockedStations: 
+      FullyUnlockedStations: 
+    Robots:
+      m_Keys: []
+      m_Values: []
+    WorldData:
+      Seed: -1
+      BuildDatas: []
+      BuildFillDatas: []
+      RemovedCells: []
+      ChangedCells:
+        m_Keys: []
+        m_Values: []
+  maxSaveFiles: 3
+  saveOnQuit: 1
+  loadOnStart: 1
+  autosave: 0
+  prettyPrint: 0
+  autosaveInterval: 600

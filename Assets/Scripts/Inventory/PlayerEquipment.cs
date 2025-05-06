@@ -28,12 +28,14 @@ namespace Inventory {
 
     public event Action OnEquippedWeapon;
     public event Action OnUnequippedWeapon;
-
-    private void Start() {
+    
+    private void Awake() {
       gameManager = GameManager.Instance;
       playerController = gameManager.PlayerController;
       playerInventory = gameManager.PlayerInventory;
+    }
 
+    private void Start() {
       userInterface.OnLoaded += AddEvents;
       userInterface.OnDisabled += RemoveEvents;
     }

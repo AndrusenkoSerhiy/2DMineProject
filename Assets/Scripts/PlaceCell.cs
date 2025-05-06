@@ -229,7 +229,8 @@ public class PlaceCell : MonoBehaviour {
 
   private void PlaceBuildingBlock() {
     var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
-    chunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+    var cell = chunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
+    chunkController.AfterCellChanged(cell);
     chunkController.UpdateCellAround(coords.X, coords.Y);
   }
 

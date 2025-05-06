@@ -4,6 +4,7 @@ using SaveSystem;
 using Scriptables;
 using Scriptables.POI;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Utils;
 
 namespace World {
@@ -24,8 +25,8 @@ namespace World {
     public ChunkData ChunkData => chunkData;
 
     private List<string> removedCells = new();
+    private Dictionary<string, ChangedCellData> changedCells = new();
     public float Seed;
-    public List<string> RemovedCells => removedCells;
 
     private bool isInited = false;
 
@@ -191,7 +192,8 @@ namespace World {
       var coords = new Coords(x, y);
       RemoveCellFromActives(coords);
       UpdateCellAround(x, y);
-      removedCells.Add(WorldData.GetCellKey(x, y));
+      AddToRemoved(x, y);
+      RemoveCellFromChanged(x, y);
     }
 
     public void UpdateCellAround(int x, int y) {
@@ -271,7 +273,6 @@ namespace World {
       }
     }
 
-
     private CellObjectsPool CellObjectsPool => GameManager.Instance.CellObjectsPool;
     private BuildPoolsController BuildPoolsController => GameManager.Instance.BuildPoolsController;
     private BuildingsDataController BuildingsDataController => GameManager.Instance.BuildingsDataController;
@@ -279,10 +280,38 @@ namespace World {
     private float GenerateSeed() {
       return Random.Range(0f, 10000f);
     }
+    
+    private void AddToRemoved(int x, int y) {
+      removedCells.Add(WorldData.GetCellKey(x, y));
+    }
 
     public bool IsRemoved(int x, int y) {
-      var removedCellKey = WorldData.GetCellKey(x, y);
-      return removedCells.Contains(removedCellKey);
+      var key = WorldData.GetCellKey(x, y);
+      return removedCells.Contains(key);
+    }
+
+    public ChangedCellData GetChanged(int x, int y) {
+      var key = WorldData.GetCellKey(x, y);
+      changedCells.TryGetValue(key, out var value);
+      return value;
+    }
+
+    public void AfterCellChanged(CellData data) {
+      var key = WorldData.GetCellKey(data.x, data.y);
+      var changedData = new ChangedCellData { Perlin = data.perlin, Durability = data.durability };
+      if (changedCells.TryGetValue(key, out var value)) {
+        changedCells[key] = changedData;
+      }
+      else {
+        changedCells.Add(WorldData.GetCellKey(data.x, data.y), changedData);
+      }
+
+      removedCells.Remove(key);
+    }
+
+    private void RemoveCellFromChanged(int x, int y) {
+      var key = WorldData.GetCellKey(x, y);
+      changedCells.Remove(key);
     }
 
     #region Save/Load
@@ -292,6 +321,7 @@ namespace World {
 
       Seed = data.Seed >= 0 ? data.Seed : GenerateSeed();
       removedCells = data.RemovedCells;
+      changedCells = data.ChangedCells;
     }
 
     public void Save() {
@@ -299,6 +329,7 @@ namespace World {
 
       data.Seed = Seed;
       data.RemovedCells = removedCells;
+      data.ChangedCells = (SerializedDictionary<string, ChangedCellData>)changedCells;
     }
 
     #endregion

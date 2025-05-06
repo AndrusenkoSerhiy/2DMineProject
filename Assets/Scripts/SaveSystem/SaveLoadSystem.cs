@@ -31,6 +31,7 @@ namespace SaveSystem {
     [SerializeField] private bool saveOnQuit = true;
     [SerializeField] private bool loadOnStart = true;
     [SerializeField] private bool autosave = true;
+    [SerializeField] private bool prettyPrint = true;
 
     [Tooltip("Time in seconds")] [SerializeField]
     private float autosaveInterval = 300f;
@@ -42,7 +43,7 @@ namespace SaveSystem {
 
     protected override void Awake() {
       base.Awake();
-      dataService = new FileDataService(new JsonSerializer());
+      dataService = new FileDataService(new JsonSerializer(prettyPrint));
       if (loadOnStart) {
         LoadOrCreateNew();
       }

@@ -91,6 +91,8 @@ namespace World {
       _cellData.UpdateDurability(damage);
       //Debug.LogError($"Durability {resourceData.Durability} _cellData.durability {_cellData.durability}");
       CalculateCountToSpawn(damage);
+      
+      GameManager.Instance.ChunkController.AfterCellChanged(_cellData);
     }
 
     private void CalculateCountToSpawn(float damage) {

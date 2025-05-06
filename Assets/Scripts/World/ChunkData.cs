@@ -1,4 +1,5 @@
 using System;
+using SaveSystem;
 using Scriptables;
 using Unity.Collections;
 using Unity.Jobs;
@@ -50,12 +51,11 @@ namespace World {
 
     void GenerateNoise() {
       noiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
-      var randomSeed = UnityEngine.Random.Range(0f, 10000f);
       var perlinJob = new PerlinNoiseParallelJob {
         width = width,
         height = height,
         scale = GameManager.Instance.GameConfig.PerlinScale,
-        seed = randomSeed,
+        seed = GameManager.Instance.ChunkController.Seed,
         noiseMap = noiseMap
       };
       var perlinHandle = perlinJob.Schedule(width * height, 64);
@@ -74,16 +74,39 @@ namespace World {
     }
 
     void ApplyCells() {
+      var chunkController = GameManager.Instance.ChunkController;
+
       for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
-          var info = i + j * width;
-          var perlin = smoothedNoiseMap[i + j * width];
-          var data = GameManager.Instance.ChunkController.ResourceDataLibrary.GetData(perlin);
-          _cellDatas[i, j] = new CellData(i, j, perlin, data ? data.Durability : 0, this);
-          if (data) {
-            SetCellFill(i, j);
+          var changed = chunkController.GetChanged(i, j);
+
+          if (changed != null) {
+            ApplyChangedCell(i, j, changed);
+          }
+          else {
+            ApplyDefaultOrRemovedCell(i, j, chunkController);
           }
         }
+      }
+    }
+
+    private void ApplyChangedCell(int i, int j, ChangedCellData changed) {
+      _cellDatas[i, j] = new CellData(i, j, changed.Perlin, changed.Durability, this);
+      SetCellFill(i, j);
+    }
+
+    private void ApplyDefaultOrRemovedCell(int x, int y, ChunkController chunkController) {
+      var isRemoved = chunkController.IsRemoved(x, y);
+      var index = x + y * width;
+
+      var perlin = smoothedNoiseMap[index];
+      var resourceData = isRemoved ? null : chunkController.ResourceDataLibrary.GetData(perlin);
+      var durability = resourceData != null ? resourceData.Durability : 0;
+
+      _cellDatas[x, y] = new CellData(x, y, perlin, durability, this);
+
+      if (resourceData != null) {
+        SetCellFill(x, y);
       }
     }
 
@@ -114,6 +137,8 @@ namespace World {
       if (dataObject == null) return null;
       var cell = GetCellData(x, y);
       cell.perlin = (dataObject.PerlinRange.x + dataObject.PerlinRange.y) / 2;
+      cell.alreadyDroped = 0;
+      cell.durability = data.Durability;
       SetCellFill(cell.x, cell.y);
       return cell;
     }

@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3101558303841237814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4485995420871640296}
+  - component: {fileID: 4140464611322345907}
+  m_Layer: 0
+  m_Name: PlayerInventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4485995420871640296
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3101558303841237814}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4140464611322345907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3101558303841237814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8fbed0a15cbbe4582206c75914aa28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoriesSettings:
+  - type: 1
+    size: 9
+    slotIcon: {fileID: 0}
+  - type: 3
+    size: 10
+    slotIcon: {fileID: 0}
+  - type: 4
+    size: 18
+    slotIcon: {fileID: 0}
+  - type: 5
+    size: 27
+    slotIcon: {fileID: 0}
+  - type: 6
+    size: 36
+    slotIcon: {fileID: 0}
+  - type: 20
+    size: 5
+    slotIcon: {fileID: 0}
+  - type: 21
+    size: 3
+    slotIcon: {fileID: 0}
+  - type: 40
+    size: 16
+    slotIcon: {fileID: 21300000, guid: 5a24758d08364fd44933b1d529ff90ea, type: 3}
+  - type: 41
+    size: 5
+    slotIcon: {fileID: 0}
+  - type: 2
+    size: 7
+    slotIcon: {fileID: 0}

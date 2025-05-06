@@ -1,9 +1,12 @@
+using System.Collections.Generic;
+using SaveSystem;
 using Scriptables;
 using UnityEngine;
 using Utils;
 
 namespace World {
-  public class BuildingsDataController : MonoBehaviour {
+  public class BuildingsDataController : MonoBehaviour, ISaveLoad {
+    [SerializeField] private BuildingDataLibrary buildingDataLibrary;
     private Building[,] _buildDatas;
 
     //Cells fill data array
@@ -12,10 +15,11 @@ namespace World {
     public int[,] BuildFillDatas => _buildFillDatas;
 
     public void Initialize() {
-      _buildDatas = new Building[GameManager.Instance.GameConfig.BuildingAreaSizeX,
+      /*_buildDatas = new Building[GameManager.Instance.GameConfig.BuildingAreaSizeX,
         GameManager.Instance.GameConfig.BuildingAreaSizeY];
       _buildFillDatas = new int[GameManager.Instance.GameConfig.BuildingAreaSizeX,
-        GameManager.Instance.GameConfig.BuildingAreaSizeY];
+        GameManager.Instance.GameConfig.BuildingAreaSizeY];*/
+      Load();
     }
 
     public Building GetBuildDataConverted(int xCoord, int yCoord) {
@@ -68,5 +72,67 @@ namespace World {
 
       return _buildFillDatas[convertedCoords.X, convertedCoords.Y];
     }
+
+    #region Save/Load
+
+    public void Load() {
+      var data = SaveLoadSystem.Instance.gameData.WorldData;
+
+      var sizeX = GameManager.Instance.GameConfig.BuildingAreaSizeX;
+      var sizeY = GameManager.Instance.GameConfig.BuildingAreaSizeY;
+
+      _buildDatas = new Building[sizeX, sizeY];
+      _buildFillDatas = new int[sizeX, sizeY];
+
+      // Load buildings
+      if (data.BuildDatas is { Count: > 0 }) {
+        foreach (var bd in data.BuildDatas) {
+          _buildDatas[bd.X, bd.Y] = buildingDataLibrary.ItemsMap[bd.BuildId];
+        }
+      }
+
+      // Load fills
+      if (data.BuildFillDatas is { Count: > 0 }) {
+        foreach (var fill in data.BuildFillDatas) {
+          _buildFillDatas[fill.X, fill.Y] = fill.Value;
+        }
+      }
+    }
+
+    public void Save() {
+      var data = SaveLoadSystem.Instance.gameData.WorldData;
+      data.BuildDatas = new List<BuildingData>();
+      data.BuildFillDatas = new List<CellFill>();
+
+      // Save _buildDatas without nulls
+      for (var x = 0; x < _buildDatas.GetLength(0); x++) {
+        for (var y = 0; y < _buildDatas.GetLength(1); y++) {
+          var building = _buildDatas[x, y];
+          if (building != null) {
+            data.BuildDatas.Add(new BuildingData {
+              X = x,
+              Y = y,
+              BuildId = building.Id
+            });
+          }
+        }
+      }
+
+      // Save only non-zero fill cells
+      for (var x = 0; x < _buildFillDatas.GetLength(0); x++) {
+        for (var y = 0; y < _buildFillDatas.GetLength(1); y++) {
+          var val = _buildFillDatas[x, y];
+          if (val != 0) {
+            data.BuildFillDatas.Add(new CellFill {
+              X = x,
+              Y = y,
+              Value = val
+            });
+          }
+        }
+      }
+    }
+
+    #endregion
   }
 }

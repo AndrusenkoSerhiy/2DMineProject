@@ -20,7 +20,7 @@ namespace World {
     public bool HasAnyNeighbours => hasAnyNeighbours();
     public bool HasStandPoint => hasStandPoint();
 
-    public CellData(int x, int y, float perlin, int durability, ChunkData chunk) {
+    public CellData(int x, int y, float perlin, float durability, ChunkData chunk) {
       this.x = x;
       this.y = y;
       this.perlin = perlin;

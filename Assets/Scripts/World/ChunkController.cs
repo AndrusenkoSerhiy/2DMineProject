@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using Pool;
+using SaveSystem;
 using Scriptables;
 using Scriptables.POI;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Utils;
 
 namespace World {
-  public class ChunkController : MonoBehaviour {
+  public class ChunkController : MonoBehaviour, ISaveLoad {
     //Resources
     [SerializeField] private ResourceDataLibrary _resourceDataLib;
     public ResourceDataLibrary ResourceDataLibrary => _resourceDataLib;
@@ -24,10 +24,14 @@ namespace World {
     private ChunkData chunkData;
     public ChunkData ChunkData => chunkData;
 
+    private List<string> removedCells = new();
+    private Dictionary<string, ChangedCellData> changedCells = new();
+    public float Seed;
 
     private bool isInited = false;
 
     private void Awake() {
+      Load();
       CellObjectsPool.Init();
       BuildingsDataController.Initialize();
       _chunkGenerator.Init();
@@ -104,7 +108,7 @@ namespace World {
           if (_activeBuildObjects.ContainsKey(_proxyCoords)) {
             continue;
           }
-          
+
           if (GameManager.Instance.BuildingsDataController.BuildFillDatas[i, j] == 0) {
             continue;
           }
@@ -183,10 +187,13 @@ namespace World {
 
     public void TriggerCellDestroyed(CellObject cellObject) {
       cellObject.CellData.Destroy();
-      RemoveCellFromActives(new Coords(cellObject.CellData.x, cellObject.CellData.y));
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
+      var coords = new Coords(x, y);
+      RemoveCellFromActives(coords);
       UpdateCellAround(x, y);
+      AddToRemoved(x, y);
+      RemoveCellFromChanged(x, y);
     }
 
     public void UpdateCellAround(int x, int y) {
@@ -266,9 +273,65 @@ namespace World {
       }
     }
 
-
     private CellObjectsPool CellObjectsPool => GameManager.Instance.CellObjectsPool;
     private BuildPoolsController BuildPoolsController => GameManager.Instance.BuildPoolsController;
     private BuildingsDataController BuildingsDataController => GameManager.Instance.BuildingsDataController;
+
+    private float GenerateSeed() {
+      return Random.Range(0f, 10000f);
+    }
+    
+    private void AddToRemoved(int x, int y) {
+      removedCells.Add(WorldData.GetCellKey(x, y));
+    }
+
+    public bool IsRemoved(int x, int y) {
+      var key = WorldData.GetCellKey(x, y);
+      return removedCells.Contains(key);
+    }
+
+    public ChangedCellData GetChanged(int x, int y) {
+      var key = WorldData.GetCellKey(x, y);
+      changedCells.TryGetValue(key, out var value);
+      return value;
+    }
+
+    public void AfterCellChanged(CellData data) {
+      var key = WorldData.GetCellKey(data.x, data.y);
+      var changedData = new ChangedCellData { Perlin = data.perlin, Durability = data.durability };
+      if (changedCells.TryGetValue(key, out var value)) {
+        changedCells[key] = changedData;
+      }
+      else {
+        changedCells.Add(WorldData.GetCellKey(data.x, data.y), changedData);
+      }
+
+      removedCells.Remove(key);
+    }
+
+    private void RemoveCellFromChanged(int x, int y) {
+      var key = WorldData.GetCellKey(x, y);
+      changedCells.Remove(key);
+    }
+
+    #region Save/Load
+
+    public void Load() {
+      var data = SaveLoadSystem.Instance.gameData.WorldData;
+
+      Seed = data.Seed >= 0 ? data.Seed : GenerateSeed();
+      removedCells = data.RemovedCells;
+      changedCells = data.ChangedCells;
+    }
+
+    public void Save() {
+      var data = SaveLoadSystem.Instance.gameData.WorldData;
+
+      data.Seed = Seed;
+      data.RemovedCells = removedCells;
+      data.ChangedCells = (SerializedDictionary<string, ChangedCellData>)changedCells;
+    }
+
+    #endregion
   }
 }

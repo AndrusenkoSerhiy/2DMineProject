@@ -15,6 +15,7 @@ namespace SaveSystem {
     public SerializedDictionary<string, WorkstationsData> Workstations;
     public RecipesData Recipes;
     public SerializedDictionary<string, RobotData> Robots;
+    public WorldData WorldData;
   }
 
   public interface ISaveLoad {
@@ -30,6 +31,7 @@ namespace SaveSystem {
     [SerializeField] private bool saveOnQuit = true;
     [SerializeField] private bool loadOnStart = true;
     [SerializeField] private bool autosave = true;
+    [SerializeField] private bool prettyPrint = true;
 
     [Tooltip("Time in seconds")] [SerializeField]
     private float autosaveInterval = 300f;
@@ -41,7 +43,7 @@ namespace SaveSystem {
 
     protected override void Awake() {
       base.Awake();
-      dataService = new FileDataService(new JsonSerializer());
+      dataService = new FileDataService(new JsonSerializer(prettyPrint));
       if (loadOnStart) {
         LoadOrCreateNew();
       }
@@ -109,6 +111,7 @@ namespace SaveSystem {
         Workstations = new SerializedDictionary<string, WorkstationsData>(),
         Recipes = new RecipesData(),
         Robots = new SerializedDictionary<string, RobotData>(),
+        WorldData = new WorldData()
       };
     }
 

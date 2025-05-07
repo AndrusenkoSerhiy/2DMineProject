@@ -11,13 +11,13 @@ namespace Actors {
     public static event Action OnPlayerRespawn;
 
     protected AnimatorParameters animParam;
-    protected StatsBase stats;
+    protected PlayerStats stats;
     private bool _hasTakenDamage;
     public AnimatorParameters AnimParam => animParam;
     public bool IsDead => isDead;
 
     protected virtual void Awake() {
-      stats = GetComponent<StatsBase>();
+      stats = GetComponent<PlayerStats>();
     }
 
     protected virtual void Start() {

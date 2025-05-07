@@ -33,6 +33,9 @@ public class PlayerStatsEditor : BaseStatsEditor {
     EditorGUILayout.LabelField($"Attack Stamina Usage: {playerStats.AttackStaminaUsage}",
       EditorStyles.label);
     EditorGUILayout.LabelField($"Armor: {playerStats.Armor}", EditorStyles.label);
+    EditorGUILayout.LabelField($"MaxSpeed: {playerStats.MaxSpeed}", EditorStyles.label);
+    EditorGUILayout.LabelField($"MaxBackSpeed: {playerStats.MaxBackSpeed}", EditorStyles.label);
+    EditorGUILayout.LabelField($"SprintSpeed: {playerStats.SprintSpeed}", EditorStyles.label);
   }
 }
 #endif

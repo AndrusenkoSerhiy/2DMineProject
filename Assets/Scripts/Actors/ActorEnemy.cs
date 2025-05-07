@@ -4,12 +4,12 @@ using Animation;
 using Enemy;
 using NodeCanvas.BehaviourTrees;
 using Scriptables.Siege;
+using Stats;
 using UnityEngine;
 using Utils;
 
 namespace Actors {
   public class ActorEnemy : ActorBase {
-    [SerializeField] private int _damage = 3;
     public bool shouldBeDamaging { get; private set; } = false;
     private List<IDamageable> iDamageables = new List<IDamageable>();
     private IDamageable currentTarget;
@@ -29,6 +29,16 @@ namespace Actors {
 
     public void SetDifficulty(ZombieDifficultyProfile difficulty) {
       this.difficulty = difficulty;
+      ApplyStats();
+    }
+
+    private void ApplyStats() {
+      stats.UpdateBaseValue(StatType.MaxHealth, stats.MaxHealth * difficulty.healthMultiplier);
+      stats.UpdateBaseValue(StatType.Health, stats.Health * difficulty.healthMultiplier);
+      stats.UpdateBaseValue(StatType.MaxSpeed, stats.MaxSpeed * difficulty.speedMultiplier);
+      stats.UpdateBaseValue(StatType.BlockDamage, stats.BlockDamage * difficulty.attackMultiplier);
+      stats.UpdateBaseValue(StatType.EntityDamage, stats.EntityDamage * difficulty.attackMultiplier);
+      stats.UpdateBaseValue(StatType.Armor, stats.Armor * difficulty.armorMultiplier);
     }
     public void SetPatrolPosition(Vector3 pos) {
       npcMovement.SetTarget(pos);
@@ -111,9 +121,13 @@ namespace Actors {
 
         return;
       }
-      
-      currentTarget.Damage(_damage);
+      //TODO choose damage for player or cell
+      currentTarget.Damage(stats.EntityDamage);
       iDamageables.Add(currentTarget);
+    }
+
+    public PlayerStats GetStats() {
+      return stats;
     }
 
     public override void Damage(float damage) {

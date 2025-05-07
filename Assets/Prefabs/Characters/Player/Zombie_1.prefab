@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 1260485521753335071}
   - component: {fileID: 4278888900822443520}
   - component: {fileID: 1539736296294737943}
-  - component: {fileID: 7069149063050288231}
+  - component: {fileID: -7218568860761669106}
   m_Layer: 10
   m_Name: Zombie_1
   m_TagString: Untagged
@@ -129,6 +129,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   behaviourTreeOwner: {fileID: 1260485521753335071}
+  difficulty: {fileID: 0}
 --- !u!61 &5323630564359519687
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -275,7 +276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRendererRef: {fileID: 1486529621788147635}
---- !u!114 &7069149063050288231
+--- !u!114 &-7218568860761669106
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -284,10 +285,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2942943796456466162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 169c836900c140728441c3fb8f8b7c51, type: 3}
+  m_Script: {fileID: 11500000, guid: 1cbb0cb04a934c85a867df4977948408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statsObject: {fileID: 11400000, guid: 4b884352109ed0145a3919992e079429, type: 2}
+  statsObject: {fileID: 11400000, guid: c18ee2dbbb86e6d498b582b1461bd9c2, type: 2}
 --- !u!1 &3986283541987958568
 GameObject:
   m_ObjectHideFlags: 0

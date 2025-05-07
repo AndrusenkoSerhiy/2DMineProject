@@ -18,9 +18,9 @@ public class PlayerStats : StatsBase {
   public float EntityDamage => GetStatValue(StatType.EntityDamage);
   public float TimeBtwAttacks => GetStatValue(StatType.TimeBtwAttacks);
   public float AttackStaminaUsage => GetStatValue(StatType.AttackStaminaUsage);
-  public float MaxSpeed => Mathf.Min(baseValues[StatType.MaxSpeed]);
-  public float MaxBackSpeed => Mathf.Min(baseValues[StatType.MaxBackSpeed]);
-  public float SprintSpeed => Mathf.Min(baseValues[StatType.SprintSpeed]);
+  public float MaxSpeed => GetStatValue(StatType.MaxSpeed);
+  public float MaxBackSpeed => GetStatValue(StatType.MaxBackSpeed);
+  public float SprintSpeed => GetStatValue(StatType.SprintSpeed);
 
   protected override void Awake() => Init();
 
@@ -56,6 +56,7 @@ public class PlayerStats : StatsBase {
   public void UpdateBaseValue(StatType type, float value) {
     if (baseValues.ContainsKey(type)) {
       baseValues[type] = value;
+      InvalidateStatCache(type);
     }
   }
 

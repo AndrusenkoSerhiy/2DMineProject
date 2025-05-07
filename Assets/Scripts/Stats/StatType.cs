@@ -15,6 +15,10 @@
     TimeBtwAttacks = 43,
     AttackStaminaUsage = 44,
 
-    Armor = 60
+    Armor = 60,
+
+    MaxSpeed = 80,
+    MaxBackSpeed = 81,
+    SprintSpeed = 82
   }
 }

@@ -300,7 +300,7 @@ namespace Player {
     //get animator param depend on currentMaxSpeed
     //1(-1) for walk and 2(-2) for sprint
     private int GetVelocityParam() {
-      return GetMaxSpeed() > PlayerStats.StatsObject.maxSpeed ? 2 : 1;
+      return GetMaxSpeed() > PlayerStats.MaxSpeed ? 2 : 1;
     }
 
     protected virtual float GetMaxSpeed() {
@@ -308,9 +308,9 @@ namespace Player {
       //var canSprintInAir = !grounded && wasSprintingOnJump;
       return isMovingForward
         ? (stamina.IsSprinting /*&& (grounded || canSprintInAir)*/)
-          ? PlayerStats.StatsObject.sprintSpeed
-          : PlayerStats.StatsObject.maxSpeed
-        : PlayerStats.StatsObject.maxBackSpeed;
+          ? PlayerStats.SprintSpeed
+          : PlayerStats.MaxSpeed
+        : PlayerStats.MaxBackSpeed;
     }
 
     private void SetAnimVelocityX(float value) {

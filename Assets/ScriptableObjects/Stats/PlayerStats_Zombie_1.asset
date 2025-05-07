@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ca1dfb1e5494a3da12a4e182dd59407, type: 3}
+  m_Name: PlayerStats_Zombie_1
+  m_EditorClassIdentifier: 
+  health: 3
+  maxHealth: 5
+  healthRegen: 0
+  healthMaxPossibleValue: 10
+  armor: 1
+  armorMaxPossibleValue: 20
+  stamina: 100
+  maxStamina: 100
+  staminaDrain: 20
+  staminaRecovery: 10
+  staminaMaxPossibleValue: 200
+  attackLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  attackRange: 1.8
+  blockDamage: 1
+  entityDamage: 3
+  timeBtwAttacks: 0.4
+  attackStaminaUsage: 1
+  attackID: 0
+  attackColliderSize: {x: 1, y: 1}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  snapInput: 1
+  verticalDeadZoneThreshold: 0.3
+  horizontalDeadZoneThreshold: 0.1
+  maxSpeed: 14
+  maxBackSpeed: 7
+  sprintSpeed: 20
+  acceleration: 120
+  groundDeceleration: 60
+  airDeceleration: 30
+  groundingForce: -1.5
+  grounderDistance: 0.05
+  jumpPower: 36
+  maxFallSpeed: 40
+  fallAcceleration: 110
+  jumpEndEarlyGravityModifier: 3
+  coyoteTime: 0.15
+  jumpBuffer: 0.2

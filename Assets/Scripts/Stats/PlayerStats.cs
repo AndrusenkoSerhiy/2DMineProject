@@ -18,6 +18,9 @@ public class PlayerStats : StatsBase {
   public float EntityDamage => GetStatValue(StatType.EntityDamage);
   public float TimeBtwAttacks => GetStatValue(StatType.TimeBtwAttacks);
   public float AttackStaminaUsage => GetStatValue(StatType.AttackStaminaUsage);
+  public float MaxSpeed => Mathf.Min(baseValues[StatType.MaxSpeed]);
+  public float MaxBackSpeed => Mathf.Min(baseValues[StatType.MaxBackSpeed]);
+  public float SprintSpeed => Mathf.Min(baseValues[StatType.SprintSpeed]);
 
   protected override void Awake() => Init();
 
@@ -39,6 +42,10 @@ public class PlayerStats : StatsBase {
     baseValues[StatType.TimeBtwAttacks] = StatsObject.timeBtwAttacks;
     baseValues[StatType.AttackStaminaUsage] = StatsObject.attackStaminaUsage;
 
+    baseValues[StatType.MaxSpeed] = StatsObject.maxSpeed;
+    baseValues[StatType.MaxBackSpeed] = StatsObject.maxBackSpeed;
+    baseValues[StatType.SprintSpeed] = StatsObject.sprintSpeed;
+
     if (data?.StatModifiersData?.Count > 0) {
       Mediator.Load(data.StatModifiersData);
     }
@@ -46,23 +53,11 @@ public class PlayerStats : StatsBase {
     inited = true;
   }
 
-  /*protected override void Awake() {
-    base.Awake();
-
-    baseValues[StatType.Stamina] = StatsObject.stamina;
-    baseValues[StatType.MaxStamina] = StatsObject.maxStamina;
-    baseValues[StatType.StaminaDrain] = StatsObject.staminaDrain;
-    baseValues[StatType.StaminaRecovery] = StatsObject.staminaRecovery;
-
-    baseValues[StatType.AttackRange] = StatsObject.attackRange;
-    baseValues[StatType.BlockDamage] = StatsObject.blockDamage;
-    baseValues[StatType.EntityDamage] = StatsObject.entityDamage;
-    baseValues[StatType.TimeBtwAttacks] = StatsObject.timeBtwAttacks;
-    baseValues[StatType.AttackStaminaUsage] = StatsObject.attackStaminaUsage;
-
-    SaveLoadSystem.Instance.Register(this);
-    Load();
-  }*/
+  public void UpdateBaseValue(StatType type, float value) {
+    if (baseValues.ContainsKey(type)) {
+      baseValues[type] = value;
+    }
+  }
 
   protected override void UpdateStats(float deltaTime) {
     base.UpdateStats(deltaTime);
@@ -100,6 +95,9 @@ public class PlayerStats : StatsBase {
     StatType.EntityDamage => EntityDamage,
     StatType.TimeBtwAttacks => TimeBtwAttacks,
     StatType.AttackStaminaUsage => AttackStaminaUsage,
+    StatType.MaxSpeed => MaxSpeed,
+    StatType.MaxBackSpeed => MaxBackSpeed,
+    StatType.SprintSpeed => SprintSpeed,
     _ => base.GetValueByType(type)
   };
 
@@ -134,19 +132,4 @@ public class PlayerStats : StatsBase {
 
     return playerStatsData;
   }
-
-  /*public void Load() {
-    if (SaveLoadSystem.Instance.IsNewGame) {
-      return;
-    }
-
-    var data = SaveLoadSystem.Instance.gameData?.PlayerData?.PlayerStatsData;
-    if (data == null) {
-      return;
-    }
-
-    baseValues[StatType.Health] = data.Health;
-    baseValues[StatType.Stamina] = data.Stamina;
-    Mediator.Load(data.StatModifiersData);
-  }*/
 }

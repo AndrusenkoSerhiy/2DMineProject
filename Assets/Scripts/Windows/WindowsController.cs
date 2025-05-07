@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Settings;
@@ -9,7 +10,7 @@ namespace Windows {
     private bool isAnyWindowOpen;
     public List<WindowBase> WindowsList => windowsList;
     public bool IsAnyWindowOpen => isAnyWindowOpen;
-    
+
     public T GetWindow<T>() where T : WindowBase {
       return windowsList.OfType<T>().FirstOrDefault();
     }
@@ -26,13 +27,21 @@ namespace Windows {
       windowsList.Remove(window);
     }
 
-    private void Start() {
+    private void Awake() {
       WindowsEvents();
       //init windows (use for subscribe to player death in respawnWindow)
       foreach (var window in windowsList) {
         window.Init();
       }
     }
+
+    /*private void Start() {
+      WindowsEvents();
+      //init windows (use for subscribe to player death in respawnWindow)
+      foreach (var window in windowsList) {
+        window.Init();
+      }
+    }*/
 
     private void WindowsEvents() {
       foreach (var window in windowsList) {
@@ -47,9 +56,10 @@ namespace Windows {
           window.Hide();
         }
       }
+
       isAnyWindowOpen = true;
     }
-    
+
     private void OnWindowHide(WindowBase currentWindow) {
       isAnyWindowOpen = false;
     }
@@ -64,9 +74,9 @@ namespace Windows {
         var window = windowsList.Find(e => e.IsShow);
         //TODO 
         //need to replace this condition
-        if(window && window.name.Equals("RespawnWindow"))
+        if (window && window.name.Equals("RespawnWindow"))
           return;
-        
+
         if (window) {
           window.Hide();
         }

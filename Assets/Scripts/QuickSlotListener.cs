@@ -69,9 +69,9 @@ public class QuickSlotListener : MonoBehaviour {
   public void Activate() {
     gameObject.SetActive(true);
     SubscribeToClickQuickSlots();
-    
+
     UpdateQuickSlotsAfterLoad();
-    
+
     selectedSlot = slots[selectedSlotIndex];
     selectedItem = slots[selectedSlotIndex].Item;
     selectedSlot.Select();
@@ -178,11 +178,15 @@ public class QuickSlotListener : MonoBehaviour {
       if ( /*slot.isEmpty || */!slot.isSelected) {
         continue;
       }
-      
+
       // slot.Item.info.Use();
       GetConsumer().SetActiveSlot(slot);
       SelectSlotByIndex(i);
       break;
+    }
+
+    if (selectedSlotIndex == -1) {
+      SelectFirstSlot();
     }
 
     //userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;

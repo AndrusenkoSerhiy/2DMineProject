@@ -257,9 +257,9 @@ namespace Tools {
         Id = id,
         IsSet = true,
         IsPlayerInside = playerInRobot,
-        Position = transform.position,
-        Rotation = transform.rotation,
-        Scale = transform.localScale,
+        Position = tr.position,
+        Rotation = tr.rotation,
+        Scale = tr.localScale,
         PlayerStatsData = new PlayerStatsData {
           Health = stats.Health,
           Stamina = stats.Stamina

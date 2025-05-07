@@ -16,6 +16,7 @@ namespace SaveSystem {
     public SerializedDictionary<string, RobotData> Robots;
     public WorldData WorldData;
     public PlayerData PlayerData;
+    public SiegeData SiegeData;
   }
 
   public interface ISaveLoad {
@@ -120,6 +121,7 @@ namespace SaveSystem {
         Robots = new SerializedDictionary<string, RobotData>(),
         WorldData = new WorldData(),
         PlayerData = new PlayerData(),
+        SiegeData = new SiegeData(),
       };
       isNewGame = true;
     }

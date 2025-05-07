@@ -232,6 +232,9 @@ namespace Player {
       _coyoteUsable && !grounded && time < _frameLeftGrounded + PlayerStats.StatsObject.coyoteTime;
 
     private void HandleJump() {
+      if (actor != null && actor.IsDead) {
+        return;
+      }
       if (!_endedJumpEarly && !grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
 
       if (!_jumpToConsume && !HasBufferedJump) return;

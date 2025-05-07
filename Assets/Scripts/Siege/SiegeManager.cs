@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Actors;
+using SaveSystem;
 using Scriptables.Siege;
 using UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Siege {
-  public class SiegeManager : MonoBehaviour {
+  public class SiegeManager : MonoBehaviour, ISaveLoad {
     [SerializeField] private SiegesSettings siegesSettings;
     [SerializeField] private ZombieDifficultyDatabase zombieDifficultyDatabase;
     [SerializeField] private SiegeTimelineUI siegeTimelineUI;
@@ -42,11 +43,13 @@ namespace Siege {
     private Coroutine activeSiegeCoroutine;
 
     private void Start() {
+      SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
       ActorPlayer.OnPlayerDeath += OnPlayerDeathHandler;
       ActorPlayer.OnPlayerRespawn += OnPlayerRespawnHandler;
 
-      // StartSieges();
+      Load();
+      StartSieges();
     }
 
     public DifficultyEntry GetDifficultyProfilesByWeight() {
@@ -156,7 +159,6 @@ namespace Siege {
 
     private void ZombieSpawn() {
       OnZombieSpawn?.Invoke(currentSiege);
-      Debug.Log($"Zombie spawned: {currentSiege.ZombieCount}");
     }
 
     private void ResumeSiege() {
@@ -186,6 +188,49 @@ namespace Siege {
 
     private void OnPlayerRespawnHandler() {
       ResumeSiege();
+    }
+
+    public void Save() {
+      var data = SaveLoadSystem.Instance.gameData.SiegeData;
+
+      data.CurrentSiegeCycle = currentSiegeCycle;
+      data.CurrentSiegeIndex = currentSiegeIndex;
+      data.DurationTimer = durationTimer;
+      data.SiegeCycleElapsedTime = siegeCycleElapsedTime;
+      data.SiegesStarted = siegesStarted;
+      data.IsPaused = isPaused;
+      data.SiegeQueue = siegeQueue;
+      data.TotalCycleTime = totalCycleTime;
+      data.IsSiegeInProgress = isSiegeInProgress;
+      data.TimeToNextSegment = timeToNextSegment;
+      data.IsSet = true;
+    }
+
+    public void Load() {
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        return;
+      }
+
+      var data = SaveLoadSystem.Instance.gameData.SiegeData;
+      if (!data.IsSet) {
+        return;
+      }
+
+      currentSiegeCycle = data.CurrentSiegeCycle;
+      currentSiegeIndex = data.CurrentSiegeIndex;
+      durationTimer = data.DurationTimer;
+      siegeCycleElapsedTime = data.SiegeCycleElapsedTime;
+      siegesStarted = data.SiegesStarted;
+      isPaused = data.IsPaused;
+      siegeQueue = data.SiegeQueue;
+      totalCycleTime = data.TotalCycleTime;
+      isSiegeInProgress = data.IsSiegeInProgress;
+      timeToNextSegment = data.TimeToNextSegment;
+
+      if (siegesStarted) {
+        siegeTimelineUI.SetupTimeline(siegeQueue);
+        activeSiegeCoroutine = StartCoroutine(RunNextSiege());
+      }
     }
   }
 }

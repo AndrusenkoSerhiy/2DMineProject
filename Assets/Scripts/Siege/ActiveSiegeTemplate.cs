@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Siege {
+  [Serializable]
   public class ActiveSiegeTemplate {
-    private float duration;
-    private int zombieCount;
-    private int wavesOfZombies;
-    private float timeBeforeSiege;
+    [SerializeField] private float duration;
+    [SerializeField] private int zombieCount;
+    [SerializeField] private int wavesOfZombies;
+    [SerializeField] private float timeBeforeSiege;
 
     public float Duration => duration;
     public int ZombieCount => zombieCount;

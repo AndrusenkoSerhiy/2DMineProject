@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Animation;
 using Enemy;
 using NodeCanvas.BehaviourTrees;
+using Scriptables.Siege;
 using UnityEngine;
 using Utils;
 
@@ -17,11 +18,17 @@ namespace Actors {
     [SerializeField] private EnemyCoords coords;
     [SerializeField] private LayerMask layerAfterDeath;
     [SerializeField] private BehaviourTreeOwner behaviourTreeOwner;
+
+    [SerializeField] private ZombieDifficultyProfile difficulty;
     public Coords GetCoords => coords.GetCoords();
 
     public void SetBehaviour(BehaviourTree tree) {
       behaviourTreeOwner.behaviour = tree;
       behaviourTreeOwner.StartBehaviour();
+    }
+
+    public void SetDifficulty(ZombieDifficultyProfile difficulty) {
+      this.difficulty = difficulty;
     }
     public void SetPatrolPosition(Vector3 pos) {
       npcMovement.SetTarget(pos);
@@ -127,7 +134,7 @@ namespace Actors {
     }
 
     private void SpawnDrop() {
-      GameManager.Instance.DropZombieData.DropItems(1);
+      GameManager.Instance.DropZombieData.DropItems(difficulty);
     }
   }
 }

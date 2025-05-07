@@ -39,6 +39,7 @@ namespace Siege {
     public float TimeToNextSegment => timeToNextSegment;
     public float SiegeCycleElapsedTime => siegeCycleElapsedTime;
     public float TotalCycleTime => totalCycleTime;
+    public ZombieDifficultyDatabase ZombieDifficultyDatabase => zombieDifficultyDatabase;
 
     private Coroutine activeSiegeCoroutine;
 
@@ -49,7 +50,7 @@ namespace Siege {
       ActorPlayer.OnPlayerRespawn += OnPlayerRespawnHandler;
 
       Load();
-      StartSieges();
+      // StartSieges();
     }
 
     public DifficultyEntry GetDifficultyProfilesByWeight() {

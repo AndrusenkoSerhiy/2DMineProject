@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Scriptables.Items;
 using UnityEngine;
 
 namespace Scriptables.Siege {
   [CreateAssetMenu(fileName = "ZombieDifficultyDatabase", menuName = "Siege/Zombie Difficulty Database", order = 1)]
-  public class ZombieDifficultyDatabase : ScriptableObject {
+  public class ZombieDifficultyDatabase : Database<ZombieDifficultyProfile> {
     public List<DifficultyEntry> difficultyEntries = new();
 
     public DifficultyEntry GetProfileByWeight(float totalWeight) {

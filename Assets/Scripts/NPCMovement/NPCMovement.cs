@@ -6,10 +6,6 @@ namespace NPCMovement
   public class NPCMovement : MonoBehaviour {
     [SerializeField] private Vector3 target;
     [SerializeField] private Transform targetTransform;
-    //public Transform target;
-    public float speed = 3f;
-    public float jumpForce = 5f;
-    public float stopingDistance = 1;
     public LayerMask groundLayer;
     private Rigidbody2D rb;
     BoxCollider2D boxCollider2D;
@@ -91,7 +87,7 @@ namespace NPCMovement
         return;
       }
       //Debug.LogError($"{Vector2.Distance(transform.position, target)} | {stopingDistance}");
-      if (Vector2.Distance(transform.position, target) <= stopingDistance) {
+      if (Vector2.Distance(transform.position, target) <= actor.GetStats().AttackRange) {
         //Debug.LogError("has arrived!!!!!!!!!!");
         target = Vector3.zero;
         hasArrived = true;
@@ -103,7 +99,7 @@ namespace NPCMovement
       hasArrived = false;
       Vector2 direction = (target - transform.position).normalized;
       FlipX(direction.x);
-      rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocity.y);
+      rb.linearVelocity = new Vector2(direction.x * actor.GetStats().MaxSpeed, rb.linearVelocity.y);
       SetAnimVelocityX(rb.linearVelocity.x);
     }
     
@@ -117,7 +113,7 @@ namespace NPCMovement
         return;
       }
       
-      if (Vector2.Distance(transform.position, targetTransform.position) <= stopingDistance) {
+      if (Vector2.Distance(transform.position, targetTransform.position) <= actor.GetStats().AttackRange) {
         //Debug.LogError("has arrived!!!!!!!!!!");
         hasArrived = true;
         rb.linearVelocity = new Vector2(0, 0);
@@ -128,7 +124,7 @@ namespace NPCMovement
       hasArrived = false;
       Vector2 direction = (targetTransform.position - transform.position).normalized;
       FlipX(direction.x);
-      rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocity.y);
+      rb.linearVelocity = new Vector2(direction.x * actor.GetStats().MaxSpeed, rb.linearVelocity.y);
       SetAnimVelocityX(rb.linearVelocity.x);
     }
     
@@ -148,7 +144,7 @@ namespace NPCMovement
 
       if (IsGrounded()) {
         //Debug.LogError("add force");
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, actor.GetStats().StatsObject.jumpPower);
       }
     }
 

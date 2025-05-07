@@ -13,7 +13,7 @@ namespace Actors {
     public bool shouldBeDamaging { get; private set; } = false;
     private List<IDamageable> iDamageables = new List<IDamageable>();
     private IDamageable currentTarget;
-    
+
     [SerializeField] private NPCMovement.NPCMovement npcMovement;
     [SerializeField] private EnemyCoords coords;
     [SerializeField] private LayerMask layerAfterDeath;
@@ -21,6 +21,7 @@ namespace Actors {
 
     [SerializeField] private ZombieDifficultyProfile difficulty;
     public Coords GetCoords => coords.GetCoords();
+    public ZombieDifficultyProfile Difficulty => difficulty;
 
     public void SetBehaviour(BehaviourTree tree) {
       behaviourTreeOwner.behaviour = tree;
@@ -40,10 +41,11 @@ namespace Actors {
       stats.UpdateBaseValue(StatType.EntityDamage, stats.EntityDamage * difficulty.attackMultiplier);
       stats.UpdateBaseValue(StatType.Armor, stats.Armor * difficulty.armorMultiplier);
     }
+
     public void SetPatrolPosition(Vector3 pos) {
       npcMovement.SetTarget(pos);
     }
-    
+
     public void SetTargetTransform(Transform tr) {
       npcMovement.SetTargetTransform(tr);
     }
@@ -51,11 +53,11 @@ namespace Actors {
     public bool HasArrived() {
       return npcMovement.HasArrived;
     }
-    
+
     public void AttackPlayer() {
       npcMovement.AttackPlayer();
     }
-    
+
     protected override void Awake() {
       base.Awake();
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
@@ -66,10 +68,11 @@ namespace Actors {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
       AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
     }
+
     public void TriggerAttack() {
       if (_animator.GetBool(animParam.IsDeadHash))
         return;
-      
+
       currentTarget = GameManager.Instance.PlayerController.GetComponent<IDamageable>();
       //Debug.LogError($"trigger attack {currentTarget.GetHealth()}");
       if (currentTarget.GetHealth() <= 0)
@@ -118,9 +121,9 @@ namespace Actors {
 
     private void Attack() {
       if (currentTarget == null || currentTarget.hasTakenDamage || currentTarget.GetHealth() <= 0) {
-
         return;
       }
+
       //TODO choose damage for player or cell
       currentTarget.Damage(stats.EntityDamage);
       iDamageables.Add(currentTarget);
@@ -132,11 +135,11 @@ namespace Actors {
 
     public override void Damage(float damage) {
       base.Damage(damage);
-      if(stats.Health > 0)
+      if (stats.Health > 0)
         return;
       //work only 1 layer selected in inspector
       var layerIndex = Mathf.RoundToInt(Mathf.Log(layerAfterDeath.value, 2));
-      
+
       gameObject.layer = layerIndex;
       Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Character"), layerIndex);
     }

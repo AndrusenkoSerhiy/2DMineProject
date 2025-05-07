@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using NodeCanvas.BehaviourTrees;
 using SaveSystem;
 using Scriptables.Siege;
 using Siege;
+using Stats;
 using UnityEngine;
 using Utils;
 using World;
@@ -19,10 +19,12 @@ namespace Actors {
     private int areaHeight;
 
     private void Start() {
+      SaveLoadSystem.Instance.Register(this);
       siegeManager = GameManager.Instance.SiegeManager;
       GameManager.Instance.SiegeManager.OnZombieSpawn += SpawnSiegeZombie;
       areaWidth = GameManager.Instance.GameConfig.PlayerAreaWidth;
       areaHeight = GameManager.Instance.GameConfig.PlayerAreaHeight;
+      Load();
     }
 
     private void SpawnSiegeZombie(ActiveSiegeTemplate siege) {
@@ -193,9 +195,40 @@ namespace Actors {
 
     public void Save() {
       var data = SaveLoadSystem.Instance.gameData.Zombies;
+
+      foreach (var enemy in enemies) {
+        var enemyData = new ZombiesData {
+          ProfileId = enemy.Difficulty.Id,
+          Position = enemy.transform.position,
+          Rotation = enemy.transform.rotation,
+          Scale = enemy.transform.localScale,
+          PlayerStatsData = enemy.GetStats().PrepareSaveData()
+        };
+        data.Add(enemyData);
+      }
     }
 
     public void Load() {
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        return;
+      }
+
+      var data = SaveLoadSystem.Instance.gameData.Zombies;
+      foreach (var zombieData in data) {
+        var profile = siegeManager.ZombieDifficultyDatabase.ItemsMap[zombieData.ProfileId];
+        if (profile == null) {
+          continue;
+        }
+
+        var zombie = (ActorEnemy)Instantiate(actor, zombieData.Position, zombieData.Rotation);
+        zombie.transform.localScale = zombieData.Scale;
+        zombie.SetBehaviour(siegeBehaviour);
+        zombie.SetDifficulty(profile);
+        zombie.GetStats().UpdateBaseValue(StatType.Health, zombieData.PlayerStatsData.Health);
+        enemies.Add(zombie);
+      }
+
+      data.Clear();
     }
   }
 }

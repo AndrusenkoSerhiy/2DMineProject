@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecc030bb12f748218ef3f70b261db29a, type: 3}
   m_Name: ZombieDifficultyDatabase
   m_EditorClassIdentifier: 
+  ItemObjects:
+  - {fileID: 11400000, guid: 03cd2820a938f6b4c88dbba2a09fa58d, type: 2}
+  - {fileID: 11400000, guid: cf1e02ea97cf7264bb8028e985e5be4a, type: 2}
+  - {fileID: 11400000, guid: d7eb0e7d99980714392fec0f8682c61c, type: 2}
+  - {fileID: 11400000, guid: c20f6e652cb5cee4dbff9b06e0c2609d, type: 2}
+  - {fileID: 11400000, guid: 6967656a459071d43bede8d4bbb5ee29, type: 2}
   difficultyEntries:
   - minWeight: 0
     maxWeight: 20

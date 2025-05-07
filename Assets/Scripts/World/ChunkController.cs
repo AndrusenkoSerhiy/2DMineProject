@@ -6,6 +6,7 @@ using Scriptables.POI;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace World {
   public class ChunkController : MonoBehaviour, ISaveLoad {
@@ -31,6 +32,7 @@ namespace World {
     private bool isInited = false;
 
     private void Awake() {
+      SaveLoadSystem.Instance.Register(this);
       Load();
       CellObjectsPool.Init();
       BuildingsDataController.Initialize();
@@ -88,7 +90,8 @@ namespace World {
       }
 
       //buildings
-      var playersBuildingsCoords = CoordsTransformer.GetPlayerCoords();//GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var playersBuildingsCoords =
+        CoordsTransformer.GetPlayerCoords(); //GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
       playersBuildingsCoords = CoordsTransformer.GridToBuildingsGrid(playersBuildingsCoords);
 
       cols = GameManager.Instance.GameConfig.BuildingAreaSizeX;
@@ -114,8 +117,8 @@ namespace World {
           }
 
           var buildData = GameManager.Instance.BuildingsDataController.GetBuildData(i, j);
-          if(buildData)
-            _activeBuildObjects[_proxyCoords] = SpawnBuild(_proxyCoords, buildData); 
+          if (buildData)
+            _activeBuildObjects[_proxyCoords] = SpawnBuild(_proxyCoords, buildData);
         }
       }
 
@@ -244,13 +247,19 @@ namespace World {
       var emptyCells = new List<CellData>();
       for (int i = 0; i < chunkData.width; i++) {
         for (int j = 0; j < chunkData.width; j++) {
-          if (chunkData.CellFillDatas[i, j] == 0) {
-            var data = chunkData.GetCellData(i, j);
-            if (data.x == 0 || data.y == 0 || data.x == chunkData.width - 1 || data.y == chunkData.height - 1) continue;
-            var cellData = chunkData.GetCellData(i, j);
-            if (!cellData.HasStandPoint) continue;
-            emptyCells.Add(chunkData.GetCellData(i, j));
+          if (IsRemoved(i, j)) {
+            continue;
           }
+
+          if (chunkData.CellFillDatas[i, j] != 0) {
+            continue;
+          }
+
+          var data = chunkData.GetCellData(i, j);
+          if (data.x == 0 || data.y == 0 || data.x == chunkData.width - 1 || data.y == chunkData.height - 1) continue;
+          var cellData = chunkData.GetCellData(i, j);
+          if (!cellData.HasStandPoint) continue;
+          emptyCells.Add(chunkData.GetCellData(i, j));
         }
       }
 
@@ -280,7 +289,7 @@ namespace World {
     private float GenerateSeed() {
       return Random.Range(0f, 10000f);
     }
-    
+
     private void AddToRemoved(int x, int y) {
       removedCells.Add(WorldData.GetCellKey(x, y));
     }
@@ -317,9 +326,14 @@ namespace World {
     #region Save/Load
 
     public void Load() {
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        Seed = GenerateSeed();
+        return;
+      }
+
       var data = SaveLoadSystem.Instance.gameData.WorldData;
 
-      Seed = data.Seed >= 0 ? data.Seed : GenerateSeed();
+      Seed = data.Seed;
       removedCells = data.RemovedCells;
       changedCells = data.ChangedCells;
     }
@@ -329,7 +343,7 @@ namespace World {
 
       data.Seed = Seed;
       data.RemovedCells = removedCells;
-      data.ChangedCells = (SerializedDictionary<string, ChangedCellData>)changedCells;
+      data.ChangedCells = changedCells.Count > 0 ? (SerializedDictionary<string, ChangedCellData>)changedCells : new();
     }
 
     #endregion

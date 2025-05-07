@@ -22,6 +22,7 @@ namespace Craft.Recipes {
     public event Action<Recipe> OnRecipeUnlocked;
 
     private void Awake() {
+      SaveLoadSystem.Instance.Register(this);
       Load();
       Initialize();
     }
@@ -226,6 +227,10 @@ namespace Craft.Recipes {
     }
 
     public void Load() {
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        return;
+      }
+
       var data = SaveLoadSystem.Instance.gameData.Recipes;
       if (data == null) {
         return;

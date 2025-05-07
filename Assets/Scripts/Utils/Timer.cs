@@ -12,13 +12,14 @@ namespace Utils {
     public Action OnTimerStart = delegate { };
     public Action OnTimerStop = delegate { };
 
-    protected Timer(float value) {
+    protected Timer(float value, float left) {
       initialTime = value;
+      Time = left;
       IsRunning = false;
     }
 
     public void Start() {
-      Time = initialTime;
+      // Time = initialTime;
       if (!IsRunning) {
         IsRunning = true;
         OnTimerStart.Invoke();
@@ -39,7 +40,7 @@ namespace Utils {
   }
 
   public class CountdownTimer : Timer {
-    public CountdownTimer(float value) : base(value) {
+    public CountdownTimer(float value, float left) : base(value, left) {
     }
 
     public override void Tick(float deltaTime) {
@@ -63,7 +64,7 @@ namespace Utils {
   }
 
   public class StopwatchTimer : Timer {
-    public StopwatchTimer() : base(0) {
+    public StopwatchTimer() : base(0, 0) {
     }
 
     public override void Tick(float deltaTime) {

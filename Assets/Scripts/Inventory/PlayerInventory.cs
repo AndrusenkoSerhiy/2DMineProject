@@ -47,6 +47,7 @@ namespace Inventory {
     }
 
     private void Awake() {
+      SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
 
       foreach (var inventorySettings in inventoriesSettings) {

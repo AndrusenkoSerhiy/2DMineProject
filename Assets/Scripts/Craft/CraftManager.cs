@@ -15,6 +15,7 @@ namespace Craft {
     // [SerializeField] private SerializedDictionary<string, bool> saving;
 
     private void Awake() {
+      SaveLoadSystem.Instance.Register(this);
       Load();
     }
 
@@ -54,6 +55,10 @@ namespace Craft {
     }
 
     public void Load() {
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        return;
+      }
+      
       SetStationsFromLoadData();
       LoadInputs();
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Utility;
@@ -16,6 +15,7 @@ namespace SaveSystem {
     public RecipesData Recipes;
     public SerializedDictionary<string, RobotData> Robots;
     public WorldData WorldData;
+    public PlayerData PlayerData;
   }
 
   public interface ISaveLoad {
@@ -36,10 +36,13 @@ namespace SaveSystem {
     [Tooltip("Time in seconds")] [SerializeField]
     private float autosaveInterval = 300f;
 
+    private readonly List<ISaveLoad> saveables = new();
     private float autosaveTimer = 0f;
     private IDataService dataService;
+    private bool isNewGame;
 
     public int MaxSaveFiles => maxSaveFiles;
+    public bool IsNewGame => isNewGame;
 
     protected override void Awake() {
       base.Awake();
@@ -84,7 +87,7 @@ namespace SaveSystem {
     }
 
     private void SaveAllEntities() {
-      var saveables = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<ISaveLoad>();
+      // var saveables = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<ISaveLoad>();
 
       foreach (var saveable in saveables) {
         saveable.Save();
@@ -94,12 +97,16 @@ namespace SaveSystem {
     private void LoadOrCreateNew() {
       try {
         LoadGame("Game");
+        isNewGame = false;
       }
       catch (Exception e) {
         Debug.LogWarning(e);
         NewGame();
       }
     }
+
+    public void Register(ISaveLoad obj) => saveables.Add(obj);
+    public void Unregister(ISaveLoad obj) => saveables.Remove(obj);
 
     public void NewGame() {
       gameData = new GameData {
@@ -111,8 +118,10 @@ namespace SaveSystem {
         Workstations = new SerializedDictionary<string, WorkstationsData>(),
         Recipes = new RecipesData(),
         Robots = new SerializedDictionary<string, RobotData>(),
-        WorldData = new WorldData()
+        WorldData = new WorldData(),
+        PlayerData = new PlayerData(),
       };
+      isNewGame = true;
     }
 
     public void SaveGame() => dataService.Save(gameData);

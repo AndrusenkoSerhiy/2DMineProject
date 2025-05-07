@@ -10,6 +10,7 @@ namespace Stats {
     private readonly string itemId;
     private readonly float value;
     private bool markedForRemoval;
+    private Modifier modifier;
 
     public string Id => id;
     public string ItemId => itemId;
@@ -22,8 +23,10 @@ namespace Stats {
     public IOperationStrategy Strategy { get; }
     public bool MarkedForRemoval => markedForRemoval;
     public event Action<StatModifier> OnDispose = delegate { };
+    public Modifier Modifier => modifier;
 
     public StatModifier(Modifier statModifier, IOperationStrategy strategy, string itemObjectId) {
+      modifier = statModifier;
       itemId = itemObjectId;
       value = statModifier.value;
       Type = statModifier.type;
@@ -35,7 +38,11 @@ namespace Stats {
         return;
       }
 
-      timer = new CountdownTimer(statModifier.duration);
+      var timeLeft = statModifier.timeLeft > 0
+        ? statModifier.timeLeft
+        : statModifier.duration;
+
+      timer = new CountdownTimer(statModifier.duration, timeLeft);
       timer.OnTimerStop += () => markedForRemoval = true;
       timer.Start();
     }

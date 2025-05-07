@@ -23,7 +23,6 @@ public class QuickSlotListener : MonoBehaviour {
     playerInventory = gameManager.PlayerInventory;
     quickSlots = playerInventory.GetQuickSlots();
     slots = quickSlots.Slots;
-    // itemConsumer = new ItemConsumer();
 
     //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
@@ -41,15 +40,17 @@ public class QuickSlotListener : MonoBehaviour {
     UnselectSlot(selectedSlot);
   }
 
-  private void Start() {
-    itemConsumer = new ItemConsumer();
+  private ItemConsumer GetConsumer() {
+    return itemConsumer ??= new ItemConsumer();
+  }
 
+  private void Start() {
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     UpdateQuickSlotsAfterLoad();
-    SelectFirstSlot();
+    // SelectFirstSlot();
   }
 
   private void SubscribeToMouseWheel() {
@@ -68,13 +69,16 @@ public class QuickSlotListener : MonoBehaviour {
   public void Activate() {
     gameObject.SetActive(true);
     SubscribeToClickQuickSlots();
+    
+    UpdateQuickSlotsAfterLoad();
+    
     selectedSlot = slots[selectedSlotIndex];
     selectedItem = slots[selectedSlotIndex].Item;
     selectedSlot.Select();
     // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
     gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
     // selectedSlot.Item?.info?.Use();
-    itemConsumer.SetActiveSlot(selectedSlot);
+    GetConsumer().SetActiveSlot(selectedSlot);
     OnActivate?.Invoke();
   }
 
@@ -152,7 +156,7 @@ public class QuickSlotListener : MonoBehaviour {
     // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
     gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
     // selectedSlot.Item.info.Use();
-    itemConsumer.SetActiveSlot(selectedSlot);
+    GetConsumer().SetActiveSlot(selectedSlot);
   }
 
   private void DeactivateItem(InventorySlot slot) {
@@ -163,7 +167,7 @@ public class QuickSlotListener : MonoBehaviour {
     gameManager.PlayerEquipment.UnEquipTool();
     slot.Unselect();
     // selectedItem?.info?.Use();
-    itemConsumer.DeactivateItem(selectedItem);
+    GetConsumer().DeactivateItem(selectedItem);
     selectedItem = null;
   }
 
@@ -171,13 +175,14 @@ public class QuickSlotListener : MonoBehaviour {
     // Manually instantiate equipped items after loading the equipment
     for (var i = 0; i < slots.Length; i++) {
       var slot = slots[i];
-      if (slot.isEmpty || !slot.isSelected) {
+      if ( /*slot.isEmpty || */!slot.isSelected) {
         continue;
       }
-
+      
       // slot.Item.info.Use();
-      itemConsumer.SetActiveSlot(slot);
+      GetConsumer().SetActiveSlot(slot);
       SelectSlotByIndex(i);
+      break;
     }
 
     //userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
@@ -232,7 +237,7 @@ public class QuickSlotListener : MonoBehaviour {
 
     selectedSlot?.Unselect();
     // selectedItem?.info?.Use();
-    itemConsumer.DeactivateItem(selectedItem);
+    GetConsumer().DeactivateItem(selectedItem);
     selectedSlot = null;
     selectedItem = null;
   }
@@ -246,7 +251,7 @@ public class QuickSlotListener : MonoBehaviour {
     }
 
     // selectedItem?.info?.Use();
-    itemConsumer.DeactivateItem(selectedItem);
+    GetConsumer().DeactivateItem(selectedItem);
     selectedItem = null;
   }
 
@@ -260,7 +265,7 @@ public class QuickSlotListener : MonoBehaviour {
       selectedSlot = slot;
       selectedItem = slot.Item;
       selectedSlot.Select();
-      itemConsumer.SetActiveSlot(selectedSlot);
+      GetConsumer().SetActiveSlot(selectedSlot);
 
       return;
     }
@@ -274,7 +279,7 @@ public class QuickSlotListener : MonoBehaviour {
       gameManager.PlayerEquipment.UnEquipTool();
       selectedSlot.Unselect();
       // selectedItem?.info?.Use();
-      itemConsumer.DeactivateItem(selectedItem);
+      GetConsumer().DeactivateItem(selectedItem);
     }
 
     selectedSlot = slot;
@@ -283,7 +288,7 @@ public class QuickSlotListener : MonoBehaviour {
     // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
     gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
     // selectedSlot.Item.info.Use();
-    itemConsumer.SetActiveSlot(selectedSlot);
+    GetConsumer().SetActiveSlot(selectedSlot);
   }
 
   private void OnDestroy() {

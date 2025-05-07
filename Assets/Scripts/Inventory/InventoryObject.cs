@@ -46,6 +46,10 @@ namespace Inventory {
     }
 
     public void LoadFromGameData() {
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        return;
+      }
+      
       if (!SaveLoadSystem.Instance.gameData.Inventories.TryGetValue(Id, out var data)) {
         return;
       }
@@ -65,6 +69,7 @@ namespace Inventory {
 
       for (var i = 0; i < slots.Length; i++) {
         var slotData = slots[i];
+        Slots[i].isSelected = slotData.isSelected;
         if (slotData.Item.id == string.Empty) {
           continue;
         }

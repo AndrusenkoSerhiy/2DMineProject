@@ -1,8 +1,10 @@
+using Actors;
+using SaveSystem;
 using UnityEngine;
 
 namespace Player {
   [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-  public class PlayerController : PlayerControllerBase, IPlayerController {
+  public class PlayerController : PlayerControllerBase, IPlayerController, ISaveLoad {
     [SerializeField] private float topAngleLimit = 20;
     [SerializeField] private float bottomAngleLimit = -20;
     [SerializeField] private PlayerAttack playerAttack;
@@ -12,16 +14,19 @@ namespace Player {
       base.Awake();
       GameManager.Instance.PlayerController = this;
       GameManager.Instance.CurrPlayerController = this;
+
+      SaveLoadSystem.Instance.Register(this);
+      Load();
     }
-    
+
     public override void SetLockHighlight(bool state) {
       playerAttack.LockHighlight(state);
     }
-    
+
     protected override void FlipX() {
-      if(GameManager.Instance.WindowsController.IsAnyWindowOpen)
+      if (GameManager.Instance.WindowsController.IsAnyWindowOpen)
         return;
-      
+
       Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
       var direction = (mousePosition - (Vector2)transform.position).normalized;
 
@@ -35,13 +40,13 @@ namespace Player {
         direction.x *= rotationCoef;
       }
     }
-    
+
     /*protected override void LookAtMouse() {
       if (lockPlayer) {
         return;
       }
       base.LookAtMouse();
-      
+
       var dir = ((Vector2)_camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition()) - (Vector2)Head.position);
       dir.x *= Mathf.Sign(transform.localScale.x);
       // Calculate the target angle based on the direction
@@ -54,5 +59,37 @@ namespace Player {
       // Apply the clamped angle to the head
       Head.rotation = Quaternion.Euler(0, 0, clampedAngle + Mathf.Sign(transform.localScale.x) * 90);
     }*/
+
+    #region save/load
+
+    public void Save() {
+      var data = SaveLoadSystem.Instance.gameData.PlayerData;
+
+      data.Position = gameObject.transform.position;
+      data.Rotation = gameObject.transform.rotation;
+      data.Scale = gameObject.transform.localScale;
+      data.IsSet = true;
+
+      data.PlayerStatsData = PlayerStats.PrepareSaveData();
+    }
+
+    public void Load() {
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        return;
+      }
+
+      var data = SaveLoadSystem.Instance.gameData.PlayerData;
+      if (!data.IsSet) {
+        return;
+      }
+
+      gameObject.transform.position = data.Position;
+      gameObject.transform.rotation = data.Rotation;
+      gameObject.transform.localScale = data.Scale;
+
+      PlayerStats.Init(data.PlayerStatsData);
+    }
+
+    #endregion
   }
 }

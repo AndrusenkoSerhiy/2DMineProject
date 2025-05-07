@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SaveSystem;
 using Scriptables.Items;
 using Scriptables.Stats;
 using UnityEngine;
@@ -83,6 +84,28 @@ namespace Stats {
       }
 
       return true;
+    }
+
+    public void Load(List<StatModifierData> data) {
+      var statFactory = GameManager.Instance.StatModifierFactory;
+
+      foreach (var statModifierData in data) {
+        var modifierObject = statModifierData.ModifierDisplayObjectId != string.Empty
+          ? GameManager.Instance.ModifiersDatabase.ItemsMap[statModifierData.ModifierDisplayObjectId]
+          : null;
+        var statModifier = new Modifier {
+          type = statModifierData.Type,
+          applyType = statModifierData.ApplyType,
+          operatorType = statModifierData.OperatorType,
+          value = statModifierData.Value,
+          duration = statModifierData.Duration,
+          timeLeft = statModifierData.TimeLeft,
+          modifierDisplayObject = modifierObject
+        };
+
+        var modifier = statFactory.Create(statModifier, statModifierData.ItemId);
+        AddModifier(modifier);
+      }
     }
 
     private bool CanApplyModifier(ApplyType applyType, ItemObject itemObject) {
@@ -213,7 +236,8 @@ namespace Stats {
       }
 
       var appliedModifier =
-        listModifiers.LastOrDefault(modifier => modifier.HasDisplay() && modifier.modifierDisplayObject.Id == modifierDisplayObject.Id);
+        listModifiers.LastOrDefault(modifier =>
+          modifier.HasDisplay() && modifier.modifierDisplayObject.Id == modifierDisplayObject.Id);
 
       appliedModifier?.Dispose();
     }

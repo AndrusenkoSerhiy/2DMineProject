@@ -4,11 +4,12 @@ using Animation;
 using Interaction;
 using Inventory;
 using Player;
+using SaveSystem;
 using Scriptables.Repair;
 using UnityEngine;
 
 namespace Tools {
-  public class MiningRobotTool : MonoBehaviour, IInteractable /*, ISaveLoad*/ {
+  public class MiningRobotTool : MonoBehaviour, IInteractable, ISaveLoad {
     [SerializeField] private string interactEnterName;
     [SerializeField] private string interactExitName;
     [SerializeField] private Transform playerTransform;
@@ -20,9 +21,9 @@ namespace Tools {
     [SerializeField] private SpriteRenderer brokenRobotImage;
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
-    // [SerializeField] private bool broken = false;
 
     private bool isPlayerInside;
+    private RobotData robotLoadData;
 
     private GameManager gameManager;
     private PlayerController playerController;
@@ -33,10 +34,7 @@ namespace Tools {
     private bool broken;
 
     private int repairValue;
-
     private bool playerInRobot;
-    // private WindowBase window;
-    // private RepairWindow repairWindow;
 
     public static event Action OnPlayerEnteredRobot;
     public static event Action OnPlayerSitOnRobot;
@@ -49,10 +47,13 @@ namespace Tools {
     public bool HasHoldInteraction => !playerInRobot && CanRepair();
     public string HoldInteractionText => holdInteractText;
 
-    private void Start() {
+    private void Awake() {
+      SaveLoadSystem.Instance.Register(this);
       id = robotObject.Id;
+      Load();
+    }
 
-      // Load();
+    private void Start() {
       broken = IsBroken();
       CheckRobotRepaired();
 
@@ -62,6 +63,13 @@ namespace Tools {
       playerInventory = gameManager.PlayerInventory;
       animator.SetBool("IsBroken", broken);
       stats.OnAddHealth += OnAddHealthHandler;
+
+      UpdateRobotPosition();
+      if (robotLoadData is { IsPlayerInside: true }) {
+        isPlayerInside = !isPlayerInside;
+        SitOnRobot();
+        ResetPlayerAnim();
+      }
     }
 
     private void OnDisable() {
@@ -168,23 +176,6 @@ namespace Tools {
       GameManager.Instance.PlayerInventory.GetInventory().RemoveInventoryObject(robotInventory.MainInventoryObject);
     }
 
-    /*private void InitRepairWindow() {
-      if (window != null) {
-        return;
-      }
-
-      var windowObj = Instantiate(robotObject.InterfacePrefab, GameManager.Instance.Canvas.transform);
-      windowObj.transform.SetSiblingIndex(0);
-
-      repairWindow = windowObj.GetComponent<RepairWindow>();
-      repairWindow.Setup(robotObject);
-
-      repairWindow.OnRepaired += OnRobotRepairedHandler;
-
-      window = windowObj.GetComponent<WindowBase>();
-      GameManager.Instance.WindowsController.AddWindow(window);
-    }*/
-
     private void Repair() {
       if (!CanRepair()) {
         return;
@@ -249,24 +240,48 @@ namespace Tools {
       return stats.Health == 0;
     }
 
-    /*public void Save() {
+    private void UpdateRobotPosition() {
+      if (robotLoadData == null) {
+        return;
+      }
+
+      var tr = miningRobotController.transform;
+      tr.position = robotLoadData.Position;
+      tr.rotation = robotLoadData.Rotation;
+      tr.localScale = robotLoadData.Scale;
+    }
+
+    public void Save() {
+      var tr = miningRobotController.transform;
       SaveLoadSystem.Instance.gameData.Robots[id] = new RobotData {
         Id = id,
-        Broken = broken
+        IsSet = true,
+        IsPlayerInside = playerInRobot,
+        Position = transform.position,
+        Rotation = transform.rotation,
+        Scale = transform.localScale,
+        PlayerStatsData = new PlayerStatsData {
+          Health = stats.Health,
+          Stamina = stats.Stamina
+        }
       };
     }
 
     public void Load() {
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        return;
+      }
+
       if (!SaveLoadSystem.Instance.gameData.Robots.TryGetValue(id, out var data)) {
         return;
       }
 
-      var isNew = string.IsNullOrEmpty(data.Id);
-      if (isNew) {
+      if (!data.IsSet) {
         return;
       }
 
-      broken = data.Broken;
-    }*/
+      robotLoadData = data;
+      stats.Init(data.PlayerStatsData);
+    }
   }
 }

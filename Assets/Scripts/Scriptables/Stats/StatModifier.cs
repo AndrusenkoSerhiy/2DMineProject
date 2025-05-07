@@ -16,6 +16,8 @@ namespace Scriptables.Stats {
 
     [Tooltip("Duration in seconds, if 0 - modifier without lifetime")]
     public float duration;
+    [Tooltip("Need only for load from file")]
+    public float timeLeft;
 
     [Tooltip("Percentage of the previous modifier(same DisplayObject, if not set - same type) " +
              "duration when the new modifier can be applied, " +

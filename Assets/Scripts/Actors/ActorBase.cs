@@ -20,7 +20,7 @@ namespace Actors {
       stats = GetComponent<StatsBase>();
     }
 
-    private void Start() {
+    protected virtual void Start() {
       animParam = GameManager.Instance.AnimatorParameters;
     }
     

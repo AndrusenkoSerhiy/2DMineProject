@@ -67,6 +67,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private BuildingsDataController buildingsDataController;
   [SerializeField] private DropZombieData dropZombieData;
   [SerializeField] private SiegeManager siegeManager;
+  [SerializeField] private ModifiersDatabaseObject modifiersDatabase;
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
@@ -120,6 +121,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public BuildingsDataController BuildingsDataController => buildingsDataController;
   public DropZombieData DropZombieData => dropZombieData;
   public SiegeManager SiegeManager => siegeManager;
+  public ModifiersDatabaseObject ModifiersDatabase => modifiersDatabase;
 
   public RespawnManager RespawnManager => respawnManager;
   public PlayerController PlayerController {

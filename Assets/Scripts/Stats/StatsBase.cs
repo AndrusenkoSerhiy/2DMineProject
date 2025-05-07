@@ -15,6 +15,7 @@ public class StatsBase : MonoBehaviour {
   protected readonly Dictionary<StatType, float> baseValues = new();
 
   private bool canHeal = true;
+  protected bool inited;
 
   public StatsMediator Mediator => mediator;
   public BaseStatsObject StatsObject => statsObject;
@@ -27,14 +28,32 @@ public class StatsBase : MonoBehaviour {
 
   public event Action<float, float> OnAddHealth;
 
-  protected virtual void Awake() {
+  protected virtual void Awake() => InitInternal();
+
+  public void Init(float? health = null) {
+    if (inited) {
+      return;
+    }
+
+    InitInternal(health);
+  }
+
+  private void InitInternal(float? health = null) {
+    if (inited) {
+      return;
+    }
+
     mediator = new StatsMediator();
     mediator.SetStats(this);
 
-    baseValues[StatType.Health] = statsObject.health;
+    baseValues[StatType.Health] = health ?? statsObject.health;
+    canHeal = baseValues[StatType.Health] > 0;
+
     baseValues[StatType.MaxHealth] = statsObject.maxHealth;
     baseValues[StatType.HealthRegen] = statsObject.healthRegen;
-    baseValues[StatType.Armor] = StatsObject.armor;
+    baseValues[StatType.Armor] = statsObject.armor;
+
+    inited = true;
   }
 
   private void Update() {

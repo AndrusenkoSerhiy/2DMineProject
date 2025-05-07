@@ -1,4 +1,6 @@
-﻿using Scriptables.Stats;
+﻿using System.Collections.Generic;
+using SaveSystem;
+using Scriptables.Stats;
 using Stats;
 using UnityEngine;
 
@@ -17,7 +19,34 @@ public class PlayerStats : StatsBase {
   public float TimeBtwAttacks => GetStatValue(StatType.TimeBtwAttacks);
   public float AttackStaminaUsage => GetStatValue(StatType.AttackStaminaUsage);
 
-  protected override void Awake() {
+  protected override void Awake() => Init();
+
+  public void Init(PlayerStatsData data = null) {
+    if (inited) {
+      return;
+    }
+
+    base.Init(data?.Health);
+
+    baseValues[StatType.Stamina] = data?.Stamina ?? StatsObject.stamina;
+    baseValues[StatType.MaxStamina] = StatsObject.maxStamina;
+    baseValues[StatType.StaminaDrain] = StatsObject.staminaDrain;
+    baseValues[StatType.StaminaRecovery] = StatsObject.staminaRecovery;
+
+    baseValues[StatType.AttackRange] = StatsObject.attackRange;
+    baseValues[StatType.BlockDamage] = StatsObject.blockDamage;
+    baseValues[StatType.EntityDamage] = StatsObject.entityDamage;
+    baseValues[StatType.TimeBtwAttacks] = StatsObject.timeBtwAttacks;
+    baseValues[StatType.AttackStaminaUsage] = StatsObject.attackStaminaUsage;
+
+    if (data?.StatModifiersData?.Count > 0) {
+      Mediator.Load(data.StatModifiersData);
+    }
+
+    inited = true;
+  }
+
+  /*protected override void Awake() {
     base.Awake();
 
     baseValues[StatType.Stamina] = StatsObject.stamina;
@@ -30,7 +59,10 @@ public class PlayerStats : StatsBase {
     baseValues[StatType.EntityDamage] = StatsObject.entityDamage;
     baseValues[StatType.TimeBtwAttacks] = StatsObject.timeBtwAttacks;
     baseValues[StatType.AttackStaminaUsage] = StatsObject.attackStaminaUsage;
-  }
+
+    SaveLoadSystem.Instance.Register(this);
+    Load();
+  }*/
 
   protected override void UpdateStats(float deltaTime) {
     base.UpdateStats(deltaTime);
@@ -70,4 +102,51 @@ public class PlayerStats : StatsBase {
     StatType.AttackStaminaUsage => AttackStaminaUsage,
     _ => base.GetValueByType(type)
   };
+
+  public PlayerStatsData PrepareSaveData() {
+    var playerStatsData = new PlayerStatsData {
+      Health = Health,
+      Stamina = Stamina,
+      StatModifiersData = new List<StatModifierData>()
+    };
+
+    foreach (var statModifier in Mediator.ListModifiers) {
+      var modifier = statModifier.Modifier;
+      if (statModifier.MarkedForRemoval || modifier.applyType == ApplyType.Equip) {
+        continue;
+      }
+
+      var data = new StatModifierData {
+        Type = modifier.type,
+        ApplyType = modifier.applyType,
+        OperatorType = modifier.operatorType,
+        Value = modifier.value,
+        Duration = statModifier.Duration,
+        TimeLeft = statModifier.TimeLeft,
+        ItemId = statModifier.ItemId,
+        ModifierDisplayObjectId = statModifier.modifierDisplayObject
+          ? statModifier.modifierDisplayObject.Id
+          : string.Empty
+      };
+
+      playerStatsData.StatModifiersData.Add(data);
+    }
+
+    return playerStatsData;
+  }
+
+  /*public void Load() {
+    if (SaveLoadSystem.Instance.IsNewGame) {
+      return;
+    }
+
+    var data = SaveLoadSystem.Instance.gameData?.PlayerData?.PlayerStatsData;
+    if (data == null) {
+      return;
+    }
+
+    baseValues[StatType.Health] = data.Health;
+    baseValues[StatType.Stamina] = data.Stamina;
+    Mediator.Load(data.StatModifiersData);
+  }*/
 }

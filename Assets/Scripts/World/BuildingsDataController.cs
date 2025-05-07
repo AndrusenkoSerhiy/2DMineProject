@@ -19,6 +19,7 @@ namespace World {
         GameManager.Instance.GameConfig.BuildingAreaSizeY];
       _buildFillDatas = new int[GameManager.Instance.GameConfig.BuildingAreaSizeX,
         GameManager.Instance.GameConfig.BuildingAreaSizeY];*/
+      SaveLoadSystem.Instance.Register(this);
       Load();
     }
 
@@ -76,13 +77,17 @@ namespace World {
     #region Save/Load
 
     public void Load() {
-      var data = SaveLoadSystem.Instance.gameData.WorldData;
-
       var sizeX = GameManager.Instance.GameConfig.BuildingAreaSizeX;
       var sizeY = GameManager.Instance.GameConfig.BuildingAreaSizeY;
 
       _buildDatas = new Building[sizeX, sizeY];
       _buildFillDatas = new int[sizeX, sizeY];
+      
+      if (SaveLoadSystem.Instance.IsNewGame) {
+        return;
+      }
+      
+      var data = SaveLoadSystem.Instance.gameData.WorldData;
 
       // Load buildings
       if (data.BuildDatas is { Count: > 0 }) {

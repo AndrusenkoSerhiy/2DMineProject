@@ -89,7 +89,7 @@ namespace Player {
       animParam = GameManager.Instance.AnimatorParameters;
     }
 
-    private void Start() {
+    protected virtual void Start() {
       SetEmptyHand();
     }
 

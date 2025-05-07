@@ -4,8 +4,7 @@ using UnityEngine;
 
 [CustomEditor(typeof(PlayerStats), true)]
 public class PlayerStatsEditor : BaseStatsEditor {
-  private int[] values = new[] { 20, 50, 100 };
-  private PlayerStats stats;
+  private PlayerStats playerStats;
 
   public override void OnInspectorGUI() {
     base.OnInspectorGUI();
@@ -13,27 +12,27 @@ public class PlayerStatsEditor : BaseStatsEditor {
       return;
     }
     
-    stats = (PlayerStats)target;
+    playerStats = (PlayerStats)target;
     
     // Display the stats in the inspector
     EditorGUILayout.Space();
     EditorGUILayout.LabelField("Stats", EditorStyles.boldLabel);
-    EditorGUILayout.LabelField($"Health: {stats.Health}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Max Health: {stats.MaxHealth}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Health Regen: {stats.HealthRegen}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Stamina: {stats.Stamina}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Max Stamina: {stats.MaxStamina}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Stamina Drain: {stats.StaminaDrain}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Stamina Recovery: {stats.StaminaRecovery}",
+    EditorGUILayout.LabelField($"Health: {playerStats.Health}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Max Health: {playerStats.MaxHealth}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Health Regen: {playerStats.HealthRegen}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Stamina: {playerStats.Stamina}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Max Stamina: {playerStats.MaxStamina}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Stamina Drain: {playerStats.StaminaDrain}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Stamina Recovery: {playerStats.StaminaRecovery}",
       EditorStyles.label);
-    EditorGUILayout.LabelField($"Attack Range: {stats.AttackRange}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Block Damage: {stats.BlockDamage}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Entity Damage: {stats.EntityDamage}", EditorStyles.label);
-    EditorGUILayout.LabelField($"Time Between Attacks: {stats.TimeBtwAttacks}",
+    EditorGUILayout.LabelField($"Attack Range: {playerStats.AttackRange}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Block Damage: {playerStats.BlockDamage}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Entity Damage: {playerStats.EntityDamage}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Time Between Attacks: {playerStats.TimeBtwAttacks}",
       EditorStyles.label);
-    EditorGUILayout.LabelField($"Attack Stamina Usage: {stats.AttackStaminaUsage}",
+    EditorGUILayout.LabelField($"Attack Stamina Usage: {playerStats.AttackStaminaUsage}",
       EditorStyles.label);
-    EditorGUILayout.LabelField($"Armor: {stats.Armor}", EditorStyles.label);
+    EditorGUILayout.LabelField($"Armor: {playerStats.Armor}", EditorStyles.label);
   }
 }
 #endif

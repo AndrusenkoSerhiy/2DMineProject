@@ -12,8 +12,8 @@ namespace Scriptables.DropZombieData {
   public class DropZombieData : ScriptableObject {
     public List<DropData> drops = new();
 
-    public void DropItems(int stage) {
-      var data = GetDropData(stage);
+    public void DropItems(ZombieDifficultyProfile difficulty) {
+      var data = GetDropData(difficulty);
       var items = data.possibleItems;
       var maxItems = data.maxItems;
       var currItemsCount = 0;
@@ -37,16 +37,14 @@ namespace Scriptables.DropZombieData {
       }
     }
 
-    private DropData GetDropData(int stage) {
-      return drops.FirstOrDefault(e => e.stageRange.x <= stage && e.stageRange.y >= stage);
+    private DropData GetDropData(ZombieDifficultyProfile difficulty) {
+      return drops.FirstOrDefault(e => e.difficultyProfile.Equals(difficulty));
     }
   }
   
   [Serializable]
   public class DropData {
-    //TODO: use difficulty profile instead of stageRange SiegeManager.GetDifficultyProfilesByWeight()
     public ZombieDifficultyProfile difficultyProfile;
-    public Vector2 stageRange;
     public int maxItems;
     public List<DropResource> possibleItems;
   }

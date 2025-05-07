@@ -147,7 +147,7 @@ namespace NPCMovement
       }
 
       if (IsGrounded()) {
-        Debug.LogError("add force");
+        //Debug.LogError("add force");
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
       }
     }

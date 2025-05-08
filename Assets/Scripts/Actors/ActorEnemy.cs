@@ -46,8 +46,8 @@ namespace Actors {
       npcMovement.SetTarget(pos);
     }
 
-    public void SetTargetTransform(Transform tr) {
-      npcMovement.SetTargetTransform(tr);
+    public void SetTargetTransform(Transform tr, float actorBoundsWidth) {
+      npcMovement.SetTargetTransform(tr, actorBoundsWidth);
     }
 
     public bool HasArrived() {
@@ -73,7 +73,7 @@ namespace Actors {
       if (_animator.GetBool(animParam.IsDeadHash))
         return;
 
-      currentTarget = GameManager.Instance.PlayerController.GetComponent<IDamageable>();
+      currentTarget = GameManager.Instance.CurrPlayerController.Actor;
       //Debug.LogError($"trigger attack {currentTarget.GetHealth()}");
       if (currentTarget.GetHealth() <= 0)
         return;

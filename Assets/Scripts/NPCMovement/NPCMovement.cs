@@ -6,6 +6,7 @@ namespace NPCMovement
   public class NPCMovement : MonoBehaviour {
     [SerializeField] private Vector3 target;
     [SerializeField] private Transform targetTransform;
+    [SerializeField] private float actorBoundsWidth;
     public LayerMask groundLayer;
     private Rigidbody2D rb;
     BoxCollider2D boxCollider2D;
@@ -31,9 +32,10 @@ namespace NPCMovement
     }
 
     //set player like a target
-    public void SetTargetTransform(Transform transform) {
+    public void SetTargetTransform(Transform transform, float actorBounds) {
       targetTransform = transform;
       hasArrived = false;
+      actorBoundsWidth = actorBounds;
     }
 
     private void FixedUpdate() {
@@ -113,7 +115,7 @@ namespace NPCMovement
         return;
       }
       
-      if (Vector2.Distance(transform.position, targetTransform.position) <= actor.GetStats().AttackRange) {
+      if (Vector2.Distance(transform.position, targetTransform.position) <= actor.GetStats().AttackRange + actorBoundsWidth) {
         //Debug.LogError("has arrived!!!!!!!!!!");
         hasArrived = true;
         rb.linearVelocity = new Vector2(0, 0);

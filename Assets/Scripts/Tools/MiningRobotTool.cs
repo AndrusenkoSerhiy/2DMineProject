@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Actors;
 using Animation;
 using Interaction;
 using Inventory;
@@ -116,6 +117,7 @@ namespace Tools {
     }
 
     private void SitOnRobot() {
+      ActorRobot.OnRobotBroked += ExitFromRobot;
       OnPlayerEnteredRobot?.Invoke();
       GameManager.Instance.QuickSlotListener.Deactivate();
 
@@ -141,6 +143,7 @@ namespace Tools {
     }
 
     private void ExitFromRobot() {
+      ActorRobot.OnRobotBroked -= ExitFromRobot;
       SetPlayerPosition(null, exitTransforms[0].position);
       miningRobotController.EnableCollider(false);
       miningRobotController.SetRBType(RigidbodyType2D.Kinematic);

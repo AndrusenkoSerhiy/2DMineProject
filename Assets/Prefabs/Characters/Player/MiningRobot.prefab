@@ -88,13 +88,12 @@ MonoBehaviour:
   exitTransforms:
   - {fileID: 4071054159070599446}
   - {fileID: 5602485324963326271}
-  interactHeader: 
+  holdInteractText: Repair (hold)
   robotObject: {fileID: 11400000, guid: 20225897ed2c2124989043907a9eb6c9, type: 2}
-  repairText: Repair
   robotImage: {fileID: 1656752220913763334}
   brokenRobotImage: {fileID: 4882709179876227092}
   animator: {fileID: 1494922837502640945}
-  broken: 0
+  stats: {fileID: 3768578396950336233}
 --- !u!1 &2775448591728752450
 GameObject:
   m_ObjectHideFlags: 0
@@ -1044,6 +1043,7 @@ GameObject:
   - component: {fileID: 858450107997457076}
   - component: {fileID: 7553158782713885977}
   - component: {fileID: 6340536068884831584}
+  - component: {fileID: 2347616561976840431}
   m_Layer: 6
   m_Name: MiningRobot
   m_TagString: Untagged
@@ -1100,8 +1100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _frameVelocity: {x: 0, y: 0}
   _animator: {fileID: 1494922837502640945}
-  Head: {fileID: 6389406194773852909}
   _flipDeadZone: 1
+  actor: {fileID: 2347616561976840431}
   _playerCoords: {fileID: 7553158782713885977}
   _ladderMovement: {fileID: 0}
   stamina: {fileID: 6340536068884831584}
@@ -1194,6 +1194,7 @@ MonoBehaviour:
   minDistance: 2
   maxDistance: 8
   isHighlightLock: 0
+  originalSize: {x: 0, y: 0}
 --- !u!114 &7553158782713885977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1224,6 +1225,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minStamina: 10
   isSprinting: 0
+--- !u!114 &2347616561976840431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8299954890877120637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b07ee5995903482aa20668e1f5f7713a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 1494922837502640945}
+  isDead: 0
+  rigidbody: {fileID: 6949316742863476391}
+  capsuleCollider: {fileID: 4114749698386090115}
 --- !u!1 &8974371386463895364
 GameObject:
   m_ObjectHideFlags: 0

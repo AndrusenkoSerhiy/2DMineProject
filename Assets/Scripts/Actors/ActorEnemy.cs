@@ -21,6 +21,7 @@ namespace Actors {
 
     [SerializeField] private ZombieDifficultyProfile difficulty;
     public Coords GetCoords => coords.GetCoords();
+    public Coords GetCoordsOutOfBounds => coords.GetCoordsOutOfBounds();
     public ZombieDifficultyProfile Difficulty => difficulty;
 
     public void SetBehaviour(BehaviourTree tree) {
@@ -69,13 +70,13 @@ namespace Actors {
       AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
     }
 
-    public void TriggerAttack() {
+    public void TriggerAttack(IDamageable target) {
       if (_animator.GetBool(animParam.IsDeadHash))
         return;
-
-      currentTarget = GameManager.Instance.CurrPlayerController.Actor;
+      currentTarget = target;
+      //currentTarget = GameManager.Instance.CurrPlayerController.Actor;
       //Debug.LogError($"trigger attack {currentTarget.GetHealth()}");
-      if (currentTarget.GetHealth() <= 0)
+      if (currentTarget == null || currentTarget.GetHealth() <= 0)
         return;
 
       _animator.SetTrigger(animParam.AttackHash);
@@ -93,6 +94,24 @@ namespace Actors {
       if (go != gameObject)
         return;
       ShouldBeDamagingToFalse();
+      DestroyTarget();
+    }
+    
+    private void DestroyTarget() {
+      
+        if (currentTarget == null) 
+          return;
+        
+        var getHp = currentTarget.GetHealth();
+        if (getHp <= 0) {
+          currentTarget.DestroyObject();
+        }
+
+      ClearTarget();
+    }
+
+    private void ClearTarget() {
+      currentTarget = null;
     }
 
     public IEnumerator DamageWhileSlashIsActive() {
@@ -125,7 +144,7 @@ namespace Actors {
       }
 
       //TODO choose damage for player or cell
-      currentTarget.Damage(stats.EntityDamage);
+      currentTarget.Damage(stats.EntityDamage, false);
       iDamageables.Add(currentTarget);
     }
 
@@ -133,8 +152,8 @@ namespace Actors {
       return stats;
     }
 
-    public override void Damage(float damage) {
-      base.Damage(damage);
+    public override void Damage(float damage, bool isPlayer) {
+      base.Damage(damage, isPlayer);
       if (stats.Health > 0)
         return;
       //work only 1 layer selected in inspector

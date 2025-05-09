@@ -1,5 +1,7 @@
 using Actors;
 using UnityEngine;
+using Utils;
+using World;
 
 namespace NPCMovement
 {
@@ -8,6 +10,10 @@ namespace NPCMovement
     [SerializeField] private Transform targetTransform;
     [SerializeField] private float actorBoundsWidth;
     public LayerMask groundLayer;
+    [Tooltip("use for special check above zombie")]
+    public LayerMask upLayer;
+    [Tooltip("Can jump from the other zombie")]
+    public LayerMask downLayer;
     private Rigidbody2D rb;
     BoxCollider2D boxCollider2D;
     [SerializeField] private bool isGrounded;
@@ -17,7 +23,8 @@ namespace NPCMovement
     [SerializeField] private bool hasArrived;
     [SerializeField] private Animator animator;
     [SerializeField] private ActorEnemy actor;
-    
+    //
+    [SerializeField] private bool hasObstacle;
     public bool HasArrived => hasArrived;
     void Start() {
       rb = GetComponent<Rigidbody2D>();
@@ -44,14 +51,71 @@ namespace NPCMovement
       MoveTowardsTarget();
       MoveTowardsTargetTransform();
 
+      CheckObstacles();
+    }
+
+    private void CheckObstacles() {
+      if(!IsGrounded())
+        return;
       // Check for obstacles in front of the NPC
       var dir = transform.localScale.x * Vector2.right;
-      RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(dir.x * -1, 1, 0), dir, 1, groundLayer);
+      Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.magenta);
+      RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(dir.x * -1, 1, 0), dir, 1.5f, groundLayer);
+      if (hit.collider == null) {
+        hasObstacle = false;
+        return;
+      }
       
-      //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
-      if (hit.collider != null && !CheckUP()) {
-        //Debug.LogError($"hit {gameObject.name}");
-        Jump();
+      hasObstacle = true;
+      var cell = CoordsTransformer.MouseToGridPosition(hit.transform.position);
+      Debug.DrawRay(hit.transform.position, Vector3.up, Color.blue, 2f);
+      var currPlayer = GameManager.Instance.CurrPlayerController.PlayerCoords.GetCoordsOutOfBounds();
+
+      var actorCoords = actor.GetCoordsOutOfBounds;
+      //cell above the cast cell
+      var upperCell = new Coords(cell.X, cell.Y - 1);
+      //move up
+      if (actorCoords.Y > currPlayer.Y) {
+        //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
+        if (hit.collider != null) {
+          //if we have some cell above zombie need to destroy that
+          if (CheckUP()) {
+            //Destroy cell above
+            var aboveCell = new Coords(actorCoords.X, actorCoords.Y - 1);
+            AttackCell(GameManager.Instance.ChunkController.GetCell(aboveCell.X, aboveCell.Y));
+          }
+          else {
+            if (GameManager.Instance.ChunkController.ChunkData.GetCellFill(upperCell.X, upperCell.Y) == 1) {
+              AttackCell(GameManager.Instance.ChunkController.GetCell(upperCell.X, upperCell.Y));
+            }
+            else Jump();
+          }
+        }
+      }
+
+      //move forward
+      else if (actorCoords.Y == currPlayer.Y) {
+        var forwardCell = new Coords(cell.X, cell.Y);
+        Debug.DrawRay(CoordsTransformer.GridToWorld(forwardCell.X, forwardCell.Y), Vector3.up, Color.yellow, 2f);
+        //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
+        if (!CheckUP() && GameManager.Instance.ChunkController.ChunkData.GetCellFill(upperCell.X, upperCell.Y) == 0) {
+          Jump();
+        }
+        else if (hit.collider != null) {
+          //Destroy cell under
+          AttackCell(GameManager.Instance.ChunkController.GetCell(forwardCell.X, forwardCell.Y));
+        }
+      }else
+
+      //move down
+      if (actorCoords.Y < currPlayer.Y) {
+        var downCell = new Coords(cell.X + (int)dir.x, cell.Y + 1);
+        Debug.DrawRay(CoordsTransformer.GridToWorld(downCell.X, downCell.Y), Vector3.up, Color.yellow, 2f);
+        //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
+        if (hit.collider != null) {
+            //Destroy cell under
+            AttackCell(GameManager.Instance.ChunkController.GetCell(downCell.X, downCell.Y));
+        }
       }
     }
 
@@ -61,7 +125,26 @@ namespace NPCMovement
       Vector3 direction = transform.up;
 
       // Store hit information
-      RaycastHit2D hit = Physics2D.CircleCast(origin, sphereRadius, direction, maxDistance, groundLayer);
+      RaycastHit2D hit = Physics2D.CircleCast(origin, sphereRadius, direction, maxDistance, upLayer);
+      if (hit.collider != null) {
+        // If we hit something, log its name
+        Debug.Log($"npc {gameObject.name} | Hit: {hit.collider.name}");
+
+        // Optionally, draw a debug line to visualize the cast
+        Debug.DrawLine(origin, hit.point, Color.red);
+        return true;
+      }
+      return false;
+    }
+    
+    //need for zombie can jump from head of other zombie
+    private bool CheckDown() {
+      // Define the starting position (origin) and direction
+      Vector3 origin = transform.position + new Vector3(0, 3.3f, 0);
+      Vector3 direction = -transform.up;
+
+      // Store hit information
+      RaycastHit2D hit = Physics2D.CircleCast(origin, sphereRadius, direction, maxDistance, downLayer);
       if (hit.collider != null) {
         // If we hit something, log its name
         Debug.Log($"npc {gameObject.name} | Hit: {hit.collider.name}");
@@ -107,7 +190,11 @@ namespace NPCMovement
     
     //attack only when target player
     public void AttackPlayer() {
-      actor?.TriggerAttack();
+      actor?.TriggerAttack(GameManager.Instance.CurrPlayerController.Actor);
+    }
+
+    public void AttackCell(IDamageable cell) {
+      actor.TriggerAttack(cell);
     }
     
     private void MoveTowardsTargetTransform() {
@@ -122,7 +209,13 @@ namespace NPCMovement
         SetAnimVelocityX(0);
         return;
       }
-
+      //stop before the obstacle
+      if (hasObstacle) {
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        SetAnimVelocityX(0);
+        return;
+      }
+      
       hasArrived = false;
       Vector2 direction = (targetTransform.position - transform.position).normalized;
       FlipX(direction.x);
@@ -144,8 +237,9 @@ namespace NPCMovement
         return;
       }
 
-      if (IsGrounded()) {
-        //Debug.LogError("add force");
+      hasObstacle = false;
+      if (IsGrounded() /*|| CheckDown()*/) {
+        //Debug.LogError($"jump {gameObject.name}");
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, actor.GetStats().StatsObject.jumpPower);
       }
     }

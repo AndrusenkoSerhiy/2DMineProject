@@ -66,7 +66,7 @@ namespace Actors {
 
     //try to get pos from left or right side from player (out of visible zone)
     private Vector3 GetLeftPos(bool left = true) {
-      var playerPos = CoordsTransformer.GetPlayerCoords();
+      var playerPos = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
 
       var leftX = left ? playerPos.X - (areaWidth / 2) + 1 : playerPos.X + (areaWidth / 2) - 1;
       var rightX = left ? playerPos.X - areaWidth / 4 : playerPos.X + areaWidth / 4;
@@ -79,7 +79,7 @@ namespace Actors {
 
     //try get pos above the player visible zone
     private Vector3 GetUpPos() {
-      var playerPos = CoordsTransformer.GetPlayerCoords();
+      var playerPos = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
 
 
       var leftX = playerPos.X - (areaWidth / 4) + 1;

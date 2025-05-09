@@ -194,6 +194,12 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
+  upLayer:
+    serializedVersion: 2
+    m_Bits: 1280
+  downLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   isGrounded: 0
   sphereRadius: 0.5
   maxDistance: 1

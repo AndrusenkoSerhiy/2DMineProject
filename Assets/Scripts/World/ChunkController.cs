@@ -90,8 +90,7 @@ namespace World {
       }
 
       //buildings
-      var playersBuildingsCoords =
-        CoordsTransformer.GetPlayerCoords(); //GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var playersBuildingsCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
       playersBuildingsCoords = CoordsTransformer.GridToBuildingsGrid(playersBuildingsCoords);
 
       cols = GameManager.Instance.GameConfig.BuildingAreaSizeX;

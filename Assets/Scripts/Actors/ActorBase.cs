@@ -30,7 +30,7 @@ namespace Actors {
       set { _hasTakenDamage = value; }
     }
 
-    public virtual void Damage(float damage) {
+    public virtual void Damage(float damage, bool isPlayer) {
       hasTakenDamage = true;
       if (stats.TakeDamage(damage) <= 0) {
         DeathActions();

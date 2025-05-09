@@ -18,6 +18,10 @@ namespace Enemy {
     private void Update() {
       SetCoords();
     }
+    
+    public Coords GetCoordsOutOfBounds() {
+      return CoordsTransformer.MouseToGridPosition(trForGrid.position);
+    }
 
     private void SetCoords() {
       var coords = CoordsTransformer.WorldToGrid(trForGrid.position);

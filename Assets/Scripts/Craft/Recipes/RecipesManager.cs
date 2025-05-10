@@ -23,7 +23,11 @@ namespace Craft.Recipes {
 
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
-      Load();
+
+      if (!GameManager.Instance.InitScriptsOnStart()) {
+        return;
+      }
+
       Initialize();
     }
 
@@ -40,6 +44,47 @@ namespace Craft.Recipes {
         UnlockStation(station);
       }
     }
+
+    #region Save/Load
+
+    public int Priority => LoadPriority.RECIPES;
+
+    public void Save() {
+      var data = new RecipesData {
+        RecipeStates = recipeStates,
+        UnlockedStations = unlockedStations,
+        DiscoveredMaterials = discoveredMaterials,
+        FullyUnlockedStations = fullyUnlockedStations
+      };
+
+      SaveLoadSystem.Instance.gameData.Recipes = data;
+    }
+
+    public void Load() {
+      SetLoadData();
+      Initialize();
+    }
+
+    public void Clear() {
+      recipeStates.Clear();
+      unlockedStations.Clear();
+      discoveredMaterials.Clear();
+      fullyUnlockedStations.Clear();
+    }
+
+    private void SetLoadData() {
+      var data = SaveLoadSystem.Instance.gameData.Recipes;
+      if (SaveLoadSystem.Instance.IsNewGame() || data == null) {
+        return;
+      }
+
+      recipeStates = data.RecipeStates;
+      unlockedStations = data.UnlockedStations;
+      discoveredMaterials = data.DiscoveredMaterials;
+      fullyUnlockedStations = data.FullyUnlockedStations;
+    }
+
+    #endregion
 
     /// <summary>
     /// Call when player picked up new material.
@@ -211,35 +256,6 @@ namespace Craft.Recipes {
       recipeStates[recipe.Id] = RecipeState.Unlocked;
       OnRecipeUnlocked?.Invoke(recipe);
       GameManager.Instance.MessagesManager.ShowNewRecipeMessage(recipe);
-    }
-
-    public string Id => "RecipesManager";
-
-    public void Save() {
-      var data = new RecipesData {
-        RecipeStates = recipeStates,
-        UnlockedStations = unlockedStations,
-        DiscoveredMaterials = discoveredMaterials,
-        FullyUnlockedStations = fullyUnlockedStations
-      };
-
-      SaveLoadSystem.Instance.gameData.Recipes = data;
-    }
-
-    public void Load() {
-      if (SaveLoadSystem.Instance.IsNewGame) {
-        return;
-      }
-
-      var data = SaveLoadSystem.Instance.gameData.Recipes;
-      if (data == null) {
-        return;
-      }
-
-      recipeStates = data.RecipeStates;
-      unlockedStations = data.UnlockedStations;
-      discoveredMaterials = data.DiscoveredMaterials;
-      fullyUnlockedStations = data.FullyUnlockedStations;
     }
   }
 }

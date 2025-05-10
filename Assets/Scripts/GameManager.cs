@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Windows;
 using Audio;
@@ -26,13 +25,11 @@ using Stats;
 using UI;
 using UnityEngine.Serialization;
 using Utility;
-using Input = UnityEngine.Input;
 
 [DefaultExecutionOrder(-5)]
 public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private StartGameCameraController startGameCameraController;
-  [SerializeField] private MainMenu mainMenu;
-  [SerializeField] private InGameMenu inGameMenu;
+  [SerializeField] private MenuController menuController;
   [SerializeField] private UserInput userInput;
   [SerializeField] private TaskManager taskManagerRef;
   [SerializeField] private AudioController audioController;
@@ -67,14 +64,18 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private BuildingsDataController buildingsDataController;
   [SerializeField] private DropZombieData dropZombieData;
   [SerializeField] private SiegeManager siegeManager;
+
   [SerializeField] private ModifiersDatabaseObject modifiersDatabase;
+
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
   public bool showMenuOnStart = true;
+
   [FormerlySerializedAs("objectList")]
   [Tooltip("UI object that need to be disabled when we start from menu")]
-  [SerializeField] private List<GameObject> uiObjectList;
+  [SerializeField]
+  private List<GameObject> uiObjectList;
 
   [SerializeField] private AudioData mainTheme;
   private PlayerController playerController;
@@ -84,8 +85,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   private IStatModifierFactory statModifierFactory;
 
   public StartGameCameraController StartGameCameraController => startGameCameraController;
-  public MainMenu MainMenu => mainMenu;
-  public InGameMenu InGameMenu => inGameMenu;
+  public MenuController MenuController => menuController;
   public UserInput UserInput => userInput;
   public AudioController AudioController => audioController;
   public MessagesManager MessagesManager => messagesManager;
@@ -124,6 +124,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public ModifiersDatabaseObject ModifiersDatabase => modifiersDatabase;
 
   public RespawnManager RespawnManager => respawnManager;
+
   public PlayerController PlayerController {
     set => playerController = value;
     get => playerController;
@@ -138,7 +139,15 @@ public class GameManager : PersistentSingleton<GameManager> {
     set => currPlayerController = value;
     get => currPlayerController;
   }
-  
+
+  public void SetGameStage(GameStage stage) {
+    gameStage = stage;
+  }
+
+  public bool InitScriptsOnStart() {
+    return !showMenuOnStart;
+  }
+
   protected override void Awake() {
     base.Awake();
 
@@ -151,26 +160,26 @@ public class GameManager : PersistentSingleton<GameManager> {
   private void Start() {
     audioController.PlayAudio(mainTheme);
     if (!showMenuOnStart) {
-      mainMenu.Hide();
+      menuController.Hide();
       return;
     }
-    
+
     EnableUIElements(false);
     startGameCameraController.Init();
-    mainMenu.Show();
+    menuController.Show();
     EnableInput(false);
     //need to subscribe for player grounded first time
     playerController.GroundedChanged += ChangeGround;
   }
 
-  private void EnableUIElements(bool state) {
+  public void EnableUIElements(bool state) {
     foreach (var obj in uiObjectList) {
       obj.SetActive(state);
     }
   }
 
   //use for start cutscene fall to ground
-  private void EnableInput(bool state) {
+  public void EnableInput(bool state) {
     userInput.EnableGamePlayControls(state);
     userInput.EnableUIControls(state);
 
@@ -179,36 +188,9 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   private void ChangeGround(bool arg1, float arg2) {
     playerController.GroundedChanged -= ChangeGround;
-    
+
     EnableInput(true);
     playerController.SetLockHighlight(false);
     EnableUIElements(true);
-  }
-
-  public void StartNewGame() {
-    mainMenu.Hide();
-    gameStage = GameStage.Game;
-    startGameCameraController.Play();
-  }
-
-  public void ExitGame() {
-    if (Application.isEditor) {
-#if UNITY_EDITOR
-      UnityEditor.EditorApplication.isPlaying = false;
-#endif
-    }
-    else {
-      Application.Quit();
-    }
-  }
-
-  public void ExitToMainMenu() {
-    startGameCameraController.Init();
-    inGameMenu.Hide();
-    mainMenu.Show();
-  }
-
-  public void ShowInGameMenu() {
-    inGameMenu.Show();
   }
 }

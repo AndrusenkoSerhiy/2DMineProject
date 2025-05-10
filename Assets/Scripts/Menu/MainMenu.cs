@@ -5,10 +5,10 @@ namespace Menu {
   public class MainMenu : MonoBehaviour {
     [SerializeField] private Button newGameButton, exitButton;
     
-    private void OnEnable() {
+    /*private void OnEnable() {
       newGameButton.onClick.AddListener(() => GameManager.Instance.StartNewGame());
       exitButton.onClick.AddListener(() => GameManager.Instance.ExitGame());
-    }
+    }*/
 
     private void OnDisable() {
       newGameButton.onClick.RemoveAllListeners();

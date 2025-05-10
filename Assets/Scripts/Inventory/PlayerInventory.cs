@@ -17,6 +17,7 @@ namespace Inventory {
     private Dictionary<InventoryType, InventorySettings> settings = new();
     private InventoriesPool inventoriesPool;
     private GameManager gameManager;
+    private SaveLoadSystem saveLoadSystem;
 
     private List<string> weightItems = new();
     private float weight = 0f;
@@ -47,22 +48,59 @@ namespace Inventory {
     }
 
     private void Awake() {
-      SaveLoadSystem.Instance.Register(this);
+      saveLoadSystem = SaveLoadSystem.Instance;
+      saveLoadSystem.Register(this);
       gameManager = GameManager.Instance;
 
       foreach (var inventorySettings in inventoriesSettings) {
         settings.Add(inventorySettings.type, inventorySettings);
       }
-
-      inventoriesPool = new InventoriesPool();
     }
 
     private void Start() {
       inventoryWindow = gameManager.WindowsController.GetWindow<PlayerInventoryWindow>();
       gameManager.UserInput.controls.UI.Inventory.performed += ctx => ShowInventory();
 
+      if (!GameManager.Instance.InitScriptsOnStart()) {
+        return;
+      }
+
+      Init();
+    }
+
+    private void Init() {
+      inventoriesPool = new InventoriesPool();
       AddDefaultItemOnFirstStart();
     }
+
+    #region Save/Load
+
+    public int Priority => LoadPriority.INVENTORIES;
+
+    public void Load() {
+      weight = saveLoadSystem.gameData.Weight;
+      weightItems = saveLoadSystem.gameData.WeightItems;
+      Init();
+    }
+
+    public void Save() {
+      foreach (var (_, inventory) in inventories) {
+        inventory.MainInventoryObject.SaveToGameData();
+      }
+
+      var data = saveLoadSystem.gameData;
+      data.Weight = weight;
+      data.WeightItems = weightItems;
+    }
+
+    public void Clear() {
+      inventories.Clear();
+      weightItems.Clear();
+      weight = 0f;
+      inventoriesPool = null;
+    }
+
+    #endregion
 
     [ContextMenu("Clear inventories")]
     public void ClearInventories() {
@@ -268,19 +306,5 @@ namespace Inventory {
       weightItems.Add(itemObject.Id);
       weight += itemObject.Weight;
     }
-
-    #region Save/Load
-
-    public void Load() {
-      return;
-    }
-
-    public void Save() {
-      foreach (var (_, inventory) in inventories) {
-        inventory.MainInventoryObject.SaveToGameData();
-      }
-    }
-
-    #endregion
   }
 }

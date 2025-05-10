@@ -24,8 +24,55 @@ namespace Actors {
       GameManager.Instance.SiegeManager.OnZombieSpawn += SpawnSiegeZombie;
       areaWidth = GameManager.Instance.GameConfig.PlayerAreaWidth;
       areaHeight = GameManager.Instance.GameConfig.PlayerAreaHeight;
-      Load();
     }
+
+    #region Save/Load
+
+    public int Priority => LoadPriority.ENEMIES;
+
+    public void Save() {
+      var data = SaveLoadSystem.Instance.gameData.Zombies;
+
+      foreach (var enemy in enemies) {
+        var enemyData = new ZombiesData {
+          ProfileId = enemy.Difficulty.Id,
+          Position = enemy.transform.position,
+          Rotation = enemy.transform.rotation,
+          Scale = enemy.transform.localScale,
+          PlayerStatsData = enemy.GetStats().PrepareSaveData()
+        };
+        data.Add(enemyData);
+      }
+    }
+
+    public void Load() {
+      if (SaveLoadSystem.Instance.IsNewGame()) {
+        return;
+      }
+
+      var data = SaveLoadSystem.Instance.gameData.Zombies;
+      foreach (var zombieData in data) {
+        var profile = siegeManager.ZombieDifficultyDatabase.ItemsMap[zombieData.ProfileId];
+        if (profile == null) {
+          continue;
+        }
+
+        var zombie = (ActorEnemy)Instantiate(actor, zombieData.Position, zombieData.Rotation);
+        zombie.transform.localScale = zombieData.Scale;
+        zombie.SetBehaviour(siegeBehaviour);
+        zombie.SetDifficulty(profile);
+        zombie.GetStats().UpdateBaseValue(StatType.Health, zombieData.PlayerStatsData.Health);
+        enemies.Add(zombie);
+      }
+
+      data.Clear();
+    }
+
+    public void Clear() {
+      enemies.Clear();
+    }
+
+    #endregion
 
     private void SpawnSiegeZombie(ActiveSiegeTemplate siege) {
       //Debug.LogError($"difficulty list {GetDifficultyList().Count}");
@@ -191,44 +238,6 @@ namespace Actors {
       }
 
       return Vector3.zero;
-    }
-
-    public void Save() {
-      var data = SaveLoadSystem.Instance.gameData.Zombies;
-
-      foreach (var enemy in enemies) {
-        var enemyData = new ZombiesData {
-          ProfileId = enemy.Difficulty.Id,
-          Position = enemy.transform.position,
-          Rotation = enemy.transform.rotation,
-          Scale = enemy.transform.localScale,
-          PlayerStatsData = enemy.GetStats().PrepareSaveData()
-        };
-        data.Add(enemyData);
-      }
-    }
-
-    public void Load() {
-      if (SaveLoadSystem.Instance.IsNewGame) {
-        return;
-      }
-
-      var data = SaveLoadSystem.Instance.gameData.Zombies;
-      foreach (var zombieData in data) {
-        var profile = siegeManager.ZombieDifficultyDatabase.ItemsMap[zombieData.ProfileId];
-        if (profile == null) {
-          continue;
-        }
-
-        var zombie = (ActorEnemy)Instantiate(actor, zombieData.Position, zombieData.Rotation);
-        zombie.transform.localScale = zombieData.Scale;
-        zombie.SetBehaviour(siegeBehaviour);
-        zombie.SetDifficulty(profile);
-        zombie.GetStats().UpdateBaseValue(StatType.Health, zombieData.PlayerStatsData.Health);
-        enemies.Add(zombie);
-      }
-
-      data.Clear();
     }
   }
 }

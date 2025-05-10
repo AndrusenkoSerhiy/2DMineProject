@@ -81,7 +81,7 @@ namespace Windows {
           window.Hide();
         }
         else {
-          GameManager.Instance.ShowInGameMenu();
+          GameManager.Instance.MenuController.ShowInGameMenu();
         }
       }
     }

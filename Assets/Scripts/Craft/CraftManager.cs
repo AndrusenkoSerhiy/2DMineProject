@@ -12,83 +12,28 @@ namespace Craft {
     [SerializeField] private List<string> stations;
 
     [SerializeField] private SerializedDictionary<string, bool> windowOpenStates;
-    // [SerializeField] private SerializedDictionary<string, bool> saving;
 
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
-      Load();
     }
 
-    public void SetStation(Workstation station) {
-      if (stations.Contains(station.Id)) {
-        return;
-      }
+    #region Save/Load
 
-      var id = station.Id;
-      allStationsMap.Add(id, station);
-      stations.Add(id);
-      windowOpenStates.Add(id, false);
-      // saving.Add(id, false);
-    }
-
-    public void UpdateWindowState(string stationId, bool isOpen) {
-      windowOpenStates[stationId] = isOpen;
-    }
-
-    public bool IsWindowOpen(string stationId) {
-      return windowOpenStates != null && windowOpenStates[stationId];
-    }
-
-    /*private bool IsSaving(string stationId) {
-      return saving != null && saving[stationId];
-    }*/
-
-    public Workstation GetWorkstation(string fullId, string stationObjectId) {
-      if (allStationsMap.ContainsKey(fullId)) {
-        return allStationsMap[fullId];
-      }
-
-      var stationObject = workstationsDatabase.ItemsMap[stationObjectId];
-      var station = new Workstation(stationObject, fullId);
-
-      return station;
-    }
+    public int Priority => LoadPriority.CRAFT;
 
     public void Load() {
-      if (SaveLoadSystem.Instance.IsNewGame) {
+      if (SaveLoadSystem.Instance.IsNewGame()) {
         return;
       }
-      
+
       SetStationsFromLoadData();
       LoadInputs();
     }
 
-    private void SetStationsFromLoadData() {
-      var stationsData = SaveLoadSystem.Instance.gameData.Workstations;
-      foreach (var (id, stationData) in stationsData) {
-        /*if (string.IsNullOrEmpty(stationData.ResourcePath)) {
-          return;
-        }
-
-        var handle = Addressables.LoadAssetAsync<Workstation>(stationData.ResourcePath);
-        var station = handle.WaitForCompletion();*/
-        var station = GetWorkstation(id, stationData.WorkStationObjectId);
-        if (station == null) {
-          return;
-        }
-
-        SetStation(station);
-      }
-    }
-
-    private void OnDisable() {
-      if (allStationsMap.Count <= 0) {
-        return;
-      }
-
-      foreach (var (id, station) in allStationsMap) {
-        station.CancelCraft(true);
-      }
+    public void Clear() {
+      allStationsMap.Clear();
+      stations.Clear();
+      windowOpenStates.Clear();
     }
 
     private void LoadInputs() {
@@ -119,9 +64,7 @@ namespace Craft {
         var station = allStationsMap[id];
         station.CancelCraft(true);
 
-        // saving[id] = true;
         SaveWorkstationInputs(station);
-        // saving[id] = false;
       }
     }
 
@@ -129,7 +72,6 @@ namespace Craft {
       var inputs = new List<CraftInputData>();
 
       var stationId = station.Id;
-      var resourcePath = station.WorkstationObject.ResourcePath;
 
       if (station.Inputs.Count == 0) {
         SaveLoadSystem.Instance.gameData.Workstations[stationId] =
@@ -155,6 +97,61 @@ namespace Craft {
         WorkStationObjectId = station.WorkstationObject.Id,
         CurrentProgress = station.CurrentProgress
       };
+    }
+
+    #endregion
+
+    public void SetStation(Workstation station) {
+      if (stations.Contains(station.Id)) {
+        return;
+      }
+
+      var id = station.Id;
+      allStationsMap.Add(id, station);
+      stations.Add(id);
+      windowOpenStates.Add(id, false);
+      // saving.Add(id, false);
+    }
+
+    public void UpdateWindowState(string stationId, bool isOpen) {
+      windowOpenStates[stationId] = isOpen;
+    }
+
+    public bool IsWindowOpen(string stationId) {
+      return windowOpenStates != null && windowOpenStates[stationId];
+    }
+
+    public Workstation GetWorkstation(string fullId, string stationObjectId) {
+      if (allStationsMap.ContainsKey(fullId)) {
+        return allStationsMap[fullId];
+      }
+
+      var stationObject = workstationsDatabase.ItemsMap[stationObjectId];
+      var station = new Workstation(stationObject, fullId);
+
+      return station;
+    }
+
+    private void SetStationsFromLoadData() {
+      var stationsData = SaveLoadSystem.Instance.gameData.Workstations;
+      foreach (var (id, stationData) in stationsData) {
+        var station = GetWorkstation(id, stationData.WorkStationObjectId);
+        if (station == null) {
+          return;
+        }
+
+        SetStation(station);
+      }
+    }
+
+    private void OnDisable() {
+      if (allStationsMap.Count <= 0) {
+        return;
+      }
+
+      foreach (var (id, station) in allStationsMap) {
+        station.CancelCraft(true);
+      }
     }
   }
 }

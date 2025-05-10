@@ -1,4 +1,3 @@
-using Actors;
 using SaveSystem;
 using UnityEngine;
 
@@ -16,8 +15,41 @@ namespace Player {
       GameManager.Instance.CurrPlayerController = this;
 
       SaveLoadSystem.Instance.Register(this);
-      Load();
     }
+
+    #region save/load
+
+    public int Priority => LoadPriority.PLAYER_CONTROLLER;
+
+    public void Save() {
+      var data = SaveLoadSystem.Instance.gameData.PlayerData;
+
+      data.Position = gameObject.transform.position;
+      data.Rotation = gameObject.transform.rotation;
+      data.Scale = gameObject.transform.localScale;
+      data.IsSet = true;
+
+      data.PlayerStatsData = PlayerStats.PrepareSaveData();
+    }
+
+    public void Load() {
+      var data = SaveLoadSystem.Instance.gameData.PlayerData;
+      if (SaveLoadSystem.Instance.IsNewGame() || !data.IsSet) {
+        PlayerStats.Init();
+        return;
+      }
+
+      gameObject.transform.position = data.Position;
+      gameObject.transform.rotation = data.Rotation;
+      gameObject.transform.localScale = data.Scale;
+
+      PlayerStats.Init(data.PlayerStatsData);
+    }
+
+    public void Clear() {
+    }
+
+    #endregion
 
     public override void SetLockHighlight(bool state) {
       playerAttack.LockHighlight(state);
@@ -59,37 +91,5 @@ namespace Player {
       // Apply the clamped angle to the head
       Head.rotation = Quaternion.Euler(0, 0, clampedAngle + Mathf.Sign(transform.localScale.x) * 90);
     }*/
-
-    #region save/load
-
-    public void Save() {
-      var data = SaveLoadSystem.Instance.gameData.PlayerData;
-
-      data.Position = gameObject.transform.position;
-      data.Rotation = gameObject.transform.rotation;
-      data.Scale = gameObject.transform.localScale;
-      data.IsSet = true;
-
-      data.PlayerStatsData = PlayerStats.PrepareSaveData();
-    }
-
-    public void Load() {
-      if (SaveLoadSystem.Instance.IsNewGame) {
-        return;
-      }
-
-      var data = SaveLoadSystem.Instance.gameData.PlayerData;
-      if (!data.IsSet) {
-        return;
-      }
-
-      gameObject.transform.position = data.Position;
-      gameObject.transform.rotation = data.Rotation;
-      gameObject.transform.localScale = data.Scale;
-
-      PlayerStats.Init(data.PlayerStatsData);
-    }
-
-    #endregion
   }
 }

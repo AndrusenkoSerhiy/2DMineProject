@@ -1,11 +1,12 @@
 using System;
 using Inventory;
+using SaveSystem;
 using Scriptables.Items;
 using Tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class QuickSlotListener : MonoBehaviour {
+public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   [SerializeField] private InventorySlot selectedSlot;
   [SerializeField] private UserInterface userInterface;
   private Inventory.Inventory quickSlots;
@@ -15,22 +16,69 @@ public class QuickSlotListener : MonoBehaviour {
   private ItemConsumer itemConsumer;
   [SerializeField] private int selectedSlotIndex = -1;
   private GameManager gameManager;
+  private SaveLoadSystem saveLoadSystem;
   public event Action OnActivate;
   public event Action OnDeactivate;
 
   private void Awake() {
     gameManager = GameManager.Instance;
+    saveLoadSystem = SaveLoadSystem.Instance;
+    saveLoadSystem.Register(this);
     playerInventory = gameManager.PlayerInventory;
-    quickSlots = playerInventory.GetQuickSlots();
-    slots = quickSlots.Slots;
 
-    //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
-    selectedSlot = null;
-    selectedItem = null;
-    //
     MiningRobotTool.OnPlayerEnteredRobot += UnequipSlot; //UnselectCurrSlot;
     PlaceCell.OnSlotReset += UnequipSlot;
+
+    if (!GameManager.Instance.InitScriptsOnStart()) {
+      return;
+    }
+
+    Init();
   }
+
+  private void Start() {
+    SubscribeToClickQuickSlots();
+    SubscribeToMouseWheel();
+
+    if (!GameManager.Instance.InitScriptsOnStart()) {
+      return;
+    }
+
+    AfterInit();
+  }
+
+  private void Init() {
+    quickSlots = playerInventory.GetQuickSlots();
+    slots = quickSlots.Slots;
+    selectedSlot = null;
+    selectedItem = null;
+  }
+
+  private void AfterInit() {
+    quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
+    playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
+    UpdateQuickSlotsAfterLoad();
+  }
+
+  #region Save/Load
+
+  public int Priority => LoadPriority.INVENTORIES_DISPLAY;
+
+  public void Load() {
+    Init();
+    AfterInit();
+  }
+
+  public void Save() {
+  }
+
+  public void Clear() {
+    selectedSlotIndex = -1;
+    quickSlots.OnSlotSwapped -= OnSlotUpdateHandler;
+    playerInventory.GetInventory().OnSlotSwapped -= OnSlotUpdateHandler;
+  }
+
+  #endregion
 
   public InventorySlot GetSelectedSlot() {
     return selectedSlot;
@@ -42,15 +90,6 @@ public class QuickSlotListener : MonoBehaviour {
 
   private ItemConsumer GetConsumer() {
     return itemConsumer ??= new ItemConsumer();
-  }
-
-  private void Start() {
-    SubscribeToClickQuickSlots();
-    SubscribeToMouseWheel();
-    quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
-    playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
-    UpdateQuickSlotsAfterLoad();
-    // SelectFirstSlot();
   }
 
   private void SubscribeToMouseWheel() {

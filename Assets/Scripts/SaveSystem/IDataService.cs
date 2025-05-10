@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace SaveSystem {
+﻿namespace SaveSystem {
   public interface IDataService {
-    public void Save(GameData data, bool overwrite = true);
-    public GameData Load(string name);
+    public bool FileExists(string filename);
+    public void Save<T>(T data, string filename, bool overwrite = true);
+    public T Load<T>(string name);
     public void Delete(string name);
-    void DeleteAll();
-    public IEnumerable<string> ListSaves();
   }
 }

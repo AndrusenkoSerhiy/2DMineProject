@@ -33,16 +33,81 @@ namespace World {
 
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
-      Load();
+
+      if (!GameManager.Instance.InitScriptsOnStart()) {
+        return;
+      }
+
+      Seed = GenerateSeed();
+      Init();
+    }
+
+    private void Start() {
+      if (!GameManager.Instance.InitScriptsOnStart()) {
+        return;
+      }
+
+      AfterInit();
+    }
+
+    private void Init() {
       CellObjectsPool.Init();
       BuildingsDataController.Initialize();
       _chunkGenerator.Init();
     }
 
-    private void Start() {
+    private void AfterInit() {
       InitStartChunk();
       GameManager.Instance.MapController.GenerateTexture();
     }
+
+    #region Save/Load
+
+    public int Priority => LoadPriority.CHUNK;
+
+    public void Load() {
+      if (!SaveLoadSystem.Instance.IsNewGame()) {
+        var data = SaveLoadSystem.Instance.gameData.WorldData;
+
+        Seed = data.Seed;
+        removedCells = data.RemovedCells;
+        changedCells = data.ChangedCells;
+      }
+
+      Init();
+      AfterInit();
+    }
+
+    public void Save() {
+      var data = SaveLoadSystem.Instance.gameData.WorldData;
+
+      data.Seed = Seed;
+      data.RemovedCells = removedCells;
+      data.ChangedCells = new SerializedDictionary<string, ChangedCellData>();
+      foreach (var kvp in changedCells) {
+        data.ChangedCells[kvp.Key] = kvp.Value;
+      }
+    }
+
+    public void Clear() {
+      Seed = GenerateSeed();
+      removedCells.Clear();
+      changedCells.Clear();
+
+      foreach (var coord in _activeCellObjects.Keys) {
+        CellObjectsPool.ReturnObject(_activeCellObjects[coord]);
+      }
+
+      foreach (var coord in _activeBuildObjects.Keys) {
+        BuildPoolsController.ReturnObject(_activeBuildObjects[coord]);
+      }
+
+      _activeCellObjects.Clear();
+      _activeBuildObjects.Clear();
+      isInited = false;
+    }
+
+    #endregion
 
     void SpawnChunk(int x, int y) {
       var startChunk = _chunkGenerator.GetChunk(x, y);
@@ -321,30 +386,5 @@ namespace World {
       var key = WorldData.GetCellKey(x, y);
       changedCells.Remove(key);
     }
-
-    #region Save/Load
-
-    public void Load() {
-      if (SaveLoadSystem.Instance.IsNewGame) {
-        Seed = GenerateSeed();
-        return;
-      }
-
-      var data = SaveLoadSystem.Instance.gameData.WorldData;
-
-      Seed = data.Seed;
-      removedCells = data.RemovedCells;
-      changedCells = data.ChangedCells;
-    }
-
-    public void Save() {
-      var data = SaveLoadSystem.Instance.gameData.WorldData;
-
-      data.Seed = Seed;
-      data.RemovedCells = removedCells;
-      data.ChangedCells = changedCells.Count > 0 ? (SerializedDictionary<string, ChangedCellData>)changedCells : new();
-    }
-
-    #endregion
   }
 }

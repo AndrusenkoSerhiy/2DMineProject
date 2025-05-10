@@ -11,11 +11,11 @@ namespace Menu {
       }
     }
 
-    private void OnEnable() {
+    /*private void OnEnable() {
       continueGameButton.onClick.AddListener(Hide);
       exitToMainMenuButton.onClick.AddListener(() => GameManager.Instance.ExitToMainMenu());
       exitButton.onClick.AddListener(() => GameManager.Instance.ExitGame());
-    }
+    }*/
 
     private void OnDisable() {
       continueGameButton.onClick.RemoveAllListeners();

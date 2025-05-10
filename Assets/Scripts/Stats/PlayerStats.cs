@@ -22,14 +22,12 @@ public class PlayerStats : StatsBase {
   public float MaxBackSpeed => GetStatValue(StatType.MaxBackSpeed);
   public float SprintSpeed => GetStatValue(StatType.SprintSpeed);
 
+  //TODO: refactor
   protected override void Awake() => Init();
 
   public void Init(PlayerStatsData data = null) {
-    if (inited) {
-      return;
-    }
-
     base.Init(data?.Health);
+    staminaInUse = false;
 
     baseValues[StatType.Stamina] = data?.Stamina ?? StatsObject.stamina;
     baseValues[StatType.MaxStamina] = StatsObject.maxStamina;
@@ -49,8 +47,6 @@ public class PlayerStats : StatsBase {
     if (data?.StatModifiersData?.Count > 0) {
       Mediator.Load(data.StatModifiersData);
     }
-
-    inited = true;
   }
 
   public void UpdateBaseValue(StatType type, float value) {

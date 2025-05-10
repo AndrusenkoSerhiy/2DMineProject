@@ -50,15 +50,22 @@ namespace Tools {
 
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
+      gameManager = GameManager.Instance;
       id = robotObject.Id;
-      Load();
     }
 
     private void Start() {
+      if (!GameManager.Instance.InitScriptsOnStart()) {
+        return;
+      }
+
+      Init();
+    }
+
+    private void Init() {
       broken = IsBroken();
       CheckRobotRepaired();
 
-      gameManager = GameManager.Instance;
       playerController = gameManager.PlayerController;
       miningRobotController = gameManager.MiningRobotController;
       playerInventory = gameManager.PlayerInventory;
@@ -72,6 +79,48 @@ namespace Tools {
         ResetPlayerAnim();
       }
     }
+
+    #region Save/Load
+
+    public int Priority => LoadPriority.PLAYER_CONTROLLER;
+
+    public void Save() {
+      var tr = miningRobotController.transform;
+      SaveLoadSystem.Instance.gameData.Robots[id] = new RobotData {
+        Id = id,
+        IsSet = true,
+        IsPlayerInside = playerInRobot,
+        Position = tr.position,
+        Rotation = tr.rotation,
+        Scale = tr.localScale,
+        PlayerStatsData = new PlayerStatsData {
+          Health = stats.Health,
+          Stamina = stats.Stamina
+        }
+      };
+    }
+
+    public void Load() {
+      if (!SaveLoadSystem.Instance.IsNewGame() &&
+          SaveLoadSystem.Instance.gameData.Robots.TryGetValue(id, out var data) &&
+          data.IsSet) {
+        robotLoadData = data;
+        stats.Init(data.PlayerStatsData);
+      }
+      else {
+        stats.Init();
+      }
+
+      Init();
+    }
+
+    public void Clear() {
+      isPlayerInside = false;
+      playerInRobot = false;
+      robotLoadData = null;
+    }
+
+    #endregion
 
     private void OnDisable() {
       stats.OnAddHealth -= OnAddHealthHandler;
@@ -252,39 +301,6 @@ namespace Tools {
       tr.position = robotLoadData.Position;
       tr.rotation = robotLoadData.Rotation;
       tr.localScale = robotLoadData.Scale;
-    }
-
-    public void Save() {
-      var tr = miningRobotController.transform;
-      SaveLoadSystem.Instance.gameData.Robots[id] = new RobotData {
-        Id = id,
-        IsSet = true,
-        IsPlayerInside = playerInRobot,
-        Position = tr.position,
-        Rotation = tr.rotation,
-        Scale = tr.localScale,
-        PlayerStatsData = new PlayerStatsData {
-          Health = stats.Health,
-          Stamina = stats.Stamina
-        }
-      };
-    }
-
-    public void Load() {
-      if (SaveLoadSystem.Instance.IsNewGame) {
-        return;
-      }
-
-      if (!SaveLoadSystem.Instance.gameData.Robots.TryGetValue(id, out var data)) {
-        return;
-      }
-
-      if (!data.IsSet) {
-        return;
-      }
-
-      robotLoadData = data;
-      stats.Init(data.PlayerStatsData);
     }
   }
 }

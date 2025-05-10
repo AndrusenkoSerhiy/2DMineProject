@@ -62,11 +62,6 @@ namespace Inventory {
       }
 
       gameManager = GameManager.Instance;
-      var playerInventory = gameManager.PlayerInventory;
-
-      inventory = playerInventory.GetInventoryByTypeAndId(inventoryType, inventoryId);
-      fastDropInventory = playerInventory.GetInventoryByTypeAndId(fastDropInventoryType, fastDropInventoryId);
-
       splitItem = gameManager.SplitItem;
       tempDragItemObject = gameManager.TempDragItem;
       tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
@@ -74,7 +69,15 @@ namespace Inventory {
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
     }
 
+    private void Init() {
+      inventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, inventoryId);
+      fastDropInventory =
+        gameManager.PlayerInventory.GetInventoryByTypeAndId(fastDropInventoryType, fastDropInventoryId);
+    }
+
     public void OnEnable() {
+      Init();
+
       AddSlotsUpdateEvents();
       CreateSlots();
       // UpdateSlotsGameObjects();

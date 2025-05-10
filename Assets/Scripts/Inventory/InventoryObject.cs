@@ -46,7 +46,7 @@ namespace Inventory {
     }
 
     public void LoadFromGameData() {
-      if (SaveLoadSystem.Instance.IsNewGame) {
+      if (SaveLoadSystem.Instance.IsNewGame()) {
         return;
       }
       

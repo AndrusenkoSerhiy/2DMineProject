@@ -8,21 +8,19 @@ namespace Actors {
     protected override void Start() {
       SaveLoadSystem.Instance.Register(this);
       base.Start();
-      Load();
     }
 
-    public override void Damage(float damage, bool isPlayer) {
-      base.Damage(damage, isPlayer);
-      if (stats.Health <= 0) {
-        OnPlayerDeath?.Invoke();
-      }
+    #region Save/Load
+
+    public int Priority => LoadPriority.ACTORS;
+
+    public void Clear() {
     }
 
     public void Save() {
       SaveLoadSystem.Instance.gameData.PlayerData.IsDead = IsDead;
     }
 
-    //TODO: fix
     public void Load() {
       var isDead = SaveLoadSystem.Instance.gameData.PlayerData.IsDead;
 
@@ -32,6 +30,15 @@ namespace Actors {
 
       DeathActions();
       OnPlayerDeath?.Invoke();
+    }
+
+    #endregion
+
+    public override void Damage(float damage, bool isPlayer) {
+      base.Damage(damage, isPlayer);
+      if (stats.Health <= 0) {
+        OnPlayerDeath?.Invoke();
+      }
     }
   }
 }

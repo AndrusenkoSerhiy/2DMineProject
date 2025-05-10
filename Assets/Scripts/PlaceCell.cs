@@ -130,7 +130,7 @@ public class PlaceCell : MonoBehaviour {
     var worldPosition = GetMousePosition();
     var grid = CoordsTransformer.MouseToGridPosition(worldPosition);//WorldToGrid
     var clampedPosition = grid;
-    var coords = CoordsTransformer.GetPlayerCoords();
+    var coords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
     clampedPosition.X = Mathf.Clamp(grid.X, coords.X - radius, coords.X + radius);
     clampedPosition.Y = Mathf.Clamp(grid.Y, coords.Y - radius, coords.Y + radius);
     var world = CoordsTransformer.GridToWorld(clampedPosition.X, clampedPosition.Y);//GridToWorld
@@ -148,7 +148,7 @@ public class PlaceCell : MonoBehaviour {
       return true;
     
     var canPlace = CanPlaceObject(grid.X, grid.Y, sizeX, sizeY);
-    var isPlayerOnGrid = CoordsTransformer.GetPlayerCoords().Equals(grid);
+    var isPlayerOnGrid = GameManager.Instance.PlayerController.PlayerCoords.GetCoords().Equals(grid);
     //Debug.LogError($"canplace {grid.X} | {grid.Y}");
     var hasGround = HasGround(grid.X, grid.Y, sizeX);
     //if we place building we just need to know the all cells is empty

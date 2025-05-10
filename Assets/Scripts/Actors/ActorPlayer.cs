@@ -34,8 +34,8 @@ namespace Actors {
 
     #endregion
 
-    public override void Damage(float damage) {
-      base.Damage(damage);
+    public override void Damage(float damage, bool isPlayer) {
+      base.Damage(damage, isPlayer);
       if (stats.Health <= 0) {
         OnPlayerDeath?.Invoke();
       }

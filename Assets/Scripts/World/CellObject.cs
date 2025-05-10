@@ -3,6 +3,7 @@ using DG.Tweening;
 using Player;
 using Scriptables;
 using Pool;
+using UnityEditor.Build;
 using UnityEngine.U2D;
 
 namespace World {
@@ -54,6 +55,7 @@ namespace World {
       resourcePerDurability = (float)resourceData.DropCount / resourceData.Durability;
       //Debug.LogError($"resourceData {resourceData.name} | DropCount {resourceData.DropCount} | resourceData.Durability {resourceData.Durability} | resourcePerDurability {resourcePerDurability}");
       fractionalResource = _cellData.fractionalResource;
+      unitHealth.OnTakeDamage += UpdateDurability;
       unitHealth.OnTakeDamage += AddItemToInventory;
     }
 
@@ -74,24 +76,29 @@ namespace World {
       set { unitHealth.hasTakenDamage = value; }
     }
 
-    public void Damage(float damage) {
+    public void Damage(float damage, bool isPlayer) {
       if (!_cellData.canTakeDamage)
         return;
 
-      unitHealth.TakeDamage(damage);
+      unitHealth.TakeDamage(damage, isPlayer);
       UpdateDamageOverlay(damage);
     }
 
-    private void AddItemToInventory(float damage) {
+    private void UpdateDurability(float damage, bool isPlayer) {
+      _cellData.UpdateDurability(damage);
+      //Debug.LogError($"Durability {resourceData.Durability} _cellData.durability {_cellData.durability}");
+    }
+    
+    private void AddItemToInventory(float damage, bool isPlayer) {
       if (resourceData.ItemData == null) {
         //Debug.LogError($"You need to add itemData in resourceData {resourceData}");
         return;
       }
-
-      _cellData.UpdateDurability(damage);
-      //Debug.LogError($"Durability {resourceData.Durability} _cellData.durability {_cellData.durability}");
-      CalculateCountToSpawn(damage);
       
+      if(!isPlayer)
+        return;
+      
+      CalculateCountToSpawn(damage);
       GameManager.Instance.ChunkController.AfterCellChanged(_cellData);
     }
 

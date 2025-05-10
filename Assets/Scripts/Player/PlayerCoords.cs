@@ -16,6 +16,10 @@ namespace Player {
 
       return Coords;
     }
+
+    public Coords GetCoordsOutOfBounds() {
+      return CoordsTransformer.MouseToGridPosition(trForGrid.position);
+    }
     
     private void Update() {
       //if (Vector3.Distance(transform.position, prevPos) >= GameManager.instance.GameConfig.CheckAreaStep) {

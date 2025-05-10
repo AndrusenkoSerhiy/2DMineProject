@@ -165,7 +165,7 @@ namespace Player {
       SetTargetsFromHighlight();
       foreach (var target in targets) {
         if (target == null || target.hasTakenDamage) continue;
-        target.Damage(PlayerStats.BlockDamage);
+        target.Damage(PlayerStats.BlockDamage, true);
         iDamageables.Add(target);
       }
 

@@ -37,7 +37,7 @@ public class BaseStatsEditor : Editor {
 
     foreach (var val in values) {
       if (GUILayout.Button($"Actor take {val} damage")) {
-        actor.Damage(val);
+        actor.Damage(val, true);
       }
     }
   }

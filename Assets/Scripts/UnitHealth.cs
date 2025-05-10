@@ -15,14 +15,15 @@ public class UnitHealth {
     set { _hasTakenDamage = value; }
   }
 
-  public event Action<float> OnTakeDamage;
+  //bool use for set info about attacke(is player)
+  public event Action<float, bool> OnTakeDamage;
 
   public UnitHealth(float maxHealth) {
     _maxHealth = maxHealth;
     _currentHealth = maxHealth;
   }
 
-  public void TakeDamage(float damage) {
+  public void TakeDamage(float damage, bool isPlayer) {
     if (damage <= 0) {
       return;
     }
@@ -36,7 +37,7 @@ public class UnitHealth {
     _currentHealth -= damage;
     _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
 
-    OnTakeDamage?.Invoke(damage);
+    OnTakeDamage?.Invoke(damage, isPlayer);
   }
 
   public void SetCurrentHealth(float health) {

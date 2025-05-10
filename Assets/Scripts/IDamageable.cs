@@ -1,7 +1,7 @@
 public interface IDamageable {
   public bool hasTakenDamage { get; set; }
 
-  public void Damage(float damage);
+  public void Damage(float damage, bool isPlayer);
 
   public float GetHealth();
 

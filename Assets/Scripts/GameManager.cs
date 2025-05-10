@@ -124,6 +124,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public ModifiersDatabaseObject ModifiersDatabase => modifiersDatabase;
 
   public RespawnManager RespawnManager => respawnManager;
+  public GameStage GameStage => gameStage;
 
   public PlayerController PlayerController {
     set => playerController = value;
@@ -164,10 +165,10 @@ public class GameManager : PersistentSingleton<GameManager> {
       return;
     }
 
-    EnableUIElements(false);
-    startGameCameraController.Init();
+    // EnableUIElements(false);
+    // startGameCameraController.Init();
     menuController.Show();
-    EnableInput(false);
+    // EnableInput(false);
     //need to subscribe for player grounded first time
     playerController.GroundedChanged += ChangeGround;
   }

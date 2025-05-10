@@ -78,6 +78,8 @@ namespace Inventory {
     public int Priority => LoadPriority.INVENTORIES;
 
     public void Load() {
+      Clear();
+      
       weight = saveLoadSystem.gameData.Weight;
       weightItems = saveLoadSystem.gameData.WeightItems;
       Init();

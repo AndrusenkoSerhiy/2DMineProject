@@ -1,12 +1,12 @@
 ﻿using System;
-using Animation;
 using Player;
+using SaveSystem;
 using Scriptables.Items;
 using Stats;
 using UnityEngine;
 
 namespace Inventory {
-  public class PlayerEquipment : MonoBehaviour {
+  public class PlayerEquipment : MonoBehaviour, ISaveLoad {
     [SerializeField] private UserInterface userInterface;
     [SerializeField] private Transform itemInHand;
     [SerializeField] private Transform bodyTransform;
@@ -28,8 +28,32 @@ namespace Inventory {
 
     public event Action OnEquippedWeapon;
     public event Action OnUnequippedWeapon;
-    
+
+    #region Save/Load
+
+    public int Priority => LoadPriority.EQUIPMENT;
+
+    public void Save() {
+    }
+
+    public void Clear() {
+    }
+
+    public void Load() {
+      var equipment = playerInventory.GetEquipment();
+      foreach (var slot in equipment.Slots) {
+        if (slot.isEmpty) {
+          continue;
+        }
+
+        playerController.PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, slot.Item.info);
+      }
+    }
+
+    #endregion
+
     private void Awake() {
+      SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
       playerController = gameManager.PlayerController;
       playerInventory = gameManager.PlayerInventory;

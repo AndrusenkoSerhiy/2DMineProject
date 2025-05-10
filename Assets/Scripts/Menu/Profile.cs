@@ -81,7 +81,10 @@ namespace Menu {
 
     private void ShowHideSaveButton(string newValue) {
       var isLongEnough = newValue.Length >= minCharacters;
-      saveButton.gameObject.SetActive(newValue != profileName && isLongEnough);
+      var show = newValue != profileName
+                 && isLongEnough
+                 && !saveLoadSystem.IsNameExist(newValue);
+      saveButton.gameObject.SetActive(show);
     }
 
     private void ShowHideSelectButton() {

@@ -3826,6 +3826,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: QuickSlotsPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 34652264887592026, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 157825688128698507, guid: f340593c3dbce904d98af8938da7db8b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

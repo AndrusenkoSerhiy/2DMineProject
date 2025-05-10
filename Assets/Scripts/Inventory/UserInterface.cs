@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using SaveSystem;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace Inventory {
   [RequireComponent(typeof(EventTrigger))]
-  public class UserInterface : MonoBehaviour, IInventoryUI {
+  public class UserInterface : MonoBehaviour, IInventoryUI, ISaveLoad {
     [SerializeField] private InventoryType inventoryType;
     [SerializeField] private InventoryType fastDropInventoryType;
 
@@ -55,11 +56,35 @@ namespace Inventory {
       fastDropInventoryType = type;
     }
 
-    public void Awake() {
+    #region Save/Load
+
+    public int Priority => LoadPriority.INVENTORIES_DISPLAY;
+    private bool isEnabled;
+
+    public void Save() {
+    }
+
+    public void Load() {
+      // DisableActions();
+      InitInventories();
+      // EnableActions();
+    }
+
+    public void Clear() {
+      DisableActions();
+      slotsOnInterface.Clear();
+      activeSlotsCount = 0;
+    }
+
+    #endregion
+
+    private void Awake() {
       if (inventoryType == InventoryType.None) {
         Debug.LogError("Inventory type is none");
         return;
       }
+
+      SaveLoadSystem.Instance.Register(this);
 
       gameManager = GameManager.Instance;
       splitItem = gameManager.SplitItem;
@@ -67,20 +92,25 @@ namespace Inventory {
       tempDragItem = tempDragItemObject.GetComponent<TempDragItem>();
       tempDragParent = gameManager.Canvas.transform;
       slotsOnInterface = new Dictionary<GameObject, InventorySlot>();
+      InitInventories();
     }
 
-    private void Init() {
+    private void InitInventories() {
       inventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, inventoryId);
       fastDropInventory =
         gameManager.PlayerInventory.GetInventoryByTypeAndId(fastDropInventoryType, fastDropInventoryId);
     }
 
-    public void OnEnable() {
-      Init();
+    private void OnEnable() => EnableActions();
+    private void OnDisable() => DisableActions();
+
+    private void EnableActions() {
+      if (isEnabled) {
+        return;
+      }
 
       AddSlotsUpdateEvents();
       CreateSlots();
-      // UpdateSlotsGameObjects();
 
       AddEvent(gameObject, EventTriggerType.PointerEnter, delegate { OnEnterInterface(gameObject); });
       AddEvent(gameObject, EventTriggerType.PointerExit, delegate { OnExitInterface(gameObject); });
@@ -92,11 +122,16 @@ namespace Inventory {
       OnLoaded?.Invoke();
       inventory.OnResorted += ResortHandler;
       inventory.OnSlotsCountChanged += SlotsCountChangedHandler;
+
+      isEnabled = true;
     }
 
-    public void OnDisable() {
+    private void DisableActions() {
+      if (!isEnabled) {
+        return;
+      }
+
       RemoveSlotsUpdateEvents();
-      RemoveAllEvents(gameObject);
       RemoveAllEvents(gameObject);
 
       RemoveSlotsEvents();
@@ -106,6 +141,8 @@ namespace Inventory {
 
       HideTooltip();
       OnDisabled?.Invoke();
+
+      isEnabled = false;
     }
 
     public void CreateSlots() {

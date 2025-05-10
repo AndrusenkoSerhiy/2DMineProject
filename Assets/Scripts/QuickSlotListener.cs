@@ -16,69 +16,70 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   private ItemConsumer itemConsumer;
   [SerializeField] private int selectedSlotIndex = -1;
   private GameManager gameManager;
-  private SaveLoadSystem saveLoadSystem;
   public event Action OnActivate;
   public event Action OnDeactivate;
 
-  private void Awake() {
-    gameManager = GameManager.Instance;
-    saveLoadSystem = SaveLoadSystem.Instance;
-    saveLoadSystem.Register(this);
-    playerInventory = gameManager.PlayerInventory;
+  #region Save/Load
 
+  public int Priority => LoadPriority.QUICK_SLOTS;
+  private bool loaded;
+
+  public void Save() {
+  }
+
+  public void Load() {
+    quickSlots = playerInventory.GetQuickSlots();
+    slots = quickSlots.Slots;
+    loaded = true;
+  }
+
+  public void Clear() {
+    userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
+    UnequipSlot();
+
+    selectedSlot = null;
+    selectedItem = null;
+    selectedSlotIndex = -1;
+    itemConsumer = null;
+
+    loaded = false;
+  }
+
+  #endregion
+
+  private void Awake() {
+    SaveLoadSystem.Instance.Register(this);
+    gameManager = GameManager.Instance;
+    playerInventory = gameManager.PlayerInventory;
+    quickSlots = playerInventory.GetQuickSlots();
+    slots = quickSlots.Slots;
+
+    //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
+    selectedSlot = null;
+    selectedItem = null;
+    //
     MiningRobotTool.OnPlayerEnteredRobot += UnequipSlot; //UnselectCurrSlot;
     PlaceCell.OnSlotReset += UnequipSlot;
-
-    if (!GameManager.Instance.InitScriptsOnStart()) {
-      return;
-    }
-
-    Init();
   }
 
   private void Start() {
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
-
-    if (!GameManager.Instance.InitScriptsOnStart()) {
-      return;
-    }
-
-    AfterInit();
-  }
-
-  private void Init() {
-    quickSlots = playerInventory.GetQuickSlots();
-    slots = quickSlots.Slots;
-    selectedSlot = null;
-    selectedItem = null;
-  }
-
-  private void AfterInit() {
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     UpdateQuickSlotsAfterLoad();
+    // SelectFirstSlot();
   }
 
-  #region Save/Load
+  private void OnEnable() {
+    if (!loaded) {
+      return;
+    }
 
-  public int Priority => LoadPriority.INVENTORIES_DISPLAY;
-
-  public void Load() {
-    Init();
-    AfterInit();
+    quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
+    playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
+    userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
   }
-
-  public void Save() {
-  }
-
-  public void Clear() {
-    selectedSlotIndex = -1;
-    quickSlots.OnSlotSwapped -= OnSlotUpdateHandler;
-    playerInventory.GetInventory().OnSlotSwapped -= OnSlotUpdateHandler;
-  }
-
-  #endregion
 
   public InventorySlot GetSelectedSlot() {
     return selectedSlot;
@@ -214,21 +215,18 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     // Manually instantiate equipped items after loading the equipment
     for (var i = 0; i < slots.Length; i++) {
       var slot = slots[i];
-      if ( /*slot.isEmpty || */!slot.isSelected) {
-        continue;
+      if (slot.isSelected) {
+        GetConsumer().SetActiveSlot(slot);
+        SelectSlotByIndex(i);
       }
-
-      // slot.Item.info.Use();
-      GetConsumer().SetActiveSlot(slot);
-      SelectSlotByIndex(i);
-      break;
+      else {
+        slot.Unselect();
+      }
     }
 
     if (selectedSlotIndex == -1) {
       SelectFirstSlot();
     }
-
-    //userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
   }
 
   private void ChooseSlot(InputAction.CallbackContext obj) {

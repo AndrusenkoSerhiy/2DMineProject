@@ -46,10 +46,6 @@ namespace Menu {
       SetupProfiles();
     }
 
-    private void Start() {
-      gameManager.UserInput.controls.UI.Cancel.performed += ctx => HandleEsc();
-    }
-
     private void SetupProfiles() {
       var profilesData = saveLoadSystem.profilesData.Profiles;
       for (var i = 0; i < profiles.Count; i++) {
@@ -65,12 +61,6 @@ namespace Menu {
       }
 
       switch (activeMenu) {
-        /*case Menu.None:
-          ShowInGameMenu();
-          return;*/
-        case Menu.InGameMenu:
-          Hide();
-          return;
         case Menu.Profiles:
           ShowMainMenu();
           return;
@@ -83,7 +73,6 @@ namespace Menu {
       await Task.Delay(100);
 
       gameManager.StartGameCameraController.Play();
-
       saveLoadSystem.NewGame();
 
       HideLoading();
@@ -93,10 +82,6 @@ namespace Menu {
       ShowLoading();
       await Task.Yield();
       await Task.Delay(100);
-
-      if (saveLoadSystem.IsNewGame()) {
-        gameManager.StartGameCameraController.SetPlayerToStartPosition();
-      }
 
       gameManager.StartGameCameraController.Play();
       saveLoadSystem.LoadGame();
@@ -116,9 +101,8 @@ namespace Menu {
     }
 
     private void ExitToMainMenu() {
-      gameManager.StartGameCameraController.SetCameraToStartPosition();
-
       saveLoadSystem.Save();
+      gameManager.StartGameCameraController.Init();
       ShowMainMenu();
     }
 
@@ -135,6 +119,7 @@ namespace Menu {
 
     public void Show() {
       ShowAndLock(true);
+      gameManager.StartGameCameraController.Init();
 
       if (saveLoadSystem.IsProfileSet()) {
         ShowMainMenu();
@@ -149,27 +134,24 @@ namespace Menu {
         return;
       }
 
-      var cancelAction = gameManager.UserInput.controls.UI.Cancel;
+      LockPlayer(state);
+      bg.SetActive(state);
+      locked = state;
 
       if (state) {
+        var cancelAction = gameManager.UserInput.controls.UI.Cancel;
         cancelEnabled = cancelAction.enabled;
+
         if (!cancelEnabled) {
           cancelAction.Enable();
+          cancelAction.performed += ctx => HandleEsc();
         }
 
         gameManager.SetGameStage(GameStage.MainMenu);
       }
       else {
-        if (!cancelEnabled && cancelAction.enabled) {
-          cancelAction.Disable();
-        }
-
         gameManager.SetGameStage(GameStage.Game);
       }
-
-      LockPlayer(state);
-      bg.SetActive(state);
-      locked = state;
     }
 
     private void ShowMainMenu() {
@@ -207,6 +189,10 @@ namespace Menu {
     public void ShowInGameMenu() {
       if (activeMenu == Menu.InGameMenu) {
         Hide();
+        return;
+      }
+
+      if (gameManager.GameStage != GameStage.Game) {
         return;
       }
 
@@ -305,25 +291,23 @@ namespace Menu {
 
     private void ShowHideProfileBackButton() {
       var show = saveLoadSystem.IsProfileSet();
+
       backButton.gameObject.SetActive(show);
+      backButton.onClick.RemoveAllListeners();
 
       if (show) {
         backButton.onClick.AddListener(ShowMainMenu);
-      }
-      else {
-        backButton.onClick.RemoveAllListeners();
       }
     }
 
     private void ShowHideContinueButton() {
       var show = saveLoadSystem.CanContinueGame();
+
       mmContinueButton.gameObject.SetActive(show);
+      mmContinueButton.onClick.RemoveAllListeners();
 
       if (show) {
         mmContinueButton.onClick.AddListener(ContinueGame);
-      }
-      else {
-        mmContinueButton.onClick.RemoveAllListeners();
       }
     }
 

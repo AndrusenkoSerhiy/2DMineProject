@@ -9,10 +9,12 @@ namespace SaveSystem {
     public const int BUILDINGS = 0;
     public const int CHUNK = 10;
     public const int INVENTORIES = 20;
-    public const int INVENTORIES_DISPLAY = 25;
+    public const int INVENTORIES_DISPLAY = 22;
+    public const int QUICK_SLOTS = 24;
     public const int CRAFT = 30;
     public const int RECIPES = 40;
     public const int PLAYER_CONTROLLER = 50;
+    public const int EQUIPMENT = 55;
     public const int ACTORS = 60;
     public const int SIEGE = 70;
     public const int ENEMIES = 80;
@@ -119,6 +121,20 @@ namespace SaveSystem {
       return profilesData.CurrentProfile.ProfileId > 0;
     }
 
+    public bool IsNameExist(string newName) {
+      if (string.IsNullOrEmpty(newName)) {
+        return false;
+      }
+
+      foreach (var data in profilesData.Profiles) {
+        if (data.Name == newName) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     public void SetCurrentProfile(int profileId, string profileName) {
       if (profileId < 1 || profileId > profilesCount) {
         throw new ArgumentOutOfRangeException(nameof(profileId), "Profile ID is out of range");
@@ -193,6 +209,8 @@ namespace SaveSystem {
           saveable.Clear();
         }
       }
+
+      profileLoaded = 0;
     }
 
     public bool CanContinueGame() {

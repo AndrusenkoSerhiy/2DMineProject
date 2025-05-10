@@ -10,11 +10,10 @@ namespace Player {
     //[SerializeField] private ActorPlayer actor;
 
     protected override void Awake() {
+      SaveLoadSystem.Instance.Register(this);
       base.Awake();
       GameManager.Instance.PlayerController = this;
       GameManager.Instance.CurrPlayerController = this;
-
-      SaveLoadSystem.Instance.Register(this);
     }
 
     #region save/load

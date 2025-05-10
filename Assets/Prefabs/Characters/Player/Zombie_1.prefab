@@ -122,7 +122,7 @@ MonoBehaviour:
   _animator: {fileID: 4141543556025107183}
   isDead: 0
   rigidbody: {fileID: 8148056154536312960}
-  _damage: 3
+  capsuleCollider: {fileID: 8141082641052085697}
   npcMovement: {fileID: 6852139997247226084}
   coords: {fileID: 4278888900822443520}
   layerAfterDeath:
@@ -190,9 +190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {x: 0, y: 0, z: 0}
   targetTransform: {fileID: 0}
-  speed: 3
-  jumpForce: 9
-  stopingDistance: 2
+  actorBoundsWidth: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -245,7 +243,7 @@ MonoBehaviour:
   _lockBoundGraphPrefabOverrides: 1
   _preInitializeSubGraphs: 0
   _updateMode: 0
-  _graph: {fileID: 0}
+  _graph: {fileID: 11400000, guid: 62da51088d7b8c542bd60c25ad79780a, type: 2}
   _blackboard: {fileID: -5946940393681573436}
 --- !u!114 &4278888900822443520
 MonoBehaviour:

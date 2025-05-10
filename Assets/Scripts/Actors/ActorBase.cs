@@ -7,7 +7,7 @@ namespace Actors {
     [SerializeField] protected Animator _animator;
     [SerializeField] private bool isDead;
     [SerializeField] protected Rigidbody2D rigidbody;
-    
+    [SerializeField] private CapsuleCollider2D capsuleCollider;
     public static event Action OnPlayerRespawn;
 
     protected AnimatorParameters animParam;
@@ -24,6 +24,7 @@ namespace Actors {
       animParam = GameManager.Instance.AnimatorParameters;
     }
     
+    public float ActorBoundsWidth => capsuleCollider.size.x * .5f;
     public bool hasTakenDamage {
       get { return _hasTakenDamage; }
       set { _hasTakenDamage = value; }

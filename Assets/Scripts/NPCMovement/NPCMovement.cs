@@ -55,67 +55,90 @@ namespace NPCMovement
     }
 
     private void CheckObstacles() {
-      if(!IsGrounded())
+      if (!IsGrounded())
         return;
+
       // Check for obstacles in front of the NPC
       var dir = transform.localScale.x * Vector2.right;
-      Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.magenta);
-      RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(dir.x * -1, 1, 0), dir, 1.5f, groundLayer);
-      if (hit.collider == null) {
+      var actorCoords = actor.GetCoordsOutOfBounds;
+
+      var obstacle = GetCellObject(actorCoords.X - (int)dir.x, actorCoords.Y);
+
+      var distanceToObstacle = -1f;
+      if (obstacle != null) {
+        var obstaclePos = CoordsTransformer.OutOfGridToWorls(obstacle.CellData.x, obstacle.CellData.y);
+        //Debug.DrawRay(obstaclePos, Vector3.up, Color.red,1f);
+        distanceToObstacle = Vector3.Distance(transform.position, obstaclePos);
+      }
+      
+
+      //if we don't have obstacle or distance is too big then return
+      if (obstacle == null || distanceToObstacle > 3.5f) {
         hasObstacle = false;
         return;
       }
-      
+
+      //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.magenta);
       hasObstacle = true;
-      var cell = CoordsTransformer.MouseToGridPosition(hit.transform.position);
-      Debug.DrawRay(hit.transform.position, Vector3.up, Color.blue, 2f);
+      var cellCoords = new Coords(obstacle.CellData.x, obstacle.CellData.y);
+      //Debug.DrawRay(hit.transform.position, Vector3.up, Color.blue, 2f);
       var currPlayer = GameManager.Instance.CurrPlayerController.PlayerCoords.GetCoordsOutOfBounds();
 
-      var actorCoords = actor.GetCoordsOutOfBounds;
       //cell above the cast cell
-      var upperCell = new Coords(cell.X, cell.Y - 1);
+      var upCellCoords = new Coords(cellCoords.X, cellCoords.Y - 1);
       //move up
       if (actorCoords.Y > currPlayer.Y) {
-        //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
-        if (hit.collider != null) {
-          //if we have some cell above zombie need to destroy that
-          if (CheckUP()) {
-            //Destroy cell above
-            var aboveCell = new Coords(actorCoords.X, actorCoords.Y - 1);
-            AttackCell(GameManager.Instance.ChunkController.GetCell(aboveCell.X, aboveCell.Y));
-          }
-          else {
-            if (GameManager.Instance.ChunkController.ChunkData.GetCellFill(upperCell.X, upperCell.Y) == 1) {
-              AttackCell(GameManager.Instance.ChunkController.GetCell(upperCell.X, upperCell.Y));
-            }
-            else Jump();
-          }
-        }
+        MoveUp(obstacle, actorCoords, upCellCoords);
       }
 
       //move forward
       else if (actorCoords.Y == currPlayer.Y) {
-        var forwardCell = new Coords(cell.X, cell.Y);
-        Debug.DrawRay(CoordsTransformer.GridToWorld(forwardCell.X, forwardCell.Y), Vector3.up, Color.yellow, 2f);
-        //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
-        if (!CheckUP() && GameManager.Instance.ChunkController.ChunkData.GetCellFill(upperCell.X, upperCell.Y) == 0) {
-          Jump();
-        }
-        else if (hit.collider != null) {
-          //Destroy cell under
-          AttackCell(GameManager.Instance.ChunkController.GetCell(forwardCell.X, forwardCell.Y));
-        }
-      }else
-
+        MoveForward(cellCoords, obstacle, upCellCoords);
+      }
       //move down
-      if (actorCoords.Y < currPlayer.Y) {
-        var downCell = new Coords(cell.X + (int)dir.x, cell.Y + 1);
-        Debug.DrawRay(CoordsTransformer.GridToWorld(downCell.X, downCell.Y), Vector3.up, Color.yellow, 2f);
-        //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
-        if (hit.collider != null) {
-            //Destroy cell under
-            AttackCell(GameManager.Instance.ChunkController.GetCell(downCell.X, downCell.Y));
+      else if (actorCoords.Y < currPlayer.Y) {
+        MoveDown(cellCoords, obstacle, dir);
+      }
+    }
+
+    private void MoveUp(CellObject obstacle, Coords actorCoords, Coords upCellCoords) {
+      //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
+      if (obstacle != null) {
+        //if we have some cell above zombie need to destroy that
+        if (CheckUP()) {
+          //Destroy cell above
+          var aboveCell = new Coords(actorCoords.X, actorCoords.Y - 1);
+          AttackCell(GetCellObject(aboveCell.X, aboveCell.Y));
         }
+        else {
+          if (GameManager.Instance.ChunkController.ChunkData.GetCellFill(upCellCoords.X, upCellCoords.Y) == 1) {
+            AttackCell(GetCellObject(upCellCoords.X, upCellCoords.Y));
+          }
+          else Jump();
+        }
+      }
+    }
+
+    private void MoveForward(Coords cellCoords, CellObject obstacle, Coords upCellCoords) {
+      var forwardCell = new Coords(cellCoords.X, cellCoords.Y);
+      Debug.DrawRay(CoordsTransformer.GridToWorld(forwardCell.X, forwardCell.Y), Vector3.up, Color.yellow, 2f);
+      //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
+      if (!CheckUP() && GameManager.Instance.ChunkController.ChunkData.GetCellFill(upCellCoords.X, upCellCoords.Y) == 0) {
+        Jump();
+      }
+      else if (obstacle != null) {
+        //Destroy cell under
+        AttackCell(GetCellObject(forwardCell.X, forwardCell.Y));
+      }
+    }
+
+    private void MoveDown(Coords cellCoords, CellObject obstacle, Vector2 dir) {
+      var downCell = new Coords(cellCoords.X + (int)dir.x, cellCoords.Y + 1);
+      Debug.DrawRay(CoordsTransformer.GridToWorld(downCell.X, downCell.Y), Vector3.up, Color.yellow, 2f);
+      //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
+      if (obstacle != null) {
+        //Destroy cell under
+        AttackCell(GetCellObject(downCell.X, downCell.Y));
       }
     }
 
@@ -136,7 +159,10 @@ namespace NPCMovement
       }
       return false;
     }
-    
+
+    private CellObject GetCellObject(int x, int y) {
+      return GameManager.Instance.ChunkController.GetCell(x, y);
+    }
     //need for zombie can jump from head of other zombie
     private bool CheckDown() {
       // Define the starting position (origin) and direction

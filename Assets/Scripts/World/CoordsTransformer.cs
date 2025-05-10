@@ -52,13 +52,11 @@ namespace World {
     public static Coords GridToBuildingsGrid(int x_original, int y_original) {
       return new Coords(x_original, y_original + GameManager.Instance.GameConfig.BuildingAreaYDiff);
     }
-    
-    public static Coords GetActorCoords(Vector3 position) {
-      var col = Mathf.RoundToInt(position.x / GameManager.Instance.GameConfig.CellSizeX) +
-                GameManager.Instance.GameConfig.OriginCol;
-      var row = Mathf.RoundToInt(position.y / (-GameManager.Instance.GameConfig.CellSizeY));
-      //Debug.DrawRay(position, Vector3.up*10, Color.red);
-      return new Coords(col, row);
+
+    public static Vector3 OutOfGridToWorls(int x_original, int y_original) {
+      var x = (x_original - GameManager.Instance.GameConfig.OriginCol) * GameManager.Instance.GameConfig.CellSizeX;
+      var y = (y_original - GameManager.Instance.GameConfig.OriginRow) * (-GameManager.Instance.GameConfig.CellSizeY);
+      return new Vector3(x, y, 0);
     }
   }
 }

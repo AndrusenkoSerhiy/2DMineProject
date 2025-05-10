@@ -8,7 +8,6 @@ namespace Actors {
     [SerializeField] private bool isDead;
     [SerializeField] protected Rigidbody2D rigidbody;
     [SerializeField] private CapsuleCollider2D capsuleCollider;
-    public static event Action OnPlayerRespawn;
 
     protected AnimatorParameters animParam;
     protected PlayerStats stats;
@@ -55,10 +54,10 @@ namespace Actors {
       _animator.SetTrigger(animParam.Die);
     }
 
-    public void Respawn() {
+    public virtual void Respawn() {
       isDead = false;
       _animator.SetLayerWeight(1, 1);
-      OnPlayerRespawn?.Invoke();
+      //OnPlayerRespawn?.Invoke();
     }
 
     public float GetHealth() {

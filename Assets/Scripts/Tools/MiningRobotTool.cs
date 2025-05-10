@@ -255,6 +255,7 @@ namespace Tools {
       stats.AddHealth(repairValue);
       ShowNormalTexture();
       AnimationEventManager.onRobotRepaired -= RobotRepaired;
+      miningRobotController.Actor.Respawn();
     }
 
     private void CheckRobotRepaired() {

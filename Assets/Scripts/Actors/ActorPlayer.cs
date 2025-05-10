@@ -4,7 +4,7 @@ using SaveSystem;
 namespace Actors {
   public class ActorPlayer : ActorBase, ISaveLoad {
     public static event Action OnPlayerDeath;
-
+    public static event Action OnPlayerRespawn;
     protected override void Start() {
       SaveLoadSystem.Instance.Register(this);
       base.Start();
@@ -39,6 +39,11 @@ namespace Actors {
       if (stats.Health <= 0) {
         OnPlayerDeath?.Invoke();
       }
+    }
+    
+    public virtual void Respawn() {
+      base.Respawn();
+      OnPlayerRespawn?.Invoke();
     }
   }
 }

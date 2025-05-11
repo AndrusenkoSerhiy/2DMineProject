@@ -18,8 +18,25 @@ namespace Stats {
     public event Action<StatModifier> OnModifierRemoved = delegate { };
     public List<StatModifier> ListModifiers => listModifiers;
 
+    public StatsMediator() {
+      GameManager.Instance.OnGamePaused += Pause;
+      GameManager.Instance.OnGameResumed += Resume;
+    }
+
     public void SetStats(StatsBase playerStats) {
       stats = playerStats;
+    }
+
+    public void Pause() {
+      foreach (var modifier in listModifiers) {
+        modifier.Pause();
+      }
+    }
+
+    public void Resume() {
+      foreach (var modifier in listModifiers) {
+        modifier.Resume();
+      }
     }
 
     public float Calculate(StatType type, float value) {
@@ -35,6 +52,10 @@ namespace Stats {
     }
 
     public void Update(float deltaTime) {
+      if (GameManager.Instance.Paused) {
+        return;
+      }
+      
       if (listModifiers.Count == 0) {
         return;
       }
@@ -109,6 +130,10 @@ namespace Stats {
     }
 
     private bool CanApplyModifier(ApplyType applyType, ItemObject itemObject) {
+      if (GameManager.Instance.Paused) {
+        return false;
+      }
+      
       if (itemObject == null || itemObject.statModifiers == null) {
         return false;
       }

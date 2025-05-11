@@ -68,6 +68,10 @@ public class PlayerStats : StatsBase {
   }
 
   private void RecoverStamina(float time) {
+    if (GameManager.Instance.Paused) {
+      return;
+    }
+    
     if (staminaInUse || Stamina >= MaxStamina) {
       return;
     }

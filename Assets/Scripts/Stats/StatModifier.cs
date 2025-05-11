@@ -53,6 +53,14 @@ namespace Stats {
       OnDispose.Invoke(this);
     }
 
+    public void Pause() {
+      timer?.Pause();
+    }
+
+    public void Resume() {
+      timer?.Resume();
+    }
+
     public void ResetMarkForRemoval() {
       markedForRemoval = false;
     }

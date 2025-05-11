@@ -48,6 +48,9 @@ namespace Siege {
       gameManager = GameManager.Instance;
       ActorPlayer.OnPlayerDeath += OnPlayerDeathHandler;
       ActorPlayer.OnPlayerRespawn += OnPlayerRespawnHandler;
+
+      gameManager.OnGamePaused += OnGamePausedHandler;
+      gameManager.OnGameResumed += OnGameResumedHandler;
     }
 
     #region Save/Load
@@ -218,6 +221,10 @@ namespace Siege {
       OnZombieSpawn?.Invoke(currentSiege);
     }
 
+    private void PauseSiege() {
+      isPaused = true;
+    }
+
     private void ResumeSiege() {
       if (!isPaused || currentSiege == null) {
         return;
@@ -240,11 +247,21 @@ namespace Siege {
     }
 
     private void OnPlayerDeathHandler() {
-      isPaused = true;
+      PauseSiege();
     }
 
     private void OnPlayerRespawnHandler() {
       ResumeSiege();
+    }
+    
+    private void OnGameResumedHandler() {
+      siegeTimelineUI.gameObject.SetActive(true);
+      ResumeSiege();
+    }
+
+    private void OnGamePausedHandler() {
+      PauseSiege();
+      siegeTimelineUI.gameObject.SetActive(false);
     }
   }
 }

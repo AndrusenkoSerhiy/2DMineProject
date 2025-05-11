@@ -35,7 +35,7 @@ public class StatsBase : MonoBehaviour {
     statValueCache.Clear();
     dirtyStats.Clear();
     baseValues.Clear();
-    
+
     mediator = new StatsMediator();
     mediator.SetStats(this);
 
@@ -53,6 +53,10 @@ public class StatsBase : MonoBehaviour {
   }
 
   protected virtual void UpdateStats(float deltaTime) {
+    if (GameManager.Instance.Paused) {
+      return;
+    }
+
     RecoverHp(deltaTime);
   }
 

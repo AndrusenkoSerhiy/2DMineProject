@@ -11,7 +11,7 @@ namespace Actors {
 
     protected AnimatorParameters animParam;
     protected PlayerStats stats;
-    private bool _hasTakenDamage;
+    [SerializeField] private bool _hasTakenDamage;
     public AnimatorParameters AnimParam => animParam;
     public bool IsDead => isDead;
 

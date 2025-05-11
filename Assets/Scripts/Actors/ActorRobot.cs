@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Actors {
   public class ActorRobot : ActorBase {
@@ -13,6 +14,7 @@ namespace Actors {
     
     public override void Respawn() {
       base.Respawn();
+      hasTakenDamage = false;
       OnRobotRepaired?.Invoke();
     }
   }

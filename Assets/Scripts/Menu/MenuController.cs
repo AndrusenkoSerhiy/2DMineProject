@@ -141,6 +141,8 @@ namespace Menu {
       locked = state;
 
       if (state) {
+        gameManager.PauseGame();
+
         var cancelAction = gameManager.UserInput.controls.UI.Cancel;
         cancelEnabled = cancelAction.enabled;
 
@@ -152,6 +154,8 @@ namespace Menu {
         gameManager.SetGameStage(GameStage.MainMenu);
       }
       else {
+        gameManager.ResumeGame();
+
         gameManager.SetGameStage(GameStage.Game);
       }
     }

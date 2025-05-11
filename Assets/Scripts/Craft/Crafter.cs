@@ -1,18 +1,19 @@
 using UnityEngine;
 using Windows;
 using Inventory;
+using SaveSystem;
 using Scriptables.Craft;
-using Scriptables.Items;
 using World;
 
 namespace Craft {
-  public class Crafter : MonoBehaviour {
+  public class Crafter : MonoBehaviour, ISaveLoad {
     [SerializeField] private GameObject interfacePrefab;
     [SerializeField] protected WorkstationObject stationObject;
     [SerializeField] private BuildingDataObject buildObject;
 
     protected GameManager gameManager;
     private CraftWindow craftWindow;
+    private GameObject craftWindowObj;
     private Window window;
     private Workstation station;
     private string id;
@@ -20,7 +21,25 @@ namespace Craft {
     public WorkstationObject StationObject => stationObject;
     public string Id => id;
 
+    #region Save/Load
+
+    public int Priority => LoadPriority.CRAFT_WINDOWS;
+
+    public void Save() {
+    }
+
+    public void Load() {
+    }
+
+    public void Clear() {
+      craftWindow = null;
+      Destroy(craftWindowObj);
+    }
+
+    #endregion
+
     private void Awake() {
+      SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
     }
 
@@ -30,7 +49,7 @@ namespace Craft {
       }
 
       station = gameManager.CraftManager.GetWorkstation(GetId(), stationObject.Id);
-      var craftWindowObj = Instantiate(interfacePrefab, gameManager.Canvas.transform);
+      craftWindowObj = Instantiate(interfacePrefab, gameManager.Canvas.transform);
       window = craftWindowObj.GetComponent<Window>();
       window.Setup(station);
 

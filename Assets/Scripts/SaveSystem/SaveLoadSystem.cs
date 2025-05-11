@@ -12,6 +12,7 @@ namespace SaveSystem {
     public const int INVENTORIES_DISPLAY = 22;
     public const int QUICK_SLOTS = 24;
     public const int CRAFT = 30;
+    public const int CRAFT_WINDOWS = 35;
     public const int RECIPES = 40;
     public const int PLAYER_CONTROLLER = 50;
     public const int EQUIPMENT = 55;

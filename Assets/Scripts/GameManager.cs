@@ -144,17 +144,17 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   private bool paused;
   public bool Paused => paused;
-  public event Action OnPaused;
-  public event Action OnUnPaused;
+  public event Action OnGamePaused;
+  public event Action OnGameResumed;
 
-  public void Pause() {
+  public void PauseGame() {
     paused = true;
-    OnPaused?.Invoke();
+    OnGamePaused?.Invoke();
   }
 
-  public void UnPause() {
+  public void ResumeGame() {
     paused = false;
-    OnUnPaused?.Invoke();
+    OnGameResumed?.Invoke();
   }
 
   public void SetGameStage(GameStage stage) {

@@ -5645,6 +5645,10 @@ PrefabInstance:
       propertyPath: 'uiObjectList.Array.data[2]'
       value: 
       objectReference: {fileID: 1359145305}
+    - target: {fileID: 682873794372566282, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
+      propertyPath: 'uiObjectList.Array.data[3]'
+      value: 
+      objectReference: {fileID: 5998974968584270749}
     - target: {fileID: 836732319019884106, guid: 54e06a9a5911b6d408c4daf202905ba7, type: 3}
       propertyPath: holdInteractText
       value: Take to inventory
@@ -7017,6 +7021,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13536b19579612846a4b433fb9b73179, type: 3}
+--- !u!1 &5998974968584270749 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7366233926970609808, guid: 13536b19579612846a4b433fb9b73179, type: 3}
+  m_PrefabInstance: {fileID: 5998974968584270748}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6426810730468305095
 PrefabInstance:
   m_ObjectHideFlags: 0

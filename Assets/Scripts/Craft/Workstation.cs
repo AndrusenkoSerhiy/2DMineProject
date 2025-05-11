@@ -87,6 +87,9 @@ namespace Craft {
       craftManager = gameManager.CraftManager;
       inventoriesPool = gameManager.PlayerInventory.InventoriesPool;
       CurrentProgress = new CurrentProgress();
+
+      gameManager.OnGamePaused += PauseCraft;
+      gameManager.OnGameResumed += ResumeCrafting;
     }
 
     public static string GenerateId(BuildingDataObject buildObject, WorkstationObject stationObject) {
@@ -489,6 +492,18 @@ namespace Craft {
       else {
         CurrentProgress.Reset();
       }
+    }
+
+    public void PauseCraft() {
+      CancelCraft(true);
+    }
+
+    public void ResumeCrafting() {
+      if (CurrentProgress == null || CurrentProgress.Finished || CurrentProgress.IsCrafting) {
+        return;
+      }
+
+      StartCrafting();
     }
 
     private void CancelCraftProcess() {

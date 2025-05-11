@@ -128,12 +128,12 @@ public class PlaceCell : MonoBehaviour {
 
   private Vector3 GetSnappedWorldPosition() {
     var worldPosition = GetMousePosition();
-    var grid = CoordsTransformer.MouseToGridPosition(worldPosition);//WorldToGrid
+    var grid = CoordsTransformer.MouseToGridPosition(worldPosition); //WorldToGrid
     var clampedPosition = grid;
     var coords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
     clampedPosition.X = Mathf.Clamp(grid.X, coords.X - radius, coords.X + radius);
     clampedPosition.Y = Mathf.Clamp(grid.Y, coords.Y - radius, coords.Y + radius);
-    var world = CoordsTransformer.GridToWorld(clampedPosition.X, clampedPosition.Y);//GridToWorld
+    var world = CoordsTransformer.GridToWorld(clampedPosition.X, clampedPosition.Y); //GridToWorld
     //Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X, coords.Y), Vector3.up*10, Color.blue);
     return new Vector3(world.x, world.y, 0f);
   }
@@ -146,7 +146,7 @@ public class PlaceCell : MonoBehaviour {
     //block building block upper start point
     if (resourceData != null && grid.Y < 0)
       return true;
-    
+
     var canPlace = CanPlaceObject(grid.X, grid.Y, sizeX, sizeY);
     var isPlayerOnGrid = GameManager.Instance.PlayerController.PlayerCoords.GetCoords().Equals(grid);
     //Debug.LogError($"canplace {grid.X} | {grid.Y}");
@@ -180,8 +180,8 @@ public class PlaceCell : MonoBehaviour {
       var checkX = startX + x;
       var checkY = startY + 1;
       //var cellObj = chunkController.GetCell(checkX, checkY);
-      
-      if (chunkController.ChunkData.GetCellFill(checkX, checkY) == 0/* ||
+
+      if (chunkController.ChunkData.GetCellFill(checkX, checkY) == 0 /* ||
           cellObj.resourceData.Equals(emptyResourceData)*/ /*|| cellObj.resourceData.IsBuilding*/) {
         return false;
       }
@@ -222,8 +222,9 @@ public class PlaceCell : MonoBehaviour {
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject) {
+    var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
     chunkController.RemoveBuild(buildObject);
-
+    SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
     return true;
   }
 
@@ -234,11 +235,11 @@ public class PlaceCell : MonoBehaviour {
     chunkController.UpdateCellAround(coords.X, coords.Y);
   }
 
-  private void SetCellsUndamegable(int startX, int startY, int objectSizeX) {
+  private void SetCellsUndamegable(int startX, int startY, int objectSizeX, bool isDamageable = false) {
     var coordY = startY + 1;
     for (var x = 0; x < objectSizeX; x++) {
       var coordX = startX + x;
-      chunkController.ChunkData.GetCellData(coordX, coordY).canTakeDamage = false;
+      chunkController.ChunkData.GetCellData(coordX, coordY).canTakeDamage = isDamageable;
       //Debug.DrawRay(CoordsTransformer.GridToWorld(coordX, coordY), Vector3.up, Color.green, 100f);
     }
   }

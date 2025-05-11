@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Scriptables.Items {
   [Serializable]
   public class Item {
     [NonSerialized] private IDurableItem durableItemRef;
     [NonSerialized] private IRepairable repairableItemRef;
+    [SerializeField] private float durability;
     private bool hasDurability;
     private bool canBeRepaired;
-    private float durability;
     private float maxDurability;
     private bool isBroken;
 
@@ -57,6 +58,20 @@ namespace Scriptables.Items {
 
     public void RestoreItemObject(List<ItemObject> itemDatabase) {
       info = itemDatabase.Find(x => x.Id == id);
+
+      if (info is IDurableItem durableItem) {
+        durableItemRef = durableItem;
+        hasDurability = true;
+        maxDurability = durableItem.MaxDurability;
+
+        durability = Mathf.Clamp(durability, 0, maxDurability);
+        isBroken = durability == 0;
+      }
+
+      if (info is IRepairable repairable) {
+        repairableItemRef = repairable;
+        canBeRepaired = true;
+      }
     }
 
     public bool DurabilityNotFull() {

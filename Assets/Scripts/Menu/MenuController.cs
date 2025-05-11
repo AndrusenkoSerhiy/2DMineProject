@@ -130,6 +130,8 @@ namespace Menu {
     }
 
     private void ShowAndLock(bool state) {
+      gameManager.SetGameStage(state ? GameStage.MainMenu : GameStage.Game);
+
       if (locked == state) {
         return;
       }

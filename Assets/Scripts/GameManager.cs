@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Windows;
 using Audio;
@@ -139,6 +140,21 @@ public class GameManager : PersistentSingleton<GameManager> {
   public PlayerControllerBase CurrPlayerController {
     set => currPlayerController = value;
     get => currPlayerController;
+  }
+
+  private bool paused;
+  public bool Paused => paused;
+  public event Action OnPaused;
+  public event Action OnUnPaused;
+
+  public void Pause() {
+    paused = true;
+    OnPaused?.Invoke();
+  }
+
+  public void UnPause() {
+    paused = false;
+    OnUnPaused?.Invoke();
   }
 
   public void SetGameStage(GameStage stage) {

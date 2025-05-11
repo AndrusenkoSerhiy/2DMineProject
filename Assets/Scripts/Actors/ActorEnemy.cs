@@ -29,6 +29,15 @@ namespace Actors {
       behaviourTreeOwner.StartBehaviour();
     }
 
+    public void PauseBehaviour() {
+      behaviourTreeOwner.PauseBehaviour();
+      npcMovement.StopAnimator();
+    }
+    
+    public void UnpauseBehaviour() {
+      behaviourTreeOwner.StartBehaviour();
+    }
+
     public void SetDifficulty(ZombieDifficultyProfile difficulty) {
       this.difficulty = difficulty;
       ApplyStats();
@@ -75,7 +84,6 @@ namespace Actors {
         return;
       currentTarget = target;
       //currentTarget = GameManager.Instance.CurrPlayerController.Actor;
-      //Debug.LogError($"trigger attack {currentTarget.GetHealth()}");
       if (currentTarget == null || currentTarget.GetHealth() <= 0)
         return;
 

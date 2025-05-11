@@ -164,6 +164,10 @@ public class PlaceCell : MonoBehaviour {
       for (var y = 0; y < objectSizeY; y++) {
         var checkX = startX + x;
         var checkY = startY - y;
+        /*Debug.LogError($"GetCellFill {chunkController.ChunkData.GetCellFill(checkX, checkY)} |" +
+                       $"GetBuildDataConverted {buildingDataController.GetBuildDataConverted(checkX, checkY)} |" +
+                       $"GetCellFill buid {buildingDataController.GetCellFill(checkX, checkY)}");
+        */
         if (chunkController.ChunkData.GetCellFill(checkX, checkY) == 1 ||
             buildingDataController.GetBuildDataConverted(checkX, checkY) != null ||
             buildingDataController.GetCellFill(checkX, checkY) == 1) {

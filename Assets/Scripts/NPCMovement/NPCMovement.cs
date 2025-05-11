@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.WindowsRuntime;
 using Actors;
 using UnityEngine;
 using Utils;
@@ -46,6 +47,9 @@ namespace NPCMovement
     }
 
     private void FixedUpdate() {
+      if(GameManager.Instance.Paused)
+        return;
+      
       IsGrounded();
       
       MoveTowardsTarget();
@@ -247,6 +251,11 @@ namespace NPCMovement
       FlipX(direction.x);
       rb.linearVelocity = new Vector2(direction.x * actor.GetStats().MaxSpeed, rb.linearVelocity.y);
       SetAnimVelocityX(rb.linearVelocity.x);
+    }
+
+    public void StopAnimator() {
+      rb.linearVelocity = new Vector2(0, 0);
+      SetAnimVelocityX(0);
     }
     
     private void SetAnimVelocityX(float value) {

@@ -17,13 +17,31 @@ namespace Actors {
     private SiegeManager siegeManager;
     private int areaWidth;
     private int areaHeight;
+    private GameManager gameManager;
 
     private void Start() {
       SaveLoadSystem.Instance.Register(this);
-      siegeManager = GameManager.Instance.SiegeManager;
-      GameManager.Instance.SiegeManager.OnZombieSpawn += SpawnSiegeZombie;
-      areaWidth = GameManager.Instance.GameConfig.PlayerAreaWidth;
-      areaHeight = GameManager.Instance.GameConfig.PlayerAreaHeight;
+      gameManager = GameManager.Instance;
+      siegeManager = gameManager.SiegeManager;
+      gameManager.SiegeManager.OnZombieSpawn += SpawnSiegeZombie;
+      areaWidth = gameManager.GameConfig.PlayerAreaWidth;
+      areaHeight = gameManager.GameConfig.PlayerAreaHeight;
+      gameManager.OnGamePaused += PauseZombies;
+      gameManager.OnGameResumed += UnpauseZombies;
+    }
+
+    private void PauseZombies() {
+      Debug.LogError("Pause Zombies");
+      foreach (var enemy in enemies) {
+        enemy.PauseBehaviour();
+      }
+    }
+    
+    private void UnpauseZombies() {
+      Debug.LogError("Unpause Zombies");
+      foreach (var enemy in enemies) {
+        enemy.UnpauseBehaviour();
+      }
     }
 
     #region Save/Load
@@ -113,7 +131,7 @@ namespace Actors {
 
     //try to get pos from left or right side from player (out of visible zone)
     private Vector3 GetLeftPos(bool left = true) {
-      var playerPos = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var playerPos = gameManager.PlayerController.PlayerCoords.GetCoords();
 
       var leftX = left ? playerPos.X - (areaWidth / 2) + 1 : playerPos.X + (areaWidth / 2) - 1;
       var rightX = left ? playerPos.X - areaWidth / 4 : playerPos.X + areaWidth / 4;
@@ -126,7 +144,7 @@ namespace Actors {
 
     //try get pos above the player visible zone
     private Vector3 GetUpPos() {
-      var playerPos = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var playerPos = gameManager.PlayerController.PlayerCoords.GetCoords();
 
 
       var leftX = playerPos.X - (areaWidth / 4) + 1;
@@ -150,7 +168,7 @@ namespace Actors {
     private Vector3 TryGetFreeCell() {
       var rndPos = UnityEngine.Random.Range(0, 2) == 0 ? GetLeftPos(false) : GetLeftPos();
       var coords = CoordsTransformer.MouseToGridPosition(rndPos);
-      var chunkData = GameManager.Instance.ChunkController.ChunkData;
+      var chunkData = gameManager.ChunkController.ChunkData;
 
       var free = Vector3.zero;
       if (chunkData.GetCellFill(coords.X, coords.Y) == 1) {
@@ -189,7 +207,7 @@ namespace Actors {
     }
 
     private Vector3 FindAboveCell(Coords coords) {
-      var chunkData = GameManager.Instance.ChunkController.ChunkData;
+      var chunkData = gameManager.ChunkController.ChunkData;
       for (int i = 1; i < 5; i++) {
         Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X, coords.Y - i), Vector3.up * 2, Color.blue, 2f);
 
@@ -202,7 +220,7 @@ namespace Actors {
     }
 
     private Vector3 FindUnderCell(Coords coords) {
-      var chunkData = GameManager.Instance.ChunkController.ChunkData;
+      var chunkData = gameManager.ChunkController.ChunkData;
       for (int i = 1; i < 5; i++) {
         Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X, coords.Y + i), Vector3.up * 2, Color.blue, 2f);
 
@@ -215,7 +233,7 @@ namespace Actors {
     }
 
     private Vector3 FindLeftCell(Coords coords) {
-      var chunkData = GameManager.Instance.ChunkController.ChunkData;
+      var chunkData = gameManager.ChunkController.ChunkData;
       for (int i = 1; i < 5; i++) {
         Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X - i, coords.Y), Vector3.up * 2, Color.blue, 2f);
 
@@ -228,7 +246,7 @@ namespace Actors {
     }
 
     private Vector3 FindRightCell(Coords coords) {
-      var chunkData = GameManager.Instance.ChunkController.ChunkData;
+      var chunkData = gameManager.ChunkController.ChunkData;
       for (int i = 1; i < 5; i++) {
         Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X + i, coords.Y), Vector3.up * 2, Color.blue, 2f);
 

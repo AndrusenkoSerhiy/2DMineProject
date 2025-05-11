@@ -139,7 +139,7 @@ namespace World {
     }
 
     public void RemoveBuildData(Building data, Vector3 pos) {
-      var worldCoords = CoordsTransformer.WorldToGrid(pos);
+      var worldCoords = CoordsTransformer.MouseToGridPosition(pos);
       var buildCoords = CoordsTransformer.WorldToGridBuildings(pos);
       _buildDatas[buildCoords.X, buildCoords.Y] = null;
       SetBuildFill(data, worldCoords.X, worldCoords.Y, 0);

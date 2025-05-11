@@ -78,6 +78,16 @@ namespace UI {
       LayoutSegments();
     }
 
+    public void Reset() {
+      foreach (var segment in preloadedSegments) {
+        segment.gameObject.SetActive(false);
+      }
+
+      timePointer.gameObject.SetActive(false);
+      segments.Clear();
+      reusedSegmentIndex = 0;
+    }
+
     private SiegeSegmentUI GetOrCreateSegment() {
       SiegeSegmentUI segment;
 

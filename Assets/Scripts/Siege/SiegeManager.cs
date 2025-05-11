@@ -97,6 +97,8 @@ namespace Siege {
     }
 
     public void Clear() {
+      StopCoroutine(activeSiegeCoroutine);
+      siegeTimelineUI.Reset();
       siegeQueue.Clear();
       currentSiegeCycle = 1;
       currentSiegeIndex = 0;
@@ -253,7 +255,7 @@ namespace Siege {
     private void OnPlayerRespawnHandler() {
       ResumeSiege();
     }
-    
+
     private void OnGameResumedHandler() {
       siegeTimelineUI.gameObject.SetActive(true);
       ResumeSiege();

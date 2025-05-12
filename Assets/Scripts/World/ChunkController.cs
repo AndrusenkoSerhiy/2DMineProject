@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SaveSystem;
@@ -298,6 +299,11 @@ namespace World {
       //set first help
       var dataWood = ResourceDataLibrary.GetData(0.3f);
       var cellWood = chunkData.GetCellData(258, 0);
+      //Debug.LogError($"fill {chunkData.GetCellFill(258, 0)}");
+      //if cell is empty need to fill him
+      if(chunkData.GetCellFill(258, 0) == 0)
+        chunkData.SetCellFill(258, 0);
+      
       cellWood.perlin = -1f;
       cellWood.durability = dataWood.Durability;
 
@@ -323,6 +329,7 @@ namespace World {
           if (data.x == 0 || data.y == 0 || data.x == chunkData.width - 1 || data.y == chunkData.height - 1) continue;
           var cellData = chunkData.GetCellData(i, j);
           if (!cellData.HasStandPoint) continue;
+          if(i==258 && j == 0)Debug.LogError($"the same coord 258 0");
           emptyCells.Add(chunkData.GetCellData(i, j));
         }
       }
@@ -337,6 +344,7 @@ namespace World {
             if (targetData == null) continue;
             var xCoord = startCell.x + targetData.localX;
             var yCoord = startCell.y + targetData.localY;
+            if(xCoord==258 && yCoord == 0)Debug.LogError($"the same coord 258 0");
             var cell = chunkData.ForceCellFill(targetData.resourceData, xCoord, yCoord);
             if (cell == null) continue;
             emptyCells.Remove(cell);

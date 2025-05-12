@@ -40,13 +40,13 @@ namespace Inventory {
     }
 
     public void Load() {
-      var equipment = playerInventory.GetEquipment();
+      var equipment = GetPlayerInventory().GetEquipment();
       foreach (var slot in equipment.Slots) {
         if (slot.isEmpty) {
           continue;
         }
 
-        playerController.PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, slot.Item.info);
+        GetPlayerController().PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, slot.Item.info);
       }
     }
 
@@ -55,8 +55,6 @@ namespace Inventory {
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
-      playerController = gameManager.PlayerController;
-      playerInventory = gameManager.PlayerInventory;
     }
 
     private void Start() {
@@ -67,6 +65,22 @@ namespace Inventory {
     private void OnDisable() {
       userInterface.OnLoaded -= AddEvents;
       userInterface.OnDisabled -= RemoveEvents;
+    }
+
+    private PlayerController GetPlayerController() {
+      if (!playerController) {
+        playerController = gameManager.PlayerController;
+      }
+
+      return playerController;
+    }
+
+    private PlayerInventory GetPlayerInventory() {
+      if (!playerInventory) {
+        playerInventory = gameManager.PlayerInventory;
+      }
+
+      return playerInventory;
     }
 
     public void EquipTool(Item item) {
@@ -106,7 +120,7 @@ namespace Inventory {
 
       var itemObject = equippedItem.info;
       Destroy(itemInHand.gameObject);
-      playerController.PlayerStats.Mediator.RemoveModifiersByItemId(itemObject.Id);
+      GetPlayerController().PlayerStats.Mediator.RemoveModifiersByItemId(itemObject.Id);
 
       OnUnequippedWeapon?.Invoke();
     }
@@ -118,7 +132,7 @@ namespace Inventory {
       itemInHand.localEulerAngles = itemObject.SpawnRotation;
       itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
 
-      playerController.PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
+      GetPlayerController().PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
 
       OnEquippedWeapon?.Invoke();
     }
@@ -178,10 +192,10 @@ namespace Inventory {
       }
 
       if (data.after.amount == 0) {
-        playerController.PlayerStats.Mediator.RemoveModifiersByItemId(data.before.Item.id);
+        GetPlayerController().PlayerStats.Mediator.RemoveModifiersByItemId(data.before.Item.id);
       }
       else {
-        playerController.PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, data.after.Item.info);
+        GetPlayerController().PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, data.after.Item.info);
       }
     }
 
@@ -209,7 +223,7 @@ namespace Inventory {
 
     private void RepairEquippedItem() {
       var repairValue =
-        playerInventory.Repair(equippedItem.MaxDurability, equippedItem.Durability, equippedItem.RepairCost);
+        GetPlayerInventory().Repair(equippedItem.MaxDurability, equippedItem.Durability, equippedItem.RepairCost);
 
       if (repairValue == 0) {
         return;

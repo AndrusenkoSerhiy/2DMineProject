@@ -13,6 +13,8 @@ namespace UI {
 
     private void Awake() {
       rectTransform = GetComponent<RectTransform>();
+      
+      GameManager.Instance.OnGamePaused += () => gameObject.SetActive(false);
     }
 
     private void Update() {

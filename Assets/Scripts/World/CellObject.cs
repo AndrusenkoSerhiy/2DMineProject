@@ -3,7 +3,6 @@ using DG.Tweening;
 using Player;
 using Scriptables;
 using Pool;
-using UnityEditor.Build;
 using UnityEngine.U2D;
 
 namespace World {
@@ -88,22 +87,22 @@ namespace World {
       _cellData.UpdateDurability(damage);
       //Debug.LogError($"Durability {resourceData.Durability} _cellData.durability {_cellData.durability}");
     }
-    
+
     private void AddItemToInventory(float damage, bool isPlayer) {
       if (resourceData.ItemData == null) {
         //Debug.LogError($"You need to add itemData in resourceData {resourceData}");
         return;
       }
-      
-      if(!isPlayer)
+
+      if (!isPlayer)
         return;
-      
+
       CalculateCountToSpawn(damage);
       GameManager.Instance.ChunkController.AfterCellChanged(_cellData);
     }
 
     private void CalculateCountToSpawn(float damage) {
-      var totalResourceGained = damage * resourcePerDurability+0.001f;
+      var totalResourceGained = damage * resourcePerDurability + 0.001f;
       fractionalResource += totalResourceGained;
       int integerResource = (int)fractionalResource;
       fractionalResource -= integerResource;

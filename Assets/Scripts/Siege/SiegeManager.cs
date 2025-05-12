@@ -97,7 +97,8 @@ namespace Siege {
     }
 
     public void Clear() {
-      StopCoroutine(activeSiegeCoroutine);
+      StopActiveCoroutine();
+
       siegeTimelineUI.Reset();
       siegeQueue.Clear();
       currentSiegeCycle = 1;
@@ -146,6 +147,14 @@ namespace Siege {
 
       siegesStarted = true;
       activeSiegeCoroutine = StartCoroutine(RunNextSiege());
+    }
+
+    private void StopActiveCoroutine() {
+      if (activeSiegeCoroutine == null) {
+        return;
+      }
+
+      StopCoroutine(activeSiegeCoroutine);
     }
 
     private ActiveSiegeTemplate GetActiveTemplate(SiegeTemplate template) {

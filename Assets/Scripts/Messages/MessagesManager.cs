@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Scriptables.Craft;
 using Scriptables.Items;
@@ -68,6 +69,8 @@ namespace Messages {
       activeMessages[rightContainer] = new List<MessageUI>();
       messageTemplates = GetDefaultMessageTemplates();
       messagePositions = GetDefaultMessagePositions();
+
+      GameManager.Instance.OnGamePaused += OnGamePausedHandler;
     }
 
     [ContextMenu("Set default messages settings")]
@@ -180,6 +183,14 @@ namespace Messages {
       message.gameObject.SetActive(false);
       activeMessages[container].Remove(message);
       messagePool.Add(message);
+    }
+
+    private void OnGamePausedHandler() {
+      foreach (var (container, messages) in activeMessages) {
+        foreach (var message in messages.ToList()) {
+          ReturnMessage(container, message);
+        }
+      }
     }
 
     private MessageUI GetMessageFromPool() {

@@ -137,7 +137,7 @@ namespace World {
       GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
       GameManager.Instance.TaskManager.DelayAsync(
         () => GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
-      highlight.ClearHighlight();
+      highlight.SetHighlight(false);
     }
 
     public void AfterDamageReceived() {

@@ -124,13 +124,13 @@ namespace Actors {
       //return UnityEngine.Random.Range(0, 2) == 0 ? GetLeftPos(false) : GetLeftPos();
     }
 
-    private void Update() {
+    /*private void Update() {
       if (Input.GetKeyDown(KeyCode.O)) {
         //TryGetFreeCell();
         //GetUpPos();
         Spawn(GetDifficultyList()[0].profile,1);
       }
-    }
+    }*/
 
     //try to get pos from left or right side from player (out of visible zone)
     private Vector3 GetLeftPos(bool left = true) {

@@ -17,8 +17,8 @@ GameObject:
   - component: {fileID: -5946940393681573436}
   - component: {fileID: 1260485521753335071}
   - component: {fileID: 4278888900822443520}
-  - component: {fileID: 1539736296294737943}
   - component: {fileID: -7218568860761669106}
+  - component: {fileID: 3406727223165166035}
   m_Layer: 10
   m_Name: Zombie_1
   m_TagString: Untagged
@@ -253,7 +253,7 @@ MonoBehaviour:
   _lockBoundGraphPrefabOverrides: 1
   _preInitializeSubGraphs: 0
   _updateMode: 0
-  _graph: {fileID: 11400000, guid: 62da51088d7b8c542bd60c25ad79780a, type: 2}
+  _graph: {fileID: 0}
   _blackboard: {fileID: -5946940393681573436}
 --- !u!114 &4278888900822443520
 MonoBehaviour:
@@ -271,19 +271,6 @@ MonoBehaviour:
     X: -1
     Y: -1
   trForGrid: {fileID: 3456170907426172990}
---- !u!114 &1539736296294737943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2942943796456466162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c879bab99d34208a596192aec908fa6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRendererRef: {fileID: 1486529621788147635}
 --- !u!114 &-7218568860761669106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,6 +284,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statsObject: {fileID: 11400000, guid: c18ee2dbbb86e6d498b582b1461bd9c2, type: 2}
+--- !u!114 &3406727223165166035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2942943796456466162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 294cdca67f9948eb9ccf2e870a46be2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRendererRef: {fileID: 1486529621788147635}
+  thickness: 5
+  actor: {fileID: 8562245207658300178}
 --- !u!1 &3986283541987958568
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,7 +356,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 003170a808acc4340847be3396c78e77, type: 2}
+  - {fileID: 2100000, guid: 0cadfd4d961fef846ad949a6c611ef6d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

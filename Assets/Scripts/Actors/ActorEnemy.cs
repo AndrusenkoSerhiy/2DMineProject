@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Animation;
@@ -29,6 +30,7 @@ namespace Actors {
     public Coords GetCoords => coords.GetCoords();
     public Coords GetCoordsOutOfBounds => coords.GetCoordsOutOfBounds();
     public ZombieDifficultyProfile Difficulty => difficulty;
+    public event Action OnEnemyDied;
 
     public void SetBehaviour(BehaviourTree tree) {
       behaviourTreeOwner.behaviour = tree;
@@ -183,6 +185,7 @@ namespace Actors {
 
     protected override void DeathActions() {
       base.DeathActions();
+      OnEnemyDied?.Invoke();
       rigidbody.linearVelocity = Vector3.zero;
       SpawnDrop();
       DestroyAfterDeath();

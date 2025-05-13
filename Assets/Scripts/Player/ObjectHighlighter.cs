@@ -4,7 +4,6 @@ using UnityEngine;
 namespace Player {
   [RequireComponent(typeof(Collider2D))]
   public class ObjectHighlighter : MonoBehaviour {
-    private static readonly int Thickness = Shader.PropertyToID("_Thickness");
     [SerializeField] private int maxHighlights = 1;
     [SerializeField] private List<ObjectHighlight> highlights = new();
     [SerializeField] private List<ObjectHighlight> possibleHighlights = new();
@@ -41,7 +40,7 @@ namespace Player {
       if (highlight && highlights.Contains(highlight)) {
         highlights.Remove(highlight);
         AddFromPossible();
-        EnableHighlight(highlight, 0);
+        EnableHighlight(highlight, false);
       }
       //need remove from possible when we just entered but return to previous
       if (highlight && possibleHighlights.Contains(highlight)) {
@@ -59,8 +58,9 @@ namespace Player {
       possibleHighlights.RemoveAt(0);
     }
 
-    private void EnableHighlight(ObjectHighlight highlight, float thickness = .5f) {
-      highlight.spriteRendererRef.material.SetFloat(Thickness, thickness);
+    private void EnableHighlight(ObjectHighlight highlight, bool state = true) {
+      highlight.SetHighlight(state);
+      //highlight.spriteRendererRef.material.SetFloat(Thickness, thickness);
     }
   }
 }

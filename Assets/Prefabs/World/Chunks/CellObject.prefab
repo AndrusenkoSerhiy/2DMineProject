@@ -238,6 +238,10 @@ MonoBehaviour:
     x: 0
     y: 0
     perlin: 0
+    durability: 0
+    alreadyDroped: 0
+    fractionalResource: 0
+    canTakeDamage: 0
 --- !u!61 &-5308872911570051922
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -297,3 +301,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRendererRef: {fileID: 8072278485348937990}
+  thickness: 0.5

@@ -17,13 +17,11 @@ MonoBehaviour:
   RecipeTypes: 02000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
-    Amount: 5
+    Amount: 2
   - Material: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
     Amount: 10
   - Material: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
     Amount: 20
-  - Material: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
-    Amount: 5
   Fuel:
     Material: {fileID: 0}
     Amount: 0

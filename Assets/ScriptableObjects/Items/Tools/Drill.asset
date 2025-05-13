@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 09bbb2b4-6209-402d-8c15-cb88452109ec
   Type: 2
   Name: Drill
+  Weight: 0
   ParentType: 2
   UiDisplay: {fileID: 21300000, guid: 991f36289d69a074facb0615fe02f667, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 9fa11686406cd03469b96a578e9c18cb, type: 3}
@@ -33,6 +34,7 @@ MonoBehaviour:
     value: 11
     permanent: 0
     duration: 0
+    timeLeft: 0
     canApplyWhenPreviousAt: 100
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}
@@ -42,6 +44,7 @@ MonoBehaviour:
     value: 0.5
     permanent: 0
     duration: 0
+    timeLeft: 0
     canApplyWhenPreviousAt: 100
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}
@@ -51,6 +54,7 @@ MonoBehaviour:
     value: -0.3
     permanent: 0
     duration: 0
+    timeLeft: 0
     canApplyWhenPreviousAt: 100
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}
@@ -60,6 +64,7 @@ MonoBehaviour:
     value: -1
     permanent: 0
     duration: 0
+    timeLeft: 0
     canApplyWhenPreviousAt: 100
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}
@@ -72,6 +77,6 @@ MonoBehaviour:
   colliderSize: {x: 1, y: 1}
   maxTargets: 1
   repairCost: 2
-  maxDurability: 100
-  durabilityUse: 5
+  maxDurability: 500
+  durabilityUse: 1
   durabilityUsageType: 1

@@ -83,7 +83,14 @@ namespace Menu {
       await Task.Yield();
       await Task.Delay(100);
 
-      gameManager.StartGameCameraController.Play();
+      if (saveLoadSystem.IsNewGame()) {
+        gameManager.StartGameCameraController.Play();
+      }
+      else {
+        gameManager.StartGameCameraController.ResetPlayer();
+        gameManager.StartGameCameraController.Play();
+      }
+
       saveLoadSystem.LoadGame();
 
       HideLoading();

@@ -40,19 +40,24 @@ public class StartGameCameraController : MonoBehaviour {
     SetCameraToStartPosition();
   }
 
-  public void SetPlayerToStartPosition() {
+  public void ResetPlayer() {
+    playerRb.simulated = true;
+    playerRb.gravityScale = 0f;
+  }
+
+  private void SetPlayerToStartPosition() {
     playerRb = player.GetComponent<Rigidbody2D>();
     playerRb.simulated = false;
     playerRb.gravityScale = 200f;
     player.transform.position = playerStartPosition;
   }
 
-  public void SetCameraToStartPosition() {
+  private void SetCameraToStartPosition() {
     cinemachineCamera.Follow = null;
     cinemachineCamera.transform.position = new Vector3(playerStartPosition.x, cameraStartPosition.y,
       cinemachineCamera.transform.position.z);
     cinemachineCamera.Lens.OrthographicSize = startOrthographicSize;
-    
+
     volume.profile.TryGet(out vignette);
     if (vignette) {
       vignette.intensity.value = 1f;

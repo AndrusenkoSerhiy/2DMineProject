@@ -32,6 +32,9 @@ namespace World {
 
     private bool isInited = false;
 
+    private bool useSavedPlayerCoordsOnce = false;
+    private Coords savedPlayerCoords;
+
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
 
@@ -73,10 +76,13 @@ namespace World {
         Seed = data.Seed;
         removedCells = data.RemovedCells;
         changedCells = data.ChangedCells;
+
+        savedPlayerCoords = CoordsTransformer.WorldToGrid(SaveLoadSystem.Instance.gameData.PlayerData.Position);
+        useSavedPlayerCoordsOnce = true;
       }
 
       Init();
-      AfterInit();
+      InitStartChunk();
     }
 
     public void Save() {
@@ -116,9 +122,19 @@ namespace World {
       SpawnNearbyCells();
     }
 
-    async Task SpawnNearbyCells() {
+    private Coords GetPlayerCoords() {
+      if (!useSavedPlayerCoordsOnce) {
+        return GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      }
+
+      useSavedPlayerCoordsOnce = false;
+      return savedPlayerCoords;
+    }
+
+    async Task SpawnNearbyCells(Coords? coords = null) {
       var _proxyCoords = new Coords(-1, -1);
-      var playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      // var playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var playerCoords = GetPlayerCoords();
       var cols = GameManager.Instance.GameConfig.ChunkSizeX;
       var rows = GameManager.Instance.GameConfig.ChunkSizeY;
       var visionOffsetX = GameManager.Instance.GameConfig.PlayerAreaWidth / 2;

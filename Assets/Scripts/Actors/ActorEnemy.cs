@@ -5,6 +5,7 @@ using Enemy;
 using NodeCanvas.BehaviourTrees;
 using Scriptables.Siege;
 using Stats;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Utils;
 
@@ -20,6 +21,11 @@ namespace Actors {
     [SerializeField] private BehaviourTreeOwner behaviourTreeOwner;
 
     [SerializeField] private ZombieDifficultyProfile difficulty;
+
+    [Header("Destroy after death")]
+    [SerializeField] private bool destroyAfterDeath;
+    [SerializeField] private float destroyAfter = 5f;
+    private IEnumerator coroutine;
     public Coords GetCoords => coords.GetCoords();
     public Coords GetCoordsOutOfBounds => coords.GetCoordsOutOfBounds();
     public ZombieDifficultyProfile Difficulty => difficulty;
@@ -27,6 +33,11 @@ namespace Actors {
     public void SetBehaviour(BehaviourTree tree) {
       behaviourTreeOwner.behaviour = tree;
       behaviourTreeOwner.StartBehaviour();
+      InitHealth();
+    }
+
+    private void InitHealth() {
+      stats.AddHealth(stats.MaxHealth);
     }
 
     public void PauseBehaviour() {
@@ -104,16 +115,15 @@ namespace Actors {
       ShouldBeDamagingToFalse();
       DestroyTarget();
     }
-    
+
     private void DestroyTarget() {
-      
-        if (currentTarget == null) 
-          return;
-        
-        var getHp = currentTarget.GetHealth();
-        if (getHp <= 0) {
-          currentTarget.DestroyObject();
-        }
+      if (currentTarget == null)
+        return;
+
+      var getHp = currentTarget.GetHealth();
+      if (getHp <= 0) {
+        currentTarget.DestroyObject();
+      }
 
       ClearTarget();
     }
@@ -175,6 +185,30 @@ namespace Actors {
       base.DeathActions();
       rigidbody.linearVelocity = Vector3.zero;
       SpawnDrop();
+      DestroyAfterDeath();
+    }
+
+    private void DestroyAfterDeath() {
+      if(!destroyAfterDeath)
+        return;
+      coroutine = WaitDestroy();
+      StartCoroutine(coroutine);
+    }
+
+    private IEnumerator WaitDestroy() {
+      yield return new WaitForSeconds(destroyAfter);
+      //return to pool
+      Respawn();
+      gameObject.SetActive(false);
+    }
+    public override void Respawn() {
+      base.Respawn();
+      _animator.Rebind();
+      _animator.Update(0f);
+      
+      var layerIndex = Mathf.RoundToInt(Mathf.Log(layerAfterDeath.value, 2));
+      gameObject.layer = LayerMask.NameToLayer("Enemies");
+      Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Character"), layerIndex, false);
     }
 
     private void SpawnDrop() {

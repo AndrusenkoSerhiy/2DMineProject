@@ -30,6 +30,9 @@ namespace Actors {
     }
 
     public virtual void Damage(float damage, bool isPlayer) {
+      if (isDead)
+        return;
+      
       hasTakenDamage = true;
       if (stats.TakeDamage(damage) <= 0) {
         DeathActions();
@@ -76,7 +79,7 @@ namespace Actors {
     
     public void SetAnimVelocityX(float val) {
       _animator.SetFloat(animParam.VelocityXHash, val);
-      Debug.LogError("stop zombie movement");
+      //Debug.LogError("stop zombie movement");
     }
   }
 }

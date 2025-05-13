@@ -123,6 +123,7 @@ MonoBehaviour:
   isDead: 0
   rigidbody: {fileID: 8148056154536312960}
   capsuleCollider: {fileID: 8141082641052085697}
+  _hasTakenDamage: 0
   npcMovement: {fileID: 6852139997247226084}
   coords: {fileID: 4278888900822443520}
   layerAfterDeath:
@@ -130,6 +131,8 @@ MonoBehaviour:
     m_Bits: 2048
   behaviourTreeOwner: {fileID: 1260485521753335071}
   difficulty: {fileID: 0}
+  destroyAfterDeath: 1
+  destroyAfter: 5
 --- !u!61 &5323630564359519687
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -206,6 +209,7 @@ MonoBehaviour:
   hasArrived: 0
   animator: {fileID: 4141543556025107183}
   actor: {fileID: 8562245207658300178}
+  hasObstacle: 0
 --- !u!114 &-5946940393681573436
 MonoBehaviour:
   m_ObjectHideFlags: 0

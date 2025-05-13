@@ -18,6 +18,7 @@ using Menu;
 using Messages;
 using Movement;
 using Pool;
+using PoolActors;
 using ScriptableObjects;
 using Scriptables.DropZombieData;
 using Settings;
@@ -67,7 +68,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private SiegeManager siegeManager;
 
   [SerializeField] private ModifiersDatabaseObject modifiersDatabase;
-
+  [SerializeField] private ActorsPooler actorsPooler;
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
@@ -126,6 +127,7 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   public RespawnManager RespawnManager => respawnManager;
   public GameStage GameStage => gameStage;
+  public ActorsPooler ActorsPooler => actorsPooler;
 
   public PlayerController PlayerController {
     set => playerController = value;

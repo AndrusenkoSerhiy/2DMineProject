@@ -10,7 +10,7 @@ using World;
 
 namespace Actors {
   public class ActorBaseController : MonoBehaviour, ISaveLoad {
-    [SerializeField] private ActorBase actor;
+    //[SerializeField] private ActorBase actor;
     [SerializeField] private BehaviourTree patrolBehaviour;
     [SerializeField] private BehaviourTree siegeBehaviour;
     [SerializeField] private List<ActorEnemy> enemies = new();
@@ -75,7 +75,8 @@ namespace Actors {
           continue;
         }
 
-        var zombie = (ActorEnemy)Instantiate(actor, zombieData.Position, zombieData.Rotation);
+        var zombie = (ActorEnemy)gameManager.ActorsPooler.SpawnFromPool("Zombie_1", zombieData.Position, zombieData.Rotation);
+        //var zombie = (ActorEnemy)Instantiate(actor, zombieData.Position, zombieData.Rotation);
         zombie.transform.localScale = zombieData.Scale;
         zombie.SetBehaviour(siegeBehaviour);
         zombie.SetDifficulty(profile);
@@ -106,7 +107,8 @@ namespace Actors {
       for (int i = 0; i < count; i++) {
         //Debug.LogError($"spawn {profile}");
         var pos = GetPosition();
-        var zombie = (ActorEnemy)Instantiate(actor, pos, Quaternion.identity);
+        var zombie = (ActorEnemy)GameManager.Instance.ActorsPooler.SpawnFromPool("Zombie_1", pos, Quaternion.identity);
+        //var zombie = (ActorEnemy)Instantiate(actor, pos, Quaternion.identity);
         zombie.SetBehaviour(siegeBehaviour);
         zombie.SetDifficulty(profile);
         enemies.Add(zombie);
@@ -125,7 +127,8 @@ namespace Actors {
     private void Update() {
       if (Input.GetKeyDown(KeyCode.O)) {
         //TryGetFreeCell();
-        GetUpPos();
+        //GetUpPos();
+        Spawn(GetDifficultyList()[0].profile,1);
       }
     }
 

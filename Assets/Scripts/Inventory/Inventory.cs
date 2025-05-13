@@ -400,12 +400,26 @@ namespace Inventory {
     }
 
     public bool IsItemInInventory(ItemObject itemObject) {
-      if (itemObject == null) {
+      if (!itemObject) {
         return false;
       }
 
       foreach (var slot in Slots) {
         if (!slot.isEmpty && slot.Item.info.Id == itemObject.Id) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    public bool HasNotFinishedStack(ItemObject itemObject) {
+      if (!itemObject) {
+        return false;
+      }
+
+      foreach (var slot in Slots) {
+        if (!slot.isEmpty && slot.Item.info.Id == itemObject.Id && slot.amount < slot.GetMaxSize()) {
           return true;
         }
       }

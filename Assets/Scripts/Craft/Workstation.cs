@@ -127,6 +127,22 @@ namespace Craft {
 
       var remainingAmount = count;
       foreach (var inventory in GetOutputInventories()) {
+        if (inventory.Type != InventoryType.QuickSlots) {
+          continue;
+        }
+
+        if (inventory.HasNotFinishedStack(item.info)) {
+          remainingAmount = inventory.AddItem(item, remainingAmount);
+        }
+
+        break;
+      }
+
+      if (remainingAmount <= 0) {
+        return;
+      }
+
+      foreach (var inventory in GetOutputInventories()) {
         remainingAmount = inventory.AddItem(item, remainingAmount);
         if (remainingAmount <= 0) {
           break;

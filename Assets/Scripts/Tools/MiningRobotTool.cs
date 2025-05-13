@@ -22,6 +22,7 @@ namespace Tools {
     [SerializeField] private SpriteRenderer brokenRobotImage;
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
+    [SerializeField] private PlaceCellRobot placeCellRobot;
 
     private bool isPlayerInside;
     private RobotData robotLoadData;
@@ -175,6 +176,7 @@ namespace Tools {
       playerController.SetLockHighlight(true);
       //playerController.ResetHeadPos();
       playerController.Stamina.EnableSprintScript(false);
+      placeCellRobot.Activate();
       miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
@@ -197,6 +199,7 @@ namespace Tools {
       miningRobotController.EnableCollider(false);
       miningRobotController.SetRBType(RigidbodyType2D.Kinematic);
       miningRobotController.EnableController(false);
+      placeCellRobot.Deactivate();
       playerController.EnableCollider(true);
       playerController.EnableController(true);
       playerController.SetLockHighlight(false);

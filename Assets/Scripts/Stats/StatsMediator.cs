@@ -130,10 +130,6 @@ namespace Stats {
     }
 
     private bool CanApplyModifier(ApplyType applyType, ItemObject itemObject) {
-      if (GameManager.Instance.Paused) {
-        return false;
-      }
-      
       if (itemObject == null || itemObject.statModifiers == null) {
         return false;
       }

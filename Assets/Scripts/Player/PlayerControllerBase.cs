@@ -59,6 +59,9 @@ namespace Player {
     private AnimatorParameters animParam;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
 
+    private GameObject jumpPs;
+    private GameObject fallingPs;
+
     #region Interface
 
     public Vector2 FrameInput => _frameInput.Move;
@@ -210,6 +213,7 @@ namespace Player {
     }
 
     private void PlayLandingEffect() {
+      if (fallingPs != null && fallingPs.active) fallingPs.SetActive(false);
       GameManager.Instance.PoolEffects.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
     }
 
@@ -235,6 +239,9 @@ namespace Player {
       if (actor != null && actor.IsDead) {
         return;
       }
+
+      if (jumpPs != null && jumpPs.active) jumpPs.transform.position = transform.position;
+
       if (!_endedJumpEarly && !grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
 
       if (!_jumpToConsume && !HasBufferedJump) return;
@@ -265,6 +272,7 @@ namespace Player {
       _bufferedJumpUsable = false;
       _coyoteUsable = false;
       _frameVelocity.y = PlayerStats.StatsObject.jumpPower;
+      jumpPs = GameManager.Instance.PoolEffects.SpawnFromPool("JumpEffect", transform.position, Quaternion.identity).gameObject;
       Jumped?.Invoke();
     }
 
@@ -363,6 +371,7 @@ namespace Player {
             inAirGravity * Time.fixedDeltaTime);
         SetFall();
       }
+      if (fallingPs != null && fallingPs.active) fallingPs.transform.position = transform.position;
     }
 
     //start falling down set animator param
@@ -376,6 +385,8 @@ namespace Player {
 
       startFalling = true;
       _animator.SetBool(animParam.FallHash, true);
+
+      fallingPs = GameManager.Instance.PoolEffects.SpawnFromPool("FallingLoopEffect", transform.position, Quaternion.identity).gameObject;
     }
 
     #endregion

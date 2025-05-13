@@ -8,6 +8,7 @@ public class WavyMove : MonoBehaviour {
   public float amplitude = 1f;
   private float t = 0f;
   public float speed = 1f;
+  public AnimationCurve moveCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
   private bool isMoveComplete;
   [SerializeField] private SpriteRenderer spriteRenderer;
   public bool IsMoveComplete => isMoveComplete;
@@ -29,8 +30,10 @@ public class WavyMove : MonoBehaviour {
       isMoveComplete = true;
     }
 
+    float curvedT = moveCurve.Evaluate(t);
+
     // Linear interpolation between A and B
-    Vector3 pos = Vector3.Lerp(pointA, pointB.position, t);
+    Vector3 pos = Vector3.Lerp(pointA, pointB.position, curvedT);
 
     // Apply sinusoidal wave effect
     pos.y += Mathf.Sin(t * Mathf.PI * frequency) * amplitude;

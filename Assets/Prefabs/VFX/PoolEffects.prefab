@@ -48,6 +48,9 @@ MonoBehaviour:
   - tag: LandingEffect
     prefab: {fileID: 6109450353374441362, guid: 85346f9a99616de47bc7c3c567f3da51, type: 3}
     size: 2
+  - tag: JumpEffect
+    prefab: {fileID: 7218818552219169797, guid: 1b90f5a62c29ad341a8b3e7eee9b6f27, type: 3}
+    size: 1
   - tag: CellDestroyEffect
     prefab: {fileID: 1361706830629698200, guid: c0c8a63d24bb5d849a4e82456c0635f9, type: 3}
     size: 2
@@ -59,4 +62,10 @@ MonoBehaviour:
     size: 5
   - tag: WavyMove
     prefab: {fileID: 7595709131319520735, guid: 330def7124eca3042b48f9327ccde033, type: 3}
+    size: 1
+  - tag: CellDamageEffect
+    prefab: {fileID: 1421194690704526444, guid: 070599dbccf6bf047ad6e83513b719bc, type: 3}
+    size: 1
+  - tag: FallingLoopEffect
+    prefab: {fileID: 4138731453281525658, guid: d2e34c8454e557d42ac5acff561d0b05, type: 3}
     size: 1

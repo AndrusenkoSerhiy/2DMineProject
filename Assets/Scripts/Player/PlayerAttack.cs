@@ -31,12 +31,16 @@ namespace Player {
       if (isHit && audioData) {
         GameManager.Instance.AudioController.PlayAudio(audioData);
       }
-      
+
       if (playerEquipment.EquippedItem == null) {
         return;
       }
-      
+
       playerEquipment.EquippedItem.ApplyDurabilityLoss(isHit);
+    }
+    
+    protected override void RangeAttack() {
+      playerEquipment.EquippedItem.ApplyDurabilityLoss(false);
     }
 
     private void SetDefaultAttackParam() {
@@ -67,6 +71,7 @@ namespace Player {
       attackLayer = statsObject.attackLayer;
       attackID = statsObject.attackID;
       colliderSize = statsObject.attackColliderSize;
+      isRangedAttack = false;
       SetDefaultAttackParam();
     }
 
@@ -106,10 +111,14 @@ namespace Player {
 
       //Debug.LogError("SetAttackParamsFromEquipment");
       attackLayer = attackableItem.AttackLayer;
-      
+
       attackID = attackableItem.AnimationAttackID;
       colliderSize = attackableItem.ColliderSize;
       maxTargets = attackableItem.MaxTargets;
+
+      isRangedAttack = attackableItem.WeaponType == WeaponType.Ranged;
+      objectHighlighter.ChangeCrosshair(isRangedAttack);
+
       return true;
     }
 

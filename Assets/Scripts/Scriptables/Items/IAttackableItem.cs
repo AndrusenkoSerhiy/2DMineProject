@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Scriptables.Items {
   public interface IAttackableItem {
+    public WeaponType WeaponType { get; }
     public LayerMask AttackLayer { get; }
     //this moves to modifiers
     /*public float BlockDamage { get; }

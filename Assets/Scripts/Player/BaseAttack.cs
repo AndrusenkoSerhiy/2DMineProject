@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Animation;
+using Inventory;
 using Scriptables;
 using Scriptables.Stats;
 using UnityEngine;
@@ -22,6 +23,8 @@ namespace Player {
     protected int attackID;
     protected int maxTargets;
 
+    protected bool isRangedAttack;
+
     protected Vector2 colliderSize;
     /*protected float timeBtwAttacks;
     protected float blockDamage;
@@ -35,6 +38,7 @@ namespace Player {
     [SerializeField] private Vector2 originalSize;
     private int lookDirection;
     private AnimatorParameters animParam;
+    private PlayerEquipment playerEquipment;
 
     protected PlayerStats playerStats;
     protected bool firstAttack;
@@ -49,6 +53,7 @@ namespace Player {
     }
 
     protected virtual void Start() {
+      playerEquipment = GameManager.Instance.PlayerEquipment;
       attackTimeCounter = PlayerStats.TimeBtwAttacks;
       PrepareAttackParams();
       originalSize = attackCollider.size;
@@ -72,6 +77,7 @@ namespace Player {
         if (originalSize.Equals(Vector2.zero)) {
           originalSize = attackCollider.size;
         }
+
         attackCollider.size = new Vector2(.2f, .2f);
       }
       else {
@@ -100,7 +106,7 @@ namespace Player {
       //3f distance between player and mouse for top border 
       if (direction.y > 3f) {
         lookDirection = 1;
-        
+
         //use only for drill upside attack
         if (animator.GetInteger("WeaponID") == 1 && Mathf.Abs(direction.x) > 1) {
           lookDirection = 2;
@@ -174,6 +180,9 @@ namespace Player {
       ReturnAttackableToDamageable();
     }
 
+    protected virtual void RangeAttack() {
+    }
+
     protected virtual void AfterTargetsTakenDamage(int targetsCount) {
     }
 
@@ -200,8 +209,14 @@ namespace Player {
     }
 
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
-      if (go != gameObject)
+      if (go != gameObject) {
         return;
+      }
+
+      if (isRangedAttack) {
+        RangeAttack();
+        return;
+      }
 
       Attack();
 

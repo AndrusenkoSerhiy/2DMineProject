@@ -394,6 +394,10 @@ namespace Player {
     private void ApplyMovement() {
       if (!_ladderMovement.IsClimbing) _rb.linearVelocity = _frameVelocity;
     }
+    
+    public Vector2 GetVelocity() {
+      return _rb.linearVelocity;
+    }
 
 /*#if UNITY_EDITOR
     private void OnValidate() {

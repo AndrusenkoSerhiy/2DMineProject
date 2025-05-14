@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 4aae07e2-ff6c-49ca-98b1-5a8f0422919a
   Type: 2
   Name: Nailgun
+  Weight: 0
   ParentType: 2
   UiDisplay: {fileID: 21300000, guid: 0cb594146a7aaf7489705b2afada3139, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: ba37f20683a118f43a63bbab6267138d, type: 3}
@@ -26,7 +27,47 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 1
   Description: pickaxe description
-  statModifiers: []
+  statModifiers:
+  - type: 40
+    applyType: 2
+    operatorType: 1
+    value: 20
+    permanent: 0
+    duration: 0
+    timeLeft: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 42
+    applyType: 2
+    operatorType: 1
+    value: 20
+    permanent: 0
+    duration: 0
+    timeLeft: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 41
+    applyType: 2
+    operatorType: 1
+    value: 1
+    permanent: 0
+    duration: 0
+    timeLeft: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 43
+    applyType: 2
+    operatorType: 1
+    value: 0.5
+    permanent: 0
+    duration: 0
+    timeLeft: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
   weaponType: 20
   useSelfAnim: 0
   attackLayer:
@@ -37,5 +78,5 @@ MonoBehaviour:
   maxTargets: 1
   repairCost: 1
   maxDurability: 100
-  durabilityUse: 0.4
+  durabilityUse: 0.2
   durabilityUsageType: 0

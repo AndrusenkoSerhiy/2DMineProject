@@ -16,6 +16,7 @@ namespace Scriptables.Items {
     [SerializeField] private float durabilityUse = 0.5f;
     [SerializeField] private DurabilityUsageType durabilityUsageType = DurabilityUsageType.OnHit;
     [Tooltip("When you need to use tool animation for attacking")]
+    public WeaponType WeaponType => weaponType;
     public LayerMask AttackLayer => attackLayer;
     public int AnimationAttackID => animationattackID;
     public Vector2 ColliderSize => colliderSize;

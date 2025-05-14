@@ -41,7 +41,7 @@ namespace Actors {
       }
     }
     
-    public virtual void Respawn() {
+    public override void Respawn() {
       base.Respawn();
       OnPlayerRespawn?.Invoke();
     }

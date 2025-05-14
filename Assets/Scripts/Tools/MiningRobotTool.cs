@@ -4,10 +4,14 @@ using Actors;
 using Animation;
 using Interaction;
 using Inventory;
+using NUnit.Framework.Constraints;
 using Player;
 using SaveSystem;
 using Scriptables.Repair;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace Tools {
   public class MiningRobotTool : MonoBehaviour, IInteractable, ISaveLoad {
@@ -23,7 +27,13 @@ namespace Tools {
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
     [SerializeField] private PlaceCellRobot placeCellRobot;
-
+    [SerializeField] private InteractionPrompt changeModePrompt;
+    [SerializeField] private string actionName;
+    [SerializeField] private string attackModeName;
+    [SerializeField] private string buildModeName;
+    private bool isAttackMode = true;
+    private string buttonName;
+    
     private bool isPlayerInside;
     private RobotData robotLoadData;
 
@@ -176,7 +186,6 @@ namespace Tools {
       playerController.SetLockHighlight(true);
       //playerController.ResetHeadPos();
       playerController.Stamina.EnableSprintScript(false);
-      placeCellRobot.Activate();
       miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
@@ -191,6 +200,34 @@ namespace Tools {
       AddRobotInventoryToMainInventory();
       playerInRobot = true;
       OnPlayerSitOnRobot?.Invoke();
+      
+      SubscribeToChangeMode();
+      buttonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.GamePlay.Build);
+      changeModePrompt.UpdateSpriteAsset();
+      UpdateModePrompt();
+    }
+
+    private void SubscribeToChangeMode() {
+      gameManager.UserInput.controls.GamePlay.Build.performed += ChangeMode;
+    }
+    
+    private void UnsubscribeToChangeMode() {
+      gameManager.UserInput.controls.GamePlay.Build.performed -= ChangeMode;
+    }
+
+    private void ChangeMode(InputAction.CallbackContext obj) {
+      isAttackMode = !isAttackMode;
+      miningRobotController.EnableAttack(isAttackMode); 
+      miningRobotController.SetMaxTargets(isAttackMode ? 6 : 0);
+      if (isAttackMode) placeCellRobot.Deactivate();
+      else placeCellRobot.Activate();
+      
+      UpdateModePrompt();
+    }
+
+    private void UpdateModePrompt() {
+      var nextMode = isAttackMode ? buildModeName : attackModeName;
+      changeModePrompt.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(actionName + " " +nextMode, buttonName));
     }
 
     private void ExitFromRobot() {
@@ -208,6 +245,8 @@ namespace Tools {
       miningRobotController.Stamina.EnableSprintScript(false);
       GameManager.Instance.CurrPlayerController = playerController;
       GameManager.Instance.QuickSlotListener.Activate();
+      UnsubscribeToChangeMode();
+      changeModePrompt.ShowPrompt(false);
 
       RemoveRobotInventoryFromMainInventory();
       playerInRobot = false;

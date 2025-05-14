@@ -21,13 +21,7 @@ namespace Player {
     protected LayerMask attackLayer;
     protected int attackID;
     protected int maxTargets;
-
     protected Vector2 colliderSize;
-    /*protected float timeBtwAttacks;
-    protected float blockDamage;
-    protected float entityDamage;
-    protected float attackRange;
-    protected float staminaUsage;*/
 
     private List<IDamageable> targets = new();
     private List<IDamageable> iDamageables = new();
@@ -79,6 +73,20 @@ namespace Player {
       }
 
       objectHighlighter.EnableCrosshair(!state);
+    }
+    //when we change minig mode to build
+    public void DownScaleAttackCollider(bool state) {
+      if (state) {
+        if (originalSize.Equals(Vector2.zero)) {
+          originalSize = attackCollider.size;
+        }
+        attackCollider.size = new Vector2(.2f, .2f);
+      }
+      else {
+        attackCollider.size = originalSize;
+      }
+
+      //bjectHighlighter.EnableCrosshair(!state);
     }
 
     protected virtual void PrepareAttackParams() {

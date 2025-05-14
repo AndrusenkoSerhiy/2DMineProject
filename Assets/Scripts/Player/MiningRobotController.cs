@@ -56,6 +56,15 @@ namespace Player {
       enabled = state;
     }
 
+    public void EnableAttack(bool state) {
+      miningRobotAttack.LockAttack(!state);
+    }
+    
+    public void SetMaxTargets(int value) {
+      miningRobotAttack.SetMaxTargets(value);
+      miningRobotAttack.DownScaleAttackCollider(value==0);
+    }
+
     private void ResetMovement() {
       _rb.linearVelocity = Vector2.zero;
       _frameVelocity = Vector2.zero;

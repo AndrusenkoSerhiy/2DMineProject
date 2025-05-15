@@ -149,8 +149,12 @@ namespace World {
       //Shake();
       var pos = transform.position;
       var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDamageEffect", pos, Quaternion.identity).gameObject;
-      ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
-      ps.startColor = resourceData.EffectColor;
+      var ps = psGo.GetComponent<ParticleSystem>();
+      //ps.startColor = resourceData.EffectColor;
+      if (ps != null) {
+        var main = ps.main;
+        main.startColor = new ParticleSystem.MinMaxGradient(resourceData.EffectColor);
+      }
     }
 
     private void Shake() {

@@ -62,7 +62,7 @@ namespace Player {
     
     public void SetMaxTargets(int value) {
       miningRobotAttack.SetMaxTargets(value);
-      miningRobotAttack.DownScaleAttackCollider(value==0);
+      miningRobotAttack.LockHighlight(value == 0, "ChangeMode",false);
     }
 
     private void ResetMovement() {

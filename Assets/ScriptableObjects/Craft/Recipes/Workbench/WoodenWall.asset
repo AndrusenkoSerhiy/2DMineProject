@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: WoodenWall
+  m_EditorClassIdentifier: 
+  id: 9a9834bf-ef1a-429b-9515-573348fcc7c6
+  RecipeName: Wooden Wall Block
+  RecipeTypes: 02000000
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    Amount: 1
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
+  Result: {fileID: 11400000, guid: 92694ccce88c35647a33b606d70f64e6, type: 2}
+  CraftingTime: 5
+  detailImg: {fileID: 21300000, guid: 55ed057efd344404080b14ed0a083569, type: 3}

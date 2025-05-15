@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8bc6611c57a4211b23b3959ff98e207, type: 3}
+  m_Name: StoneWallBlock
+  m_EditorClassIdentifier: 
+  id: c8ee967e-c7fc-42ab-a623-1af2dbd68e95
+  Type: 10
+  Name: Stone Wall Block
+  Weight: 0
+  ParentType: 0
+  UiDisplay: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 18f8cd42d85aafd4bbeab9833722bdd4, type: 3}
+  Stackable: 1
+  MaxStackSize: 50
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 0e4b0c2d1664ee34ab4adf9bba2c97d7, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: 
+  statModifiers: []
+  ResourceData: {fileID: 0}
+  BuildingData: {fileID: 11400000, guid: 04a533d54746ee6428333e6435320159, type: 2}

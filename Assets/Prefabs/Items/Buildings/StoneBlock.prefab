@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 2145118225
   m_SortingLayer: 4
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: a1179405da975474caa1d50cde691c7d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 8970744914050695227}
   - component: {fileID: 8850246011643032565}
   m_Layer: 3
-  m_Name: DirtBuildingBlock
+  m_Name: StoneBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -138,7 +138,7 @@ MonoBehaviour:
   count: 1
   interactName: 
   interactHeader: 
-  item: {fileID: 11400000, guid: a010f0923177be745be9c5bb738870d4, type: 2}
+  item: {fileID: 11400000, guid: c4186f33ab9ebdd4fbc48c6d99586791, type: 2}
   isPicked: 0
 --- !u!50 &8970744914050695227
 Rigidbody2D:

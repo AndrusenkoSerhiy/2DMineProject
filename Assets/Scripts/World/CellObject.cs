@@ -81,7 +81,6 @@ namespace World {
     public void Damage(float damage, bool isPlayer) {
       if (!_cellData.canTakeDamage)
         return;
-
       unitHealth.TakeDamage(damage, isPlayer);
       UpdateDamageOverlay(damage);
     }

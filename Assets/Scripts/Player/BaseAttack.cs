@@ -182,7 +182,8 @@ namespace Player {
       SetTargetsFromHighlight();
       foreach (var target in targets) {
         if (target == null || target.hasTakenDamage) continue;
-        target.Damage(PlayerStats.BlockDamage, true);
+        var damage = target.DamageableType == DamageableType.Enemy ? playerStats.EntityDamage : playerStats.BlockDamage;
+        target.Damage(damage, true);
         iDamageables.Add(target);
       }
 

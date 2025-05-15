@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: WoodenDoor
+  m_EditorClassIdentifier: 
+  id: 5bcd73ac-6eef-4f45-912f-ad0869372426
+  RecipeName: Wooden Door Block
+  RecipeTypes: 02000000
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    Amount: 2
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
+  Result: {fileID: 11400000, guid: 41269222f0377354398d165f88af6acb, type: 2}
+  CraftingTime: 20
+  detailImg: {fileID: 21300000, guid: 55bfcf5ede27add4fbc5ffa77d1d9e84, type: 3}

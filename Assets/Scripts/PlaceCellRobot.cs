@@ -14,22 +14,44 @@ public class PlaceCellRobot : MonoBehaviour {
   [SerializeField] private Coords robotCoordsOutOfBounds;
   [SerializeField] private Coords centerCoords;
   [SerializeField] private Coords leftUpCoords;
-  [SerializeField] private ResourceData resourceData;
   [SerializeField] private GameObject previewContainer;
   [SerializeField] private List<SpriteRenderer> previewList = new();
   [SerializeField] private Color blockColor;
   [SerializeField] private Color previewColor;
   [SerializeField] private int curPreview;
+  [SerializeField] private List<ResourceData> possibleResourceList;
+  [SerializeField] private int activeBlockIndex;
   private ChunkController chunkController;
+  
   private void Awake() {
     gameManager = GameManager.Instance;
     chunkController = gameManager.ChunkController;
+  }
+
+  private void Start() {
+    SetSpriteFromData();
   }
 
   private void Update() {
     robotCoordsOutOfBounds = robotCoords.GetCoordsOutOfBounds();
     UpdatePreviewPosition();
     previewContainer.transform.localScale = transform.localScale;
+  }
+
+  private void SetSpriteFromData() {
+    var newSprite = possibleResourceList[activeBlockIndex].Sprite(0);
+    for (int i = 0; i < previewList.Count; i++) {
+      previewList[i].sprite = newSprite;
+    }
+  }
+
+  public void UpdateBlockType() {
+    if (activeBlockIndex < possibleResourceList.Count - 1) {
+      activeBlockIndex++;
+    }else activeBlockIndex = 0;
+    //Debug.LogError($"activeBlockIndex {activeBlockIndex}");
+    SetSpriteFromData();
+    UpdatePreviewCount();
   }
   
   private void UpdatePreviewPosition() {
@@ -41,9 +63,13 @@ public class PlaceCellRobot : MonoBehaviour {
       Vector3.up, Color.green);*/
     FindLeftPoint();
     
+    var itemCount = gameManager.PlayerInventory.GetInventory().GetTotalCount(possibleResourceList[activeBlockIndex].ItemData.Id);
+    var ySize = Mathf.Min(2, itemCount - 3 <= 0 ? 1 : itemCount);
+    var xSize = Mathf.Min(3, itemCount - ySize <= 0 ? 1 : itemCount);
+    //Debug.LogError($"ySize {ySize} xSize {xSize}");
     curPreview = 0;
-    for (int i = leftUpCoords.X; i < leftUpCoords.X + 3; i++) {
-      for (int j = leftUpCoords.Y; j < leftUpCoords.Y + 2; j++) {
+    for (int j = leftUpCoords.Y; j < leftUpCoords.Y + ySize; j++) {
+      for (int i = leftUpCoords.X; i < leftUpCoords.X + xSize; i++) {
         SetPreviewColor(i, j);
       }
     }
@@ -52,7 +78,6 @@ public class PlaceCellRobot : MonoBehaviour {
   private void SetPreviewColor(int x, int y) {
     if (y < 0 || chunkController.ChunkData.GetCellFill(x, y) == 1 || !CheckRobotSize(x,y)) {
       previewList[curPreview].color = blockColor;
-      
       //Debug.DrawRay(CoordsTransformer.OutOfGridToWorls(x,y), Vector3.up, Color.red);
     }
     else {
@@ -70,19 +95,13 @@ public class PlaceCellRobot : MonoBehaviour {
   }
 
   private void TryPlaceCell(InputAction.CallbackContext obj) {
-    FillCells();
-  }
-
-  private void FillCells() {
-    for (int i = leftUpCoords.X; i < leftUpCoords.X + 3; i++) {
-      for (int j = leftUpCoords.Y; j < leftUpCoords.Y + 2; j++) {
-        if (CheckRobotSize(i, j)) {
-          Debug.DrawRay(CoordsTransformer.OutOfGridToWorls(i, j),
-            Vector3.up, Color.yellow, .5f);
-          PlaceBuildingBlock(i, j);
-        }
+    foreach (var sprite in previewList) {
+      if (sprite.gameObject.activeInHierarchy && sprite.color != blockColor) {
+        var coords = CoordsTransformer.MouseToGridPosition(sprite.transform.position);
+        PlaceBuildingBlock(coords.X, coords.Y);
       }
     }
+    UpdatePreviewCount();
   }
 
   private bool CheckRobotSize(int x, int y) {
@@ -108,9 +127,10 @@ public class PlaceCellRobot : MonoBehaviour {
     if(y < 0 || chunkController.ChunkData.GetCellFill(x, y) == 1)
       return;
     
-    var cell = chunkController.ChunkData.ForceCellFill(resourceData, x, y);
+    var cell = chunkController.ChunkData.ForceCellFill(possibleResourceList[activeBlockIndex], x, y);
     chunkController.AfterCellChanged(cell);
     chunkController.UpdateCellAround(x, y);
+    gameManager.PlayerInventory.InventoriesPool.RemoveFromInventoriesPool(possibleResourceList[activeBlockIndex].ItemData.Id, 1);
   }
 
   public void Activate() {
@@ -121,6 +141,22 @@ public class PlaceCellRobot : MonoBehaviour {
 
   private void ShowPreview(bool state) {
     previewContainer.SetActive(state);
+    UpdatePreviewCount();
+  }
+
+  //how many block we have and need to show
+  private void UpdatePreviewCount() {
+    var itemCount = gameManager.PlayerInventory.GetInventory()
+      .GetTotalCount(possibleResourceList[activeBlockIndex].ItemData.Id);
+
+    var count = Mathf.Min(previewList.Count, itemCount);
+    for (int i = 0; i < count; i++) {
+      previewList[i].gameObject.SetActive(true);
+    }
+
+    for (int i = count; i < previewList.Count; i++) {
+      previewList[i].gameObject.SetActive(false);
+    }
   }
 
   public void Deactivate() {

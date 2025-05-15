@@ -27,12 +27,17 @@ namespace Tools {
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
     [SerializeField] private PlaceCellRobot placeCellRobot;
+    
     [SerializeField] private InteractionPrompt changeModePrompt;
     [SerializeField] private string actionName;
     [SerializeField] private string attackModeName;
     [SerializeField] private string buildModeName;
+    
+    [SerializeField] private InteractionPrompt changeBlockTypePrompt;
+    [SerializeField] private string changeBlockActionName;
     private bool isAttackMode = true;
     private string buttonName;
+    private string changeBlockButtonName;
     
     private bool isPlayerInside;
     private RobotData robotLoadData;
@@ -205,6 +210,7 @@ namespace Tools {
       buttonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.GamePlay.Build);
       changeModePrompt.UpdateSpriteAsset();
       UpdateModePrompt();
+      ApplyMode();
     }
 
     private void SubscribeToChangeMode() {
@@ -214,6 +220,15 @@ namespace Tools {
     private void UnsubscribeToChangeMode() {
       gameManager.UserInput.controls.GamePlay.Build.performed -= ChangeMode;
     }
+    
+    private void SubscribeToChangeBlockType() {
+      gameManager.UserInput.controls.GamePlay.BlockChange.performed += ChangeBlockType;
+    }
+    
+    private void UnsubscribeToChangeBlockType() {
+      gameManager.UserInput.controls.GamePlay.BlockChange.performed -= ChangeBlockType;
+    }
+    
 
     private void ChangeMode(InputAction.CallbackContext obj) {
       isAttackMode = !isAttackMode;
@@ -224,10 +239,30 @@ namespace Tools {
       
       UpdateModePrompt();
     }
+    
+    //if we exit from robot and build mode
+    private void ApplyMode() {
+      miningRobotController.EnableAttack(isAttackMode); 
+      miningRobotController.SetMaxTargets(isAttackMode ? 6 : 0);
+      if (isAttackMode) placeCellRobot.Deactivate();
+      else placeCellRobot.Activate();
+      
+      UpdateModePrompt();
+    }
+    
+    private void ChangeBlockType(InputAction.CallbackContext obj) {
+      placeCellRobot.UpdateBlockType();
+    }
 
     private void UpdateModePrompt() {
       var nextMode = isAttackMode ? buildModeName : attackModeName;
       changeModePrompt.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(actionName + " " +nextMode, buttonName));
+      
+      //show hide prompt for change block type
+      changeBlockButtonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.GamePlay.BlockChange);
+      changeBlockTypePrompt.ShowPrompt(!isAttackMode, ButtonPromptSprite.GetFullPrompt(changeBlockActionName, changeBlockButtonName));
+      if(isAttackMode) UnsubscribeToChangeBlockType();
+      else SubscribeToChangeBlockType();
     }
 
     private void ExitFromRobot() {
@@ -247,6 +282,10 @@ namespace Tools {
       GameManager.Instance.QuickSlotListener.Activate();
       UnsubscribeToChangeMode();
       changeModePrompt.ShowPrompt(false);
+      
+      //hide prompt for change block type
+      changeBlockTypePrompt.ShowPrompt(false);
+      UnsubscribeToChangeBlockType();
 
       RemoveRobotInventoryFromMainInventory();
       playerInRobot = false;

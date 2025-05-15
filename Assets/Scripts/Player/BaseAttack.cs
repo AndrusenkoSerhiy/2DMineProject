@@ -80,7 +80,7 @@ namespace Player {
         if (originalSize.Equals(Vector2.zero)) {
           originalSize = attackCollider.size;
         }
-        attackCollider.size = new Vector2(.2f, .2f);
+        attackCollider.size = new Vector2(0f, 0f);
       }
       else {
         attackCollider.size = originalSize;

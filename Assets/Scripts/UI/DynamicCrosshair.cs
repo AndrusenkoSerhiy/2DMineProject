@@ -38,5 +38,7 @@ namespace UI {
       top.localPosition = baseTopPos + Vector3.up * dynamicRadius;
       bottom.localPosition = baseBottomPos + Vector3.down * dynamicRadius;
     }
+
+    public Vector3 GetCenter() => center.position;
   }
 }

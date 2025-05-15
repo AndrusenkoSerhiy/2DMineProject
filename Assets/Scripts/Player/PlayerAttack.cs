@@ -7,7 +7,9 @@ using UnityEngine;
 namespace Player {
   public class PlayerAttack : BaseAttack {
     [SerializeField] private AudioData audioData;
-    [SerializeField] protected PlayerEquipment playerEquipment;
+    // [SerializeField] protected PlayerEquipment playerEquipment;
+
+    private HandItem handItem;
 
     protected override void Awake() {
       base.Awake();
@@ -38,9 +40,13 @@ namespace Player {
 
       playerEquipment.EquippedItem.ApplyDurabilityLoss(isHit);
     }
-    
+
     protected override void RangeAttack() {
-      playerEquipment.EquippedItem.ApplyDurabilityLoss(false);
+      if (!handItem) {
+        return;
+      }
+
+      handItem.StartUse();
     }
 
     private void SetDefaultAttackParam() {
@@ -48,6 +54,10 @@ namespace Player {
     }
 
     protected override void TriggerAttack() {
+      if (isRangedAttack && playerEquipment.EquippedItem.ReloadNeeded()) {
+        return;
+      }
+
       base.TriggerAttack();
       if (!firstAttack) {
         firstAttack = true;
@@ -72,6 +82,7 @@ namespace Player {
       attackID = statsObject.attackID;
       colliderSize = statsObject.attackColliderSize;
       isRangedAttack = false;
+      handItem = null;
       SetDefaultAttackParam();
     }
 
@@ -85,25 +96,26 @@ namespace Player {
     }
 
     private void TryActivateTool() {
-      if (playerEquipment.ItemInHand == null)
+      if (!handItem) {
         return;
+      }
 
-      var tool = playerEquipment.ItemInHand.GetComponent<HandItem>();
-      tool?.Activate();
+      handItem.Activate();
     }
 
     private bool SetAttackParamsFromEquipment() {
-      if (playerEquipment == null) {
+      if (!playerEquipment) {
         Debug.LogWarning("Could not find Player Equipment", this);
         return false;
       }
 
-      if (playerEquipment.ItemInHand == null) {
+      if (!playerEquipment.ItemInHand) {
         Debug.LogWarning("Could not find equipped weapon", this);
         return false;
       }
 
-      var weaponStats = playerEquipment.ItemInHand.GetComponent<HandItem>().Item;
+      handItem = playerEquipment.ItemInHand.GetComponent<HandItem>();
+      var weaponStats = handItem.Item;
       if (!(weaponStats is IAttackableItem attackableItem)) {
         Debug.LogWarning("Equipped item is not attackable", this);
         return false;

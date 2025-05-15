@@ -38,7 +38,7 @@ namespace Player {
     [SerializeField] private Vector2 originalSize;
     private int lookDirection;
     private AnimatorParameters animParam;
-    private PlayerEquipment playerEquipment;
+    protected PlayerEquipment playerEquipment;
 
     protected PlayerStats playerStats;
     protected bool firstAttack;
@@ -50,10 +50,10 @@ namespace Player {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
       animParam = GameManager.Instance.AnimatorParameters;
+      playerEquipment = GameManager.Instance.PlayerEquipment;
     }
 
     protected virtual void Start() {
-      playerEquipment = GameManager.Instance.PlayerEquipment;
       attackTimeCounter = PlayerStats.TimeBtwAttacks;
       PrepareAttackParams();
       originalSize = attackCollider.size;

@@ -15,6 +15,8 @@ namespace World {
     [SerializeField] private ObjectHighlight highlight;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
+    
+    public DamageableType DamageableType { get; set; }
 
     public ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
@@ -38,6 +40,7 @@ namespace World {
     public CellData CellData => _cellData;
 
     public void Init(CellData cellData, ResourceData data) {
+      DamageableType = DamageableType.Cell;
       _cellData = cellData;
       resourceData = data;
       InitUnitHealth();

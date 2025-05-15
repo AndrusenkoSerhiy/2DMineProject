@@ -82,6 +82,7 @@ namespace Actors {
 
     protected override void Awake() {
       base.Awake();
+      DamageableType = DamageableType.Enemy;
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
     }

@@ -1,0 +1,97 @@
+﻿using UnityEngine;
+using World;
+
+namespace Tools {
+  public class Bullet : MonoBehaviour {
+    // [SerializeField] private Transform spriteTransform;
+    private Vector3 bulletDirection;
+    private float bulletSpeed;
+    private bool active;
+    private BulletsPool bulletsPool;
+    private GameManager gameManager;
+    private int cols;
+    private int rows;
+    private int visionOffsetX;
+    private int visionOffsetY;
+    private PlayerStats playerStats;
+
+    public void Awake() {
+      gameManager = GameManager.Instance;
+      playerStats = gameManager.PlayerController.PlayerStats;
+      cols = gameManager.GameConfig.ChunkSizeX;
+      rows = gameManager.GameConfig.ChunkSizeY;
+      visionOffsetX = gameManager.GameConfig.PlayerAreaWidth / 2;
+      visionOffsetY = gameManager.GameConfig.PlayerAreaHeight / 2;
+    }
+
+    public void Launch(Vector3 direction, float speed, BulletsPool pool) {
+      bulletDirection = direction;
+
+      bulletSpeed = speed;
+      bulletsPool = pool;
+      active = true;
+
+      transform.right = bulletDirection;
+      transform.SetParent(null);
+      gameObject.SetActive(true);
+      transform.localScale = Vector3.one;
+    }
+
+    private void Update() {
+      if (!active) {
+        return;
+      }
+
+      transform.position += bulletDirection * bulletSpeed * Time.deltaTime;
+
+      CheckArea();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+      if (!active) {
+        return;
+      }
+
+      if (!collision.TryGetComponent(out IDamageable target)) {
+        return;
+      }
+
+      if (target.DamageableType is DamageableType.Player or DamageableType.Robot) {
+        return;
+      }
+
+      if (target.GetHealth() <= 0) {
+        return;
+      }
+
+      var damage = target.DamageableType == DamageableType.Cell ? playerStats.BlockDamage : playerStats.EntityDamage;
+
+      target.Damage(damage, true);
+      if (target.GetHealth() <= 0) {
+        target.DestroyObject();
+      }
+
+      Deactivate();
+    }
+
+    private void CheckArea() {
+      var playerCoords = gameManager.PlayerController.PlayerCoords.GetCoords();
+
+      var min_x = Mathf.Clamp(playerCoords.X - visionOffsetX, 0, cols - 1);
+      var max_x = Mathf.Clamp(playerCoords.X + visionOffsetX, 0, cols - 1);
+      var min_y = Mathf.Clamp(playerCoords.Y - visionOffsetY, 0, rows - 1);
+      var max_y = Mathf.Clamp(playerCoords.Y + visionOffsetY, 0, rows - 1);
+
+      var pos = CoordsTransformer.WorldToGrid(transform.position);
+
+      if (pos.X < min_x || pos.X > max_x || pos.Y < min_y || pos.Y > max_y) {
+        Deactivate();
+      }
+    }
+
+    private void Deactivate() {
+      active = false;
+      bulletsPool.ReturnBullet(this);
+    }
+  }
+}

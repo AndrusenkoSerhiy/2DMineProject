@@ -142,6 +142,7 @@ namespace Inventory {
         return;
       }
 
+      equippedItem.OnAmmoUsed += OnAmmoUsedHandler;
       equippedItem.OnItemBroken += OnItemBrokenHandler;
       equippedItem.OnItemRepaired += OnItemRepairedHandler;
     }
@@ -151,8 +152,13 @@ namespace Inventory {
         return;
       }
 
+      equippedItem.OnAmmoUsed -= OnAmmoUsedHandler;
       equippedItem.OnItemBroken -= OnItemBrokenHandler;
       equippedItem.OnItemRepaired -= OnItemRepairedHandler;
+    }
+    
+    private void OnAmmoUsedHandler() {
+      throw new NotImplementedException();
     }
 
     private void OnItemBrokenHandler() {

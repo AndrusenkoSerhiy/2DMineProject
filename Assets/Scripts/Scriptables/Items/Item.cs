@@ -7,11 +7,13 @@ namespace Scriptables.Items {
   public class Item {
     [NonSerialized] private IDurableItem durableItemRef;
     [NonSerialized] private IRepairable repairableItemRef;
+    [NonSerialized] private IAttackableItem attackableItemRef;
     [SerializeField] private float durability;
     private bool hasDurability;
     private bool canBeRepaired;
     private float maxDurability;
     private bool isBroken;
+    private int ammoCount;
 
     [NonSerialized] public ItemObject info;
     public string id;
@@ -28,6 +30,7 @@ namespace Scriptables.Items {
     public event Action<float, float> OnDurabilityChanged;
     public event Action OnItemBroken;
     public event Action OnItemRepaired;
+    public event Action OnAmmoUsed;
 
     public Item() {
       info = null;
@@ -51,6 +54,11 @@ namespace Scriptables.Items {
         repairableItemRef = repairable;
         canBeRepaired = true;
       }
+
+      if (item is IAttackableItem attackable) {
+        attackableItemRef = attackable;
+        ammoCount = 0;
+      }
     }
 
     public bool isEmpty => info == null || string.IsNullOrEmpty(id);
@@ -72,6 +80,27 @@ namespace Scriptables.Items {
         repairableItemRef = repairable;
         canBeRepaired = true;
       }
+    }
+
+    public bool ReloadNeeded() {
+      if (attackableItemRef is not { WeaponType: WeaponType.Ranged }) {
+        return false;
+      }
+
+      return ammoCount <= 0;
+    }
+
+    public void Reload(int ammo) {
+      if (attackableItemRef is not { WeaponType: WeaponType.Ranged }) {
+        return;
+      }
+
+      ammoCount = Math.Max(attackableItemRef.MagazineSize, ammoCount + ammo);
+    }
+
+    public void ConsumeAmmo() {
+      ammoCount--;
+      OnAmmoUsed?.Invoke();
     }
 
     public bool DurabilityNotFull() {

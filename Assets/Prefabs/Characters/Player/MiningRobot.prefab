@@ -223,6 +223,8 @@ MonoBehaviour:
   actionName: Change mode to
   attackModeName: Attack
   buildModeName: Build
+  changeBlockTypePrompt: {fileID: 0}
+  changeBlockActionName: Change block type
 --- !u!1 &2501749561444626235
 GameObject:
   m_ObjectHideFlags: 0
@@ -1657,18 +1659,21 @@ MonoBehaviour:
   leftUpCoords:
     X: 0
     Y: 0
-  resourceData: {fileID: 11400000, guid: 0e1d357d10e34094fb8f72fa3e5fc3a0, type: 2}
   previewContainer: {fileID: 355988195078625932}
   previewList:
   - {fileID: 585256264768937871}
-  - {fileID: 6233070653649345963}
   - {fileID: 497605271308866915}
-  - {fileID: 2876382355251775986}
   - {fileID: 1987102656627655442}
+  - {fileID: 6233070653649345963}
+  - {fileID: 2876382355251775986}
   - {fileID: 2770673108468262618}
   blockColor: {r: 1, g: 0, b: 0, a: 0.78431374}
   previewColor: {r: 0.07450981, g: 0.14901961, b: 0.94509804, a: 0.78431374}
   curPreview: 0
+  possibleResourceList:
+  - {fileID: 11400000, guid: 0e1d357d10e34094fb8f72fa3e5fc3a0, type: 2}
+  - {fileID: 11400000, guid: 0f260c90e6150a14f9f6eb29ba1105f4, type: 2}
+  activeBlockIndex: 0
 --- !u!1 &8974371386463895364
 GameObject:
   m_ObjectHideFlags: 0

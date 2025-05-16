@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 85f97bb503722b74aa3e33902ad67f63
+guid: 55ed057efd344404080b14ed0a083569
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3554510448682031857
-    second: WoodenBed_0
+      213: -2901894954321020095
+    second: WoodenWall_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WoodenBed_0
+      name: WoodenWall_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 346
-        height: 126
+        x: 42
+        y: 46
+        width: 348
+        height: 347
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f05a4eb5497dbaec0800000000000000
-      internalID: -3554510448682031857
+      spriteID: 14b7238f9e56ab7d0800000000000000
+      internalID: -2901894954321020095
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      WoodenBed_0: -3554510448682031857
+      WoodenWall_0: -2901894954321020095
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

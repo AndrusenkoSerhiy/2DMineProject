@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: ResourceDataLibrary
   m_EditorClassIdentifier: 
   Resources:
+  - Data: {fileID: 11400000, guid: ad9b6a20c1cd9a94398575b04c9646a0, type: 2}
+    PerlinRange: {x: -3, y: -3}
   - Data: {fileID: 11400000, guid: 9f55e919ae4b472479060eeec79f9fdc, type: 2}
     PerlinRange: {x: -2, y: -2}
   - Data: {fileID: 11400000, guid: 7ef307feef49e384db3844248a66a7ad, type: 2}

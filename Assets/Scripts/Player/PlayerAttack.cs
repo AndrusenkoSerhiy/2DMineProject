@@ -83,6 +83,7 @@ namespace Player {
       colliderSize = statsObject.attackColliderSize;
       isRangedAttack = false;
       handItem = null;
+      objectHighlighter.ChangeCrosshair(isRangedAttack);
       SetDefaultAttackParam();
     }
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Scriptables.Items;
+using UnityEngine;
 using World;
 
 namespace Tools {
@@ -13,6 +14,9 @@ namespace Tools {
     private int visionOffsetX;
     private int visionOffsetY;
     private PlayerStats playerStats;
+    private string id;
+
+    public string Id => id;
 
     public void Awake() {
       gameManager = GameManager.Instance;
@@ -23,10 +27,11 @@ namespace Tools {
       visionOffsetY = gameManager.GameConfig.PlayerAreaHeight / 2;
     }
 
-    public void Launch(Vector3 direction, float speed, BulletsPool pool) {
+    public void Launch(Vector3 direction, Tool tool, BulletsPool pool) {
       bulletDirection = direction;
 
-      bulletSpeed = speed;
+      id = tool.ammo.Id;
+      bulletSpeed = tool.AmmoSpeed;
       bulletsPool = pool;
       active = true;
 

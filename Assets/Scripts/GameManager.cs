@@ -24,6 +24,7 @@ using Scriptables.DropZombieData;
 using Settings;
 using Siege;
 using Stats;
+using Tools;
 using UI;
 using UnityEngine.Serialization;
 using Utility;
@@ -71,6 +72,7 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   [SerializeField] private ActorsPooler actorsPooler;
   [SerializeField] private DynamicCrosshair dynamicCrosshair;
+  [SerializeField] private BulletsPool bulletsPool;
 
   //TODO 
   //robot don't need this param in own script
@@ -132,6 +134,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public GameStage GameStage => gameStage;
   public ActorsPooler ActorsPooler => actorsPooler;
   public DynamicCrosshair DynamicCrosshair => dynamicCrosshair;
+  public BulletsPool BulletsPool => bulletsPool;
 
   public PlayerController PlayerController {
     set => playerController = value;

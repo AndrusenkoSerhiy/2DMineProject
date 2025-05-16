@@ -4,9 +4,7 @@ using Animation;
 using Inventory;
 using Scriptables;
 using Scriptables.Stats;
-using UnityEditor.Build;
 using UnityEngine;
-using World;
 
 namespace Player {
   public class BaseAttack : MonoBehaviour {

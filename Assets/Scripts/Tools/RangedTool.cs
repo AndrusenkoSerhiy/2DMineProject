@@ -5,17 +5,18 @@ using UnityEngine;
 
 namespace Tools {
   public class RangedTool : HandItem {
-    [SerializeField] private BulletsPool bulletsPool;
     [SerializeField] private Transform firePoint;
 
     private PlayerEquipment playerEquipment;
     private DynamicCrosshair crosshair;
     private Tool tool;
+    private BulletsPool bulletsPool;
 
     private void Awake() {
       playerEquipment = GameManager.Instance.PlayerEquipment;
       crosshair = GameManager.Instance.DynamicCrosshair;
       tool = (Tool)Item;
+      bulletsPool = GameManager.Instance.BulletsPool;
     }
 
     public override void StartUse() {
@@ -24,12 +25,12 @@ namespace Tools {
       }
 
       var firePos = firePoint.position;
-      var bullet = bulletsPool.GetBullet();
+      var bullet = bulletsPool.GetBullet(tool.ammo.Id);
       bullet.transform.position = firePos;
 
       var shootDirection = (crosshair.GetCenter() - firePos).normalized;
 
-      bullet.Launch(shootDirection, tool.AmmoSpeed, bulletsPool);
+      bullet.Launch(shootDirection, tool, bulletsPool);
       playerEquipment.ConsumeAmmo();
     }
   }

@@ -1,3 +1,4 @@
+using Actors;
 using UnityEngine;
 
 namespace Player {
@@ -13,6 +14,19 @@ namespace Player {
       _ladderMovement = GameManager.Instance.PlayerLadderMovement;
     }
 
+    protected override void FixedUpdate() {
+      CheckCollisions();
+      HandleGravity();
+      
+      //if player exit from robot but under the cells
+      if (GameManager.Instance.CurrPlayerController.Actor is ActorPlayer)
+        return;
+      
+      HandleJump();
+      HandleDirection();
+      ApplyMovement();
+    }
+
     protected override void LookAtMouse() {
       if (lockPlayer) {
         return;
@@ -26,6 +40,9 @@ namespace Player {
     }
 
     protected override void FlipX() {
+      if (GameManager.Instance.CurrPlayerController.Actor is ActorPlayer)
+        return;
+      
       Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
       var direction = (mousePosition - (Vector2)transform.position).normalized;
 

@@ -123,20 +123,7 @@ namespace Player {
       FlipX();
     }
 
-    protected virtual void FlipX() {
-      /*Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
-      var direction = (mousePosition - (Vector2)transform.position).normalized;
-
-      if (Mathf.Abs(mousePosition.x - transform.position.x) > _flipDeadZone) {
-        // Flip player
-        Vector3 localScale = transform.localScale;
-        localScale.x = Mathf.Sign(direction.x);
-        transform.localScale = localScale;
-
-        rotationCoef = isFlipped ? -1f : 1f;
-        direction.x *= rotationCoef;
-      }*/
-    }
+    protected virtual void FlipX() { }
 
     private void GatherInput() {
       _frameInput = new FrameInput {
@@ -162,7 +149,7 @@ namespace Player {
       }
     }
 
-    private void FixedUpdate() {
+    protected virtual void FixedUpdate() {
       CheckCollisions();
 
       HandleJump();
@@ -174,7 +161,7 @@ namespace Player {
 
     #region Collisions
 
-    private void CheckCollisions() {
+    protected void CheckCollisions() {
       Physics2D.queriesStartInColliders = false;
 
       // Ground and Ceiling
@@ -235,7 +222,7 @@ namespace Player {
     private bool CanUseCoyote =>
       _coyoteUsable && !grounded && time < _frameLeftGrounded + PlayerStats.StatsObject.coyoteTime;
 
-    private void HandleJump() {
+    protected void HandleJump() {
       if (actor != null && actor.IsDead) {
         return;
       }
@@ -285,7 +272,7 @@ namespace Player {
 
     #region Horizontal
 
-    private void HandleDirection() {
+    protected void HandleDirection() {
       if (_frameInput.Move.x == 0) {
         //if we are on the ladder need to calculate deceleration like on ground
         var deceleration = grounded || _ladderMovement.IsOnLadder
@@ -358,7 +345,7 @@ namespace Player {
 
     #region Gravity
 
-    private void HandleGravity() {
+    protected void HandleGravity() {
       if (grounded && _frameVelocity.y <= 0f) {
         _frameVelocity.y = PlayerStats.StatsObject.groundingForce;
       }
@@ -391,7 +378,7 @@ namespace Player {
 
     #endregion
 
-    private void ApplyMovement() {
+    protected void ApplyMovement() {
       if (!_ladderMovement.IsClimbing) _rb.linearVelocity = _frameVelocity;
     }
     

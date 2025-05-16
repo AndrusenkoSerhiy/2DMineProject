@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 11d92d6b-41cc-4f6c-b8c8-b77f8ae0af72
   Type: 10
   Name: Workbench
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: a9d7290621ed08a4a8137b00b48edad3, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -25,6 +26,7 @@ MonoBehaviour:
   spawnPrefab: {fileID: 7576532664203053056, guid: 5fe3e4a4c9e9f314aa1db32aef4d2542, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 0
-  Description: 
+  Description: Workplace
+  statModifiers: []
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: a357dd1d6b6817c489374977e466d13b, type: 2}

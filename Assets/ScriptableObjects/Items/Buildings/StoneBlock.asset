@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 653911b1-f340-4955-82c4-96d26af2f2c1
   Type: 10
   Name: Stone block
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 9a6e018b4d944164c86f34e5d21e3905, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 5f54c42773ad3d44693014ab6605598a, type: 3}
@@ -25,5 +26,7 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3890226224433729309, guid: 5d26b41645e96f24981cc2365b513a70, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: 
+  Description: Building block
+  statModifiers: []
   ResourceData: {fileID: 11400000, guid: 0f260c90e6150a14f9f6eb29ba1105f4, type: 2}
+  BuildingData: {fileID: 0}

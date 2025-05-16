@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 2ddbb327-b646-4583-b8f0-31a9e3bbca6f
   Type: 1
   Name: Baked Worms
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 71d481d93ac62db4cadc55e055bc4730, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -25,7 +26,7 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3890226224433729309, guid: 332ca2a28cdf1164fb95a4159c926695, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: 
+  Description: Food
   statModifiers:
   - type: 2
     applyType: 1
@@ -33,6 +34,7 @@ MonoBehaviour:
     value: 20
     permanent: 0
     duration: 30
+    timeLeft: 0
     canApplyWhenPreviousAt: 20
     removePrevious: 5
     modifierDisplayObject: {fileID: 11400000, guid: 35ea8439f87facd47992d91c251e335a, type: 2}
@@ -42,6 +44,7 @@ MonoBehaviour:
     value: 20
     permanent: 1
     duration: 0
+    timeLeft: 0
     canApplyWhenPreviousAt: 20
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}

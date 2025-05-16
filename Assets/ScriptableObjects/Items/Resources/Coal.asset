@@ -15,6 +15,7 @@ MonoBehaviour:
   id: b86ffa60-fb4f-4492-80a1-8759a168162f
   Type: 0
   Name: Coal
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: c9979c7a27e4af94b9964514e0bc3891, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -23,5 +24,7 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: 30dfd7e1f61768a46a755515684c18e5, type: 3}
-  Description: 
-  bonusResources: []
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: Fuel
+  statModifiers: []

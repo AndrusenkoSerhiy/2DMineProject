@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 33e027b8-24bc-46b8-8048-e657bc2f39fc
   Type: 10
   Name: Dirt block
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 30318ec9f694aa741887f289232caeb4, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 629814632db31854cb736a6081af2393, type: 3}
@@ -25,5 +26,7 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3890226224433729309, guid: 7e59faa35c36db8408057d7af07b26de, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: 
+  Description: Building block
+  statModifiers: []
   ResourceData: {fileID: 11400000, guid: 0e1d357d10e34094fb8f72fa3e5fc3a0, type: 2}
+  BuildingData: {fileID: 0}

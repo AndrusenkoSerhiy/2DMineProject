@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 0e9e1e01-01f0-4170-935e-365e0d7702eb
   Type: 0
   Name: Iron Ingot
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: c6162666c4f90fa45bb9c412f0ba579c, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -23,5 +24,7 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: fc6a57c8b1809d5459f3ce4fe754d37e, type: 3}
-  Description: 
-  bonusResources: []
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: Crafting material
+  statModifiers: []

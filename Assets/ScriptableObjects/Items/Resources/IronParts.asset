@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 00eb9c97-48c6-4d62-849b-f6b3137e2448
   Type: 0
   Name: IronParts
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 5759459b0bb891e49b00d788a9c86888, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -23,5 +24,7 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: bfc40d065e88b7c4687aaa32382555de, type: 3}
-  Description: 
-  bonusResources: []
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: Crafting material
+  statModifiers: []

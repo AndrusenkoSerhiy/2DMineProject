@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
-  m_Name: DirtBuildingBlock
+  m_Name: WoodenBlock
   m_EditorClassIdentifier: 
-  id: b95ff29e-2940-47f4-b4a2-a222e232306b
-  RecipeName: Dirt Block
-  RecipeTypes: 0000000002000000
+  id: 4873991a-0845-43a2-a296-8730385abdb4
+  RecipeName: Wooden Block
+  RecipeTypes: 02000000
   RequiredMaterials:
-  - Material: {fileID: 11400000, guid: 154e8ba0ea2911e40a9cf1f243c3d7ad, type: 2}
+  - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 1
   Fuel:
     Material: {fileID: 0}
     Amount: 0
-  Result: {fileID: 11400000, guid: a010f0923177be745be9c5bb738870d4, type: 2}
-  CraftingTime: 3
-  detailImg: {fileID: 21300000, guid: 30318ec9f694aa741887f289232caeb4, type: 3}
+  Result: {fileID: 11400000, guid: a9a85060a984f6a41bdcf12af8a1022a, type: 2}
+  CraftingTime: 5
+  detailImg: {fileID: 21300000, guid: 55ed057efd344404080b14ed0a083569, type: 3}

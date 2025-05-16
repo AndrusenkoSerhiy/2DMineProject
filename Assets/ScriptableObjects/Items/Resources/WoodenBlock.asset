@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
-  m_Name: IronIngot
+  m_Name: WoodenBlock
   m_EditorClassIdentifier: 
-  id: 0e9e1e01-01f0-4170-935e-365e0d7702eb
+  id: f60bf5f2-85a7-493e-952d-ae587e1382cf
   Type: 0
-  Name: Iron Ingot
+  Name: Wooden Block
   Weight: 0
   ParentType: 0
-  UiDisplay: {fileID: 21300000, guid: c6162666c4f90fa45bb9c412f0ba579c, type: 3}
+  UiDisplay: {fileID: 21300000, guid: 55ed057efd344404080b14ed0a083569, type: 3}
   CharacterDisplay: {fileID: 0}
   Stackable: 1
-  MaxStackSize: 30
+  MaxStackSize: 999
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
-  spawnPrefab: {fileID: 3890226224433729309, guid: fc6a57c8b1809d5459f3ce4fe754d37e, type: 3}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 421981164974049429f6880468e84e67, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: Crafting material
+  Description: Mid durability block
   statModifiers: []

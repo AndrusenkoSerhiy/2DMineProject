@@ -15,6 +15,7 @@ MonoBehaviour:
   id: e4917a4d-b164-4079-b14b-ad16d584f06b
   Type: 10
   Name: Food station
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 5fd9131fe28a7b042818fc77bc5abc00, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -25,6 +26,7 @@ MonoBehaviour:
   spawnPrefab: {fileID: 4470986188835931539, guid: 16dd6a71927901e43a01f3a7ca8a513c, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 0
-  Description: 
+  Description: Workplace
+  statModifiers: []
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: 5e8f7d7929b320f4a95748b3cb37573b, type: 2}

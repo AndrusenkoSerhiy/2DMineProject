@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 8c5d5d7d-ba43-4f93-a844-cb0f17647855
   Type: 0
   Name: Building Stone
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 49fdcd3e518f1a441a9f492fbde9f998, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -23,5 +24,7 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: 7811ce4e6ea36554db5298aa6fb823ac, type: 3}
-  Description: 
-  bonusResources: []
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: Crafting material
+  statModifiers: []

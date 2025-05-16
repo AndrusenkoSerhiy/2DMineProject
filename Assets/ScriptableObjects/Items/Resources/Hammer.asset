@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 6084d3f8-7b50-4fe8-b1e4-fae015c21f56
   Type: 0
   Name: Hammer
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 374bd6de492514a42afb01b6a73cc87e, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -25,5 +26,5 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3890226224433729309, guid: 3dd089e7c5f9b3443a698fbcce1e401c, type: 3}
   CanMoveToAnotherInventory: 0
   CanDrop: 0
-  Description: 
-  bonusResources: []
+  Description: Stonecutter main item
+  statModifiers: []

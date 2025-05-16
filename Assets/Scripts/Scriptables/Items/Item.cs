@@ -9,11 +9,11 @@ namespace Scriptables.Items {
     [NonSerialized] private IRepairable repairableItemRef;
     [NonSerialized] private IAttackableItem attackableItemRef;
     [SerializeField] private float durability;
+    [SerializeField] private int ammoCount;
     private bool hasDurability;
     private bool canBeRepaired;
     private float maxDurability;
     private bool isBroken;
-    private int ammoCount;
 
     [NonSerialized] public ItemObject info;
     public string id;
@@ -26,6 +26,8 @@ namespace Scriptables.Items {
     public bool IsBroken => isBroken;
     public bool CanBeRepaired => canBeRepaired && DurabilityNotFull();
     public int RepairCost => repairableItemRef?.RepairCost ?? 0;
+    public int CurrentAmmoCount => ammoCount;
+    public int MagazineSize => attackableItemRef?.MagazineSize ?? 0;
 
     public event Action<float, float> OnDurabilityChanged;
     public event Action OnItemBroken;
@@ -80,6 +82,18 @@ namespace Scriptables.Items {
         repairableItemRef = repairable;
         canBeRepaired = true;
       }
+      
+      if (info is IAttackableItem attackable) {
+        attackableItemRef = attackable;
+      }
+    }
+
+    public bool CanShoot() {
+      if (attackableItemRef is not { WeaponType: WeaponType.Ranged } || isBroken) {
+        return false;
+      }
+
+      return ammoCount > 0;
     }
 
     public bool ReloadNeeded() {
@@ -87,7 +101,7 @@ namespace Scriptables.Items {
         return false;
       }
 
-      return ammoCount <= 0;
+      return ammoCount < attackableItemRef.MagazineSize;
     }
 
     public void Reload(int ammo) {
@@ -95,7 +109,11 @@ namespace Scriptables.Items {
         return;
       }
 
-      ammoCount = Math.Max(attackableItemRef.MagazineSize, ammoCount + ammo);
+      ammoCount = Math.Min(attackableItemRef.MagazineSize, ammoCount + ammo);
+    }
+
+    public ItemObject GetAmmoItemObject() {
+      return attackableItemRef is not { WeaponType: WeaponType.Ranged } ? null : attackableItemRef.Ammo;
     }
 
     public void ConsumeAmmo() {

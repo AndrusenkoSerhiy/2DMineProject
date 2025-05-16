@@ -18,6 +18,8 @@ namespace UI {
     private Vector3 baseTopPos;
     private Vector3 baseBottomPos;
 
+    private float currentDynamicRadius;
+
     private void Start() {
       playerController = GameManager.Instance.PlayerController;
       playerStats = playerController.PlayerStats;
@@ -31,14 +33,24 @@ namespace UI {
     private void Update() {
       var speed = Mathf.Min(playerController.GetVelocity().magnitude, playerStats.MaxSpeed);
       var t = Mathf.Clamp01(speed / playerStats.MaxSpeed);
-      var dynamicRadius = t * maxDynamicRadius;
+      currentDynamicRadius = t * maxDynamicRadius;
 
-      left.localPosition = baseLeftPos + Vector3.left * dynamicRadius;
-      right.localPosition = baseRightPos + Vector3.right * dynamicRadius;
-      top.localPosition = baseTopPos + Vector3.up * dynamicRadius;
-      bottom.localPosition = baseBottomPos + Vector3.down * dynamicRadius;
+      left.localPosition = baseLeftPos + Vector3.left * currentDynamicRadius;
+      right.localPosition = baseRightPos + Vector3.right * currentDynamicRadius;
+      top.localPosition = baseTopPos + Vector3.up * currentDynamicRadius;
+      bottom.localPosition = baseBottomPos + Vector3.down * currentDynamicRadius;
     }
 
-    public Vector3 GetCenter() => center.position;
+    public Vector3 GetCenter() {
+      if (currentDynamicRadius <= 0.001f) {
+        return center.position;
+      }
+
+      var randomOffset = Random.insideUnitCircle * currentDynamicRadius;
+      var offset3D = new Vector3(randomOffset.x, randomOffset.y, 0f);
+      var pos = center.position + center.TransformDirection(offset3D);
+
+      return pos;
+    }
   }
 }

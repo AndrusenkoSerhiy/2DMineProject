@@ -19,7 +19,7 @@ namespace Tools {
     }
 
     public override void StartUse() {
-      if (playerEquipment.EquippedItem.IsBroken || playerEquipment.EquippedItem.ReloadNeeded()) {
+      if (!playerEquipment.EquippedItem.CanShoot()) {
         return;
       }
 
@@ -30,9 +30,7 @@ namespace Tools {
       var shootDirection = (crosshair.GetCenter() - firePos).normalized;
 
       bullet.Launch(shootDirection, tool.AmmoSpeed, bulletsPool);
-
-      playerEquipment.EquippedItem.ApplyDurabilityLoss(false);
-      playerEquipment.EquippedItem.ConsumeAmmo();
+      playerEquipment.ConsumeAmmo();
     }
   }
 }

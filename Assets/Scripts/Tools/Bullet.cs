@@ -3,7 +3,6 @@ using World;
 
 namespace Tools {
   public class Bullet : MonoBehaviour {
-    // [SerializeField] private Transform spriteTransform;
     private Vector3 bulletDirection;
     private float bulletSpeed;
     private bool active;

@@ -54,7 +54,7 @@ namespace Player {
     }
 
     protected override void TriggerAttack() {
-      if (isRangedAttack && playerEquipment.EquippedItem.ReloadNeeded()) {
+      if (isRangedAttack && !playerEquipment.EquippedItem.CanShoot()) {
         return;
       }
 

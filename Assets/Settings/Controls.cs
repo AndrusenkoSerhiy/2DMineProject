@@ -609,6 +609,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""1fbd4470-bd97-4e17-bf5d-ee9f96d4f0db"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1172,6 +1181,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Respawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""952f6d86-c8f4-4ce4-9e13-8202fa279bee"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1487,6 +1507,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_UI_Ctrl = m_UI.FindAction("Ctrl", throwIfNotFound: true);
         m_UI_HandCraft = m_UI.FindAction("HandCraft", throwIfNotFound: true);
         m_UI_Respawn = m_UI.FindAction("Respawn", throwIfNotFound: true);
+        m_UI_Reload = m_UI.FindAction("Reload", throwIfNotFound: true);
         // InputType
         m_InputType = asset.FindActionMap("InputType", throwIfNotFound: true);
         m_InputType_Keyboard = m_InputType.FindAction("Keyboard", throwIfNotFound: true);
@@ -1773,6 +1794,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Ctrl;
     private readonly InputAction m_UI_HandCraft;
     private readonly InputAction m_UI_Respawn;
+    private readonly InputAction m_UI_Reload;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -1849,6 +1871,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Respawn => m_Wrapper.m_UI_Respawn;
         /// <summary>
+        /// Provides access to the underlying input action "UI/Reload".
+        /// </summary>
+        public InputAction @Reload => m_Wrapper.m_UI_Reload;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -1922,6 +1948,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Respawn.started += instance.OnRespawn;
             @Respawn.performed += instance.OnRespawn;
             @Respawn.canceled += instance.OnRespawn;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
         }
 
         /// <summary>
@@ -1981,6 +2010,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Respawn.started -= instance.OnRespawn;
             @Respawn.performed -= instance.OnRespawn;
             @Respawn.canceled -= instance.OnRespawn;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
         }
 
         /// <summary>
@@ -2337,6 +2369,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRespawn(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Reload" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReload(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "InputType" which allows adding and removing callbacks.

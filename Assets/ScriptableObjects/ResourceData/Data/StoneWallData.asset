@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23419512bd349d18debac7d35c1f6fe, type: 3}
+  m_Name: StoneWallData
+  m_EditorClassIdentifier: 
+  Durability: 100
+  DropCount: 10
+  tileDatas:
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: dd5543a0e8de112488a50a06d81d5c67, type: 3}
+    offsetSorting: 0
+  sortingOrder: 1
+  itemData: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
+  mapColor: {r: 0.49019608, g: 0.49019608, b: 0.49019608, a: 1}
+  effectColor: {r: 0.8037735, g: 0.58139396, b: 0.4716482, a: 1}
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 3.44, y: 3.44}
+  cellSize: {x: 1, y: 1}
+  bonusResources: []
+  debug: 0

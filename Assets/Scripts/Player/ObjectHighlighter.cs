@@ -16,16 +16,12 @@ namespace Player {
     public List<ObjectHighlight> Highlights => highlights;
     private GameObject currentCrosshair;
 
-    private void Awake() {
-      currentCrosshair = defaultCrosshair;
-    }
-
     public void SetMaxHighlights(int highlightCount) {
       maxHighlights = highlightCount;
     }
 
     public void EnableCrosshair(bool state) {
-      currentCrosshair.SetActive(state);
+      GetCurrentCrosshair().SetActive(state);
       // spriteRenderer.enabled = state;
     }
 
@@ -37,7 +33,8 @@ namespace Player {
       var newCrosshair = isRange ? rangeCrosshair : defaultCrosshair;
       var oldCrosshair = isRange ? defaultCrosshair : rangeCrosshair;
 
-      var shouldBeActive = currentCrosshair && currentCrosshair.activeSelf;
+      var curr = GetCurrentCrosshair();
+      var shouldBeActive = curr && curr.activeSelf;
 
       newCrosshair.SetActive(shouldBeActive);
       oldCrosshair.SetActive(false);
@@ -74,6 +71,14 @@ namespace Player {
       if (highlight && possibleHighlights.Contains(highlight)) {
         possibleHighlights.Remove(highlight);
       }
+    }
+
+    private GameObject GetCurrentCrosshair() {
+      if (!currentCrosshair) {
+        currentCrosshair = defaultCrosshair;
+      }
+
+      return currentCrosshair;
     }
 
     //when we enter in collider but not leave last

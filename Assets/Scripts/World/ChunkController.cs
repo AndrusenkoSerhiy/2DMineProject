@@ -19,6 +19,7 @@ namespace World {
     [SerializeField] private POIDataLibrary _poiDataLibrary;
     public POIDataLibrary POIDataLibrary => _poiDataLibrary;
 
+    public event Action OnCreateChunk;
     //ChunkInfo
     [SerializeField] private ChunkGenerator _chunkGenerator;
     private Dictionary<Coords, CellObject> _activeCellObjects = new();
@@ -326,6 +327,7 @@ namespace World {
       //POI
       GeneratePOI(chunkData);
       SpawnChunk(0, 0);
+      OnCreateChunk?.Invoke();
     }
 
     private void GeneratePOI(ChunkData chunkData) {

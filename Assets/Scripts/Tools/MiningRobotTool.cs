@@ -97,6 +97,11 @@ namespace Tools {
       }
       chunkController = gameManager.ChunkController;
       robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
+      chunkController.OnCreateChunk += LockOnStart;
+    }
+
+    private void LockOnStart() {
+      chunkController.OnCreateChunk -= LockOnStart;
       LockCells(true);
     }
 
@@ -317,12 +322,6 @@ namespace Tools {
       var firstX = robotCoordsOutOfBounds.X;
       var firstY = robotCoordsOutOfBounds.Y + 1;
       
-      /*var secondX = robotCoordsOutOfBounds.X + 1;
-      var secondY = robotCoordsOutOfBounds.Y + 1;
-      */
-      //Debug.LogError($"lock cells {state}");
-      //Debug.DrawRay(CoordsTransformer.GridToWorld(firstX, firstY), Vector3.up, Color.green, 10);
-      //Debug.DrawRay(CoordsTransformer.GridToWorld(secondX, secondY), Vector3.up, Color.green, 10);
       if (chunkController.ChunkData.GetCellFill(firstX, firstY).Equals(1)){
         if (state && chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage) {
           chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage = false;
@@ -332,13 +331,6 @@ namespace Tools {
           chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage = true;
         } 
       } 
-      /*if (state && chunkController.ChunkData.GetCellData(secondX, secondY).canTakeDamage) {
-        chunkController.ChunkData.GetCellData(secondX, secondY).canTakeDamage = false;
-        lockedCells[1] = 1;
-      }else if (!state && lockedCells[1] == 1) {
-        lockedCells[1] = 0;
-        chunkController.ChunkData.GetCellData(secondX, secondY).canTakeDamage = true;
-      } */
     }
     private void EnablePhysics(bool state) {
       //Debug.LogError($"EnablePhysics {state}");

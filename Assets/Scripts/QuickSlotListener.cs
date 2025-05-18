@@ -81,7 +81,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     selectedSlot = slots[selectedSlotIndex];
     SetSelectedItem(obj.after.Item);
     GetConsumer().SetActiveSlot(selectedSlot);
-    Debug.LogError($"TryActivateItem {selectedSlotIndex} | {selectedItem.name}");
+    //Debug.LogError($"TryActivateItem {selectedSlotIndex} | {selectedItem.name}");
   }
 
   private void Start() {

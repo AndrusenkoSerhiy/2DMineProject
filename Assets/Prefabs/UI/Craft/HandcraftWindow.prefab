@@ -1497,7 +1497,7 @@ MonoBehaviour:
   preventSwapIn: 0
   preventMergeIn: 0
   preventSplit: 0
-  showTooltips: 0
+  showTooltips: 1
   slotsPrefabs:
   - {fileID: 4728635485595119860}
   - {fileID: 6240637491617898994}
@@ -3959,6 +3959,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipesListContainerPrefab: {fileID: 8346122426881139670}
   recipesListItemPrefab: {fileID: 8862667669179626970, guid: 3eadabc3b212f604e975aa2ec4402149, type: 3}
+  scrollRect: {fileID: 125425441576120620}
 --- !u!1 &6941965885571178041
 GameObject:
   m_ObjectHideFlags: 0

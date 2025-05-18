@@ -163,9 +163,7 @@ namespace Craft {
     private void AddInventoryPoolEvents() {
       foreach (var inventory in inventoriesPool.Inventories) {
         foreach (var slot in inventory.Slots) {
-          slot.OnAfterItemAdd += OnAfterAmountChangedHandler;
-          slot.OnAfterItemRemoved += OnAfterAmountChangedHandler;
-          slot.OnAfterAmountChanged += OnAfterAmountChangedHandler;
+          slot.OnAfterUpdated += OnAfterUpdatedHandler;
         }
       }
     }
@@ -173,16 +171,13 @@ namespace Craft {
     private void RemoveInventoryPoolEvents() {
       foreach (var inventory in inventoriesPool.Inventories) {
         foreach (var slot in inventory.Slots) {
-          slot.OnAfterItemAdd -= OnAfterAmountChangedHandler;
-          slot.OnAfterItemRemoved -= OnAfterAmountChangedHandler;
-          slot.OnAfterAmountChanged -= OnAfterAmountChangedHandler;
+          slot.OnAfterUpdated -= OnAfterUpdatedHandler;
         }
       }
     }
 
-    private void OnAfterAmountChangedHandler(InventorySlot slot) {
-      // Debug.Log($"OnAfterAmountChangedHandler id: {slot.Item.info.Id}. name: {slot.Item.info.Name}");
-
+    private void OnAfterUpdatedHandler(SlotUpdateEventData obj) {
+      var slot = obj.after;
       if (slot.isEmpty) {
         return;
       }

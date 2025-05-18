@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Craft.Recipes;
 using Scriptables.Craft;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ namespace Craft {
   public class RecipesList : MonoBehaviour {
     [SerializeField] private GameObject recipesListContainerPrefab;
     [SerializeField] private Button recipesListItemPrefab;
+    [SerializeField] private ScrollRect scrollRect;
 
     private Workstation station;
     private List<Button> recipesListButtons = new();
@@ -23,7 +25,14 @@ namespace Craft {
 
     private void OnEnable() => InitComponent();
 
-    private void OnDisable() => RemoveEvents();
+    private void OnDisable() {
+      if (selectedRecipeListItem) {
+        selectedRecipeListItem.MarkAsSeen();
+        gameManager.RecipesManager.MarkRecipeAsSeen(selectedRecipeListItem.Recipe);
+      }
+
+      RemoveEvents();
+    }
 
     private void InitComponent() {
       BuildList();
@@ -90,7 +99,8 @@ namespace Craft {
     private Button CreateButton(Recipe recipe) {
       var listItem = Instantiate(recipesListItemPrefab, recipesListContainerPrefab.transform);
       var recipeListItem = listItem.GetComponent<RecipeListItem>();
-      recipeListItem.SetRecipeDetails(recipe.RecipeName, recipe.Result.UiDisplay, recipe);
+      var isNew = gameManager.RecipesManager.GetRecipeState(recipe.Id) == RecipeState.New;
+      recipeListItem.SetRecipeDetails(recipe.RecipeName, recipe.Result.UiDisplay, recipe, isNew);
 
       return listItem;
     }
@@ -104,6 +114,7 @@ namespace Craft {
 
       if (selectedRecipeListItem) {
         selectedRecipeListItem.ResetStyles();
+        gameManager.RecipesManager.MarkRecipeAsSeen(selectedRecipeListItem.Recipe);
       }
 
       selectedRecipeListItem = recipeListItem;
@@ -172,10 +183,27 @@ namespace Craft {
       }
 
       listItem.onClick.AddListener(() => ListItemClickHandler(listItem));
+      
+      // ScrollToButton(listItem);
     }
 
     private void ListItemClickHandler(Button button) {
       Select(button);
     }
+    
+    /*private void ScrollToButton(Button button) {
+      Canvas.ForceUpdateCanvases();
+
+      var content = scrollRect.content;
+      var target = button.GetComponent<RectTransform>();
+
+      var localPosition = (Vector2)content.InverseTransformPoint(content.position) 
+                          - (Vector2)content.InverseTransformPoint(target.position);
+
+      var scrollHeight = content.rect.height - scrollRect.viewport.rect.height;
+
+      var normalizedY = Mathf.Clamp01(1 - (localPosition.y / scrollHeight));
+      scrollRect.verticalNormalizedPosition = normalizedY;
+    }*/
   }
 }

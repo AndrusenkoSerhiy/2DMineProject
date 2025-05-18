@@ -11,7 +11,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   [SerializeField] private UserInterface userInterface;
   private Inventory.Inventory quickSlots;
   private InventorySlot[] slots;
-  private Item selectedItem;
+  [SerializeField] private Item selectedItem;
   private PlayerInventory playerInventory;
   private ItemConsumer itemConsumer;
   [SerializeField] private int selectedSlotIndex = -1;
@@ -38,7 +38,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     UnequipSlot();
 
     selectedSlot = null;
-    selectedItem = null;
+    SetSelectedItem(null);
     selectedSlotIndex = -1;
     itemConsumer = null;
 
@@ -56,10 +56,32 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
 
     //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
     selectedSlot = null;
-    selectedItem = null;
+    SetSelectedItem(null);
     //
     MiningRobotTool.OnPlayerEnteredRobot += UnequipSlot; //UnselectCurrSlot;
     PlaceCell.OnSlotReset += UnequipSlot;
+  }
+
+  private void SubscribeToAddItem() {
+    foreach (var slot in slots) {
+      slot.OnAfterUpdated += TryActivateItem;
+    }
+  }
+  
+  private void UnsubscribeToAddItem() {
+    foreach (var slot in slots) {
+      slot.OnAfterUpdated -= TryActivateItem;
+    }
+  }
+  
+  private void TryActivateItem(SlotUpdateEventData obj) {
+    if (!obj.before.isEmpty || obj.after.isEmpty || !obj.after.isSelected) 
+      return;
+    
+    selectedSlot = slots[selectedSlotIndex];
+    SetSelectedItem(obj.after.Item);
+    GetConsumer().SetActiveSlot(selectedSlot);
+    Debug.LogError($"TryActivateItem {selectedSlotIndex} | {selectedItem.name}");
   }
 
   private void Start() {
@@ -68,25 +90,28 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     UpdateQuickSlotsAfterLoad();
-    // SelectFirstSlot();
+    SubscribeToAddItem();
   }
 
   private void OnEnable() {
     if (!loaded) {
       return;
     }
-
+    
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
+    SubscribeToAddItem();
+  }
+
+  private void OnDisable() {
+    UnsubscribeToAddItem();
+    quickSlots.OnSlotSwapped -= OnSlotUpdateHandler;
+    playerInventory.GetInventory().OnSlotSwapped -= OnSlotUpdateHandler;
   }
 
   public InventorySlot GetSelectedSlot() {
     return selectedSlot;
-  }
-
-  private void UnselectCurrSlot() {
-    UnselectSlot(selectedSlot);
   }
 
   private ItemConsumer GetConsumer() {
@@ -113,7 +138,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     UpdateQuickSlotsAfterLoad();
 
     selectedSlot = slots[selectedSlotIndex];
-    selectedItem = slots[selectedSlotIndex].Item;
+    SetSelectedItem(slots[selectedSlotIndex].Item);
     selectedSlot.Select();
     // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
     gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
@@ -158,7 +183,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
       otherSlot.Unselect();
       selectedSlotIndex = activeSlot.index;
       selectedSlot = activeSlot;
-      selectedItem = activeSlot.Item;
+      SetSelectedItem(activeSlot.Item);
       activeSlot.Select();
     }
     else {
@@ -187,11 +212,12 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
 
   //when you drop item to selected slot
   private void ActivateItem(InventorySlot slot, InventorySlot targetSlot) {
-    if (!slot.isSelected)
+    if (!slot.isSelected && targetSlot != null && selectedSlot != null &&
+        !targetSlot.index.Equals(selectedSlot.index))
       return;
-
+    
     selectedSlot = targetSlot;
-    selectedItem = targetSlot.Item;
+    SetSelectedItem(targetSlot.Item);
     selectedSlot.Select();
     // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
     gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
@@ -202,13 +228,11 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   private void DeactivateItem(InventorySlot slot) {
     if (!slot.isSelected || slot.Item.isEmpty)
       return;
-
-    // gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
+    
     gameManager.PlayerEquipment.UnEquipTool();
     slot.Unselect();
-    // selectedItem?.info?.Use();
     GetConsumer().DeactivateItem(selectedItem);
-    selectedItem = null;
+    SetSelectedItem(null);
   }
 
   private void UpdateQuickSlotsAfterLoad() {
@@ -271,29 +295,23 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
 
   private void ResetSlot() {
     if (selectedSlot != null && !selectedSlot.Item.isEmpty) {
-      //(selectedItem != null) {
-      // gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
       gameManager.PlayerEquipment.UnEquipTool();
     }
 
     selectedSlot?.Unselect();
-    // selectedItem?.info?.Use();
     GetConsumer().DeactivateItem(selectedItem);
     selectedSlot = null;
-    selectedItem = null;
+    SetSelectedItem(null);
   }
 
   //use for building block. When block is run out we need just to unequip item
   private void UnequipSlot() {
     if (selectedSlot != null && !selectedSlot.Item.isEmpty) {
-      //(selectedItem != null) {
-      // gameManager.PlayerEquipment.OnRemoveItem(selectedItem, selectedSlot.InventoryType);
       gameManager.PlayerEquipment.UnEquipTool();
     }
-
-    // selectedItem?.info?.Use();
+    
     GetConsumer().DeactivateItem(selectedItem);
-    selectedItem = null;
+    SetSelectedItem(null);
   }
 
   private void SelectSlot(InventorySlot slot) {
@@ -304,7 +322,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
       }
 
       selectedSlot = slot;
-      selectedItem = slot.Item;
+      SetSelectedItem(slot.Item);
       selectedSlot.Select();
       GetConsumer().SetActiveSlot(selectedSlot);
 
@@ -316,25 +334,25 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     }
 
     if (selectedSlot != null && selectedSlot.Item.info != null) {
-      // gameManager.PlayerEquipment.OnRemoveItem(selectedSlot);
       gameManager.PlayerEquipment.UnEquipTool();
       selectedSlot.Unselect();
-      // selectedItem?.info?.Use();
       GetConsumer().DeactivateItem(selectedItem);
     }
 
     selectedSlot = slot;
-    selectedItem = slot.Item;
+    SetSelectedItem(slot.Item);
     selectedSlot.Select();
-    // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
     gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
-    // selectedSlot.Item.info.Use();
     GetConsumer().SetActiveSlot(selectedSlot);
+  }
+
+  private void SetSelectedItem(Item item) {
+    selectedItem = item;
   }
 
   private void OnDestroy() {
     UnsubscribeToMouseWheel();
-    MiningRobotTool.OnPlayerEnteredRobot -= UnequipSlot; //UnselectCurrSlot;
+    MiningRobotTool.OnPlayerEnteredRobot -= UnequipSlot;
     PlaceCell.OnSlotReset -= UnequipSlot;
   }
 }

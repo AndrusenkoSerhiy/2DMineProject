@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace Player {
   public class PlayerControllerBase : MonoBehaviour {
-    // [SerializeField] protected PlayerStats _stats;
     protected PlayerStats playerStats;
     protected Rigidbody2D _rb;
     private CapsuleCollider2D _col;
@@ -16,8 +15,7 @@ namespace Player {
     [SerializeField] protected Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
     [SerializeField] private Animator _animator;
-
-    //[SerializeField] protected Transform Head;
+    
     [SerializeField] protected float _flipDeadZone = 1;
 
     [SerializeField] protected ActorBase actor;
@@ -61,7 +59,7 @@ namespace Player {
 
     private GameObject jumpPs;
     private GameObject fallingPs;
-
+    private float startYPos;
     #region Interface
 
     public Vector2 FrameInput => _frameInput.Move;
@@ -69,7 +67,7 @@ namespace Player {
     public event Action Jumped;
 
     #endregion
-
+ 
     public void SetLockPlayer(bool state) {
       lockPlayer = state;
     }
@@ -128,10 +126,9 @@ namespace Player {
     private void GatherInput() {
       _frameInput = new FrameInput {
         JumpDown = GameManager.Instance.UserInput.controls.GamePlay.Jump
-          .WasPerformedThisFrame(), //Input.GetButtonDown("Jump"),
-        JumpHeld = GameManager.Instance.UserInput.controls.GamePlay.Jump.IsPressed(), //Input.GetButton("Jump"),
-        Move = GameManager.Instance.UserInput
-          .GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+          .WasPerformedThisFrame(),
+        JumpHeld = GameManager.Instance.UserInput.controls.GamePlay.Jump.IsPressed(),
+        Move = GameManager.Instance.UserInput.GetMovement() 
       };
 
       if (PlayerStats.StatsObject.snapInput) {
@@ -261,6 +258,7 @@ namespace Player {
       _frameVelocity.y = PlayerStats.StatsObject.jumpPower;
       jumpPs = GameManager.Instance.PoolEffects.SpawnFromPool("JumpEffect", transform.position, Quaternion.identity).gameObject;
       Jumped?.Invoke();
+      startYPos = transform.position.y;
     }
 
     public void RestoreHealth() {
@@ -350,6 +348,11 @@ namespace Player {
         _frameVelocity.y = PlayerStats.StatsObject.groundingForce;
       }
       else {
+        if (_endedJumpEarly) {
+          if(transform.position.y - startYPos < PlayerStats.StatsObject.minJumpHeight)
+            _endedJumpEarly = false;
+        }
+        
         var inAirGravity = PlayerStats.StatsObject.fallAcceleration;
         if (_endedJumpEarly && _frameVelocity.y > 0)
           inAirGravity *= PlayerStats.StatsObject.jumpEndEarlyGravityModifier;

@@ -142,8 +142,11 @@ namespace World {
 
       var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity).gameObject;
       ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
-      ps.startColor = resourceData.EffectColor;
-
+      //ps.startColor = resourceData.EffectColor;
+      if (ps != null) {
+        var main = ps.main;
+        main.startColor = new ParticleSystem.MinMaxGradient(resourceData.EffectColor);
+      }
       highlight.SetHighlight(false);
     }
 

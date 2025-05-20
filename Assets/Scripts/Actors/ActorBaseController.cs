@@ -31,14 +31,14 @@ namespace Actors {
     }
 
     private void PauseZombies() {
-      Debug.LogError("Pause Zombies");
+      //Debug.LogError("Pause Zombies");
       foreach (var enemy in enemies) {
         enemy.PauseBehaviour();
       }
     }
     
     private void UnpauseZombies() {
-      Debug.LogError("Unpause Zombies");
+      //Debug.LogError("Unpause Zombies");
       foreach (var enemy in enemies) {
         enemy.UnpauseBehaviour();
       }

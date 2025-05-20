@@ -73,6 +73,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private ActorsPooler actorsPooler;
   [SerializeField] private DynamicCrosshair dynamicCrosshair;
   [SerializeField] private BulletsPool bulletsPool;
+  [SerializeField] private Locator locator;
 
   //TODO 
   //robot don't need this param in own script
@@ -135,6 +136,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public ActorsPooler ActorsPooler => actorsPooler;
   public DynamicCrosshair DynamicCrosshair => dynamicCrosshair;
   public BulletsPool BulletsPool => bulletsPool;
+  public Locator Locator => locator;
 
   public PlayerController PlayerController {
     set => playerController = value;

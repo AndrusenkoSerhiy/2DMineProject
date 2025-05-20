@@ -229,12 +229,15 @@ public class PlaceCell : MonoBehaviour {
     AfterPlaceCellActions(build);
     var test = CoordsTransformer.MouseToGridPosition(pos);
     SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
+    GameManager.Instance.Locator.SetTarget(pos, coords, GetSelectedSlot().Item.info);
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject) {
     var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
+    var worldCoords = CoordsTransformer.WorldToGridBuildings(buildObject.transform.position);
     chunkController.RemoveBuild(buildObject);
     SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
+    GameManager.Instance.Locator.RemoveTarget(worldCoords);
     return true;
   }
 

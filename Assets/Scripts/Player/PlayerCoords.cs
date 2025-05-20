@@ -9,6 +9,10 @@ namespace Player {
     [SerializeField] private Transform trForGrid;
     //private Vector3 prevPos;
 
+    public Vector3 GetPosition() {
+      return trForGrid.position;
+    }
+
     public Coords GetCoords() {
       if (Coords.X == -1 || Coords.Y == -1) {
         SetCoords();
@@ -20,11 +24,11 @@ namespace Player {
     public Coords GetCoordsOutOfBounds() {
       return CoordsTransformer.MouseToGridPosition(trForGrid.position);
     }
-    
+
     private void Update() {
       //if (Vector3.Distance(transform.position, prevPos) >= GameManager.instance.GameConfig.CheckAreaStep) {
-        SetCoords();
-        //prevPos = transform.position;
+      SetCoords();
+      //prevPos = transform.position;
       //}
     }
 

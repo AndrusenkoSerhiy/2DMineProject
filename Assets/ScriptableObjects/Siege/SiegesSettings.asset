@@ -16,15 +16,15 @@ MonoBehaviour:
     Duration: {x: 300, y: 400}
     ZombieCount: {x: 8, y: 12}
     WavesOfZombies: {x: 4, y: 5}
-    TimeBeforeSiege: {x: 1200, y: 1800}
+    TimeBeforeSiege: {x: 600, y: 1000}
   RandomSiegeTemplate:
     Duration: {x: 300, y: 400}
     ZombieCount: {x: 8, y: 12}
     WavesOfZombies: {x: 4, y: 5}
-    TimeBeforeSiege: {x: 1000, y: 1600}
+    TimeBeforeSiege: {x: 600, y: 1000}
   FinalSiege:
     Duration: {x: 600, y: 900}
     ZombieCount: {x: 8, y: 12}
     WavesOfZombies: {x: 8, y: 10}
-    TimeBeforeSiege: {x: 1000, y: 1600}
+    TimeBeforeSiege: {x: 800, y: 1400}
   SiegesCount: {x: 6, y: 8}

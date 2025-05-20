@@ -75,13 +75,8 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
   
   private void TryActivateItem(SlotUpdateEventData obj) {
-    if (!obj.before.isEmpty || obj.after.isEmpty || !obj.after.isSelected) 
-      return;
-    
-    selectedSlot = slots[selectedSlotIndex];
-    SetSelectedItem(obj.after.Item);
-    GetConsumer().SetActiveSlot(selectedSlot);
-    //Debug.LogError($"TryActivateItem {selectedSlotIndex} | {selectedItem.name}");
+    DeactivateItem(obj.before);
+    ActivateItem(obj.after);
   }
 
   private void Start() {
@@ -162,6 +157,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   private void OnSlotUpdateHandler(SlotSwappedEventData data) {
+    return;
     //Always quickslot
     var slot = data.slot.InventoryType == InventoryType.QuickSlots ? data.slot : data.target;
     //Quickslot or inventory slot
@@ -198,30 +194,31 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     //Debug.LogError($"active slot {activeSlot.InventoryType} | other slot {otherSlot.InventoryType}");
     if (target.InventoryType == InventoryType.QuickSlots) {
       DeactivateItem(slot);
-      ActivateItem(slot, target);
+      //ActivateItem(slot, target);
     }
 
     if (target.InventoryType == InventoryType.Inventory) {
       DeactivateItem(target);
       //only when we swap not empty slots
       if (!slot.isEmpty) {
-        ActivateItem(target, slot);
+        //ActivateItem(target, slot);
       }
     }
   }
 
   //when you drop item to selected slot
-  private void ActivateItem(InventorySlot slot, InventorySlot targetSlot) {
-    if (!slot.isSelected && targetSlot != null && selectedSlot != null &&
+  private void ActivateItem(/*InventorySlot slot, */InventorySlot targetSlot) {
+    if (targetSlot != null && selectedSlot != null &&
         !targetSlot.index.Equals(selectedSlot.index))
       return;
+    /*if (!slot.isSelected && targetSlot != null && selectedSlot != null &&
+        !targetSlot.index.Equals(selectedSlot.index))
+      return;*/
     
     selectedSlot = targetSlot;
     SetSelectedItem(targetSlot.Item);
     selectedSlot.Select();
-    // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
     gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
-    // selectedSlot.Item.info.Use();
     GetConsumer().SetActiveSlot(selectedSlot);
   }
 

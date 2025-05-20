@@ -62,12 +62,13 @@ namespace Inventory {
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
-      reloadButtonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.UI.Reload);
     }
 
     private void Start() {
       userInterface.OnLoaded += AddEvents;
       userInterface.OnDisabled += RemoveEvents;
+
+      reloadButtonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.UI.Reload);
     }
 
     private void OnDisable() {

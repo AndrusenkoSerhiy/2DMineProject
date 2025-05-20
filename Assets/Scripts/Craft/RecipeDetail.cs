@@ -93,12 +93,13 @@ namespace Craft {
     }
 
     private void OnAfterUpdatedHandler(SlotUpdateEventData obj) {
-      var slot = obj.after;
-      if (slot.isEmpty) {
+      if (obj.after.isEmpty && obj.before.isEmpty) {
         return;
       }
 
-      OnResourcesTotalUpdateHandler(slot.Item.info.Id);
+      var id = obj.after.isEmpty ? obj.before.Item.info.Id : obj.after.Item.info.Id;
+
+      OnResourcesTotalUpdateHandler(id);
     }
   }
 }

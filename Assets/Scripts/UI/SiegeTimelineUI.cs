@@ -30,7 +30,7 @@ namespace UI {
       public bool isSiege;
     }
 
-    private void Awake() {
+    private void Start() {
       siegeManager = GameManager.Instance.SiegeManager;
     }
 

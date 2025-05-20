@@ -66,10 +66,6 @@ namespace Player {
 
     //reason use for block action when you lock hightlight in build mode and open/closed inventory
     public void LockHighlight(bool state, string reason = "", bool lockPos = true) {
-      if (lockPos) {
-        isHighlightLock = state;
-      }
-
       if (state && !string.IsNullOrEmpty(reason) && !lockReasons.Contains(reason)) {
         lockReasons.Add(reason);
       }
@@ -80,6 +76,10 @@ namespace Player {
 
       if (!state && lockReasons.Count > 0) {
         return;
+      }
+      
+      if (lockPos) {
+        isHighlightLock = state;
       }
       
       if (state) {

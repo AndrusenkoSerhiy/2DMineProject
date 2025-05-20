@@ -123,7 +123,7 @@ namespace Siege {
       if (siegesStarted) {
         return;
       }
-      Debug.LogError("Starting sieges!!!!!!!");
+      //Debug.LogError("Starting sieges!!!!!!!");
       siegeQueue.Clear();
       siegeQueue.Add(GetActiveTemplate(siegesSettings.FirstSiege));
 

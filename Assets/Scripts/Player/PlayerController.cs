@@ -50,8 +50,8 @@ namespace Player {
 
     #endregion
 
-    public override void SetLockHighlight(bool state) {
-      playerAttack.LockHighlight(state);
+    public override void SetLockHighlight(bool state, string reason = "") {
+      playerAttack.LockHighlight(state, reason);
     }
 
     protected override void FlipX() {

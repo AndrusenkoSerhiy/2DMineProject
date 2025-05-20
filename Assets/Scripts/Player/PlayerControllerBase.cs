@@ -72,7 +72,7 @@ namespace Player {
       lockPlayer = state;
     }
 
-    public virtual void SetLockHighlight(bool state) {
+    public virtual void SetLockHighlight(bool state, string reason = "") {
     }
 
     protected virtual void Awake() {

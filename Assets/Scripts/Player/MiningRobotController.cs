@@ -35,8 +35,8 @@ namespace Player {
       base.LookAtMouse();
     }
 
-    public override void SetLockHighlight(bool state) {
-      miningRobotAttack.LockHighlight(state);
+    public override void SetLockHighlight(bool state, string reason = "") {
+      miningRobotAttack.LockHighlight(state, reason);
     }
 
     protected override void FlipX() {

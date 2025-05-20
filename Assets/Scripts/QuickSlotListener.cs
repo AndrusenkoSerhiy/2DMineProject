@@ -82,10 +82,10 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   private void Start() {
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
+    SubscribeToAddItem();
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     UpdateQuickSlotsAfterLoad();
-    SubscribeToAddItem();
   }
 
   private void OnEnable() {
@@ -96,11 +96,9 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
     playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
-    SubscribeToAddItem();
   }
 
   private void OnDisable() {
-    UnsubscribeToAddItem();
     quickSlots.OnSlotSwapped -= OnSlotUpdateHandler;
     playerInventory.GetInventory().OnSlotSwapped -= OnSlotUpdateHandler;
   }
@@ -211,9 +209,6 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     if (targetSlot != null && selectedSlot != null &&
         !targetSlot.index.Equals(selectedSlot.index))
       return;
-    /*if (!slot.isSelected && targetSlot != null && selectedSlot != null &&
-        !targetSlot.index.Equals(selectedSlot.index))
-      return;*/
     
     selectedSlot = targetSlot;
     SetSelectedItem(targetSlot.Item);
@@ -251,7 +246,6 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   private void ChooseSlot(InputAction.CallbackContext obj) {
-    //Debug.LogError($"chose slot {obj.control.name}");
     var index = int.Parse(obj.control.name) - 1;
     if (index == -1) {
       index = slots.Length - 1;
@@ -348,6 +342,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   private void OnDestroy() {
+    UnsubscribeToAddItem();
     UnsubscribeToMouseWheel();
     MiningRobotTool.OnPlayerEnteredRobot -= UnequipSlot;
     PlaceCell.OnSlotReset -= UnequipSlot;

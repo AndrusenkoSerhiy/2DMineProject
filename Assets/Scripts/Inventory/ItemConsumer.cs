@@ -1,6 +1,7 @@
 ﻿using Player;
 using Scriptables.Items;
 using Stats;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Inventory {
@@ -22,7 +23,6 @@ namespace Inventory {
 
     public void SetActiveSlot(InventorySlot slot) {
       activeSlot = slot;
-
       OnOffPlayerAttack();
       RemoveLeftMouseClickHandler();
 
@@ -52,10 +52,10 @@ namespace Inventory {
 
     private void OnOffPlayerAttack() {
       if (activeSlot == null || activeSlot.isEmpty || activeSlot.Item.info is IAttackableItem) {
-        playerController.SetLockHighlight(false);
+        playerController.SetLockHighlight(false, "ItemConsumer");
       }
       else {
-        playerController.SetLockHighlight(true);
+        playerController.SetLockHighlight(true,"ItemConsumer");
       }
     }
 

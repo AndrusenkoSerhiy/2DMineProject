@@ -97,7 +97,12 @@ namespace Tools {
       }
       chunkController = gameManager.ChunkController;
       robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
-      chunkController.OnCreateChunk += LockOnStart;
+      if (chunkController.ChunkData == null) {
+        chunkController.OnCreateChunk += LockOnStart;
+      }
+      else {
+        LockOnStart();
+      }
     }
 
     private void LockOnStart() {

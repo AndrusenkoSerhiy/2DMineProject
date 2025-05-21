@@ -38,6 +38,8 @@ namespace Menu {
     private Menu activeMenu = Menu.None;
     private bool locked;
     private bool cancelEnabled;
+    
+    [SerializeField] private bool isNewGame;
 
     private void Awake() {
       gameManager = GameManager.Instance;
@@ -74,7 +76,7 @@ namespace Menu {
 
       gameManager.StartGameCameraController.Play();
       saveLoadSystem.NewGame();
-
+      isNewGame = true;
       HideLoading();
     }
 
@@ -92,7 +94,7 @@ namespace Menu {
       }
 
       saveLoadSystem.LoadGame();
-
+      isNewGame = false;
       HideLoading();
     }
 
@@ -142,8 +144,12 @@ namespace Menu {
       if (locked == state) {
         return;
       }
-
-      LockPlayer(state);
+      //use only one time when we start new game we don't need to unlock player 
+      //before he grounded
+      if (isNewGame && !state) {
+        isNewGame = false;
+      }else LockPlayer(state);
+      
       bg.SetActive(state);
       locked = state;
 

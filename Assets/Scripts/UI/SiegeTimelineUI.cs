@@ -121,7 +121,7 @@ namespace UI {
 
     private void Update() {
       if (!siegeManager || siegeManager.TotalCycleTime <= 0f) {
-        //Debug.LogError($"siegeManager {siegeManager} | TotalCycleTime {siegeManager.TotalCycleTime}");
+        // Debug.LogError($"siegeManager {siegeManager} | TotalCycleTime {siegeManager.TotalCycleTime}");
         return;
       }
 

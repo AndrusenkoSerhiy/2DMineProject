@@ -62,11 +62,11 @@ namespace Craft {
     }
 
     private void EnableButtons() {
-      EnableButton(decrementButton, currentCount > minCount);
-      EnableButton(incrementButton, currentCount < maxCount);
-      EnableButton(maxCountButton, currentCount < maxCount, maxCountButtonSub);
-      EnableButton(minCountButton, currentCount > minCount, minCountButtonSub);
-      EnableButton(craftButton, currentCount > 0);
+      //EnableButton(decrementButton, currentCount > minCount);
+      //EnableButton(incrementButton, currentCount < maxCount);
+      //EnableButton(maxCountButton, currentCount < maxCount, maxCountButtonSub);
+      //EnableButton(minCountButton, currentCount > minCount, minCountButtonSub);
+      //EnableButton(craftButton, currentCount > 0);
     }
 
     private void EnableButton(Button button, bool state, Image subimage = null) {

@@ -29,7 +29,7 @@ namespace Craft {
     }
 
     private void SetCount(int amount) {
-      countText.text = $"/{amount}";
+      countText.text = $"/ {amount}";
       countText.color = textColor;
     }
 

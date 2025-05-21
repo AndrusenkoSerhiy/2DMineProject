@@ -5,5 +5,6 @@ namespace Scriptables {
   public class Building : BaseScriptableObject {
     public int SizeX;
     public int SizeY;
+    public bool IsAttackable;
   }
 }

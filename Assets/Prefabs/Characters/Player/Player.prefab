@@ -214,10 +214,10 @@ MonoBehaviour:
   attackTransform: {fileID: 5909884442351797668}
   minDistance: 2
   maxDistance: 5
+  lockReasons: []
   isHighlightLock: 0
   originalSize: {x: 0, y: 0}
   audioData: {fileID: 11400000, guid: acaa05c5e2f065e4aa255ea5ca0542dd, type: 2}
-  playerEquipment: {fileID: 4383261363474124888}
 --- !u!114 &4383261363474124888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,6 +236,9 @@ MonoBehaviour:
   leftHandTransform: {fileID: 4035622805259001127}
   rightHandTransform: {fileID: 1739819385077777237}
   repairItemText: Repair item (hold)
+  reloadInteractionPromtUI: {fileID: 0}
+  reloadText: Reload
+  ammoUI: {fileID: 0}
 --- !u!114 &1255239565477947570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,7 +380,7 @@ MonoBehaviour:
   previewColor: {r: 0.07450981, g: 0.14901961, b: 0.94509804, a: 0.78431374}
   blockColor: {r: 1, g: 0, b: 0, a: 0.78431374}
   emptyResourceData: {fileID: 11400000, guid: 6f3c9c684742bbd4cac77c250859794c, type: 2}
-  radius: 1
+  radius: 3
 --- !u!114 &6251728841341945271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,8 +563,8 @@ MonoBehaviour:
   maxHighlights: 1
   highlights: []
   possibleHighlights: []
-  defaultCrosshair: {fileID: 0}
-  rangeCrosshair: {fileID: 0}
+  defaultCrosshair: {fileID: 2110677378358996256}
+  rangeCrosshair: {fileID: 985883621099238203}
 --- !u!1 &5549740774766015139
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,6 +1061,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CrossHair
       objectReference: {fileID: 0}
+    - target: {fileID: 3378115668467694291, guid: eb118066e4a924e4d99fd1d8b59afa53, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5200180732122189370, guid: eb118066e4a924e4d99fd1d8b59afa53, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1103,6 +1110,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb118066e4a924e4d99fd1d8b59afa53, type: 3}
+--- !u!1 &985883621099238203 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3378115668467694291, guid: eb118066e4a924e4d99fd1d8b59afa53, type: 3}
+  m_PrefabInstance: {fileID: 2544522397001468392}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7738650296396875730 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5200180732122189370, guid: eb118066e4a924e4d99fd1d8b59afa53, type: 3}

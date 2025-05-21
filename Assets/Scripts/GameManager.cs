@@ -191,13 +191,8 @@ public class GameManager : PersistentSingleton<GameManager> {
       menuController.Hide();
       return;
     }
-
-    // EnableUIElements(false);
-    // startGameCameraController.Init();
+    
     menuController.Show();
-    // EnableInput(false);
-    //need to subscribe for player grounded first time
-    playerController.GroundedChanged += ChangeGround;
   }
 
   public void EnableUIElements(bool state) {
@@ -207,17 +202,26 @@ public class GameManager : PersistentSingleton<GameManager> {
   }
 
   //use for start cutscene fall to ground
-  public void EnableInput(bool state) {
+  private void EnableAllInput(bool state) {
     userInput.EnableGamePlayControls(state);
     userInput.EnableUIControls(state);
+  }
+  
+  //lock only gameplay controls
+  public void EnableGamePlayInput(bool state) {
+    userInput.EnableGamePlayControls(state);
+  }
 
-    playerController.SetLockHighlight(true);
+  //lock all input when we start new game
+  public void LockOnNewGame() {
+    EnableAllInput(false);
+    playerController.GroundedChanged += ChangeGround;
   }
 
   private void ChangeGround(bool arg1, float arg2) {
     playerController.GroundedChanged -= ChangeGround;
 
-    EnableInput(true);
+    EnableAllInput(true);
     playerController.SetLockHighlight(false);
     EnableUIElements(true);
   }

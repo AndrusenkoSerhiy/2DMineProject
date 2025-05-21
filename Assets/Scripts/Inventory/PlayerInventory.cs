@@ -169,7 +169,8 @@ namespace Inventory {
         //TODO 
         //need to replace this condition
         var activeWindow = gameManager.WindowsController.WindowsList.Find(e => e.IsShow);
-        if (activeWindow && activeWindow.name.Equals("RespawnWindow"))
+        if (activeWindow && activeWindow.name.Equals("RespawnWindow") ||
+            gameManager.MenuController.ActiveMenu != Menu.Menu.None)
           return;
 
         inventoryWindow.Show();

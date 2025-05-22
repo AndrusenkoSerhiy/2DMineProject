@@ -162,6 +162,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BlockChange"",
+                    ""type"": ""Button"",
+                    ""id"": ""e5c78901-99f9-4254-a7e8-9f2e2add14d6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -439,6 +448,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""MouseScrollY"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3cc818b7-f5f0-4625-8304-0e6d12990bd0"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""BlockChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -585,6 +605,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""name"": ""Respawn"",
                     ""type"": ""Button"",
                     ""id"": ""2e66d8b0-4089-4de0-88ce-24df3ee614de"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""1fbd4470-bd97-4e17-bf5d-ee9f96d4f0db"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1152,6 +1181,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Respawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""952f6d86-c8f4-4ce4-9e13-8202fa279bee"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard"",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1448,6 +1488,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_GamePlay_Sprint = m_GamePlay.FindAction("Sprint", throwIfNotFound: true);
         m_GamePlay_Interact = m_GamePlay.FindAction("Interact", throwIfNotFound: true);
         m_GamePlay_MouseScrollY = m_GamePlay.FindAction("MouseScrollY", throwIfNotFound: true);
+        m_GamePlay_BlockChange = m_GamePlay.FindAction("BlockChange", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1466,6 +1507,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_UI_Ctrl = m_UI.FindAction("Ctrl", throwIfNotFound: true);
         m_UI_HandCraft = m_UI.FindAction("HandCraft", throwIfNotFound: true);
         m_UI_Respawn = m_UI.FindAction("Respawn", throwIfNotFound: true);
+        m_UI_Reload = m_UI.FindAction("Reload", throwIfNotFound: true);
         // InputType
         m_InputType = asset.FindActionMap("InputType", throwIfNotFound: true);
         m_InputType_Keyboard = m_InputType.FindAction("Keyboard", throwIfNotFound: true);
@@ -1560,6 +1602,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_GamePlay_Sprint;
     private readonly InputAction m_GamePlay_Interact;
     private readonly InputAction m_GamePlay_MouseScrollY;
+    private readonly InputAction m_GamePlay_BlockChange;
     /// <summary>
     /// Provides access to input actions defined in input action map "GamePlay".
     /// </summary>
@@ -1603,6 +1646,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "GamePlay/MouseScrollY".
         /// </summary>
         public InputAction @MouseScrollY => m_Wrapper.m_GamePlay_MouseScrollY;
+        /// <summary>
+        /// Provides access to the underlying input action "GamePlay/BlockChange".
+        /// </summary>
+        public InputAction @BlockChange => m_Wrapper.m_GamePlay_BlockChange;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1653,6 +1700,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @MouseScrollY.started += instance.OnMouseScrollY;
             @MouseScrollY.performed += instance.OnMouseScrollY;
             @MouseScrollY.canceled += instance.OnMouseScrollY;
+            @BlockChange.started += instance.OnBlockChange;
+            @BlockChange.performed += instance.OnBlockChange;
+            @BlockChange.canceled += instance.OnBlockChange;
         }
 
         /// <summary>
@@ -1688,6 +1738,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @MouseScrollY.started -= instance.OnMouseScrollY;
             @MouseScrollY.performed -= instance.OnMouseScrollY;
             @MouseScrollY.canceled -= instance.OnMouseScrollY;
+            @BlockChange.started -= instance.OnBlockChange;
+            @BlockChange.performed -= instance.OnBlockChange;
+            @BlockChange.canceled -= instance.OnBlockChange;
         }
 
         /// <summary>
@@ -1741,6 +1794,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Ctrl;
     private readonly InputAction m_UI_HandCraft;
     private readonly InputAction m_UI_Respawn;
+    private readonly InputAction m_UI_Reload;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -1817,6 +1871,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Respawn => m_Wrapper.m_UI_Respawn;
         /// <summary>
+        /// Provides access to the underlying input action "UI/Reload".
+        /// </summary>
+        public InputAction @Reload => m_Wrapper.m_UI_Reload;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_UI; }
@@ -1890,6 +1948,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Respawn.started += instance.OnRespawn;
             @Respawn.performed += instance.OnRespawn;
             @Respawn.canceled += instance.OnRespawn;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
         }
 
         /// <summary>
@@ -1949,6 +2010,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Respawn.started -= instance.OnRespawn;
             @Respawn.performed -= instance.OnRespawn;
             @Respawn.canceled -= instance.OnRespawn;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
         }
 
         /// <summary>
@@ -2178,6 +2242,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMouseScrollY(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "BlockChange" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBlockChange(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
@@ -2298,6 +2369,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRespawn(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Reload" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnReload(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "InputType" which allows adding and removing callbacks.

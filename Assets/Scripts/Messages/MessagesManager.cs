@@ -26,6 +26,7 @@ namespace Messages {
     public Transform rightContainer;
 
     public GameObject messagePrefab;
+    public GameObject messageRecipePrefab;
 
     public int maxMessagesPerZone = 3;
     public float messageDuration = 5f;
@@ -59,6 +60,7 @@ namespace Messages {
     public SerializedDictionary<MessageType, Position> messagePositions;
 
     public List<MessageUI> messagePool = new();
+    public List<MessageUI> messageRecipePool = new();
 
     private Dictionary<Transform, List<MessageUI>> activeMessages = new();
 
@@ -139,7 +141,8 @@ namespace Messages {
         return;
       }
 
-      var message = GetMessageFromPool();
+      // var message = type == MessageType.NewRecipe ? GetRecipeMessageFromPool() : GetMessageFromPool();
+      var message = GetMessageFromPool(position != Position.Top);
       message.transform.SetParent(container, false);
       message.gameObject.SetActive(true);
 
@@ -182,7 +185,12 @@ namespace Messages {
     private void ReturnMessage(Transform container, MessageUI message) {
       message.gameObject.SetActive(false);
       activeMessages[container].Remove(message);
-      messagePool.Add(message);
+      
+      var pool = container != topContainer ? messagePool : messageRecipePool;
+      pool.Add(message);
+      /*Debug.LogError("Return :" + container.name, container.gameObject);
+      if (container == topContainer) messageRecipePool.Add(message);
+      else messagePool.Add(message);*/
     }
 
     private void OnGamePausedHandler() {
@@ -193,14 +201,17 @@ namespace Messages {
       }
     }
 
-    private MessageUI GetMessageFromPool() {
-      if (messagePool.Count > 0) {
-        var message = messagePool[0];
-        messagePool.RemoveAt(0);
+    private MessageUI GetMessageFromPool(bool main = true) {
+      var pool = main ? messagePool : messageRecipePool;
+      if (pool.Count > 0) {
+        var message = pool[0];
+        pool.RemoveAt(0);
         return message;
       }
 
-      var newMessage = Instantiate(messagePrefab).GetComponent<MessageUI>();
+      var msgPrefab = main ? messagePrefab : messageRecipePrefab;
+      var newMessage = Instantiate(msgPrefab).GetComponent<MessageUI>();
+
       return newMessage;
     }
 

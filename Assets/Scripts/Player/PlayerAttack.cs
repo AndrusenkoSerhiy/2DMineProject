@@ -7,7 +7,9 @@ using UnityEngine;
 namespace Player {
   public class PlayerAttack : BaseAttack {
     [SerializeField] private AudioData audioData;
-    [SerializeField] protected PlayerEquipment playerEquipment;
+    // [SerializeField] protected PlayerEquipment playerEquipment;
+
+    private HandItem handItem;
 
     protected override void Awake() {
       base.Awake();
@@ -31,12 +33,20 @@ namespace Player {
       if (isHit && audioData) {
         GameManager.Instance.AudioController.PlayAudio(audioData);
       }
-      
+
       if (playerEquipment.EquippedItem == null) {
         return;
       }
-      
+
       playerEquipment.EquippedItem.ApplyDurabilityLoss(isHit);
+    }
+
+    protected override void RangeAttack() {
+      if (!handItem) {
+        return;
+      }
+
+      handItem.StartUse();
     }
 
     private void SetDefaultAttackParam() {
@@ -44,6 +54,10 @@ namespace Player {
     }
 
     protected override void TriggerAttack() {
+      if (isRangedAttack && !playerEquipment.EquippedItem.CanShoot()) {
+        return;
+      }
+
       base.TriggerAttack();
       if (!firstAttack) {
         firstAttack = true;
@@ -58,7 +72,6 @@ namespace Player {
         return;
       }
 
-      Debug.LogWarning("Could not set attack parameters from equipment", this);
       SetParamsFromPlayerStats();
     }
 
@@ -67,6 +80,9 @@ namespace Player {
       attackLayer = statsObject.attackLayer;
       attackID = statsObject.attackID;
       colliderSize = statsObject.attackColliderSize;
+      isRangedAttack = false;
+      handItem = null;
+      objectHighlighter.ChangeCrosshair(isRangedAttack);
       SetDefaultAttackParam();
     }
 
@@ -80,36 +96,39 @@ namespace Player {
     }
 
     private void TryActivateTool() {
-      if (playerEquipment.ItemInHand == null)
+      if (!handItem) {
         return;
+      }
 
-      var tool = playerEquipment.ItemInHand.GetComponent<HandItem>();
-      tool?.Activate();
+      handItem.Activate();
     }
 
     private bool SetAttackParamsFromEquipment() {
-      if (playerEquipment == null) {
+      if (!playerEquipment) {
         Debug.LogWarning("Could not find Player Equipment", this);
         return false;
       }
 
-      if (playerEquipment.ItemInHand == null) {
-        Debug.LogWarning("Could not find equipped weapon", this);
+      if (!playerEquipment.ItemInHand) {
         return false;
       }
 
-      var weaponStats = playerEquipment.ItemInHand.GetComponent<HandItem>().Item;
+      handItem = playerEquipment.ItemInHand.GetComponent<HandItem>();
+      var weaponStats = handItem.Item;
       if (!(weaponStats is IAttackableItem attackableItem)) {
-        Debug.LogWarning("Equipped item is not attackable", this);
         return false;
       }
 
       //Debug.LogError("SetAttackParamsFromEquipment");
       attackLayer = attackableItem.AttackLayer;
-      
+
       attackID = attackableItem.AnimationAttackID;
       colliderSize = attackableItem.ColliderSize;
       maxTargets = attackableItem.MaxTargets;
+
+      isRangedAttack = attackableItem.WeaponType == WeaponType.Ranged;
+      objectHighlighter.ChangeCrosshair(isRangedAttack);
+
       return true;
     }
 

@@ -1,4 +1,5 @@
 using System;
+using Windows;
 using Craft;
 using Inventory;
 using Player;
@@ -26,11 +27,12 @@ public class PlaceCell : MonoBehaviour {
   private GameObject spawnPrefab;
   private ChunkController chunkController;
   private BuildingsDataController buildingDataController;
-
+  private WindowsController windowsController;
   private void Start() {
     playerController = GameManager.Instance.CurrPlayerController;
     chunkController = GameManager.Instance.ChunkController;
     buildingDataController = GameManager.Instance.BuildingsDataController;
+    windowsController = GameManager.Instance.WindowsController;
   }
 
   public void ActivateBuildMode(Building bData, ResourceData rData, GameObject sPrefab) {
@@ -45,7 +47,6 @@ public class PlaceCell : MonoBehaviour {
         previewColor = bData.PreviewColor;
         blockColor = bData.BlockColor;
       }
-
     }
     else {
       DisableBuildMode();
@@ -56,7 +57,7 @@ public class PlaceCell : MonoBehaviour {
     return GameManager.Instance.QuickSlotListener.GetSelectedSlot();
   }
 
-  private void EnableBuildMode(InventorySlot slot, Building bData, ResourceData rData) {
+  private void EnableBuildMode(Building bData, ResourceData rData) {
     buildingData = bData;
     resourceData = rData;
     SetEnabled(true);
@@ -117,7 +118,8 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void Update() {
-    if (GameManager.Instance.UserInput.controls.UI.Click.WasPressedThisFrame()) {
+    if (GameManager.Instance.UserInput.controls.UI.Click.WasPressedThisFrame() &&
+        !windowsController.IsAnyWindowOpen) {
       UIInput_OnUIClick();
     }
 
@@ -139,7 +141,7 @@ public class PlaceCell : MonoBehaviour {
     var worldPosition = GetMousePosition();
     var grid = CoordsTransformer.MouseToGridPosition(worldPosition); //WorldToGrid
     var clampedPosition = grid;
-    var coords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+    var coords = GetPlayerCoords();
     clampedPosition.X = Mathf.Clamp(grid.X, coords.X - radius, coords.X + radius);
     clampedPosition.Y = Mathf.Clamp(grid.Y, coords.Y - radius, coords.Y + radius);
     var world = CoordsTransformer.GridToWorld(clampedPosition.X, clampedPosition.Y); //GridToWorld
@@ -147,6 +149,9 @@ public class PlaceCell : MonoBehaviour {
     return new Vector3(world.x, world.y, 0f);
   }
 
+  private Coords GetPlayerCoords() {
+    return GameManager.Instance.PlayerController.PlayerCoords.GetCoordsOutOfBounds();
+  }
   private bool ShouldUseBlockColor(Vector3 worldPosition) {
     var grid = CoordsTransformer.MouseToGridPosition(worldPosition);
     var sizeX = buildingData ? buildingData.SizeX : 1;
@@ -157,7 +162,7 @@ public class PlaceCell : MonoBehaviour {
       return true;
 
     var canPlace = CanPlaceObject(grid.X, grid.Y, sizeX, sizeY);
-    var isPlayerOnGrid = GameManager.Instance.PlayerController.PlayerCoords.GetCoords().Equals(grid);
+    var isPlayerOnGrid = GetPlayerCoords().Equals(grid);
     //Debug.LogError($"canplace {grid.X} | {grid.Y}");
     var hasGround = HasGround(grid.X, grid.Y, sizeX);
     //if we place building we just need to know the all cells is empty
@@ -232,12 +237,15 @@ public class PlaceCell : MonoBehaviour {
     AfterPlaceCellActions(build);
     var test = CoordsTransformer.MouseToGridPosition(pos);
     SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
+    GameManager.Instance.Locator.SetTarget(pos, coords, GetSelectedSlot().Item.info);
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject) {
     var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
+    var worldCoords = CoordsTransformer.WorldToGridBuildings(buildObject.transform.position);
     chunkController.RemoveBuild(buildObject);
     SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
+    GameManager.Instance.Locator.RemoveTarget(worldCoords);
     return true;
   }
 

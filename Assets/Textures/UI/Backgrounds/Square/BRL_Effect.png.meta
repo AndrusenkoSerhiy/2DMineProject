@@ -1,0 +1,611 @@
+fileFormatVersion: 2
+guid: 6d16fdece99a1684a9e6dc2c6ff709db
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4622550290462710923
+    second: BRL_Effect_0
+  - first:
+      213: 5165014700318839381
+    second: BRL_Effect_1
+  - first:
+      213: -8725819868819010073
+    second: BRL_Effect_2
+  - first:
+      213: 1924732900384426741
+    second: BRL_Effect_3
+  - first:
+      213: 6008319153950705537
+    second: BRL_Effect_4
+  - first:
+      213: 415448740449962196
+    second: BRL_Effect_5
+  - first:
+      213: 2446374891842731533
+    second: BRL_Effect_6
+  - first:
+      213: 7135690547520714342
+    second: BRL_Effect_7
+  - first:
+      213: 3679747466142564630
+    second: BRL_Effect_8
+  - first:
+      213: -8472227344720777357
+    second: BRL_Effect_9
+  - first:
+      213: 5059384994607785585
+    second: BRL_Effect_10
+  - first:
+      213: 3578057952047624438
+    second: BRL_Effect_11
+  - first:
+      213: 7049750063851241833
+    second: BRL_Effect_12
+  - first:
+      213: -6901248832525989887
+    second: BRL_Effect_13
+  - first:
+      213: -1662478781115081334
+    second: BRL_Effect_14
+  - first:
+      213: -7879503684545716539
+    second: BRL_Effect_15
+  - first:
+      213: 4566177573950255157
+    second: BRL_Effect_16
+  - first:
+      213: 8174377418633275782
+    second: BRL_Effect_17
+  - first:
+      213: -9208254597829483907
+    second: BRL_Effect_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BRL_Effect_0
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 14
+        width: 181
+        height: 148
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 573679c800769dfb0800000000000000
+      internalID: -4622550290462710923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_1
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 13
+        width: 187
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 552dc282181dda740800000000000000
+      internalID: 5165014700318839381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_2
+      rect:
+        serializedVersion: 2
+        x: 383
+        y: 19
+        width: 113
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ed4ff88f09a7e680800000000000000
+      internalID: -8725819868819010073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_3
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 39
+        width: 97
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5facbee006606ba10800000000000000
+      internalID: 1924732900384426741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_4
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 61
+        width: 81
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1874864ef66d16350800000000000000
+      internalID: 6008319153950705537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_5
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 83
+        width: 64
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d847e4ad68f3c500800000000000000
+      internalID: 415448740449962196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_6
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 105
+        width: 46
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0e78bfa00543f120800000000000000
+      internalID: 2446374891842731533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_7
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 126
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 666b5181fb0170360800000000000000
+      internalID: 7135690547520714342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 65
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 611429603d6111330800000000000000
+      internalID: 3679747466142564630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_9
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 15
+        width: 109
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37f21952e1a9c6a80800000000000000
+      internalID: -8472227344720777357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_10
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 19
+        width: 30
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 176e989c8db863640800000000000000
+      internalID: 5059384994607785585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_11
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 19
+        width: 36
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f07f8100c0d7a130800000000000000
+      internalID: 3578057952047624438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_12
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 19
+        width: 49
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9610427f45eb5d160800000000000000
+      internalID: 7049750063851241833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_13
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 19
+        width: 60
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10885be40c6d930a0800000000000000
+      internalID: -6901248832525989887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_14
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 19
+        width: 71
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8dd2055b50bde8e0800000000000000
+      internalID: -1662478781115081334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_15
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 19
+        width: 82
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ce5544752166a290800000000000000
+      internalID: -7879503684545716539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_16
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 19
+        width: 92
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 530f8a49f425e5f30800000000000000
+      internalID: 4566177573950255157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_17
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 19
+        width: 101
+        height: 97
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6896c99d3f8317170800000000000000
+      internalID: 8174377418633275782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BRL_Effect_18
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 19
+        width: 110
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d72240f0b35b53080800000000000000
+      internalID: -9208254597829483907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BRL_Effect_0: -4622550290462710923
+      BRL_Effect_1: 5165014700318839381
+      BRL_Effect_10: 5059384994607785585
+      BRL_Effect_11: 3578057952047624438
+      BRL_Effect_12: 7049750063851241833
+      BRL_Effect_13: -6901248832525989887
+      BRL_Effect_14: -1662478781115081334
+      BRL_Effect_15: -7879503684545716539
+      BRL_Effect_16: 4566177573950255157
+      BRL_Effect_17: 8174377418633275782
+      BRL_Effect_18: -9208254597829483907
+      BRL_Effect_2: -8725819868819010073
+      BRL_Effect_3: 1924732900384426741
+      BRL_Effect_4: 6008319153950705537
+      BRL_Effect_5: 415448740449962196
+      BRL_Effect_6: 2446374891842731533
+      BRL_Effect_7: 7135690547520714342
+      BRL_Effect_8: 3679747466142564630
+      BRL_Effect_9: -8472227344720777357
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

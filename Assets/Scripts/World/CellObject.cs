@@ -15,6 +15,8 @@ namespace World {
     [SerializeField] private ObjectHighlight highlight;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
+    
+    public DamageableType DamageableType { get; set; }
 
     public ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
@@ -38,6 +40,7 @@ namespace World {
     public CellData CellData => _cellData;
 
     public void Init(CellData cellData, ResourceData data) {
+      DamageableType = DamageableType.Cell;
       _cellData = cellData;
       resourceData = data;
       InitUnitHealth();
@@ -78,7 +81,6 @@ namespace World {
     public void Damage(float damage, bool isPlayer) {
       if (!_cellData.canTakeDamage)
         return;
-
       unitHealth.TakeDamage(damage, isPlayer);
       UpdateDamageOverlay(damage);
     }
@@ -134,14 +136,14 @@ namespace World {
       ResetShake();
       GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
       GameManager.Instance.CellObjectsPool.ReturnObject(this);
-      //GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
-      //GameManager.Instance.TaskManager.DelayAsync(
-      // () => GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
-
+      
       var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity).gameObject;
       ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
-      ps.startColor = resourceData.EffectColor;
-
+      //ps.startColor = resourceData.EffectColor;
+      if (ps != null) {
+        var main = ps.main;
+        main.startColor = new ParticleSystem.MinMaxGradient(resourceData.EffectColor);
+      }
       highlight.SetHighlight(false);
     }
 
@@ -149,8 +151,12 @@ namespace World {
       //Shake();
       var pos = transform.position;
       var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDamageEffect", pos, Quaternion.identity).gameObject;
-      ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
-      ps.startColor = resourceData.EffectColor;
+      var ps = psGo.GetComponent<ParticleSystem>();
+      //ps.startColor = resourceData.EffectColor;
+      if (ps != null) {
+        var main = ps.main;
+        main.startColor = new ParticleSystem.MinMaxGradient(resourceData.EffectColor);
+      }
     }
 
     private void Shake() {

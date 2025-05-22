@@ -2,13 +2,11 @@ using UnityEngine;
 
 namespace Scriptables.Items {
   public interface IAttackableItem {
+    public WeaponType WeaponType { get; }
+    public int MagazineSize { get; }
+    public ItemObject Ammo { get; }
+    public float AmmoSpeed { get; }
     public LayerMask AttackLayer { get; }
-    //this moves to modifiers
-    /*public float BlockDamage { get; }
-    public float EntityDamage { get; }
-    public float Range { get; }
-    public float TimeBtwAttacks { get; }
-    public float StaminaUsage { get; }*/
     public int AnimationAttackID { get; }
     public Vector2 ColliderSize { get; }
     public int MaxTargets { get; }

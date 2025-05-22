@@ -1,9 +1,12 @@
 ﻿using System;
+using Interaction;
 using Player;
 using SaveSystem;
 using Scriptables.Items;
 using Stats;
+using UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Inventory {
   public class PlayerEquipment : MonoBehaviour, ISaveLoad {
@@ -13,11 +16,15 @@ namespace Inventory {
     [SerializeField] private Transform leftHandTransform;
     [SerializeField] private Transform rightHandTransform;
     [SerializeField] private string repairItemText;
+    [SerializeField] private InteractionPrompt reloadInteractionPromtUI;
+    [SerializeField] private string reloadText;
+    [SerializeField] private Ammo ammoUI;
 
     private GameManager gameManager;
     private PlayerController playerController;
     private PlayerInventory playerInventory;
     private Item equippedItem;
+    private string reloadButtonName;
 
     public Transform ItemInHand {
       get => itemInHand;
@@ -60,6 +67,8 @@ namespace Inventory {
     private void Start() {
       userInterface.OnLoaded += AddEvents;
       userInterface.OnDisabled += RemoveEvents;
+
+      reloadButtonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.UI.Reload);
     }
 
     private void OnDisable() {
@@ -100,6 +109,8 @@ namespace Inventory {
 
       equippedItem = item;
       AddWeaponEvents();
+      CheckIfReloadNeeded();
+      CheckIfNeedToShowAmmoUI();
     }
 
     public void UnEquipTool() {
@@ -111,6 +122,8 @@ namespace Inventory {
 
       RemoveWeaponEvents();
       equippedItem = null;
+      CheckIfReloadNeeded();
+      CheckIfNeedToShowAmmoUI();
     }
 
     private void RemoveItemFromHand() {
@@ -142,6 +155,7 @@ namespace Inventory {
         return;
       }
 
+      equippedItem.OnAmmoUsed += OnAmmoUsedHandler;
       equippedItem.OnItemBroken += OnItemBrokenHandler;
       equippedItem.OnItemRepaired += OnItemRepairedHandler;
     }
@@ -151,8 +165,13 @@ namespace Inventory {
         return;
       }
 
+      equippedItem.OnAmmoUsed -= OnAmmoUsedHandler;
       equippedItem.OnItemBroken -= OnItemBrokenHandler;
       equippedItem.OnItemRepaired -= OnItemRepairedHandler;
+    }
+
+    private void OnAmmoUsedHandler() {
+      CheckIfReloadNeeded();
     }
 
     private void OnItemBrokenHandler() {
@@ -240,8 +259,71 @@ namespace Inventory {
       return repairItemText;
     }
 
+    public void ConsumeAmmo() {
+      equippedItem.ApplyDurabilityLoss(false);
+      equippedItem.ConsumeAmmo();
+      ammoUI.UpdateCount(equippedItem.CurrentAmmoCount);
+
+      if ((equippedItem.CurrentAmmoCount + 1) == equippedItem.MagazineSize) {
+        CheckIfReloadNeeded();
+      }
+    }
+
     private bool EquippedItemCanBeRepaired() {
       return equippedItem is { CanBeRepaired: true };
+    }
+
+    private void CheckIfNeedToShowAmmoUI() {
+      if (equippedItem == null || equippedItem.IsBroken || equippedItem.MagazineSize <= 0) {
+        ammoUI.Hide();
+        return;
+      }
+
+      ammoUI.Show(equippedItem.GetAmmoItemObject(), equippedItem.CurrentAmmoCount);
+    }
+
+    private void CheckIfReloadNeeded() {
+      if (equippedItem == null || equippedItem.IsBroken || !equippedItem.ReloadNeeded()) {
+        HideReloadPrompt();
+        UnsubscribeToChangeBlockType();
+        return;
+      }
+
+      ShowReloadPrompt();
+      SubscribeToChangeBlockType();
+    }
+
+    private void ReloadHandler(InputAction.CallbackContext obj) {
+      var ammo = equippedItem.GetAmmoItemObject();
+      var ammoAmount = GetPlayerInventory().InventoriesPool.GetResourceTotalAmount(ammo.Id);
+
+      if (ammoAmount <= 0) {
+        gameManager.MessagesManager.ShowSimpleMessage("You don't have ammo.");
+        return;
+      }
+
+      var ammoNeeded = equippedItem.MagazineSize - equippedItem.CurrentAmmoCount;
+      var reloadAmount = ammoAmount > ammoNeeded ? ammoNeeded : ammoAmount;
+      equippedItem.Reload(reloadAmount);
+      GetPlayerInventory().InventoriesPool.RemoveFromInventoriesPool(ammo.Id, reloadAmount);
+      ammoUI.UpdateCount(equippedItem.CurrentAmmoCount, (ammoAmount - reloadAmount));
+      CheckIfReloadNeeded();
+    }
+
+    private void ShowReloadPrompt() {
+      reloadInteractionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(reloadText, reloadButtonName));
+    }
+
+    private void HideReloadPrompt() {
+      reloadInteractionPromtUI.ShowPrompt(false);
+    }
+
+    private void SubscribeToChangeBlockType() {
+      gameManager.UserInput.controls.UI.Reload.performed += ReloadHandler;
+    }
+
+    private void UnsubscribeToChangeBlockType() {
+      gameManager.UserInput.controls.UI.Reload.performed -= ReloadHandler;
     }
   }
 }

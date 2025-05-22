@@ -59,7 +59,10 @@ namespace Scriptables.Stats {
     [Tooltip("The detection distance for grounding and roof detection"), Range(0f, 0.5f)]
     public float grounderDistance = 0.05f;
 
-    [Header("JUMP")]
+    [Header("JUMP")] 
+    [Tooltip("Minimal height for jumping")]
+    public float minJumpHeight = 3;
+    
     [Tooltip("The immediate velocity applied when jumping")]
     public float jumpPower = 36;
 

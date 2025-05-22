@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 3af1ccfd-8f6e-4505-8061-efd0e58ced8a
   Type: 0
   Name: Nails
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 7c669d962f4a00047b0cf8c7d449770d, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -23,5 +24,7 @@ MonoBehaviour:
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3890226224433729309, guid: 3e57fc6d20dec65419b1647c813862d8, type: 3}
-  Description: 
-  bonusResources: []
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: Crafting material/Ammo
+  statModifiers: []

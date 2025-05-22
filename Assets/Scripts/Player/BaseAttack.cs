@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Animation;
+using Inventory;
 using Scriptables;
 using Scriptables.Stats;
 using UnityEngine;
-using World;
 
 namespace Player {
   public class BaseAttack : MonoBehaviour {
@@ -16,11 +16,14 @@ namespace Player {
     [SerializeField] protected Transform attackTransform;
     [SerializeField] private float minDistance = 2f;
     [SerializeField] private float maxDistance = 5f;
-
+    [SerializeField] private List<string> lockReasons = new();
     private float attackTimeCounter;
     protected LayerMask attackLayer;
     protected int attackID;
     protected int maxTargets;
+
+    protected bool isRangedAttack;
+
     protected Vector2 colliderSize;
 
     private List<IDamageable> targets = new();
@@ -29,6 +32,7 @@ namespace Player {
     [SerializeField] private Vector2 originalSize;
     private int lookDirection;
     private AnimatorParameters animParam;
+    protected PlayerEquipment playerEquipment;
 
     protected PlayerStats playerStats;
     protected bool firstAttack;
@@ -40,6 +44,7 @@ namespace Player {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
       animParam = GameManager.Instance.AnimatorParameters;
+      playerEquipment = GameManager.Instance.PlayerEquipment;
     }
 
     protected virtual void Start() {
@@ -59,34 +64,36 @@ namespace Player {
       firstAttack = false;
     }
 
-    public void LockHighlight(bool state) {
-      isHighlightLock = state;
+    //reason use for block action when you lock hightlight in build mode and open/closed inventory
+    public void LockHighlight(bool state, string reason = "", bool lockPos = true) {
+      if (state && !string.IsNullOrEmpty(reason) && !lockReasons.Contains(reason)) {
+        lockReasons.Add(reason);
+      }
+      
+      if (!state && lockReasons.Contains(reason)) {
+        lockReasons.Remove(reason);
+      }
+
+      if (!state && lockReasons.Count > 0) {
+        return;
+      }
+      
+      if (lockPos) {
+        isHighlightLock = state;
+      }
+      
       if (state) {
         attackCollider.transform.localPosition = new Vector3(0, 1, 0);
         if (originalSize.Equals(Vector2.zero)) {
           originalSize = attackCollider.size;
         }
-        attackCollider.size = new Vector2(.2f, .2f);
+        attackCollider.size = Vector2.zero;
       }
       else {
         attackCollider.size = originalSize;
       }
 
       objectHighlighter.EnableCrosshair(!state);
-    }
-    //when we change minig mode to build
-    public void DownScaleAttackCollider(bool state) {
-      if (state) {
-        if (originalSize.Equals(Vector2.zero)) {
-          originalSize = attackCollider.size;
-        }
-        attackCollider.size = new Vector2(.2f, .2f);
-      }
-      else {
-        attackCollider.size = originalSize;
-      }
-
-      //bjectHighlighter.EnableCrosshair(!state);
     }
 
     protected virtual void PrepareAttackParams() {
@@ -173,13 +180,17 @@ namespace Player {
       SetTargetsFromHighlight();
       foreach (var target in targets) {
         if (target == null || target.hasTakenDamage) continue;
-        target.Damage(PlayerStats.BlockDamage, true);
+        var damage = target.DamageableType == DamageableType.Enemy ? playerStats.EntityDamage : playerStats.BlockDamage;
+        target.Damage(damage, true);
         iDamageables.Add(target);
       }
 
       AfterTargetsTakenDamage(targets.Count);
 
       ReturnAttackableToDamageable();
+    }
+
+    protected virtual void RangeAttack() {
     }
 
     protected virtual void AfterTargetsTakenDamage(int targetsCount) {
@@ -208,8 +219,14 @@ namespace Player {
     }
 
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
-      if (go != gameObject)
+      if (go != gameObject) {
         return;
+      }
+
+      if (isRangedAttack) {
+        RangeAttack();
+        return;
+      }
 
       Attack();
 

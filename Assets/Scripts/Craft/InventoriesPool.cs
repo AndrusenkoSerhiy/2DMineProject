@@ -77,7 +77,6 @@ namespace Craft {
     }
 
     public bool HasRepairKits() {
-      Debug.Log("HasRepairKits");
       foreach (var inventory in pool) {
         if (inventory.HasRepairKits()) {
           return true;

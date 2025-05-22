@@ -75,11 +75,11 @@ namespace Messages {
     }
 
     private void SetupIcon() {
-      if (icon != null) {
+      if (icon) {
         iconImage.sprite = icon;
         iconImage.gameObject.SetActive(true);
       }
-      else {
+      else if (!iconImage.sprite) {
         iconImage.gameObject.SetActive(false);
       }
     }

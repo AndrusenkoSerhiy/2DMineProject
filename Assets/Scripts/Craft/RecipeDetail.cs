@@ -79,9 +79,7 @@ namespace Craft {
     private void AddInventoryPoolEvents() {
       foreach (var inventory in inventoriesPool.Inventories) {
         foreach (var slot in inventory.Slots) {
-          slot.OnAfterItemAdd += OnAfterAmountChangedHandler;
-          slot.OnAfterItemRemoved += OnAfterAmountChangedHandler;
-          slot.OnAfterAmountChanged += OnAfterAmountChangedHandler;
+          slot.OnAfterUpdated += OnAfterUpdatedHandler;
         }
       }
     }
@@ -89,19 +87,19 @@ namespace Craft {
     private void RemoveInventoryPoolEvents() {
       foreach (var inventory in inventoriesPool.Inventories) {
         foreach (var slot in inventory.Slots) {
-          slot.OnAfterItemAdd -= OnAfterAmountChangedHandler;
-          slot.OnAfterItemRemoved -= OnAfterAmountChangedHandler;
-          slot.OnAfterAmountChanged -= OnAfterAmountChangedHandler;
+          slot.OnAfterUpdated -= OnAfterUpdatedHandler;
         }
       }
     }
 
-    private void OnAfterAmountChangedHandler(InventorySlot slot) {
-      if (slot.isEmpty) {
+    private void OnAfterUpdatedHandler(SlotUpdateEventData obj) {
+      if (obj.after.isEmpty && obj.before.isEmpty) {
         return;
       }
 
-      OnResourcesTotalUpdateHandler(slot.Item.info.Id);
+      var id = obj.after.isEmpty ? obj.before.Item.info.Id : obj.after.Item.info.Id;
+
+      OnResourcesTotalUpdateHandler(id);
     }
   }
 }

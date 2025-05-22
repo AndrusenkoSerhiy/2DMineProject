@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using SaveSystem;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Menu {
@@ -35,15 +36,21 @@ namespace Menu {
 
     private GameManager gameManager;
     private SaveLoadSystem saveLoadSystem;
-    private Menu activeMenu = Menu.None;
+    [SerializeField] private Menu activeMenu = Menu.None;
     private bool locked;
     private bool cancelEnabled;
-
+    
+    [SerializeField] private bool isNewGame;
+    public Menu ActiveMenu => activeMenu;
     private void Awake() {
       gameManager = GameManager.Instance;
       saveLoadSystem = SaveLoadSystem.Instance;
 
       SetupProfiles();
+    }
+
+    private void Start() {
+      gameManager.UserInput.controls.UI.Cancel.performed += HandleEsc;
     }
 
     private void SetupProfiles() {
@@ -55,7 +62,7 @@ namespace Menu {
       }
     }
 
-    private void HandleEsc() {
+    private void HandleEsc(InputAction.CallbackContext ctx) {
       if (!saveLoadSystem.IsProfileSet()) {
         return;
       }
@@ -68,13 +75,14 @@ namespace Menu {
     }
 
     private async void StartNewGame() {
+      gameManager.LockOnNewGame();
       ShowLoading();
       await Task.Yield();
       await Task.Delay(100);
 
       gameManager.StartGameCameraController.Play();
       saveLoadSystem.NewGame();
-
+      isNewGame = true;
       HideLoading();
     }
 
@@ -92,7 +100,7 @@ namespace Menu {
       }
 
       saveLoadSystem.LoadGame();
-
+      isNewGame = false;
       HideLoading();
     }
 
@@ -142,21 +150,25 @@ namespace Menu {
       if (locked == state) {
         return;
       }
-
-      LockPlayer(state);
+      //use only one time when we start new game we don't need to unlock player 
+      //before he grounded
+      if (isNewGame && !state) {
+        isNewGame = false;
+      }else LockPlayer(state);
+      
       bg.SetActive(state);
       locked = state;
 
       if (state) {
         gameManager.PauseGame();
 
-        var cancelAction = gameManager.UserInput.controls.UI.Cancel;
+        /*var cancelAction = gameManager.UserInput.controls.UI.Cancel;
         cancelEnabled = cancelAction.enabled;
 
         if (!cancelEnabled) {
           cancelAction.Enable();
           cancelAction.performed += ctx => HandleEsc();
-        }
+        }*/
 
         gameManager.SetGameStage(GameStage.MainMenu);
       }
@@ -295,8 +307,9 @@ namespace Menu {
 
     private void LockPlayer(bool state) {
       gameManager.EnableUIElements(!state);
-      gameManager.EnableInput(!state);
-
+      //gameManager.EnableAllInput(!state);
+      gameManager.EnableGamePlayInput(!state);
+      
       gameManager.CurrPlayerController.SetLockPlayer(state);
       gameManager.CurrPlayerController.SetLockHighlight(state);
       gameManager.UserInput.EnableGamePlayControls(!state);

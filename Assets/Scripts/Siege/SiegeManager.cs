@@ -20,21 +20,22 @@ namespace Siege {
     public event Action<ActiveSiegeTemplate> OnZombieSpawn;
 
     private List<ActiveSiegeTemplate> siegeQueue = new();
-    private int currentSiegeCycle = 1;
-    private int currentSiegeIndex = 0;
+    [SerializeField] private int currentSiegeCycle = 1;
+    [SerializeField] private int currentSiegeIndex = 0;
 
-    private ActiveSiegeTemplate currentSiege;
+    [SerializeField] private ActiveSiegeTemplate currentSiege;
     private GameManager gameManager;
 
-    private bool siegesStarted = false;
-    private bool isSiegeInProgress;
-    private bool isPaused = false;
+    [SerializeField] private bool siegesStarted = false;
+    [SerializeField] private bool isSiegeInProgress;
+    [SerializeField] private bool isPaused = false;
 
-    private float durationTimer = 0f;
-    private float siegeCycleElapsedTime = 0f;
-    private float totalCycleTime = 0f;
-    private float timeToNextSegment = 0f;
+    [SerializeField] private float durationTimer = 0f;
+    [SerializeField] private float siegeCycleElapsedTime = 0f;
+    [SerializeField] private float totalCycleTime = 0f;
+    [SerializeField] private float timeToNextSegment = 0f;
 
+    public bool SiegesStarted => siegesStarted;
     public bool IsSiegeInProgress => isSiegeInProgress;
     public float TimeToNextSegment => timeToNextSegment;
     public float SiegeCycleElapsedTime => siegeCycleElapsedTime;
@@ -124,6 +125,7 @@ namespace Siege {
         return;
       }
 
+      Debug.LogWarning("Starting sieges!!!!!!!");
       siegeQueue.Clear();
       siegeQueue.Add(GetActiveTemplate(siegesSettings.FirstSiege));
 
@@ -147,6 +149,10 @@ namespace Siege {
 
       siegesStarted = true;
       activeSiegeCoroutine = StartCoroutine(RunNextSiege());
+      foreach (var siege in siegeQueue) {
+        Debug.LogWarning(
+          $"TimeBeforeSiege {siege.TimeBeforeSiege} | duration {siege.Duration} | waves {siege.WavesOfZombies} | zombies {siege.ZombieCount}");
+      }
     }
 
     private void StopActiveCoroutine() {
@@ -155,6 +161,7 @@ namespace Siege {
       }
 
       StopCoroutine(activeSiegeCoroutine);
+      activeSiegeCoroutine = null;
     }
 
     private ActiveSiegeTemplate GetActiveTemplate(SiegeTemplate template) {
@@ -166,6 +173,7 @@ namespace Siege {
 
     private IEnumerator RunNextSiege() {
       if (currentSiegeIndex >= siegeQueue.Count) {
+        Debug.LogWarning("Run second Siege");
         siegesStarted = false;
         currentSiegeIndex = 0;
         currentSiegeCycle++;

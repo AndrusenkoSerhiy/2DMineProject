@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace Player {
   public class PlayerControllerBase : MonoBehaviour {
-    // [SerializeField] protected PlayerStats _stats;
     protected PlayerStats playerStats;
     protected Rigidbody2D _rb;
     private CapsuleCollider2D _col;
@@ -16,8 +15,7 @@ namespace Player {
     [SerializeField] protected Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
     [SerializeField] private Animator _animator;
-
-    //[SerializeField] protected Transform Head;
+    
     [SerializeField] protected float _flipDeadZone = 1;
 
     [SerializeField] protected ActorBase actor;
@@ -61,7 +59,7 @@ namespace Player {
 
     private GameObject jumpPs;
     private GameObject fallingPs;
-
+    private float startYPos;
     #region Interface
 
     public Vector2 FrameInput => _frameInput.Move;
@@ -69,12 +67,12 @@ namespace Player {
     public event Action Jumped;
 
     #endregion
-
+ 
     public void SetLockPlayer(bool state) {
       lockPlayer = state;
     }
 
-    public virtual void SetLockHighlight(bool state) {
+    public virtual void SetLockHighlight(bool state, string reason = "") {
     }
 
     protected virtual void Awake() {
@@ -123,28 +121,14 @@ namespace Player {
       FlipX();
     }
 
-    protected virtual void FlipX() {
-      /*Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
-      var direction = (mousePosition - (Vector2)transform.position).normalized;
-
-      if (Mathf.Abs(mousePosition.x - transform.position.x) > _flipDeadZone) {
-        // Flip player
-        Vector3 localScale = transform.localScale;
-        localScale.x = Mathf.Sign(direction.x);
-        transform.localScale = localScale;
-
-        rotationCoef = isFlipped ? -1f : 1f;
-        direction.x *= rotationCoef;
-      }*/
-    }
+    protected virtual void FlipX() { }
 
     private void GatherInput() {
       _frameInput = new FrameInput {
         JumpDown = GameManager.Instance.UserInput.controls.GamePlay.Jump
-          .WasPerformedThisFrame(), //Input.GetButtonDown("Jump"),
-        JumpHeld = GameManager.Instance.UserInput.controls.GamePlay.Jump.IsPressed(), //Input.GetButton("Jump"),
-        Move = GameManager.Instance.UserInput
-          .GetMovement() //new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+          .WasPerformedThisFrame(),
+        JumpHeld = GameManager.Instance.UserInput.controls.GamePlay.Jump.IsPressed(),
+        Move = GameManager.Instance.UserInput.GetMovement() 
       };
 
       if (PlayerStats.StatsObject.snapInput) {
@@ -162,7 +146,7 @@ namespace Player {
       }
     }
 
-    private void FixedUpdate() {
+    protected virtual void FixedUpdate() {
       CheckCollisions();
 
       HandleJump();
@@ -174,7 +158,7 @@ namespace Player {
 
     #region Collisions
 
-    private void CheckCollisions() {
+    protected void CheckCollisions() {
       Physics2D.queriesStartInColliders = false;
 
       // Ground and Ceiling
@@ -213,7 +197,7 @@ namespace Player {
     }
 
     private void PlayLandingEffect() {
-      if (fallingPs != null && fallingPs.active) fallingPs.SetActive(false);
+      if (fallingPs != null && fallingPs.activeSelf) fallingPs.SetActive(false);
       GameManager.Instance.PoolEffects.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
     }
 
@@ -235,12 +219,12 @@ namespace Player {
     private bool CanUseCoyote =>
       _coyoteUsable && !grounded && time < _frameLeftGrounded + PlayerStats.StatsObject.coyoteTime;
 
-    private void HandleJump() {
+    protected void HandleJump() {
       if (actor != null && actor.IsDead) {
         return;
       }
 
-      if (jumpPs != null && jumpPs.active) jumpPs.transform.position = transform.position;
+      if (jumpPs != null && jumpPs.activeSelf) jumpPs.transform.position = transform.position;
 
       if (!_endedJumpEarly && !grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
 
@@ -274,6 +258,7 @@ namespace Player {
       _frameVelocity.y = PlayerStats.StatsObject.jumpPower;
       jumpPs = GameManager.Instance.PoolEffects.SpawnFromPool("JumpEffect", transform.position, Quaternion.identity).gameObject;
       Jumped?.Invoke();
+      startYPos = transform.position.y;
     }
 
     public void RestoreHealth() {
@@ -285,7 +270,7 @@ namespace Player {
 
     #region Horizontal
 
-    private void HandleDirection() {
+    protected void HandleDirection() {
       if (_frameInput.Move.x == 0) {
         //if we are on the ladder need to calculate deceleration like on ground
         var deceleration = grounded || _ladderMovement.IsOnLadder
@@ -358,11 +343,16 @@ namespace Player {
 
     #region Gravity
 
-    private void HandleGravity() {
+    protected void HandleGravity() {
       if (grounded && _frameVelocity.y <= 0f) {
         _frameVelocity.y = PlayerStats.StatsObject.groundingForce;
       }
       else {
+        if (_endedJumpEarly) {
+          if(transform.position.y - startYPos < PlayerStats.StatsObject.minJumpHeight)
+            _endedJumpEarly = false;
+        }
+        
         var inAirGravity = PlayerStats.StatsObject.fallAcceleration;
         if (_endedJumpEarly && _frameVelocity.y > 0)
           inAirGravity *= PlayerStats.StatsObject.jumpEndEarlyGravityModifier;
@@ -371,7 +361,7 @@ namespace Player {
             inAirGravity * Time.fixedDeltaTime);
         SetFall();
       }
-      if (fallingPs != null && fallingPs.active) fallingPs.transform.position = transform.position;
+      if (fallingPs != null && fallingPs.activeSelf) fallingPs.transform.position = transform.position;
     }
 
     //start falling down set animator param
@@ -391,8 +381,12 @@ namespace Player {
 
     #endregion
 
-    private void ApplyMovement() {
+    protected void ApplyMovement() {
       if (!_ladderMovement.IsClimbing) _rb.linearVelocity = _frameVelocity;
+    }
+    
+    public Vector2 GetVelocity() {
+      return _rb.linearVelocity;
     }
 
 /*#if UNITY_EDITOR

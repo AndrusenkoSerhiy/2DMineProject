@@ -1,9 +1,9 @@
+using Actors;
 using UnityEngine;
 
 namespace Player {
   public class MiningRobotController : PlayerControllerBase, IPlayerController{
     [SerializeField] private MiningRobotAttack miningRobotAttack;
-    [SerializeField] private CapsuleCollider2D capsuleCollider;
 
     protected override void Awake() {
       base.Awake();
@@ -11,6 +11,19 @@ namespace Player {
       EnableController(false);
       // stamina.SetStaminaBarRef();
       _ladderMovement = GameManager.Instance.PlayerLadderMovement;
+    }
+
+    protected override void FixedUpdate() {
+      CheckCollisions();
+      HandleGravity();
+      
+      //if player exit from robot but under the cells
+      if (GameManager.Instance.CurrPlayerController.Actor is ActorPlayer)
+        return;
+      
+      HandleJump();
+      HandleDirection();
+      ApplyMovement();
     }
 
     protected override void LookAtMouse() {
@@ -21,11 +34,14 @@ namespace Player {
       base.LookAtMouse();
     }
 
-    public override void SetLockHighlight(bool state) {
-      miningRobotAttack.LockHighlight(state);
+    public override void SetLockHighlight(bool state, string reason = "") {
+      miningRobotAttack.LockHighlight(state, reason);
     }
 
     protected override void FlipX() {
+      if (GameManager.Instance.CurrPlayerController.Actor is ActorPlayer)
+        return;
+      
       Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
       var direction = (mousePosition - (Vector2)transform.position).normalized;
 
@@ -62,7 +78,7 @@ namespace Player {
     
     public void SetMaxTargets(int value) {
       miningRobotAttack.SetMaxTargets(value);
-      miningRobotAttack.DownScaleAttackCollider(value==0);
+      miningRobotAttack.LockHighlight(value == 0, "ChangeMode",false);
     }
 
     private void ResetMovement() {
@@ -72,10 +88,6 @@ namespace Player {
 
     public void SetRBType(RigidbodyType2D bodyType) {
       _rb.bodyType = bodyType;
-    }
-
-    public void EnableCollider(bool state) {
-      capsuleCollider.enabled = state;
     }
   }
 }

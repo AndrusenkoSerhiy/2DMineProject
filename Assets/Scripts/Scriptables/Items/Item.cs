@@ -7,7 +7,9 @@ namespace Scriptables.Items {
   public class Item {
     [NonSerialized] private IDurableItem durableItemRef;
     [NonSerialized] private IRepairable repairableItemRef;
+    [NonSerialized] private IAttackableItem attackableItemRef;
     [SerializeField] private float durability;
+    [SerializeField] private int ammoCount;
     private bool hasDurability;
     private bool canBeRepaired;
     private float maxDurability;
@@ -24,10 +26,13 @@ namespace Scriptables.Items {
     public bool IsBroken => isBroken;
     public bool CanBeRepaired => canBeRepaired && DurabilityNotFull();
     public int RepairCost => repairableItemRef?.RepairCost ?? 0;
+    public int CurrentAmmoCount => ammoCount;
+    public int MagazineSize => attackableItemRef?.MagazineSize ?? 0;
 
     public event Action<float, float> OnDurabilityChanged;
     public event Action OnItemBroken;
     public event Action OnItemRepaired;
+    public event Action OnAmmoUsed;
 
     public Item() {
       info = null;
@@ -51,6 +56,11 @@ namespace Scriptables.Items {
         repairableItemRef = repairable;
         canBeRepaired = true;
       }
+
+      if (item is IAttackableItem attackable) {
+        attackableItemRef = attackable;
+        ammoCount = 0;
+      }
     }
 
     public bool isEmpty => info == null || string.IsNullOrEmpty(id);
@@ -72,6 +82,43 @@ namespace Scriptables.Items {
         repairableItemRef = repairable;
         canBeRepaired = true;
       }
+      
+      if (info is IAttackableItem attackable) {
+        attackableItemRef = attackable;
+      }
+    }
+
+    public bool CanShoot() {
+      if (attackableItemRef is not { WeaponType: WeaponType.Ranged } || isBroken) {
+        return false;
+      }
+
+      return ammoCount > 0;
+    }
+
+    public bool ReloadNeeded() {
+      if (attackableItemRef is not { WeaponType: WeaponType.Ranged }) {
+        return false;
+      }
+
+      return ammoCount < attackableItemRef.MagazineSize;
+    }
+
+    public void Reload(int ammo) {
+      if (attackableItemRef is not { WeaponType: WeaponType.Ranged }) {
+        return;
+      }
+
+      ammoCount = Math.Min(attackableItemRef.MagazineSize, ammoCount + ammo);
+    }
+
+    public ItemObject GetAmmoItemObject() {
+      return attackableItemRef is not { WeaponType: WeaponType.Ranged } ? null : attackableItemRef.Ammo;
+    }
+
+    public void ConsumeAmmo() {
+      ammoCount--;
+      OnAmmoUsed?.Invoke();
     }
 
     public bool DurabilityNotFull() {

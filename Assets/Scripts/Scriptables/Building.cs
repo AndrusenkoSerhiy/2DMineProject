@@ -9,5 +9,6 @@ namespace Scriptables {
     [SerializeField] private Color blockColor;
     public Color PreviewColor => previewColor;
     public Color BlockColor => blockColor;
+    public bool IsAttackable;
   }
 }

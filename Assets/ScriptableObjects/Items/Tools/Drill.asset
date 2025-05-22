@@ -26,7 +26,7 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3890226224433729309, guid: 4cc4a91c1521d3946a776e3a33c0546f, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: drill description
+  Description: Tool
   statModifiers:
   - type: 41
     applyType: 2
@@ -69,6 +69,9 @@ MonoBehaviour:
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}
   weaponType: 10
+  magazineSize: 0
+  ammo: {fileID: 0}
+  ammoSpeed: 0
   useSelfAnim: 1
   attackLayer:
     serializedVersion: 2

@@ -5,6 +5,12 @@ namespace Actors {
   public class ActorPlayer : ActorBase, ISaveLoad {
     public static event Action OnPlayerDeath;
     public static event Action OnPlayerRespawn;
+
+    protected override void Awake() {
+      base.Awake();
+      DamageableType = DamageableType.Player;
+    }
+
     protected override void Start() {
       SaveLoadSystem.Instance.Register(this);
       base.Start();
@@ -40,8 +46,8 @@ namespace Actors {
         OnPlayerDeath?.Invoke();
       }
     }
-    
-    public virtual void Respawn() {
+
+    public override void Respawn() {
       base.Respawn();
       OnPlayerRespawn?.Invoke();
     }

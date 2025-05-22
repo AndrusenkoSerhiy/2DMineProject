@@ -14,6 +14,7 @@ namespace Actors {
     [SerializeField] private bool _hasTakenDamage;
     public AnimatorParameters AnimParam => animParam;
     public bool IsDead => isDead;
+    public DamageableType DamageableType { get; set; }
 
     protected virtual void Awake() {
       stats = GetComponent<PlayerStats>();
@@ -22,8 +23,9 @@ namespace Actors {
     protected virtual void Start() {
       animParam = GameManager.Instance.AnimatorParameters;
     }
-    
+
     public float ActorBoundsWidth => capsuleCollider.size.x * .5f;
+
     public bool hasTakenDamage {
       get { return _hasTakenDamage; }
       set { _hasTakenDamage = value; }
@@ -32,7 +34,7 @@ namespace Actors {
     public virtual void Damage(float damage, bool isPlayer) {
       if (isDead)
         return;
-      
+
       hasTakenDamage = true;
       if (stats.TakeDamage(damage) <= 0) {
         DeathActions();
@@ -76,7 +78,7 @@ namespace Actors {
 
     public void DestroyObject() {
     }
-    
+
     public void SetAnimVelocityX(float val) {
       _animator.SetFloat(animParam.VelocityXHash, val);
       //Debug.LogError("stop zombie movement");

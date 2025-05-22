@@ -15,6 +15,7 @@ MonoBehaviour:
   id: 68002828-71cb-4de9-87f4-29f04e68bae0
   Type: 1
   Name: Earth-cake
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: f95b9253cc132a94a93fd2c491c2a315, type: 3}
   CharacterDisplay: {fileID: 0}
@@ -25,13 +26,15 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3890226224433729309, guid: 1817a31e58e35b64b80ef4de09c44d74, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: 
+  Description: Food
   statModifiers:
   - type: 2
     applyType: 1
     operatorType: 1
     value: 10
+    permanent: 0
     duration: 60
+    timeLeft: 0
     canApplyWhenPreviousAt: 20
     removePrevious: 5
     modifierDisplayObject: {fileID: 11400000, guid: c54aaa7f91949184ab0c94ae995e4970, type: 2}

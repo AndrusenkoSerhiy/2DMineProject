@@ -96,8 +96,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3625460618267473847}
+  - component: {fileID: 9064497359182062437}
+  - component: {fileID: 8970744914050695227}
   - component: {fileID: 8850246011643032565}
-  - component: {fileID: 3466914475769089215}
   m_Layer: 3
   m_Name: StoneWallBlock
   m_TagString: Untagged
@@ -122,6 +123,50 @@ Transform:
   - {fileID: 3001501768816692705}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9064497359182062437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3890226224433729309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dd16bfd3ff0d17408d926e3d68b829c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  count: 1
+  interactName: 
+  holdInteractText: 
+  item: {fileID: 11400000, guid: 344753810178b1c418c4c462d507b484, type: 2}
+  isPicked: 0
+--- !u!50 &8970744914050695227
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3890226224433729309}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 100
+  m_LinearDamping: 0.5
+  m_AngularDamping: 1
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!61 &8850246011643032565
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -156,7 +201,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.00035601854, y: 0}
+  m_Offset: {x: -0.005877733, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -166,22 +211,8 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.81627357, y: 3.6567068}
+  m_Size: {x: 3.6214404, y: 3.6567068}
   m_EdgeRadius: 0
---- !u!114 &3466914475769089215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3890226224433729309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6dd93fed44d4051a14ec415c4121ebf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsActive: 0
-  Building: {fileID: 11400000, guid: 04a533d54746ee6428333e6435320159, type: 2}
 --- !u!1 &6334819063608989524
 GameObject:
   m_ObjectHideFlags: 0
@@ -248,7 +279,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.2496233, y: -0.09992027}
+  m_Offset: {x: 0.24686211, y: -0.09992027}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -258,5 +289,5 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.82074547, y: 3.4568658}
+  m_Size: {x: 3.4215994, y: 3.4568658}
   m_EdgeRadius: 0

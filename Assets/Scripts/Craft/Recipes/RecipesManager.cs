@@ -110,6 +110,15 @@ namespace Craft.Recipes {
       RecheckRecipesForStation(stationType);
     }
 
+    public void MarkRecipeAsSeen(Recipe recipe) {
+      var currentState = GetRecipeState(recipe.Id);
+      if (currentState != RecipeState.New) {
+        return;
+      }
+
+      recipeStates[recipe.Id] = RecipeState.Unlocked;
+    }
+
     /// <summary>
     /// Returns recipe state.
     /// </summary>
@@ -141,7 +150,7 @@ namespace Craft.Recipes {
           continue;
         }
 
-        if (onlyUnlocked && state != RecipeState.Unlocked) {
+        if (onlyUnlocked && state == RecipeState.Locked) {
           continue;
         }
 
@@ -163,7 +172,7 @@ namespace Craft.Recipes {
       foreach (var (recipeId, state) in recipeStates) {
         var recipe = recipesDB.ItemsMap[recipeId];
 
-        if (IsRecipeOfType(recipe, stationType) && state == RecipeState.Unlocked) {
+        if (IsRecipeOfType(recipe, stationType) && state != RecipeState.Locked) {
           return true;
         }
       }
@@ -220,7 +229,7 @@ namespace Craft.Recipes {
           continue;
         }
 
-        if (state == RecipeState.Unlocked) {
+        if (state != RecipeState.Locked) {
           continue;
         }
 
@@ -253,7 +262,7 @@ namespace Craft.Recipes {
     }
 
     private void UnlockRecipe(Recipe recipe) {
-      recipeStates[recipe.Id] = RecipeState.Unlocked;
+      recipeStates[recipe.Id] = RecipeState.New;
       OnRecipeUnlocked?.Invoke(recipe);
       GameManager.Instance.MessagesManager.ShowNewRecipeMessage(recipe);
     }

@@ -24,6 +24,7 @@ using Scriptables.DropZombieData;
 using Settings;
 using Siege;
 using Stats;
+using Tools;
 using UI;
 using UnityEngine.Serialization;
 using Utility;
@@ -68,7 +69,12 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private SiegeManager siegeManager;
 
   [SerializeField] private ModifiersDatabaseObject modifiersDatabase;
+
   [SerializeField] private ActorsPooler actorsPooler;
+  [SerializeField] private DynamicCrosshair dynamicCrosshair;
+  [SerializeField] private BulletsPool bulletsPool;
+  [SerializeField] private Locator locator;
+
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
@@ -128,6 +134,9 @@ public class GameManager : PersistentSingleton<GameManager> {
   public RespawnManager RespawnManager => respawnManager;
   public GameStage GameStage => gameStage;
   public ActorsPooler ActorsPooler => actorsPooler;
+  public DynamicCrosshair DynamicCrosshair => dynamicCrosshair;
+  public BulletsPool BulletsPool => bulletsPool;
+  public Locator Locator => locator;
 
   public PlayerController PlayerController {
     set => playerController = value;
@@ -182,13 +191,8 @@ public class GameManager : PersistentSingleton<GameManager> {
       menuController.Hide();
       return;
     }
-
-    // EnableUIElements(false);
-    // startGameCameraController.Init();
+    
     menuController.Show();
-    // EnableInput(false);
-    //need to subscribe for player grounded first time
-    playerController.GroundedChanged += ChangeGround;
   }
 
   public void EnableUIElements(bool state) {
@@ -198,17 +202,26 @@ public class GameManager : PersistentSingleton<GameManager> {
   }
 
   //use for start cutscene fall to ground
-  public void EnableInput(bool state) {
+  private void EnableAllInput(bool state) {
     userInput.EnableGamePlayControls(state);
     userInput.EnableUIControls(state);
+  }
+  
+  //lock only gameplay controls
+  public void EnableGamePlayInput(bool state) {
+    userInput.EnableGamePlayControls(state);
+  }
 
-    playerController.SetLockHighlight(true);
+  //lock all input when we start new game
+  public void LockOnNewGame() {
+    EnableAllInput(false);
+    playerController.GroundedChanged += ChangeGround;
   }
 
   private void ChangeGround(bool arg1, float arg2) {
     playerController.GroundedChanged -= ChangeGround;
 
-    EnableInput(true);
+    EnableAllInput(true);
     playerController.SetLockHighlight(false);
     EnableUIElements(true);
   }

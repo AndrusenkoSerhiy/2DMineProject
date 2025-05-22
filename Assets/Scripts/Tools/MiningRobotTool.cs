@@ -4,14 +4,13 @@ using Actors;
 using Animation;
 using Interaction;
 using Inventory;
-using NUnit.Framework.Constraints;
 using Player;
 using SaveSystem;
 using Scriptables.Repair;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
+using Utils;
+using World;
 
 namespace Tools {
   public class MiningRobotTool : MonoBehaviour, IInteractable, ISaveLoad {
@@ -27,12 +26,18 @@ namespace Tools {
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
     [SerializeField] private PlaceCellRobot placeCellRobot;
+    
     [SerializeField] private InteractionPrompt changeModePrompt;
     [SerializeField] private string actionName;
     [SerializeField] private string attackModeName;
     [SerializeField] private string buildModeName;
+    
+    [SerializeField] private InteractionPrompt changeBlockTypePrompt;
+    [SerializeField] private string changeBlockActionName;
+    [SerializeField] private Coords robotCoordsOutOfBounds;
     private bool isAttackMode = true;
     private string buttonName;
+    private string changeBlockButtonName;
     
     private bool isPlayerInside;
     private RobotData robotLoadData;
@@ -47,6 +52,7 @@ namespace Tools {
 
     private int repairValue;
     private bool playerInRobot;
+    private ChunkController chunkController;
 
     public static event Action OnPlayerEnteredRobot;
     public static event Action OnPlayerSitOnRobot;
@@ -89,6 +95,19 @@ namespace Tools {
         SitOnRobot();
         ResetPlayerAnim();
       }
+      chunkController = gameManager.ChunkController;
+      robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
+      if (chunkController.ChunkData == null) {
+        chunkController.OnCreateChunk += LockOnStart;
+      }
+      else {
+        LockOnStart();
+      }
+    }
+
+    private void LockOnStart() {
+      chunkController.OnCreateChunk -= LockOnStart;
+      LockCells(true);
     }
 
     #region Save/Load
@@ -177,10 +196,10 @@ namespace Tools {
     }
 
     private void SitOnRobot() {
+      LockCells(false);
       ActorRobot.OnRobotBroked += ExitFromRobot;
       OnPlayerEnteredRobot?.Invoke();
       GameManager.Instance.QuickSlotListener.Deactivate();
-
       playerController.EnableController(false);
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
@@ -189,8 +208,9 @@ namespace Tools {
       miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
-      miningRobotController.EnableCollider(true);
-      miningRobotController.SetRBType(RigidbodyType2D.Dynamic);
+      EnablePhysics(true);
+      /*miningRobotController.EnableCollider(true);
+      miningRobotController.SetRBType(RigidbodyType2D.Dynamic);*/
 
       SetPlayerPosition(playerTransform, Vector3.zero);
       GameManager.Instance.CurrPlayerController = miningRobotController;
@@ -205,6 +225,7 @@ namespace Tools {
       buttonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.GamePlay.Build);
       changeModePrompt.UpdateSpriteAsset();
       UpdateModePrompt();
+      ApplyMode();
     }
 
     private void SubscribeToChangeMode() {
@@ -214,6 +235,15 @@ namespace Tools {
     private void UnsubscribeToChangeMode() {
       gameManager.UserInput.controls.GamePlay.Build.performed -= ChangeMode;
     }
+    
+    private void SubscribeToChangeBlockType() {
+      gameManager.UserInput.controls.GamePlay.BlockChange.performed += ChangeBlockType;
+    }
+    
+    private void UnsubscribeToChangeBlockType() {
+      gameManager.UserInput.controls.GamePlay.BlockChange.performed -= ChangeBlockType;
+    }
+    
 
     private void ChangeMode(InputAction.CallbackContext obj) {
       isAttackMode = !isAttackMode;
@@ -224,18 +254,45 @@ namespace Tools {
       
       UpdateModePrompt();
     }
+    
+    //if we exit from robot and build mode
+    private void ApplyMode() {
+      miningRobotController.EnableAttack(isAttackMode); 
+      miningRobotController.SetMaxTargets(isAttackMode ? 6 : 0);
+      if (isAttackMode) placeCellRobot.Deactivate();
+      else placeCellRobot.Activate();
+      
+      UpdateModePrompt();
+    }
+    
+    private void ChangeBlockType(InputAction.CallbackContext obj) {
+      placeCellRobot.UpdateBlockType();
+    }
 
     private void UpdateModePrompt() {
       var nextMode = isAttackMode ? buildModeName : attackModeName;
       changeModePrompt.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(actionName + " " +nextMode, buttonName));
+      
+      //show hide prompt for change block type
+      changeBlockButtonName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.GamePlay.BlockChange);
+      changeBlockTypePrompt.ShowPrompt(!isAttackMode, ButtonPromptSprite.GetFullPrompt(changeBlockActionName, changeBlockButtonName));
+      if(isAttackMode) UnsubscribeToChangeBlockType();
+      else SubscribeToChangeBlockType();
     }
 
     private void ExitFromRobot() {
       ActorRobot.OnRobotBroked -= ExitFromRobot;
       SetPlayerPosition(null, exitTransforms[0].position);
-      miningRobotController.EnableCollider(false);
-      miningRobotController.SetRBType(RigidbodyType2D.Kinematic);
-      miningRobotController.EnableController(false);
+      if (miningRobotController.Grounded) {
+        EnablePhysics(false);
+        LockCells(true);
+      }
+      else {
+        miningRobotController.GroundedChanged += GroundChanged;
+      }
+      /*miningRobotController.EnableCollider(false);
+      miningRobotController.SetRBType(RigidbodyType2D.Kinematic);*/
+      //miningRobotController.EnableController(false);
       placeCellRobot.Deactivate();
       playerController.EnableCollider(true);
       playerController.EnableController(true);
@@ -247,10 +304,44 @@ namespace Tools {
       GameManager.Instance.QuickSlotListener.Activate();
       UnsubscribeToChangeMode();
       changeModePrompt.ShowPrompt(false);
+      
+      //hide prompt for change block type
+      changeBlockTypePrompt.ShowPrompt(false);
+      UnsubscribeToChangeBlockType();
 
       RemoveRobotInventoryFromMainInventory();
       playerInRobot = false;
       OnPlayerExitFromRobot?.Invoke();
+    }
+
+    private void GroundChanged(bool state, float velocity) {
+      EnablePhysics(!state);
+      robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
+      miningRobotController.GroundedChanged -= GroundChanged;
+      LockCells(true);
+    }
+
+    [SerializeField] private List<int> lockedCells = new(){0};
+    private void LockCells(bool state) {
+      robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
+      var firstX = robotCoordsOutOfBounds.X;
+      var firstY = robotCoordsOutOfBounds.Y + 1;
+      
+      if (chunkController.ChunkData.GetCellFill(firstX, firstY).Equals(1)){
+        if (state && chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage) {
+          chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage = false;
+          lockedCells[0] = 1;
+        }else if (!state && lockedCells[0] == 1) {
+          lockedCells[0] = 0;
+          chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage = true;
+        } 
+      } 
+    }
+    private void EnablePhysics(bool state) {
+      //Debug.LogError($"EnablePhysics {state}");
+      miningRobotController.EnableCollider(state);
+      miningRobotController.SetRBType(state ? RigidbodyType2D.Dynamic : RigidbodyType2D.Kinematic);
+      miningRobotController.EnableController(state);
     }
 
     private void SetPlayerPosition(Transform tr, Vector3 pos) {

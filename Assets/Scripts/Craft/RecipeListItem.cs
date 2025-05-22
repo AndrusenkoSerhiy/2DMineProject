@@ -7,6 +7,7 @@ namespace Craft {
   public class RecipeListItem : MonoBehaviour {
     [SerializeField] private Image background;
     [SerializeField] private Image recipeIcon;
+    [SerializeField] private Image isNewIcon;
     [SerializeField] private TextMeshProUGUI recipeNameText;
     [SerializeField] private Recipe recipe;
     [SerializeField] private Color bgColor;
@@ -14,11 +15,16 @@ namespace Craft {
     [SerializeField] private Color textColor;
     [SerializeField] private Color activeTextColor;
 
-    public Recipe Recipe => recipe;
+    private bool isNew;
 
-    public void SetRecipeDetails(string name, Sprite icon, Recipe recipe) {
+    public Recipe Recipe => recipe;
+    public bool IsNew => isNew;
+
+    public void SetRecipeDetails(string name, Sprite icon, Recipe recipe, bool isNew = false) {
       recipeNameText.text = name;
       recipeIcon.sprite = icon;
+      isNewIcon.gameObject.SetActive(isNew);
+      this.isNew = isNew;
       this.recipe = recipe;
     }
 
@@ -30,6 +36,15 @@ namespace Craft {
     public void ResetStyles() {
       recipeNameText.color = textColor;
       background.color = bgColor;
+
+      if (isNew) {
+        MarkAsSeen();
+      }
+    }
+
+    public void MarkAsSeen() {
+      isNew = false;
+      isNewIcon.gameObject.SetActive(false);
     }
   }
 }

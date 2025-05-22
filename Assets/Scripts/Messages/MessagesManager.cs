@@ -3,6 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using Scriptables.Craft;
 using Scriptables.Items;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -26,6 +27,7 @@ namespace Messages {
     public Transform rightContainer;
 
     public GameObject messagePrefab;
+    public GameObject messageRecipePrefab;
 
     public int maxMessagesPerZone = 3;
     public float messageDuration = 5f;
@@ -59,6 +61,7 @@ namespace Messages {
     public SerializedDictionary<MessageType, Position> messagePositions;
 
     public List<MessageUI> messagePool = new();
+    public List<MessageUI> messageRecipePool = new();
 
     private Dictionary<Transform, List<MessageUI>> activeMessages = new();
 
@@ -139,7 +142,7 @@ namespace Messages {
         return;
       }
 
-      var message = GetMessageFromPool();
+      var message = type == MessageType.NewRecipe ? GetRecipeMessageFromPool() : GetMessageFromPool();
       message.transform.SetParent(container, false);
       message.gameObject.SetActive(true);
 
@@ -181,8 +184,9 @@ namespace Messages {
 
     private void ReturnMessage(Transform container, MessageUI message) {
       message.gameObject.SetActive(false);
-      activeMessages[container].Remove(message);
-      messagePool.Add(message);
+      Debug.LogError("Return :" + container.name, container.gameObject);
+      if (container == topContainer) messageRecipePool.Add(message);
+      else messagePool.Add(message);
     }
 
     private void OnGamePausedHandler() {
@@ -201,6 +205,17 @@ namespace Messages {
       }
 
       var newMessage = Instantiate(messagePrefab).GetComponent<MessageUI>();
+      return newMessage;
+    }
+
+    private MessageUI GetRecipeMessageFromPool() {
+      if (messageRecipePool.Count > 0) {
+        var message = messageRecipePool[0];
+        messageRecipePool.RemoveAt(0);
+        return message;
+      }
+
+      var newMessage = Instantiate(messageRecipePrefab).GetComponent<MessageUI>();
       return newMessage;
     }
 

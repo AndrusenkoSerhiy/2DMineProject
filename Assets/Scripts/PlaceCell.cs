@@ -38,7 +38,7 @@ public class PlaceCell : MonoBehaviour {
   public void ActivateBuildMode(Building bData, ResourceData rData, GameObject sPrefab) {
     spawnPrefab = sPrefab;
     if (!isPreviewing) {
-      EnableBuildMode(GetSelectedSlot(), bData, rData);
+      EnableBuildMode(bData, rData);
       if (rData != null) {
         previewColor = rData.PreviewColor;
         blockColor = rData.BlockColor;

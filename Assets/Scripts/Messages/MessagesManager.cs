@@ -3,7 +3,6 @@ using System.Linq;
 using JetBrains.Annotations;
 using Scriptables.Craft;
 using Scriptables.Items;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -142,7 +141,8 @@ namespace Messages {
         return;
       }
 
-      var message = type == MessageType.NewRecipe ? GetRecipeMessageFromPool() : GetMessageFromPool();
+      // var message = type == MessageType.NewRecipe ? GetRecipeMessageFromPool() : GetMessageFromPool();
+      var message = GetMessageFromPool(position != Position.Top);
       message.transform.SetParent(container, false);
       message.gameObject.SetActive(true);
 
@@ -184,9 +184,13 @@ namespace Messages {
 
     private void ReturnMessage(Transform container, MessageUI message) {
       message.gameObject.SetActive(false);
-      Debug.LogError("Return :" + container.name, container.gameObject);
+      activeMessages[container].Remove(message);
+      
+      var pool = container != topContainer ? messagePool : messageRecipePool;
+      pool.Add(message);
+      /*Debug.LogError("Return :" + container.name, container.gameObject);
       if (container == topContainer) messageRecipePool.Add(message);
-      else messagePool.Add(message);
+      else messagePool.Add(message);*/
     }
 
     private void OnGamePausedHandler() {
@@ -197,25 +201,17 @@ namespace Messages {
       }
     }
 
-    private MessageUI GetMessageFromPool() {
-      if (messagePool.Count > 0) {
-        var message = messagePool[0];
-        messagePool.RemoveAt(0);
+    private MessageUI GetMessageFromPool(bool main = true) {
+      var pool = main ? messagePool : messageRecipePool;
+      if (pool.Count > 0) {
+        var message = pool[0];
+        pool.RemoveAt(0);
         return message;
       }
 
-      var newMessage = Instantiate(messagePrefab).GetComponent<MessageUI>();
-      return newMessage;
-    }
+      var msgPrefab = main ? messagePrefab : messageRecipePrefab;
+      var newMessage = Instantiate(msgPrefab).GetComponent<MessageUI>();
 
-    private MessageUI GetRecipeMessageFromPool() {
-      if (messageRecipePool.Count > 0) {
-        var message = messageRecipePool[0];
-        messageRecipePool.RemoveAt(0);
-        return message;
-      }
-
-      var newMessage = Instantiate(messageRecipePrefab).GetComponent<MessageUI>();
       return newMessage;
     }
 

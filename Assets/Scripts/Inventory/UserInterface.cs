@@ -453,7 +453,7 @@ namespace Inventory {
 
       // Prevent any item movement if drop is disabled
       if (targetUI.PreventItemDropIn) {
-        Debug.Log("Preventing item drop");
+        // Debug.Log("Preventing item drop");
         return false;
       }
 
@@ -466,13 +466,13 @@ namespace Inventory {
       //Add split item
       if (!dragFull) {
         inventory.AddItem(slot.Item, dragAmount, targetSlot);
-        Debug.Log("Add split item");
+        // Debug.Log("Add split item");
         return true;
       }
 
       // Handle merging items
       if (!targetUI.PreventMergeIn && slot.CanMerge(targetSlot)) {
-        Debug.Log("Merging items");
+        // Debug.Log("Merging items");
         return targetInventory.MergeItems(slot, targetSlot);
       }
 
@@ -488,7 +488,7 @@ namespace Inventory {
         return false;
       }
 
-      Debug.Log("SwapSlots");
+      // Debug.Log("SwapSlots");
       return inventory.SwapSlots(slot, targetSlot);
     }
   }

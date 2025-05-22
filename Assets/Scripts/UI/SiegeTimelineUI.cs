@@ -120,8 +120,16 @@ namespace UI {
     }
 
     private void Update() {
+      if (!siegeManager) {
+        Debug.LogWarning("SiegeTimelineUI !siegeManager");
+      }
+
+      if (siegeManager.SiegesStarted && siegeManager.TotalCycleTime <= 0f) {
+        Debug.LogWarning(
+          $"SiegeTimelineUI TotalCycleTime: {siegeManager.TotalCycleTime}, SiegeCycleElapsedTime: {siegeManager.SiegeCycleElapsedTime}");
+      }
+
       if (!siegeManager || siegeManager.TotalCycleTime <= 0f) {
-        // Debug.LogError($"siegeManager {siegeManager} | TotalCycleTime {siegeManager.TotalCycleTime}");
         return;
       }
 

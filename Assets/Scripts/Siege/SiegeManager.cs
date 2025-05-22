@@ -35,6 +35,7 @@ namespace Siege {
     [SerializeField] private float totalCycleTime = 0f;
     [SerializeField] private float timeToNextSegment = 0f;
 
+    public bool SiegesStarted => siegesStarted;
     public bool IsSiegeInProgress => isSiegeInProgress;
     public float TimeToNextSegment => timeToNextSegment;
     public float SiegeCycleElapsedTime => siegeCycleElapsedTime;
@@ -123,7 +124,8 @@ namespace Siege {
       if (siegesStarted) {
         return;
       }
-      //Debug.LogError("Starting sieges!!!!!!!");
+
+      Debug.LogWarning("Starting sieges!!!!!!!");
       siegeQueue.Clear();
       siegeQueue.Add(GetActiveTemplate(siegesSettings.FirstSiege));
 
@@ -147,9 +149,10 @@ namespace Siege {
 
       siegesStarted = true;
       activeSiegeCoroutine = StartCoroutine(RunNextSiege());
-      /*foreach (var siege in siegeQueue) {
-        Debug.LogError($"TimeBeforeSiege {siege.TimeBeforeSiege} | duration {siege.Duration} | waves {siege.WavesOfZombies} | zombies {siege.ZombieCount}");
-      }*/
+      foreach (var siege in siegeQueue) {
+        Debug.LogWarning(
+          $"TimeBeforeSiege {siege.TimeBeforeSiege} | duration {siege.Duration} | waves {siege.WavesOfZombies} | zombies {siege.ZombieCount}");
+      }
     }
 
     private void StopActiveCoroutine() {
@@ -170,7 +173,7 @@ namespace Siege {
 
     private IEnumerator RunNextSiege() {
       if (currentSiegeIndex >= siegeQueue.Count) {
-        //Debug.LogError("Run second Siege");
+        Debug.LogWarning("Run second Siege");
         siegesStarted = false;
         currentSiegeIndex = 0;
         currentSiegeCycle++;
@@ -182,7 +185,6 @@ namespace Siege {
       var waitTime = currentSiege.TimeBeforeSiege;
 
       while (waitTime > 0f) {
-        //Debug.LogError($"waitTime {waitTime}");
         if (!isPaused) {
           var delta = Time.deltaTime;
           waitTime -= delta;
@@ -201,7 +203,6 @@ namespace Siege {
       var interval = currentSiege.Duration / currentSiege.WavesOfZombies;
 
       while (durationTimer < currentSiege.Duration) {
-        //Debug.LogError($"durationTimer {durationTimer} | currentSiege.Duration {currentSiege.Duration}");
         if (!isPaused) {
           var delta = Time.deltaTime;
           durationTimer += delta;

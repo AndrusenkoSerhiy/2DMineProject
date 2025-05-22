@@ -18,6 +18,7 @@ namespace Craft {
     private bool isNew;
 
     public Recipe Recipe => recipe;
+    public bool IsNew => isNew;
 
     public void SetRecipeDetails(string name, Sprite icon, Recipe recipe, bool isNew = false) {
       recipeNameText.text = name;

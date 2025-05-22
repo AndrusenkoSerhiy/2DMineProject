@@ -16,8 +16,8 @@ public class PlaceCellRobot : MonoBehaviour {
   [SerializeField] private Coords leftUpCoords;
   [SerializeField] private GameObject previewContainer;
   [SerializeField] private List<SpriteRenderer> previewList = new();
-  [SerializeField] private Color blockColor;
-  [SerializeField] private Color previewColor;
+  private Color blockColor;
+  private Color previewColor;
   [SerializeField] private int curPreview;
   [SerializeField] private List<ResourceData> possibleResourceList;
   [SerializeField] private int activeBlockIndex;
@@ -43,6 +43,8 @@ public class PlaceCellRobot : MonoBehaviour {
     for (int i = 0; i < previewList.Count; i++) {
       previewList[i].sprite = newSprite;
     }
+    previewColor = possibleResourceList[activeBlockIndex].PreviewColor;
+    blockColor = possibleResourceList[activeBlockIndex].BlockColor;
   }
 
   public void UpdateBlockType() {

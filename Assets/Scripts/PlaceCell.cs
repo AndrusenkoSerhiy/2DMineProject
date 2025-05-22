@@ -14,8 +14,8 @@ public class PlaceCell : MonoBehaviour {
   [SerializeField] private GameObject prefab;
   [SerializeField] private GameObject previewInstance;
   [SerializeField] private bool isPreviewing;
-  [SerializeField] private Color previewColor;
-  [SerializeField] private Color blockColor;
+  private Color previewColor;
+  private Color blockColor;
   private Color currPreviewColor;
   private SpriteRenderer renderer;
   [SerializeField] private ResourceData emptyResourceData;
@@ -39,6 +39,14 @@ public class PlaceCell : MonoBehaviour {
     spawnPrefab = sPrefab;
     if (!isPreviewing) {
       EnableBuildMode(bData, rData);
+      if (rData != null) {
+        previewColor = rData.PreviewColor;
+        blockColor = rData.BlockColor;
+      }
+      if (bData != null) {
+        previewColor = bData.PreviewColor;
+        blockColor = bData.BlockColor;
+      }
     }
     else {
       DisableBuildMode();

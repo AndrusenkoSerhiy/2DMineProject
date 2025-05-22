@@ -14,6 +14,8 @@ namespace Scriptables {
     [SerializeField] private ItemObject itemData;
     [SerializeField] private Color mapColor;
     [SerializeField] private Color effectColor;
+    [SerializeField] private Color previewColor;
+    [SerializeField] private Color blockColor;
     [SerializeField] private Vector2 colliderOffset = Vector2.zero;
     [SerializeField] private Vector2 colliderSize = new Vector2(3.44f, 3.44f);
     //[SerializeField] private bool isBuilding;
@@ -40,6 +42,8 @@ namespace Scriptables {
     public ItemObject ItemData => itemData;
     public Color Color => mapColor;
     public Color EffectColor => effectColor;
+    public Color PreviewColor => previewColor;
+    public Color BlockColor => blockColor;
 
     //public bool IsBuilding => isBuilding;
     public Vector2 CellSize => cellSize;

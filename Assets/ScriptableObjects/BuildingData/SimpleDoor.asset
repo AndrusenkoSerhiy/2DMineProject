@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0258504fa95245168906ec77e3a114ea, type: 3}
-  m_Name: SimpleDoor
+  m_Name: IronDoor
   m_EditorClassIdentifier: 
-  id: ddb65894-07e6-47c6-9fa2-d2bf3b3faa70
+  id: f1d3e596-463f-4ef4-beec-ca1ea9daa898
   SizeX: 1
   SizeY: 1
-  IsAttackable: 1
+  previewColor: {r: 0.32156864, g: 0.7529412, b: 1, a: 0.3137255}
+  blockColor: {r: 1, g: 0.3372549, b: 0.3372549, a: 0.3137255}

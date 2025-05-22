@@ -4,10 +4,7 @@ using UnityEngine;
 namespace Player {
   [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
   public class PlayerController : PlayerControllerBase, IPlayerController, ISaveLoad {
-    [SerializeField] private float topAngleLimit = 20;
-    [SerializeField] private float bottomAngleLimit = -20;
     [SerializeField] private PlayerAttack playerAttack;
-    //[SerializeField] private ActorPlayer actor;
 
     protected override void Awake() {
       SaveLoadSystem.Instance.Register(this);
@@ -71,24 +68,5 @@ namespace Player {
         direction.x *= rotationCoef;
       }
     }
-
-    /*protected override void LookAtMouse() {
-      if (lockPlayer) {
-        return;
-      }
-      base.LookAtMouse();
-
-      var dir = ((Vector2)_camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition()) - (Vector2)Head.position);
-      dir.x *= Mathf.Sign(transform.localScale.x);
-      // Calculate the target angle based on the direction
-      float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-      // Clamp the target angle within the specified limits
-      float clampedAngle = Mathf.Clamp(targetAngle, bottomAngleLimit, topAngleLimit) *
-                           Mathf.Sign(transform.localScale.x);
-
-      // Apply the clamped angle to the head
-      Head.rotation = Quaternion.Euler(0, 0, clampedAngle + Mathf.Sign(transform.localScale.x) * 90);
-    }*/
   }
 }

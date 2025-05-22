@@ -72,7 +72,6 @@ namespace Player {
         return;
       }
 
-      Debug.LogWarning("Could not set attack parameters from equipment", this);
       SetParamsFromPlayerStats();
     }
 
@@ -111,14 +110,12 @@ namespace Player {
       }
 
       if (!playerEquipment.ItemInHand) {
-        Debug.LogWarning("Could not find equipped weapon", this);
         return false;
       }
 
       handItem = playerEquipment.ItemInHand.GetComponent<HandItem>();
       var weaponStats = handItem.Item;
       if (!(weaponStats is IAttackableItem attackableItem)) {
-        Debug.LogWarning("Equipped item is not attackable", this);
         return false;
       }
 

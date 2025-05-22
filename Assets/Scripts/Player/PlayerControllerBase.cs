@@ -197,7 +197,7 @@ namespace Player {
     }
 
     private void PlayLandingEffect() {
-      if (fallingPs != null && fallingPs.active) fallingPs.SetActive(false);
+      if (fallingPs != null && fallingPs.activeSelf) fallingPs.SetActive(false);
       GameManager.Instance.PoolEffects.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
     }
 
@@ -224,7 +224,7 @@ namespace Player {
         return;
       }
 
-      if (jumpPs != null && jumpPs.active) jumpPs.transform.position = transform.position;
+      if (jumpPs != null && jumpPs.activeSelf) jumpPs.transform.position = transform.position;
 
       if (!_endedJumpEarly && !grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
 
@@ -361,7 +361,7 @@ namespace Player {
             inAirGravity * Time.fixedDeltaTime);
         SetFall();
       }
-      if (fallingPs != null && fallingPs.active) fallingPs.transform.position = transform.position;
+      if (fallingPs != null && fallingPs.activeSelf) fallingPs.transform.position = transform.position;
     }
 
     //start falling down set animator param

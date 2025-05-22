@@ -53,8 +53,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     playerInventory = gameManager.PlayerInventory;
     quickSlots = playerInventory.GetQuickSlots();
     slots = quickSlots.Slots;
-
-    //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
+    
     selectedSlot = null;
     SetSelectedItem(null);
     //
@@ -83,8 +82,6 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
     SubscribeToAddItem();
-    quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
-    playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     UpdateQuickSlotsAfterLoad();
   }
 
@@ -93,14 +90,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
       return;
     }
     
-    quickSlots.OnSlotSwapped += OnSlotUpdateHandler;
-    playerInventory.GetInventory().OnSlotSwapped += OnSlotUpdateHandler;
     userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
-  }
-
-  private void OnDisable() {
-    quickSlots.OnSlotSwapped -= OnSlotUpdateHandler;
-    playerInventory.GetInventory().OnSlotSwapped -= OnSlotUpdateHandler;
   }
 
   public InventorySlot GetSelectedSlot() {
@@ -152,56 +142,6 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
 
   private void UnsubscribeToClickQuickSlots() {
     gameManager.UserInput.controls.GamePlay.QuickSlots.performed -= ChooseSlot;
-  }
-
-  private void OnSlotUpdateHandler(SlotSwappedEventData data) {
-    return;
-    //Always quickslot
-    var slot = data.slot.InventoryType == InventoryType.QuickSlots ? data.slot : data.target;
-    //Quickslot or inventory slot
-    var target = slot == data.slot ? data.target : data.slot;
-
-    if (slot.InventoryType == target.InventoryType && slot.InventoryType != InventoryType.QuickSlots) {
-      return;
-    }
-
-    // If neither slot is selected, ignore
-    if (!slot.isSelected && !target.isSelected) {
-      return;
-    }
-
-    var activeSlot = slot.isSelected ? slot : target;
-    var otherSlot = !slot.isSelected ? slot : target;
-    if (slot.InventoryType == target.InventoryType && activeSlot.InventoryType == InventoryType.QuickSlots) {
-      //change selected
-      otherSlot.Unselect();
-      selectedSlotIndex = activeSlot.index;
-      selectedSlot = activeSlot;
-      SetSelectedItem(activeSlot.Item);
-      activeSlot.Select();
-    }
-    else {
-      UnselectSlot(activeSlot);
-    }
-
-    //skip activate/deactivate when you swap items in the same inventory
-    if (target.InventoryType == slot.InventoryType) {
-      return;
-    }
-
-    //Debug.LogError($"active slot {activeSlot.InventoryType} | other slot {otherSlot.InventoryType}");
-    if (target.InventoryType == InventoryType.QuickSlots) {
-      DeactivateItem(slot);
-      //ActivateItem(slot, target);
-    }
-
-    if (target.InventoryType == InventoryType.Inventory) {
-      DeactivateItem(target);
-      //only when we swap not empty slots
-      if (!slot.isEmpty) {
-        //ActivateItem(target, slot);
-      }
-    }
   }
 
   //when you drop item to selected slot

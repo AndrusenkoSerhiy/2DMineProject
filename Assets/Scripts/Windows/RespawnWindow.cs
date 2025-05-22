@@ -27,7 +27,7 @@ namespace Windows {
       SetInteractionText();
     }
 
-    protected virtual void SetInteractionText() {
+    protected override void SetInteractionText() {
       var test = ButtonPromptSprite.GetSpriteTag(buttonName);
       var str = string.Format(labelText, test);
       interactionPromtUI.ShowPrompt(true, str);

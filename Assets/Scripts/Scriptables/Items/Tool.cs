@@ -8,7 +8,6 @@ namespace Scriptables.Items {
     public ItemObject ammo;
     public float ammoSpeed;
 
-    [SerializeField] private bool useSelfAnim = false;
     [SerializeField] private LayerMask attackLayer;
     [SerializeField] private int animationattackID = 0;
     [SerializeField] private Vector2 colliderSize = new Vector2(1f, 1f);

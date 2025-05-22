@@ -136,10 +136,7 @@ namespace World {
       ResetShake();
       GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
       GameManager.Instance.CellObjectsPool.ReturnObject(this);
-      //GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyDustEffect", pos, Quaternion.identity);
-      //GameManager.Instance.TaskManager.DelayAsync(
-      // () => GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity), 0.25f);
-
+      
       var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity).gameObject;
       ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
       //ps.startColor = resourceData.EffectColor;

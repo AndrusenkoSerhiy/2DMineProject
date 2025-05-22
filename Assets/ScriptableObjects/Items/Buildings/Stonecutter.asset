@@ -15,9 +15,10 @@ MonoBehaviour:
   id: cc8d3610-bb96-4233-a50d-14019ba21d13
   Type: 10
   Name: Stonecutter
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 387db76ea1faea845bb4f33ec24a9deb, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 3815914773768959763, guid: 79ebd015a75eb444c9a4cb67bbea71f8, type: 3}
   Stackable: 1
   MaxStackSize: 1
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -26,5 +27,6 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 0
   Description: 
+  statModifiers: []
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: b0fa504aebffc7044862d2d7cb597d52, type: 2}

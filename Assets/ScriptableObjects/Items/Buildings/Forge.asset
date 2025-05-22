@@ -15,9 +15,10 @@ MonoBehaviour:
   id: 70767b98-54e7-425c-8c43-ba234e5f663e
   Type: 10
   Name: Forge
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 8bb9e7c18d07b574093f409c9b3e3ce3, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 5121348168510077464, guid: a9b2cc0bda166d74b90e9abda94726bf, type: 3}
   Stackable: 1
   MaxStackSize: 1
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -26,5 +27,6 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 0
   Description: 
+  statModifiers: []
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: 9e3eaeb17a8169d4da4ef1b6ddfb38c1, type: 2}

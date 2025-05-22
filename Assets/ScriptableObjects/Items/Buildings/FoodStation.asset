@@ -15,9 +15,10 @@ MonoBehaviour:
   id: e4917a4d-b164-4079-b14b-ad16d584f06b
   Type: 10
   Name: Food station
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 5fd9131fe28a7b042818fc77bc5abc00, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 4470986188835931539, guid: 92540ee8f57699948bf32f57b23b9917, type: 3}
   Stackable: 1
   MaxStackSize: 1
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -26,5 +27,6 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 0
   Description: 
+  statModifiers: []
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: 5e8f7d7929b320f4a95748b3cb37573b, type: 2}

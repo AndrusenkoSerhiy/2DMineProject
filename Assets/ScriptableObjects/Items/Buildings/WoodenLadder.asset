@@ -15,9 +15,10 @@ MonoBehaviour:
   id: 97e4773e-9b77-4781-b087-0dc44731e91a
   Type: 10
   Name: Ladder
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: e8b7209e1fb95164ea57752265a6190c, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 8644890756887494857, guid: 6cfe81cd3e5c2f74785a4a3f24431f04, type: 3}
   Stackable: 1
   MaxStackSize: 1
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -26,4 +27,6 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 0
   Description: 
+  statModifiers: []
   ResourceData: {fileID: 11400000, guid: e05b91f50d75fe442898d4d1b3b39e54, type: 2}
+  BuildingData: {fileID: 0}

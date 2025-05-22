@@ -15,9 +15,10 @@ MonoBehaviour:
   id: 51be7e44-81f6-41e3-bd17-2f84efe98a33
   Type: 10
   Name: Wood chest
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: 56282988e220fab4e82217be134fe409, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 3817076882879528663, guid: 5eaf1c8317ed29a408897a8201d03dde, type: 3}
   Stackable: 0
   MaxStackSize: 1
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -26,5 +27,6 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 0
   Description: 
+  statModifiers: []
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: e532957c013640c48a9b81200947c6d4, type: 2}

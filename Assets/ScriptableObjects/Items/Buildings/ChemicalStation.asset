@@ -15,9 +15,10 @@ MonoBehaviour:
   id: fa8c5cc3-8516-45d8-a239-635118742cec
   Type: 10
   Name: Chemical station
+  Weight: 0
   ParentType: 0
   UiDisplay: {fileID: 21300000, guid: ff7870b3fdf64824887bcaeb59acba67, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 9194511913274475197, guid: 56b24bf5bc3937d4a86b62c0997909ae, type: 3}
   Stackable: 1
   MaxStackSize: 1
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -26,5 +27,6 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 0
   Description: 
+  statModifiers: []
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: 47dec7647ccb2cb4a9c477b7ccf8881b, type: 2}

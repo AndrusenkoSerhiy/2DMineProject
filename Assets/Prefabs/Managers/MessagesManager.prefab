@@ -49,6 +49,7 @@ MonoBehaviour:
   leftContainer: {fileID: 0}
   rightContainer: {fileID: 0}
   messagePrefab: {fileID: 7132787805114265856, guid: 56554c6e1a0179d48b20c14cdb6b13ca, type: 3}
+  messageRecipePrefab: {fileID: 7132787805114265856, guid: 63d86b17fc2af1b4ab3b06403b7c868e, type: 3}
   maxMessagesPerZone: 3
   messageDuration: 4
   messageTemplates:
@@ -64,6 +65,11 @@ MonoBehaviour:
     m_Keys: 030000000000000001000000020000000400000005000000
     m_Values: 000000000000000002000000030000000200000003000000
   messagePool:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  messageRecipePool:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

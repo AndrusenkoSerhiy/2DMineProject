@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Settings;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Windows {
   public class WindowsController : MonoBehaviour {
@@ -35,6 +36,10 @@ namespace Windows {
       }
     }
 
+    private void Start() {
+      GameManager.Instance.UserInput.controls.UI.Cancel.performed += HandleEsc;
+    }
+
     /*private void Start() {
       WindowsEvents();
       //init windows (use for subscribe to player death in respawnWindow)
@@ -64,25 +69,19 @@ namespace Windows {
       isAnyWindowOpen = false;
     }
 
-    private void Update() {
-      HandleEsc();
-    }
-
     //try to hide active window
-    private void HandleEsc() {
-      if (GameManager.Instance.UserInput.controls.UI.Cancel.triggered) {
-        var window = windowsList.Find(e => e.IsShow);
-        //TODO 
-        //need to replace this condition
-        if (window && window.name.Equals("RespawnWindow"))
-          return;
+    private void HandleEsc(InputAction.CallbackContext ctx) {
+      var window = windowsList.Find(e => e.IsShow);
+      //TODO 
+      //need to replace this condition
+      if (window && window.name.Equals("RespawnWindow"))
+        return;
 
-        if (window) {
-          window.Hide();
-        }
-        else {
-          GameManager.Instance.MenuController.ShowInGameMenu();
-        }
+      if (window) {
+        window.Hide();
+      }
+      else {
+        GameManager.Instance.MenuController.ShowInGameMenu();
       }
     }
   }

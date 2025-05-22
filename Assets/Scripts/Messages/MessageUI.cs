@@ -77,9 +77,10 @@ namespace Messages {
     private void SetupIcon() {
       if (icon != null) {
         iconImage.sprite = icon;
+        iconImage.sprite = icon;
         iconImage.gameObject.SetActive(true);
       }
-      else {
+      else if (iconImage.sprite == null) {
         iconImage.gameObject.SetActive(false);
       }
     }

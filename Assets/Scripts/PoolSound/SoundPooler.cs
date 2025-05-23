@@ -14,20 +14,20 @@ namespace PoolSound {
     public List<PoolSound> pooledObjects;
     private Dictionary<AudioData, Queue<AudioEmmiter>> poolDictionary;
 
-    void Awake() {
+    private void Awake() {
       poolDictionary = new Dictionary<AudioData, Queue<AudioEmmiter>>();
     }
 
     public AudioEmmiter SpawnFromPool(AudioData data, Vector3 position, Transform parent) {
       AudioEmmiter objectToSpawn = null;
-      Queue<AudioEmmiter> objectPool = new();
+      var objectPool = new Queue<AudioEmmiter>();
       if (!poolDictionary.ContainsKey(data)) {
         //Debug.LogError("Pool with tag " + data + " doesn't exist.");
-        PoolSound poolConfig = pooledObjects.Find(p => p.data == data);
+        var poolConfig = pooledObjects.Find(p => p.data == data);
         //Debug.LogError("poolConfig " + poolConfig);
         if (poolConfig != null) {
           objectPool = new Queue<AudioEmmiter>();
-          GameObject newObj = Instantiate(poolConfig.audioEmmiter.gameObject, parent);
+          var newObj = Instantiate(poolConfig.audioEmmiter.gameObject, parent);
           objectToSpawn = newObj.GetComponent<AudioEmmiter>();
           objectPool.Enqueue(objectToSpawn);
           poolDictionary.Add(data, objectPool);
@@ -36,8 +36,8 @@ namespace PoolSound {
 
       objectPool = poolDictionary[data];
 
-      for (int i = 0; i < objectPool.Count; i++) {
-        AudioEmmiter obj = objectPool.Dequeue();
+      for (var i = 0; i < objectPool.Count; i++) {
+        var obj = objectPool.Dequeue();
 
         if (!obj.gameObject.activeInHierarchy) {
           objectToSpawn = obj;
@@ -47,22 +47,31 @@ namespace PoolSound {
         objectPool.Enqueue(obj);
       }
 
-      if (objectToSpawn == null) {
-        PoolSound poolConfig = pooledObjects.Find(p => p.data == data);
+      if (!objectToSpawn) {
+        var poolConfig = pooledObjects.Find(p => p.data == data);
 
         if (poolConfig != null) {
-          GameObject newObj = Instantiate(poolConfig.audioEmmiter.gameObject, parent);
+          var newObj = Instantiate(poolConfig.audioEmmiter.gameObject, parent);
           objectToSpawn = newObj.GetComponent<AudioEmmiter>();
         }
       }
 
+      if (!objectToSpawn) {
+        return null;
+      }
+
       objectToSpawn.gameObject.SetActive(true);
       objectToSpawn.transform.position = position;
-      objectToSpawn.audioSource.clip = data.AudioClips[0];
-      objectToSpawn.audioSource.outputAudioMixerGroup = data.mixerGroup;
-      objectToSpawn.audioSource.volume = data.DecibelToLinear(data.volume);
-      objectToSpawn.audioSource.loop = data.type == AudioData.AudioTypeE.Looped;
-      objectToSpawn.audioSource.Play();
+
+      var audioSource = objectToSpawn.audioSource;
+      audioSource.clip = data.AudioClips[0];
+      audioSource.outputAudioMixerGroup = data.mixerGroup;
+      audioSource.volume = data.DecibelToLinear(data.volume);
+      audioSource.loop = data.type == AudioData.AudioTypeE.Looped;
+
+      audioSource.spatialBlend = data.is3D ? 1f : 0f;
+
+      audioSource.Play();
       poolDictionary[data].Enqueue(objectToSpawn);
 
       return objectToSpawn;

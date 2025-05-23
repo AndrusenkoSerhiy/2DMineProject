@@ -95,7 +95,7 @@ namespace World {
         return;
       }
 
-      GameManager.Instance.AudioController.PlayAudio(OnTakeDamageAudioData);
+      GameManager.Instance.AudioController.PlayAudio(OnTakeDamageAudioData, transform.position);
     }
 
     private void UpdateDurability(float damage, bool isPlayer) {

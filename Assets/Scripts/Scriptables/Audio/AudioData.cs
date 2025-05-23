@@ -20,5 +20,6 @@ namespace Scriptables {
       return Mathf.Pow(10f, dB / 20f);
     }
     public List<AudioClip> AudioClips => audioClips;
+    public bool is3D = true;
   }
 }

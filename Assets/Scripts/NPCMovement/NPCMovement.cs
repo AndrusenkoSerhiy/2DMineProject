@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using Actors;
+using SaveSystem;
+using Scriptables;
 using UnityEngine;
 using Utils;
 using World;
@@ -65,9 +67,20 @@ namespace NPCMovement
       // Check for obstacles in front of the NPC
       var dir = transform.localScale.x * Vector2.right;
       var actorCoords = actor.GetCoordsOutOfBounds;
-
+      
+      
+      //for door 
+      var buildCoord = CoordsTransformer.GridToBuildingsGrid(actorCoords.X - (int)dir.x, actorCoords.Y);
+      var door = GetBuildingDataObject(buildCoord.X, buildCoord.Y);
+      Debug.DrawRay(CoordsTransformer.GridToWorld(actorCoords.X - (int)dir.x, actorCoords.Y), Vector3.up, Color.yellow, 1f);
+      if (door != null) {
+        var damageable = door.GetComponent<IDamageable>();
+        AttackDoor(damageable);
+        return;
+      }
+      
       var obstacle = GetCellObject(actorCoords.X - (int)dir.x, actorCoords.Y);
-
+      
       var distanceToObstacle = -1f;
       if (obstacle != null) {
         var obstaclePos = CoordsTransformer.OutOfGridToWorls(obstacle.CellData.x, obstacle.CellData.y);
@@ -167,6 +180,10 @@ namespace NPCMovement
     private CellObject GetCellObject(int x, int y) {
       return GameManager.Instance.ChunkController.GetCell(x, y);
     }
+
+    private BuildingDataObject GetBuildingDataObject(int x, int y) {
+      return GameManager.Instance.ChunkController.GetBuildingData(x, y);
+    }
     //need for zombie can jump from head of other zombie
     private bool CheckDown() {
       // Define the starting position (origin) and direction
@@ -225,6 +242,10 @@ namespace NPCMovement
 
     public void AttackCell(IDamageable cell) {
       actor.TriggerAttack(cell);
+    }
+    
+    public void AttackDoor(IDamageable door) {
+      actor.TriggerAttack(door);
     }
     
     private void MoveTowardsTargetTransform() {

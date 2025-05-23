@@ -24,6 +24,7 @@ namespace Inventory {
     }
 
     private void Run() {
+      GameManager.Instance.AudioController.PlayUIClick();
       fromInventory.MoveAllItemsTo(toInventory);
     }
   }

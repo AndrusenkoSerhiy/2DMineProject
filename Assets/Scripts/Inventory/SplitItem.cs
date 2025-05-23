@@ -94,6 +94,8 @@ namespace Inventory {
     }
 
     private void OnOkButtonClickHandler() {
+      GameManager.Instance.AudioController.PlayUIClick();
+
       active = true;
       tempDragItem.Enable(slot.Item, slot.amount, tempDragParent);
       tempDragItem.SetAmount(currentCount);
@@ -111,7 +113,10 @@ namespace Inventory {
       HideWindow();
     }
 
-    private void OnCancelButtonClickHandler() => Cancel();
+    private void OnCancelButtonClickHandler() {
+      GameManager.Instance.AudioController.PlayUIClick();
+      Cancel();
+    }
 
     private void Cancel() {
       HideWindow();
@@ -200,6 +205,7 @@ namespace Inventory {
         return;
       }
 
+      GameManager.Instance.AudioController.PlayUIClick();
       SetCurrentCount(currentCount + 1);
       PrintInputCount();
     }
@@ -209,6 +215,7 @@ namespace Inventory {
         return;
       }
 
+      GameManager.Instance.AudioController.PlayUIClick();
       SetCurrentCount(currentCount - 1);
       PrintInputCount();
     }

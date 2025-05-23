@@ -131,6 +131,11 @@ namespace Inventory {
         return;
       }
 
+      if (splitItem && splitItem.Active) {
+        splitItem.End(false);
+        tempDragItem?.Disable();
+      }
+
       RemoveSlotsUpdateEvents();
       RemoveAllEvents(gameObject);
 

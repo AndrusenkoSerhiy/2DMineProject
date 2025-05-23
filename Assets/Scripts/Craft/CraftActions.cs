@@ -205,6 +205,7 @@ namespace Craft {
         return;
       }
 
+      gameManager.AudioController.PlayCraftClick();
       station.CraftRequested(currentCount);
     }
 
@@ -213,6 +214,7 @@ namespace Craft {
         return;
       }
 
+      gameManager.AudioController.PlayUIClick();
       currentCount++;
       PrintInputCount();
     }
@@ -222,17 +224,20 @@ namespace Craft {
         return;
       }
 
+      gameManager.AudioController.PlayUIClick();
       currentCount--;
       PrintInputCount();
     }
 
     private void OnMaxCountButtonClickHandler() {
       currentCount = maxCount;
+      gameManager.AudioController.PlayUIClick();
       PrintInputCount();
     }
 
     private void OnMinCountButtonClickHandler() {
       currentCount = minCount;
+      gameManager.AudioController.PlayUIClick();
       PrintInputCount();
     }
 

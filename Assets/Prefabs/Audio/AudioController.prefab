@@ -49,11 +49,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a7862523d8043dea79de1529272e170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listener: {fileID: 1975331073012669737}
+  listener: {fileID: 0}
   mixer: {fileID: 24100000, guid: df8089a68cd1ecd4cae74ae2fac20991, type: 2}
   loopRoot: {fileID: 9169723480621143624}
   shotRoot: {fileID: 4628647822985763446}
   soundPooler: {fileID: 260293375569361681}
+  mainTheme: {fileID: 11400000, guid: 927b35f42f5953b49a7c0907b674e607, type: 2}
+  uiClick: {fileID: 11400000, guid: 7de42c86b07edfc4bbabce3202dc2a6f, type: 2}
+  craftClick: {fileID: 11400000, guid: 9fb11924e00daa84aaa0f504a86e71cf, type: 2}
+  newRecipe: {fileID: 11400000, guid: 4ca03816366209b43b88b2df45587bdf, type: 2}
+  shoot: {fileID: 11400000, guid: 12c6e267964b3fb43a1945556d648783, type: 2}
+  placeBuilding: {fileID: 11400000, guid: f0351840239eb1140888273ba153ae88, type: 2}
 --- !u!1 &1201469009489140599
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +115,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 30
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -277,7 +283,39 @@ MonoBehaviour:
     audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: 927b35f42f5953b49a7c0907b674e607, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 2d26aa2005c63e94ca9e56f5f94ac048, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: acaa05c5e2f065e4aa255ea5ca0542dd, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 38b542282150b0b46b38e759e58c0ae6, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: e177030e9afaa294ea76913a00500580, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: b85d1c078e51bb943b8753e10cb98fda, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 0596818a34c85cd4495b643126df5e89, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 8c31f43c9a736a24696ae83244e0bdf0, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 143339139964394469a46a0ed42bf09a, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 753a28c2d919cbb4aaccfde380765f2c, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: c3adb735d40ec6647b2b66e3ffbdd523, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 8d62a259555f9234687beb4d0af7459d, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: dd45280e625294646a2977e897c63d64, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 12c6e267964b3fb43a1945556d648783, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: f0351840239eb1140888273ba153ae88, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 7de42c86b07edfc4bbabce3202dc2a6f, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 9fb11924e00daa84aaa0f504a86e71cf, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 4ca03816366209b43b88b2df45587bdf, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
 --- !u!1 &6473485979532965659
 GameObject:
@@ -326,7 +364,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5834026992413261350
 Transform:
   m_ObjectHideFlags: 0

@@ -11,6 +11,11 @@ namespace Audio {
     [SerializeField] private Transform shotRoot;
     [SerializeField] private SoundPooler soundPooler;
     [SerializeField] private AudioData mainTheme;
+    [SerializeField] private AudioData uiClick;
+    [SerializeField] private AudioData craftClick;
+    [SerializeField] private AudioData newRecipe;
+    [SerializeField] private AudioData shoot;
+    [SerializeField] private AudioData placeBuilding;
 
     public Transform GetRootTransform(AudioData.AudioTypeE type) {
       return type == AudioData.AudioTypeE.Looped ? loopRoot : shotRoot;
@@ -25,56 +30,26 @@ namespace Audio {
       soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
     }
 
-    public void PlayMainTheme() {
-      PlayAudio(mainTheme);
-    }
+    public void PlayMainTheme() => PlayAudio(mainTheme);
+    public void StopMainTheme() => StopAudio(mainTheme);
+    public void PauseMainTheme() => PauseAudio(mainTheme);
+    public void ResumeMainTheme() => ResumeAudio(mainTheme);
 
-    public void StopMainTheme() {
-      StopAudio(mainTheme);
-    }
+    public void PlayUIClick() => PlayAudio(uiClick);
+    public void PlayCraftClick() => PlayAudio(craftClick);
+    public void PlayNewRecipe() => PlayAudio(newRecipe);
+    public void PlayShoot() => PlayAudio(shoot);
+    public void PlayPlaceBuilding() => PlayAudio(placeBuilding);
 
-    public void PauseMainTheme() {
-      PauseAudio(mainTheme);
-    }
+    public void StopAudio(AudioData data) => soundPooler.StopAudio(data);
+    public void StopAllAudio() => soundPooler.StopAllAudio();
+    public void PauseAudio(AudioData data) => soundPooler.PauseAudio(data);
+    public void PauseAllAudio() => soundPooler.PauseAllAudio();
+    public void ResumeAudio(AudioData data) => soundPooler.ResumeAudio(data);
+    public void ResumeAllAudio() => soundPooler.ResumeAllAudio();
 
-    public void ResumeMainTheme() {
-      ResumeAudio(mainTheme);
-    }
-
-    public void StopAudio(AudioData audioData) {
-      soundPooler.StopAudio(audioData);
-    }
-
-    public void StopAllAudio() {
-      soundPooler.StopAllAudio();
-    }
-
-    public void PauseAudio(AudioData audioData) {
-      soundPooler.PauseAudio(audioData);
-    }
-
-    public void PauseAllAudio() {
-      soundPooler.PauseAllAudio();
-    }
-
-    public void ResumeAudio(AudioData audioData) {
-      soundPooler.ResumeAudio(audioData);
-    }
-
-    public void ResumeAllAudio() {
-      soundPooler.ResumeAllAudio();
-    }
-
-    public void SetMasterVolume(float volume) {
-      mixer.SetFloat("masterVolume", Mathf.Log10(volume) * 20f);
-    }
-
-    public void SetSoundFXVolume(float volume) {
-      mixer.SetFloat("soundFXVolume", Mathf.Log10(volume) * 20f);
-    }
-
-    public void SetMusicVolume(float volume) {
-      mixer.SetFloat("musicVolume", Mathf.Log10(volume) * 20f);
-    }
+    public void SetMasterVolume(float v) => mixer.SetFloat("masterVolume", Mathf.Log10(v) * 20f);
+    public void SetSoundFXVolume(float v) => mixer.SetFloat("soundFXVolume", Mathf.Log10(v) * 20f);
+    public void SetMusicVolume(float v) => mixer.SetFloat("musicVolume", Mathf.Log10(v) * 20f);
   }
 }

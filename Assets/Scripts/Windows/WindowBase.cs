@@ -51,6 +51,7 @@ namespace Windows {
       LockPlayer(true);
       LockHighlight(true);
       GameManager.Instance.UserInput.OnGameDeviceChanged += InputActionChangeCallback;
+      GameManager.Instance.UserInput.ShowCursor(true);
     }
 
     private void InputActionChangeCallback(object sender, EventArgs e) {
@@ -71,7 +72,7 @@ namespace Windows {
       LockHighlight(false);
       interactionPromtUI?.ShowPrompt(false);
       GameManager.Instance.UserInput.OnGameDeviceChanged -= InputActionChangeCallback;
-
+      GameManager.Instance.UserInput.ShowCursor(false);
     }
     
     private void LockPlayer(bool state) {

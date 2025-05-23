@@ -8,6 +8,9 @@ namespace UI {
   public class SiegeTimelineUI : MonoBehaviour {
     [SerializeField] private RectTransform timelineContainer;
     [SerializeField] private RectTransform timePointer;
+    [SerializeField] private RectTransform backgroundObj;
+    [SerializeField] private Image timePointerIcon;
+    [SerializeField] private Image timePointerIconFrame;
     [SerializeField] private GameObject segmentPrefab;
     [SerializeField] private List<SiegeSegmentUI> preloadedSegments = new();
     [SerializeField] protected TooltipTrigger tooltipTrigger;
@@ -40,6 +43,7 @@ namespace UI {
       }
 
       timePointer.gameObject.SetActive(true);
+      backgroundObj.gameObject.SetActive(true);
 
       segments.Clear();
       reusedSegmentIndex = 0;
@@ -84,6 +88,7 @@ namespace UI {
       }
 
       timePointer.gameObject.SetActive(false);
+      backgroundObj.gameObject.SetActive(false);
       segments.Clear();
       reusedSegmentIndex = 0;
     }
@@ -139,6 +144,9 @@ namespace UI {
 
       var timelineWidth = timelineContainer.rect.width;
       timePointer.anchoredPosition = new Vector2(normalized * timelineWidth, timePointer.anchoredPosition.y);
+
+      timePointerIcon.color = siegeManager.IsSiegeInProgress ? siegeColor : pauseColor;
+      timePointerIconFrame.color = siegeManager.IsSiegeInProgress ? siegeColor : pauseColor;
 
       foreach (var segment in segments) {
         var isCurrent = elapsed >= segment.startTime &&

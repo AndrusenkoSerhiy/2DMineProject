@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SmallWood
   m_EditorClassIdentifier: 
   Durability: 15
-  DropCount: 3
+  DropCount: 10
   tileDatas:
   - sprite: {fileID: 21300000, guid: cb39aa25624545e4eab7aec7b4afe034, type: 3}
     offsetSorting: 0
@@ -58,13 +58,13 @@ MonoBehaviour:
   cellSize: {x: 1, y: 1}
   bonusResources:
   - item: {fileID: 11400000, guid: 17c91b937474e6345968eb301aa39aea, type: 2}
-    chance: 0.2
-    rndCount: {x: 1, y: 3}
+    chance: 0.4
+    rndCount: {x: 20, y: 30}
   - item: {fileID: 11400000, guid: a03ba1c09a86eab4d9e124f7e5c034af, type: 2}
-    chance: 0.2
-    rndCount: {x: 1, y: 3}
+    chance: 0.4
+    rndCount: {x: 8, y: 16}
   - item: {fileID: 11400000, guid: 4b5bd2c0f5f425542b9aa3f52aced800, type: 2}
-    chance: 0.2
-    rndCount: {x: 1, y: 3}
+    chance: 0.4
+    rndCount: {x: 10, y: 15}
   OnTakeDamageAudioData: {fileID: 11400000, guid: 8c31f43c9a736a24696ae83244e0bdf0, type: 2}
   debug: 0

@@ -270,6 +270,16 @@ namespace World {
       _activeCellObjects.Remove(coords);
     }
 
+    public void AddCellToActives(int x, int y, ResourceData resourceData) {
+      var cellData = chunkData.GetCellData(x, y);
+      var pos = CoordsTransformer.GridToWorld(x, y);
+      var cell = CellObjectsPool.Get(pos);
+      
+      cell.Init(cellData, resourceData);
+      cell.InitSprite();
+      _activeCellObjects[new Coords(x,y)] = cell;
+    }
+
     public void TriggerCellDestroyed(CellObject cellObject) {
       cellObject.CellData.Destroy();
       var x = cellObject.CellData.x;

@@ -17,6 +17,7 @@ namespace World {
     [SerializeField] private Sprite[] damageOverlays;
     
     public DamageableType DamageableType { get; set; }
+    public AudioData OnTakeDamageAudioData { get; set; }
 
     public ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
@@ -41,6 +42,9 @@ namespace World {
 
     public void Init(CellData cellData, ResourceData data) {
       DamageableType = DamageableType.Cell;
+      if (data.OnTakeDamageAudioData) {
+        OnTakeDamageAudioData = data.OnTakeDamageAudioData;
+      }
       _cellData = cellData;
       resourceData = data;
       InitUnitHealth();

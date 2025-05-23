@@ -79,6 +79,7 @@ namespace Windows {
 
       if (window) {
         window.Hide();
+        GameManager.Instance.UserInput.ShowCursor(false);
       }
       else {
         GameManager.Instance.MenuController.ShowInGameMenu();

@@ -83,6 +83,9 @@ namespace Actors {
     protected override void Awake() {
       base.Awake();
       DamageableType = DamageableType.Enemy;
+      if (difficulty && difficulty.OnTakeDamageAudioData) {
+        OnTakeDamageAudioData = difficulty.OnTakeDamageAudioData;
+      }
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
     }

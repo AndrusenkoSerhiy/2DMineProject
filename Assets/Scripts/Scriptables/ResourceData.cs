@@ -24,6 +24,7 @@ namespace Scriptables {
     [SerializeField] private List<BonusResource> bonusResources = new List<BonusResource>();
 
     public List<BonusResource> GetBonusResources => bonusResources;
+    public AudioData OnTakeDamageAudioData;
 
     [Serializable]
     public struct BonusResource {

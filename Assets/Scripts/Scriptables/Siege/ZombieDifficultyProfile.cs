@@ -7,5 +7,7 @@ namespace Scriptables.Siege {
     public float speedMultiplier = 1f;
     public float attackMultiplier = 1f;
     public float armorMultiplier = 1f;
+    
+    public AudioData OnTakeDamageAudioData;
   }
 }

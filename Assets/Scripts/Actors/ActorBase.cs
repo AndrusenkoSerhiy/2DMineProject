@@ -15,6 +15,7 @@ namespace Actors {
     public AnimatorParameters AnimParam => animParam;
     public bool IsDead => isDead;
     public DamageableType DamageableType { get; set; }
+    public AudioData OnTakeDamageAudioData { get; set; }
 
     protected virtual void Awake() {
       stats = GetComponent<PlayerStats>();

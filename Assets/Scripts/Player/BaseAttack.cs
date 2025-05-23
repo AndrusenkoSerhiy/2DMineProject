@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Animation;
+using Audio;
 using Inventory;
 using Scriptables;
 using Scriptables.Stats;
@@ -33,6 +34,7 @@ namespace Player {
     private int lookDirection;
     private AnimatorParameters animParam;
     protected PlayerEquipment playerEquipment;
+    protected AudioController audioController;
 
     protected PlayerStats playerStats;
     protected bool firstAttack;
@@ -45,6 +47,7 @@ namespace Player {
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
       animParam = GameManager.Instance.AnimatorParameters;
       playerEquipment = GameManager.Instance.PlayerEquipment;
+      audioController = GameManager.Instance.AudioController;
     }
 
     protected virtual void Start() {
@@ -183,6 +186,10 @@ namespace Player {
         var damage = target.DamageableType == DamageableType.Enemy ? playerStats.EntityDamage : playerStats.BlockDamage;
         target.Damage(damage, true);
         iDamageables.Add(target);
+        
+        if(target.OnTakeDamageAudioData) {
+          audioController.PlayAudio(target.OnTakeDamageAudioData);
+        }
       }
 
       AfterTargetsTakenDamage(targets.Count);

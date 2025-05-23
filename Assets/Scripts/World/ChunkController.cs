@@ -408,6 +408,10 @@ namespace World {
       removedCells.Remove(key);
     }
 
+    public BuildingDataObject GetBuildingData(int x, int y) {
+      return _activeBuildObjects.GetValueOrDefault(new Coords(x,y));
+    }
+
     private void RemoveCellFromChanged(int x, int y) {
       var key = WorldData.GetCellKey(x, y);
       changedCells.Remove(key);

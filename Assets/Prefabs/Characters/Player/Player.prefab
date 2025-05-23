@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 6074475013724374629}
   - component: {fileID: 6251728841341945271}
   - component: {fileID: 7810780520715568834}
+  - component: {fileID: 7933628508195358335}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -215,7 +216,6 @@ MonoBehaviour:
   lockReasons: []
   isHighlightLock: 0
   originalSize: {x: 0, y: 0}
-  audioData: {fileID: 11400000, guid: acaa05c5e2f065e4aa255ea5ca0542dd, type: 2}
 --- !u!114 &4383261363474124888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,6 +409,14 @@ MonoBehaviour:
   rb: {fileID: 7677545041897933634}
   ladderObject: {fileID: 0}
   stayOnLadderAfterJump: 0
+--- !u!81 &7933628508195358335
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2428154648203464867}
+  m_Enabled: 1
 --- !u!1 &4612203187092052450
 GameObject:
   m_ObjectHideFlags: 0

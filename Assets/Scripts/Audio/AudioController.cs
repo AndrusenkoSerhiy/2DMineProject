@@ -17,8 +17,12 @@ namespace Audio {
     }
 
     public void PlayAudio(AudioData audioData) {
-      //Debug.LogError($"Audio data play {audioData.type}");
-      soundPooler.SpawnFromPool(audioData, Vector3.zero, GetRootTransform(audioData.type));
+      var position = audioData.is3D ? listener.transform.position : Vector3.zero;
+      soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
+    }
+
+    public void PlayAudio(AudioData audioData, Vector3 position) {
+      soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
     }
 
     public void PlayMainTheme() {

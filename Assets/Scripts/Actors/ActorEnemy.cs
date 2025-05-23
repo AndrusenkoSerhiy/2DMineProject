@@ -114,7 +114,7 @@ namespace Actors {
         return;
       }
 
-      GameManager.Instance.AudioController.PlayAudio(deathAudioData);
+      GameManager.Instance.AudioController.PlayAudio(deathAudioData, transform.position);
       Debug.Log("Zombie Death Audio Played");
     }
 
@@ -123,7 +123,7 @@ namespace Actors {
         return;
       }
 
-      GameManager.Instance.AudioController.PlayAudio(OnTakeDamageAudioData);
+      GameManager.Instance.AudioController.PlayAudio(OnTakeDamageAudioData, transform.position);
       Debug.Log("Zombie Damage Audio Played");
     }
 

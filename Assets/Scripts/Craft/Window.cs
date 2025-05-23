@@ -43,6 +43,7 @@ namespace Craft {
 
     private void OnTakeAllButtonClickHandler() {
       station.MoveAllFromOutput();
+      GameManager.Instance.AudioController.PlayUIClick();
     }
   }
 }

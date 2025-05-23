@@ -246,6 +246,10 @@ namespace Craft.Recipes {
         UnlockRecipe(recipe);
       }
 
+      if (recipesToUnlock.Count > 0) {
+        GameManager.Instance.AudioController.PlayNewRecipe();
+      }
+
       if (allUnlocked) {
         fullyUnlockedStations.Add(stationType);
       }

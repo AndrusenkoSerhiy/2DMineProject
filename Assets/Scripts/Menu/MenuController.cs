@@ -39,9 +39,10 @@ namespace Menu {
     [SerializeField] private Menu activeMenu = Menu.None;
     private bool locked;
     private bool cancelEnabled;
-    
+
     [SerializeField] private bool isNewGame;
     public Menu ActiveMenu => activeMenu;
+
     private void Awake() {
       gameManager = GameManager.Instance;
       saveLoadSystem = SaveLoadSystem.Instance;
@@ -152,12 +153,14 @@ namespace Menu {
       if (locked == state) {
         return;
       }
+
       //use only one time when we start new game we don't need to unlock player 
       //before he grounded
       if (isNewGame && !state) {
         isNewGame = false;
-      }else LockPlayer(state);
-      
+      }
+      else LockPlayer(state);
+
       bg.SetActive(state);
       locked = state;
 
@@ -191,8 +194,8 @@ namespace Menu {
 
       mainMenuGameObject.SetActive(true);
 
-      mmNewGameButton.onClick.AddListener(StartNewGame);
-      mmExitButton.onClick.AddListener(ExitGame);
+      mmNewGameButton.onClick.AddListener(StartNewGameClickHandler);
+      mmExitButton.onClick.AddListener(ExitGameClickHandler);
 
       ShowHideContinueButton();
 
@@ -228,9 +231,9 @@ namespace Menu {
 
       inGameMenuGameObject.SetActive(true);
 
-      igmContinueGameButton.onClick.AddListener(Hide);
-      igmExitToMainMenuButton.onClick.AddListener(ExitToMainMenu);
-      igmExitButton.onClick.AddListener(ExitGame);
+      igmContinueGameButton.onClick.AddListener(HideClickHandler);
+      igmExitToMainMenuButton.onClick.AddListener(ExitToMainMenuClickHandler);
+      igmExitButton.onClick.AddListener(ExitGameClickHandler);
 
       HideMainMenu();
       HideProfiles();
@@ -298,7 +301,7 @@ namespace Menu {
     private void ShowSwitchProfiles() {
       switchProfileGameObject.SetActive(true);
 
-      switchButton.onClick.AddListener(ShowProfiles);
+      switchButton.onClick.AddListener(ShowProfilesClickHandler);
       profileNameText.text = saveLoadSystem.profilesData.CurrentProfile.Name;
     }
 
@@ -312,7 +315,7 @@ namespace Menu {
       gameManager.EnableUIElements(!state);
       //gameManager.EnableAllInput(!state);
       gameManager.EnableGamePlayInput(!state);
-      
+
       gameManager.CurrPlayerController.SetLockPlayer(state);
       gameManager.CurrPlayerController.SetLockHighlight(state);
       gameManager.UserInput.EnableGamePlayControls(!state);
@@ -325,7 +328,7 @@ namespace Menu {
       backButton.onClick.RemoveAllListeners();
 
       if (show) {
-        backButton.onClick.AddListener(ShowMainMenu);
+        backButton.onClick.AddListener(ShowMainMenuClickHandler);
       }
     }
 
@@ -336,7 +339,7 @@ namespace Menu {
       mmContinueButton.onClick.RemoveAllListeners();
 
       if (show) {
-        mmContinueButton.onClick.AddListener(ContinueGame);
+        mmContinueButton.onClick.AddListener(ContinueGameClickHandler);
       }
     }
 
@@ -349,6 +352,41 @@ namespace Menu {
     private void HideLoading() {
       loadingGameObject.SetActive(false);
       Hide();
+    }
+
+    private void StartNewGameClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      StartNewGame();
+    }
+
+    private void ExitGameClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      ExitGame();
+    }
+
+    private void HideClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      Hide();
+    }
+
+    private void ExitToMainMenuClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      ExitToMainMenu();
+    }
+
+    private void ShowProfilesClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      ShowProfiles();
+    }
+
+    private void ShowMainMenuClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      ShowMainMenu();
+    }
+
+    private void ContinueGameClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      ContinueGame();
     }
   }
 }

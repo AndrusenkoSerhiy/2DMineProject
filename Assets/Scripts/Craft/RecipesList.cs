@@ -225,6 +225,7 @@ namespace Craft {
     }
 
     private void ListItemClickHandler(Button button) {
+      gameManager.AudioController.PlayUIClick();
       Select(button);
     }
 

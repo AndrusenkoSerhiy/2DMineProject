@@ -1,4 +1,5 @@
-﻿using Inventory;
+﻿using Audio;
+using Inventory;
 using Scriptables.Items;
 using UI;
 using UnityEngine;
@@ -8,12 +9,14 @@ namespace Tools {
     [SerializeField] private Transform firePoint;
 
     private PlayerEquipment playerEquipment;
+    private AudioController audioController;
     private DynamicCrosshair crosshair;
     private Tool tool;
     private BulletsPool bulletsPool;
 
     private void Awake() {
       playerEquipment = GameManager.Instance.PlayerEquipment;
+      audioController = GameManager.Instance.AudioController;
       crosshair = GameManager.Instance.DynamicCrosshair;
       tool = (Tool)Item;
       bulletsPool = GameManager.Instance.BulletsPool;
@@ -31,6 +34,7 @@ namespace Tools {
       var shootDirection = (crosshair.GetCenter() - firePos).normalized;
 
       bullet.Launch(shootDirection, tool, bulletsPool);
+      audioController.PlayShoot();
       playerEquipment.ConsumeAmmo();
     }
   }

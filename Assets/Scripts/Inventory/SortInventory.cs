@@ -28,6 +28,7 @@ namespace Inventory {
     }
 
     private void Run() {
+      GameManager.Instance.AudioController.PlayUIClick();
       inventory.SortInventory(ascending);
       ascending = !ascending;
       UpdateImage();

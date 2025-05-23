@@ -125,6 +125,7 @@ namespace Menu {
         return;
       }
 
+      GameManager.Instance.AudioController.PlayUIClick();
       saveLoadSystem.DeleteGame(profileId);
 
       profileName = string.Empty;
@@ -141,6 +142,7 @@ namespace Menu {
         return;
       }
 
+      GameManager.Instance.AudioController.PlayUIClick();
       saveLoadSystem.UpdateProfileName(profileId, inputField.text);
       profileName = inputField.text;
       saveButton.gameObject.SetActive(false);
@@ -154,6 +156,7 @@ namespace Menu {
         return;
       }
 
+      GameManager.Instance.AudioController.PlayUIClick();
       saveLoadSystem.SetCurrentProfile(profileId, profileName);
       OnProfileSelected?.Invoke(profileId);
     }

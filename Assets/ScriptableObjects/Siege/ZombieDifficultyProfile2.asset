@@ -17,3 +17,9 @@ MonoBehaviour:
   speedMultiplier: 1.2
   attackMultiplier: 1.2
   armorMultiplier: 1.2
+  OnTakeDamageAudioDatas:
+  - {fileID: 11400000, guid: 8d62a259555f9234687beb4d0af7459d, type: 2}
+  - {fileID: 11400000, guid: dd45280e625294646a2977e897c63d64, type: 2}
+  OnDeathAudioDatas:
+  - {fileID: 11400000, guid: 143339139964394469a46a0ed42bf09a, type: 2}
+  - {fileID: 11400000, guid: 753a28c2d919cbb4aaccfde380765f2c, type: 2}

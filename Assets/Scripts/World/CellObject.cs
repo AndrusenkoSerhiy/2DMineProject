@@ -86,7 +86,16 @@ namespace World {
       if (!_cellData.canTakeDamage)
         return;
       unitHealth.TakeDamage(damage, isPlayer);
+      DamageAudio();
       UpdateDamageOverlay(damage);
+    }
+    
+    private void DamageAudio() {
+      if (!OnTakeDamageAudioData) {
+        return;
+      }
+
+      GameManager.Instance.AudioController.PlayAudio(OnTakeDamageAudioData);
     }
 
     private void UpdateDurability(float damage, bool isPlayer) {

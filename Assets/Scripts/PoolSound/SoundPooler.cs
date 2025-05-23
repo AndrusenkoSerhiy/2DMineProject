@@ -33,9 +33,9 @@ namespace PoolSound {
           poolDictionary.Add(data, objectPool);
         }
       }
-      
+
       objectPool = poolDictionary[data];
-      
+
       for (int i = 0; i < objectPool.Count; i++) {
         AudioEmmiter obj = objectPool.Dequeue();
 
@@ -66,6 +66,78 @@ namespace PoolSound {
       poolDictionary[data].Enqueue(objectToSpawn);
 
       return objectToSpawn;
+    }
+
+    public void PauseAudio(AudioData data) {
+      if (!poolDictionary.ContainsKey(data)) {
+        return;
+      }
+
+      foreach (var emitter in poolDictionary[data]) {
+        if (emitter && emitter.audioSource.isPlaying) {
+          emitter.audioSource.Pause();
+        }
+      }
+    }
+
+    public void PauseAllAudio() {
+      foreach (var kvp in poolDictionary) {
+        foreach (var emitter in kvp.Value) {
+          if (emitter && emitter.audioSource.isPlaying) {
+            emitter.audioSource.Pause();
+          }
+        }
+      }
+    }
+
+    public void ResumeAudio(AudioData data) {
+      if (!poolDictionary.ContainsKey(data)) {
+        return;
+      }
+
+      foreach (var emitter in poolDictionary[data]) {
+        if (emitter && emitter.audioSource && !emitter.audioSource.isPlaying && emitter.audioSource.time > 0f) {
+          emitter.audioSource.UnPause();
+        }
+      }
+    }
+
+    public void ResumeAllAudio() {
+      foreach (var kvp in poolDictionary) {
+        foreach (var emitter in kvp.Value) {
+          if (emitter && emitter.audioSource && !emitter.audioSource.isPlaying && emitter.audioSource.time > 0f) {
+            emitter.audioSource.UnPause();
+          }
+        }
+      }
+    }
+
+    public void StopAudio(AudioData data) {
+      if (!poolDictionary.ContainsKey(data)) {
+        return;
+      }
+
+      foreach (var emitter in poolDictionary[data]) {
+        if (!emitter || !emitter.audioSource.isPlaying) {
+          continue;
+        }
+
+        emitter.audioSource.Stop();
+        emitter.gameObject.SetActive(false);
+      }
+    }
+
+    public void StopAllAudio() {
+      foreach (var kvp in poolDictionary) {
+        foreach (var emitter in kvp.Value) {
+          if (!emitter || !emitter.audioSource.isPlaying) {
+            continue;
+          }
+
+          emitter.audioSource.Stop();
+          emitter.gameObject.SetActive(false);
+        }
+      }
     }
   }
 }

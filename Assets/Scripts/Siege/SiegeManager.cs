@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Actors;
+using Audio;
 using SaveSystem;
+using Scriptables;
 using Scriptables.Siege;
 using UI;
 using UnityEngine;
@@ -10,6 +12,7 @@ using Random = UnityEngine.Random;
 
 namespace Siege {
   public class SiegeManager : MonoBehaviour, ISaveLoad {
+    [SerializeField] private AudioData siegeTheme;
     [SerializeField] private SiegesSettings siegesSettings;
     [SerializeField] private ZombieDifficultyDatabase zombieDifficultyDatabase;
     [SerializeField] private SiegeTimelineUI siegeTimelineUI;
@@ -43,10 +46,12 @@ namespace Siege {
     public ZombieDifficultyDatabase ZombieDifficultyDatabase => zombieDifficultyDatabase;
 
     private Coroutine activeSiegeCoroutine;
+    private AudioController audioController;
 
     private void Start() {
       SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
+      audioController = gameManager.AudioController;
       ActorPlayer.OnPlayerDeath += OnPlayerDeathHandler;
       ActorPlayer.OnPlayerRespawn += OnPlayerRespawnHandler;
 
@@ -225,15 +230,37 @@ namespace Siege {
     }
 
     private void StartSiege() {
+      StratSiegeAudio();
       isSiegeInProgress = true;
       OnSiegeStarted?.Invoke(currentSiege);
       gameManager.MessagesManager.ShowSimpleMessage("Siege started!");
     }
 
     private void EndSiege() {
+      EndSiegeAudio();
       isSiegeInProgress = false;
       OnSiegeEnded?.Invoke(currentSiege);
       gameManager.MessagesManager.ShowSimpleMessage("Siege ended!");
+    }
+
+    private void StratSiegeAudio() {
+      audioController.StopMainTheme();
+      audioController.PlayAudio(siegeTheme);
+    }
+
+    private void EndSiegeAudio() {
+      audioController.StopAudio(siegeTheme);
+      audioController.PlayMainTheme();
+    }
+
+    private void ResumeSiegeAudio() {
+      audioController.StopMainTheme();
+      audioController.ResumeAudio(siegeTheme);
+    }
+
+    private void PauseSiegeAudio() {
+      audioController.PauseAudio(siegeTheme);
+      audioController.PlayMainTheme();
     }
 
     private void ZombieSpawn() {
@@ -242,6 +269,10 @@ namespace Siege {
 
     private void PauseSiege() {
       isPaused = true;
+
+      if (isSiegeInProgress) {
+        PauseSiegeAudio();
+      }
     }
 
     private void ResumeSiege() {
@@ -250,6 +281,14 @@ namespace Siege {
       }
 
       isPaused = false;
+
+      if (isSiegeInProgress) {
+        ResumeSiegeAudio();
+      }
+    }
+
+    private void ResumeWithSkipSiege() {
+      ResumeSiege();
 
       if (!isSiegeInProgress) {
         return;
@@ -270,7 +309,7 @@ namespace Siege {
     }
 
     private void OnPlayerRespawnHandler() {
-      ResumeSiege();
+      ResumeWithSkipSiege();
     }
 
     private void OnGameResumedHandler() {

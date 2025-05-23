@@ -84,8 +84,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [Tooltip("UI object that need to be disabled when we start from menu")]
   [SerializeField]
   private List<GameObject> uiObjectList;
-
-  [SerializeField] private AudioData mainTheme;
+  
   private PlayerController playerController;
   private PlayerControllerBase currPlayerController;
   private MiningRobotController miningRobotController;
@@ -186,7 +185,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   }
 
   private void Start() {
-    audioController.PlayAudio(mainTheme);
+    audioController.PlayMainTheme();
     if (!showMenuOnStart) {
       menuController.Hide();
       return;

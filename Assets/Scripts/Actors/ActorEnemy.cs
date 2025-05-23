@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using Animation;
 using Enemy;
 using NodeCanvas.BehaviourTrees;
+using Scriptables;
 using Scriptables.Siege;
 using Stats;
 using UnityEngine;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace Actors {
   public class ActorEnemy : ActorBase {
@@ -22,14 +24,17 @@ namespace Actors {
 
     [SerializeField] private ZombieDifficultyProfile difficulty;
 
-    [Header("Destroy after death")]
-    [SerializeField] private bool destroyAfterDeath;
+    [Header("Destroy after death")] [SerializeField]
+    private bool destroyAfterDeath;
+
     [SerializeField] private float destroyAfter = 5f;
     private IEnumerator coroutine;
     public Coords GetCoords => coords.GetCoords();
     public Coords GetCoordsOutOfBounds => coords.GetCoordsOutOfBounds();
     public ZombieDifficultyProfile Difficulty => difficulty;
     public event Action OnEnemyDied;
+
+    private AudioData deathAudioData;
 
     public void SetBehaviour(BehaviourTree tree) {
       behaviourTreeOwner.behaviour = tree;
@@ -45,13 +50,14 @@ namespace Actors {
       behaviourTreeOwner.PauseBehaviour();
       npcMovement.StopAnimator();
     }
-    
+
     public void UnpauseBehaviour() {
       behaviourTreeOwner.StartBehaviour();
     }
 
     public void SetDifficulty(ZombieDifficultyProfile difficulty) {
       this.difficulty = difficulty;
+      SetAudioData();
       ApplyStats();
     }
 
@@ -83,11 +89,42 @@ namespace Actors {
     protected override void Awake() {
       base.Awake();
       DamageableType = DamageableType.Enemy;
-      if (difficulty && difficulty.OnTakeDamageAudioData) {
-        OnTakeDamageAudioData = difficulty.OnTakeDamageAudioData;
-      }
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
+    }
+
+    private void SetAudioData() {
+      if (!difficulty) {
+        return;
+      }
+
+      if (difficulty.OnTakeDamageAudioDatas is { Count: > 0 }) {
+        OnTakeDamageAudioData =
+          difficulty.OnTakeDamageAudioDatas[Random.Range(0, difficulty.OnTakeDamageAudioDatas.Count - 1)];
+      }
+
+      if (difficulty.OnDeathAudioDatas is { Count: > 0 }) {
+        deathAudioData =
+          difficulty.OnDeathAudioDatas[Random.Range(0, difficulty.OnDeathAudioDatas.Count - 1)];
+      }
+    }
+
+    private void DeathAudio() {
+      if (!deathAudioData) {
+        return;
+      }
+
+      GameManager.Instance.AudioController.PlayAudio(deathAudioData);
+      Debug.Log("Zombie Death Audio Played");
+    }
+
+    private void DamageAudio() {
+      if (!OnTakeDamageAudioData) {
+        return;
+      }
+
+      GameManager.Instance.AudioController.PlayAudio(OnTakeDamageAudioData);
+      Debug.Log("Zombie Damage Audio Played");
     }
 
     private void OnDestroy() {
@@ -177,6 +214,7 @@ namespace Actors {
 
     public override void Damage(float damage, bool isPlayer) {
       base.Damage(damage, isPlayer);
+      DamageAudio();
       if (stats.Health > 0)
         return;
       //work only 1 layer selected in inspector
@@ -188,6 +226,7 @@ namespace Actors {
 
     protected override void DeathActions() {
       base.DeathActions();
+      DeathAudio();
       OnEnemyDied?.Invoke();
       rigidbody.linearVelocity = Vector3.zero;
       SpawnDrop();
@@ -195,7 +234,7 @@ namespace Actors {
     }
 
     private void DestroyAfterDeath() {
-      if(!destroyAfterDeath)
+      if (!destroyAfterDeath)
         return;
       coroutine = WaitDestroy();
       StartCoroutine(coroutine);
@@ -207,11 +246,12 @@ namespace Actors {
       Respawn();
       gameObject.SetActive(false);
     }
+
     public override void Respawn() {
       base.Respawn();
       _animator.Rebind();
       _animator.Update(0f);
-      
+
       var layerIndex = Mathf.RoundToInt(Mathf.Log(layerAfterDeath.value, 2));
       gameObject.layer = LayerMask.NameToLayer("Enemies");
       Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Character"), layerIndex, false);

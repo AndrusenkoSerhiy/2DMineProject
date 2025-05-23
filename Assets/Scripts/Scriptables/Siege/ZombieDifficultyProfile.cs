@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Scriptables.Siege {
   [CreateAssetMenu(fileName = "ZombieDifficultyProfile", menuName = "Siege/Zombie Difficulty Profile", order = 0)]
@@ -8,6 +9,7 @@ namespace Scriptables.Siege {
     public float attackMultiplier = 1f;
     public float armorMultiplier = 1f;
     
-    public AudioData OnTakeDamageAudioData;
+    public List<AudioData> OnTakeDamageAudioDatas;
+    public List<AudioData> OnDeathAudioDatas;
   }
 }

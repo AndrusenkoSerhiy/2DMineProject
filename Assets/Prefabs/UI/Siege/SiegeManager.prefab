@@ -48,3 +48,17 @@ MonoBehaviour:
   zombieDifficultyDatabase: {fileID: 11400000, guid: 4d663b28e23279d478ccd46c6cdf37ea, type: 2}
   siegeTimelineUI: {fileID: 0}
   calculateWithWeightAndCycle: 0
+  currentSiegeCycle: 1
+  currentSiegeIndex: 0
+  currentSiege:
+    duration: 0
+    zombieCount: 0
+    wavesOfZombies: 0
+    timeBeforeSiege: 0
+  siegesStarted: 0
+  isSiegeInProgress: 0
+  isPaused: 0
+  durationTimer: 0
+  siegeCycleElapsedTime: 0
+  totalCycleTime: 0
+  timeToNextSegment: 0

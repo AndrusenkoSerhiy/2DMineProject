@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Player;
 using Scriptables;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils;
@@ -21,6 +22,7 @@ public class PlaceCellRobot : MonoBehaviour {
   [SerializeField] private int curPreview;
   [SerializeField] private List<ResourceData> possibleResourceList;
   [SerializeField] private int activeBlockIndex;
+  [SerializeField] private RobotPlaceCellInfo blockInfo;
   private ChunkController chunkController;
   
   private void Awake() {
@@ -139,6 +141,18 @@ public class PlaceCellRobot : MonoBehaviour {
     enabled = true;
     gameManager.UserInput.controls.UI.RightClick.performed += TryPlaceCell;
     ShowPreview(true);
+    blockInfo.Show();
+    UpdateBlockInfo();
+  }
+
+  //update ui for current block
+  private void UpdateBlockInfo() {
+    var sprite = possibleResourceList[activeBlockIndex].Sprite(0);
+    var itemCount = gameManager.PlayerInventory.GetInventory()
+      .GetTotalCount(possibleResourceList[activeBlockIndex].ItemData.Id);
+    
+    blockInfo.SetImage(sprite);
+    blockInfo.SetAmmo(itemCount);
   }
 
   private void ShowPreview(bool state) {
@@ -159,11 +173,13 @@ public class PlaceCellRobot : MonoBehaviour {
     for (int i = count; i < previewList.Count; i++) {
       previewList[i].gameObject.SetActive(false);
     }
+    UpdateBlockInfo();
   }
 
   public void Deactivate() {
     enabled = false;
     ShowPreview(false);
     gameManager.UserInput.controls.UI.RightClick.performed -= TryPlaceCell;
+    blockInfo.Hide();
   }
 }

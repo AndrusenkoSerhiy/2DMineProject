@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Actors;
 using Audio;
 using SaveSystem;
-using Scriptables;
 using Scriptables.Siege;
 using UI;
 using UnityEngine;
@@ -12,7 +11,6 @@ using Random = UnityEngine.Random;
 
 namespace Siege {
   public class SiegeManager : MonoBehaviour, ISaveLoad {
-    [SerializeField] private AudioData siegeTheme;
     [SerializeField] private SiegesSettings siegesSettings;
     [SerializeField] private ZombieDifficultyDatabase zombieDifficultyDatabase;
     [SerializeField] private SiegeTimelineUI siegeTimelineUI;
@@ -129,8 +127,7 @@ namespace Siege {
       if (siegesStarted) {
         return;
       }
-
-      Debug.LogWarning("Starting sieges!!!!!!!");
+      
       siegeQueue.Clear();
       siegeQueue.Add(GetActiveTemplate(siegesSettings.FirstSiege));
 
@@ -154,10 +151,10 @@ namespace Siege {
 
       siegesStarted = true;
       activeSiegeCoroutine = StartCoroutine(RunNextSiege());
-      foreach (var siege in siegeQueue) {
+      /*foreach (var siege in siegeQueue) {
         Debug.LogWarning(
           $"TimeBeforeSiege {siege.TimeBeforeSiege} | duration {siege.Duration} | waves {siege.WavesOfZombies} | zombies {siege.ZombieCount}");
-      }
+      }*/
     }
 
     private void StopActiveCoroutine() {
@@ -178,7 +175,7 @@ namespace Siege {
 
     private IEnumerator RunNextSiege() {
       if (currentSiegeIndex >= siegeQueue.Count) {
-        Debug.LogWarning("Run second Siege");
+        // Debug.LogWarning("Run second Siege");
         siegesStarted = false;
         currentSiegeIndex = 0;
         currentSiegeCycle++;
@@ -245,21 +242,21 @@ namespace Siege {
 
     private void StratSiegeAudio() {
       audioController.StopMainTheme();
-      audioController.PlayAudio(siegeTheme);
+      audioController.PlaySiegeTheme();
     }
 
     private void EndSiegeAudio() {
-      audioController.StopAudio(siegeTheme);
+      audioController.StopSiegeTheme();
       audioController.PlayMainTheme();
     }
 
     private void ResumeSiegeAudio() {
       audioController.StopMainTheme();
-      audioController.ResumeAudio(siegeTheme);
+      audioController.ResumeSiegeTheme();
     }
 
     private void PauseSiegeAudio() {
-      audioController.PauseAudio(siegeTheme);
+      audioController.PauseSiegeTheme();
       audioController.PlayMainTheme();
     }
 

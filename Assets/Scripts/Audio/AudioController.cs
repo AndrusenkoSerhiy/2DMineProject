@@ -2,6 +2,7 @@
 using Scriptables;
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Threading.Tasks;
 
 namespace Audio {
   public class AudioController : MonoBehaviour {
@@ -11,11 +12,18 @@ namespace Audio {
     [SerializeField] private Transform shotRoot;
     [SerializeField] private SoundPooler soundPooler;
     [SerializeField] private AudioData mainTheme;
+    [SerializeField] private AudioData siegeTheme;
     [SerializeField] private AudioData uiClick;
     [SerializeField] private AudioData craftClick;
     [SerializeField] private AudioData newRecipe;
     [SerializeField] private AudioData shoot;
     [SerializeField] private AudioData placeBuilding;
+
+    public async Task PreloadAsync(AudioData audioData) {
+      await soundPooler.PreloadAudioAsync(audioData, GetRootTransform(audioData.type));
+    }
+
+    public async Task PreloadSiegeThemeAsync() => await PreloadAsync(siegeTheme);
 
     public Transform GetRootTransform(AudioData.AudioTypeE type) {
       return type == AudioData.AudioTypeE.Looped ? loopRoot : shotRoot;
@@ -34,6 +42,11 @@ namespace Audio {
     public void StopMainTheme() => StopAudio(mainTheme);
     public void PauseMainTheme() => PauseAudio(mainTheme);
     public void ResumeMainTheme() => ResumeAudio(mainTheme);
+
+    public void PlaySiegeTheme() => PlayAudio(siegeTheme);
+    public void StopSiegeTheme() => StopAudio(siegeTheme);
+    public void PauseSiegeTheme() => PauseAudio(siegeTheme);
+    public void ResumeSiegeTheme() => ResumeAudio(siegeTheme);
 
     public void PlayUIClick() => PlayAudio(uiClick);
     public void PlayCraftClick() => PlayAudio(craftClick);

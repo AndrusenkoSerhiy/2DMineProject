@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Audio;
 using Scriptables;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace PoolSound {
   public class SoundPooler : MonoBehaviour {
@@ -75,6 +76,40 @@ namespace PoolSound {
       poolDictionary[data].Enqueue(objectToSpawn);
 
       return objectToSpawn;
+    }
+
+    public async Task PreloadAudioAsync(AudioData data, Transform parent) {
+      if (poolDictionary.ContainsKey(data)) {
+        return;
+      }
+
+      var poolConfig = pooledObjects.Find(p => p.data == data);
+      if (poolConfig == null) {
+        return;
+      }
+
+      var objectPool = new Queue<AudioEmmiter>();
+      var newObj = Instantiate(poolConfig.audioEmmiter.gameObject, parent);
+      var emitter = newObj.GetComponent<AudioEmmiter>();
+
+      emitter.audioSource.clip = data.AudioClips[0];
+      emitter.audioSource.outputAudioMixerGroup = data.mixerGroup;
+      emitter.audioSource.volume = 0.0001f;
+      emitter.audioSource.loop = false;
+
+      emitter.gameObject.SetActive(true);
+      emitter.audioSource.Play();
+
+      while (emitter.audioSource.clip.loadState != AudioDataLoadState.Loaded) {
+        await Task.Yield();
+      }
+
+      await Task.Delay(100);
+      emitter.audioSource.Stop();
+      emitter.gameObject.SetActive(false);
+
+      objectPool.Enqueue(emitter);
+      poolDictionary.Add(data, objectPool);
     }
 
     public void PauseAudio(AudioData data) {

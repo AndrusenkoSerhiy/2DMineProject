@@ -52,6 +52,7 @@ namespace Menu {
 
     private void Start() {
       gameManager.UserInput.controls.UI.Cancel.performed += HandleEsc;
+      // gameManager.AudioController.PreloadSiegeThemeAsync();
     }
 
     private void SetupProfiles() {

@@ -202,7 +202,7 @@ namespace Inventory {
         var currentResource = list[i];
         var rand = Random.value;
         if (rand > currentResource.chance) {
-          return;
+          continue;
         }
 
         var count = Random.Range((int)currentResource.rndCount.x, (int)currentResource.rndCount.y);

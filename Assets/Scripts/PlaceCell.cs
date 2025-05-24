@@ -1,6 +1,7 @@
 using System;
 using Windows;
 using Craft;
+using DG.Tweening;
 using Inventory;
 using Player;
 using Scriptables;
@@ -254,6 +255,14 @@ public class PlaceCell : MonoBehaviour {
     var cell = chunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
     chunkController.AfterCellChanged(cell);
     chunkController.UpdateCellAround(coords.X, coords.Y);
+    chunkController.AddCellToActives(coords.X, coords.Y, resourceData);
+    //Tween for spawn effect
+    var spriteRenderer = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y)
+      .GetComponentInChildren<SpriteRenderer>();
+    Color startColor = spriteRenderer.color;
+    startColor.a = 0f;
+    spriteRenderer.color = startColor;
+    spriteRenderer.DOFade(1f, 0.5f);
   }
 
   private void SetCellsUndamegable(int startX, int startY, int objectSizeX, bool isDamageable = false) {

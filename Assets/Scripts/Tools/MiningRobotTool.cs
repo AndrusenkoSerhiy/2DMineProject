@@ -199,7 +199,7 @@ namespace Tools {
       LockCells(false);
       ActorRobot.OnRobotBroked += ExitFromRobot;
       OnPlayerEnteredRobot?.Invoke();
-      GameManager.Instance.QuickSlotListener.Deactivate();
+      GameManager.Instance.QuickSlotListener.Deactivate("MiningRobot");
       playerController.EnableController(false);
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
@@ -301,7 +301,7 @@ namespace Tools {
       playerController.Stamina.EnableSprintScript(true);
       miningRobotController.Stamina.EnableSprintScript(false);
       GameManager.Instance.CurrPlayerController = playerController;
-      GameManager.Instance.QuickSlotListener.Activate();
+      GameManager.Instance.QuickSlotListener.Activate("MiningRobot");
       UnsubscribeToChangeMode();
       changeModePrompt.ShowPrompt(false);
       

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Inventory;
 using SaveSystem;
 using Scriptables.Items;
@@ -15,6 +16,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   private PlayerInventory playerInventory;
   private ItemConsumer itemConsumer;
   [SerializeField] private int selectedSlotIndex = -1;
+  [SerializeField] private List<string> reasonsToBlock = new();
   private GameManager gameManager;
   public event Action OnActivate;
   public event Action OnDeactivate;
@@ -86,6 +88,11 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   private void OnEnable() {
+    if (reasonsToBlock.Count >= 1) {
+      gameObject.SetActive(false);
+      return; 
+    }
+    
     if (!loaded) {
       return;
     }
@@ -114,9 +121,14 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     SelectSlotByIndex(0);
   }
 
-  public void Activate() {
+  public void Activate(string reason) {
+    if (reasonsToBlock.Contains(reason)) {
+      reasonsToBlock.Remove(reason);
+    }
+
     gameObject.SetActive(true);
     SubscribeToClickQuickSlots();
+    SubscribeToMouseWheel();
 
     UpdateQuickSlotsAfterLoad();
 
@@ -130,8 +142,13 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     OnActivate?.Invoke();
   }
 
-  public void Deactivate() {
+  public void Deactivate(string reason = "") {
+    if (!string.IsNullOrEmpty(reason)) {
+      reasonsToBlock.Add(reason);
+    }
+    
     UnsubscribeToClickQuickSlots();
+    UnsubscribeToMouseWheel();
     gameObject.SetActive(false);
     OnDeactivate?.Invoke();
   }
@@ -283,7 +300,6 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
 
   private void OnDestroy() {
     UnsubscribeToAddItem();
-    UnsubscribeToMouseWheel();
     MiningRobotTool.OnPlayerEnteredRobot -= UnequipSlot;
     PlaceCell.OnSlotReset -= UnequipSlot;
   }

@@ -130,15 +130,9 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
 
-    UpdateQuickSlotsAfterLoad();
-
-    selectedSlot = slots[selectedSlotIndex];
-    SetSelectedItem(slots[selectedSlotIndex].Item);
-    selectedSlot.Select();
-    // gameManager.PlayerEquipment.OnEquipItem(selectedSlot);
-    gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
-    // selectedSlot.Item?.info?.Use();
-    GetConsumer().SetActiveSlot(selectedSlot);
+    //UpdateQuickSlotsAfterLoad();
+    
+    ActivateItemInSelectedSlot(slots[selectedSlotIndex]);
     OnActivate?.Invoke();
   }
 
@@ -167,17 +161,13 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
         !targetSlot.index.Equals(selectedSlot.index))
       return;
     
-    selectedSlot = targetSlot;
-    SetSelectedItem(targetSlot.Item);
-    selectedSlot.Select();
-    gameManager.PlayerEquipment.EquipTool(selectedSlot.Item);
-    GetConsumer().SetActiveSlot(selectedSlot);
+    ActivateItemInSelectedSlot(targetSlot);
   }
 
   private void DeactivateItem(InventorySlot slot) {
     if (!slot.isSelected || slot.Item.isEmpty)
       return;
-    
+
     gameManager.PlayerEquipment.UnEquipTool();
     slot.Unselect();
     GetConsumer().DeactivateItem(selectedItem);
@@ -287,6 +277,10 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
       GetConsumer().DeactivateItem(selectedItem);
     }
 
+    ActivateItemInSelectedSlot(slot);
+  }
+
+  private void ActivateItemInSelectedSlot(InventorySlot slot) {
     selectedSlot = slot;
     SetSelectedItem(slot.Item);
     selectedSlot.Select();

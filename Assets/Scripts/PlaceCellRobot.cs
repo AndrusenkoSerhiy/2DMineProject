@@ -135,6 +135,8 @@ public class PlaceCellRobot : MonoBehaviour {
     chunkController.AfterCellChanged(cell);
     chunkController.UpdateCellAround(x, y);
     gameManager.PlayerInventory.InventoriesPool.RemoveFromInventoriesPool(possibleResourceList[activeBlockIndex].ItemData.Id, 1);
+    
+    gameManager.AudioController.PlayPlaceBuildingBlock();
   }
 
   public void Activate() {

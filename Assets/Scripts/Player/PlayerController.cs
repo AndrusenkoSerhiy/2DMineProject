@@ -1,3 +1,4 @@
+using Animation;
 using SaveSystem;
 using UnityEngine;
 
@@ -11,6 +12,9 @@ namespace Player {
       base.Awake();
       GameManager.Instance.PlayerController = this;
       GameManager.Instance.CurrPlayerController = this;
+      
+      AnimationEventManager.onLeftStep += GameManager.Instance.AudioController.PlayPlayerLeftStep;
+      AnimationEventManager.onRightStep += GameManager.Instance.AudioController.PlayPlayerRightStep;
     }
 
     #region save/load

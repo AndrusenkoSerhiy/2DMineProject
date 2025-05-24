@@ -61,6 +61,12 @@ MonoBehaviour:
   newRecipe: {fileID: 11400000, guid: 4ca03816366209b43b88b2df45587bdf, type: 2}
   shoot: {fileID: 11400000, guid: 12c6e267964b3fb43a1945556d648783, type: 2}
   placeBuilding: {fileID: 11400000, guid: f0351840239eb1140888273ba153ae88, type: 2}
+  takeBuilding: {fileID: 11400000, guid: a515c91c3c62b024c85bed2b033ae930, type: 2}
+  placeBuildingBlock: {fileID: 11400000, guid: 933df7487e6f3a349a7687ca69e09045, type: 2}
+  playerJump: {fileID: 11400000, guid: e73b6abc14ef61f4e8c8f2a26196d57a, type: 2}
+  playerJumpLanding: {fileID: 11400000, guid: 3e4b2bdfdcb23ed43874880f1cea3f8a, type: 2}
+  playerLeftStep: {fileID: 11400000, guid: 0c0b63d204ae41249ab074fa3afe78e3, type: 2}
+  playerRightStep: {fileID: 11400000, guid: 9794262676a63b8458de073d2ce059d7, type: 2}
 --- !u!1 &1201469009489140599
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,11 +318,23 @@ MonoBehaviour:
     audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: f0351840239eb1140888273ba153ae88, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 933df7487e6f3a349a7687ca69e09045, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: a515c91c3c62b024c85bed2b033ae930, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: 7de42c86b07edfc4bbabce3202dc2a6f, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: 9fb11924e00daa84aaa0f504a86e71cf, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: 4ca03816366209b43b88b2df45587bdf, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: e73b6abc14ef61f4e8c8f2a26196d57a, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 3e4b2bdfdcb23ed43874880f1cea3f8a, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 0c0b63d204ae41249ab074fa3afe78e3, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 9794262676a63b8458de073d2ce059d7, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
 --- !u!1 &6473485979532965659
 GameObject:

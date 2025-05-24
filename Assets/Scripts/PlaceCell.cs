@@ -1,5 +1,6 @@
 using System;
 using Windows;
+using Audio;
 using Craft;
 using DG.Tweening;
 using Inventory;
@@ -29,11 +30,13 @@ public class PlaceCell : MonoBehaviour {
   private ChunkController chunkController;
   private BuildingsDataController buildingDataController;
   private WindowsController windowsController;
+  private AudioController audioController;
   private void Start() {
     playerController = GameManager.Instance.CurrPlayerController;
     chunkController = GameManager.Instance.ChunkController;
     buildingDataController = GameManager.Instance.BuildingsDataController;
     windowsController = GameManager.Instance.WindowsController;
+    audioController = GameManager.Instance.AudioController;
   }
 
   public void ActivateBuildMode(Building bData, ResourceData rData, GameObject sPrefab) {
@@ -239,6 +242,8 @@ public class PlaceCell : MonoBehaviour {
     var test = CoordsTransformer.MouseToGridPosition(pos);
     SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
     GameManager.Instance.Locator.SetTarget(pos, coords, GetSelectedSlot().Item.info);
+    
+    audioController.PlayPlaceBuilding();
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject) {
@@ -247,6 +252,7 @@ public class PlaceCell : MonoBehaviour {
     chunkController.RemoveBuild(buildObject);
     SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
     GameManager.Instance.Locator.RemoveTarget(worldCoords);
+    audioController.PlayTakeBuilding();
     return true;
   }
 
@@ -263,6 +269,8 @@ public class PlaceCell : MonoBehaviour {
     startColor.a = 0f;
     spriteRenderer.color = startColor;
     spriteRenderer.DOFade(1f, 0.5f);
+    
+    audioController.PlayPlaceBuildingBlock();
   }
 
   private void SetCellsUndamegable(int startX, int startY, int objectSizeX, bool isDamageable = false) {

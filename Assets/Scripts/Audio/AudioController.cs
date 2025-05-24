@@ -18,6 +18,12 @@ namespace Audio {
     [SerializeField] private AudioData newRecipe;
     [SerializeField] private AudioData shoot;
     [SerializeField] private AudioData placeBuilding;
+    [SerializeField] private AudioData takeBuilding;
+    [SerializeField] private AudioData placeBuildingBlock;
+    [SerializeField] private AudioData playerJump;
+    [SerializeField] private AudioData playerJumpLanding;
+    [SerializeField] private AudioData playerLeftStep;
+    [SerializeField] private AudioData playerRightStep;
 
     public async Task PreloadAsync(AudioData audioData) {
       await soundPooler.PreloadAudioAsync(audioData, GetRootTransform(audioData.type));
@@ -30,11 +36,19 @@ namespace Audio {
     }
 
     public void PlayAudio(AudioData audioData) {
+      if (!audioData) {
+        return;
+      }
+
       var position = audioData.is3D ? listener.transform.position : Vector3.zero;
       soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
     }
 
     public void PlayAudio(AudioData audioData, Vector3 position) {
+      if (!audioData) {
+        return;
+      }
+
       soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
     }
 
@@ -53,6 +67,12 @@ namespace Audio {
     public void PlayNewRecipe() => PlayAudio(newRecipe);
     public void PlayShoot() => PlayAudio(shoot);
     public void PlayPlaceBuilding() => PlayAudio(placeBuilding);
+    public void PlayTakeBuilding() => PlayAudio(takeBuilding);
+    public void PlayPlaceBuildingBlock() => PlayAudio(placeBuildingBlock);
+    public void PlayPlayerJump() => PlayAudio(playerJump);
+    public void PlayPlayerJumpLanding() => PlayAudio(playerJumpLanding);
+    public void PlayPlayerLeftStep() => PlayAudio(playerLeftStep);
+    public void PlayPlayerRightStep() => PlayAudio(playerRightStep);
 
     public void StopAudio(AudioData data) => soundPooler.StopAudio(data);
     public void StopAllAudio() => soundPooler.StopAllAudio();

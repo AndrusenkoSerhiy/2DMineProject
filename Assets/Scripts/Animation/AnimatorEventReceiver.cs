@@ -17,5 +17,13 @@ namespace Animation {
     public void RobotRepaired() {
       AnimationEventManager.RobotRepaired();
     }
+
+    public void LeftStep() {
+      AnimationEventManager.LeftStep();
+    }
+
+    public void RightStep() {
+      AnimationEventManager.RightStep();
+    }
   }
 }

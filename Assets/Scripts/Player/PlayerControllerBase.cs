@@ -199,12 +199,14 @@ namespace Player {
     private void PlayLandingEffect() {
       if (fallingPs != null && fallingPs.activeSelf) fallingPs.SetActive(false);
       GameManager.Instance.PoolEffects.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
+      GameManager.Instance.AudioController.PlayPlayerJumpLanding();
     }
 
     private void SpawnFootstepEffect() {
       if (Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x))) {
-        if (grounded && Mathf.Abs(_rb.linearVelocity.x) > 1)
+        if (grounded && Mathf.Abs(_rb.linearVelocity.x) > 1) {
           GameManager.Instance.PoolEffects.SpawnFromPool("FootstepEffect", transform.position, Quaternion.identity);
+        }
       }
     }
 
@@ -259,6 +261,8 @@ namespace Player {
       jumpPs = GameManager.Instance.PoolEffects.SpawnFromPool("JumpEffect", transform.position, Quaternion.identity).gameObject;
       Jumped?.Invoke();
       startYPos = transform.position.y;
+      
+      GameManager.Instance.AudioController.PlayPlayerJump();
     }
 
     public void RestoreHealth() {

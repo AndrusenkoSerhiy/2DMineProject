@@ -7,6 +7,8 @@ namespace Animation {
     public static Action<AnimationEvent, GameObject> onAttackEnded;
     public static Action onFootstep;
     public static Action onRobotRepaired;
+    public static Action onLeftStep;
+    public static Action onRightStep;
 
     public static void TriggerAttackStarted(AnimationEvent animationEvent, GameObject go) {
       onAttackStarted?.Invoke(animationEvent, go);
@@ -22,6 +24,14 @@ namespace Animation {
 
     public static void RobotRepaired() {
       onRobotRepaired?.Invoke();
+    }
+
+    public static void LeftStep() {
+      onLeftStep?.Invoke();
+    }
+
+    public static void RightStep() {
+      onRightStep?.Invoke();
     }
   }
 }

@@ -312,6 +312,19 @@ namespace World {
 
     private void InitStartChunk() {
       chunkData = _chunkGenerator.GetChunk(0, 0);
+      
+      SetFirstRow();
+      //POI
+      GeneratePOI(chunkData);
+      SpawnChunk(0, 0);
+      OnCreateChunk?.Invoke();
+    }
+
+    //Use only on new game fill 10 cells with dirt and 1 wood block
+    private void SetFirstRow() {
+      if (!SaveLoadSystem.Instance.IsNewGame()) 
+        return;
+      
       //fill first row
       var data = ResourceDataLibrary.GetData(0.3f);
       for (int i = 248; i < 258; i++) {
@@ -320,24 +333,20 @@ namespace World {
           cell.perlin = 0.3f;
           cell.durability = data.Durability;
           chunkData.SetCellFill(i, 0);
+          AfterCellChanged(cell);
         }
       }
 
       //set first help
       var dataWood = ResourceDataLibrary.GetData(0.3f);
       var cellWood = chunkData.GetCellData(258, 0);
-      //Debug.LogError($"fill {chunkData.GetCellFill(258, 0)}");
       //if cell is empty need to fill him
       if(chunkData.GetCellFill(258, 0) == 0)
         chunkData.SetCellFill(258, 0);
       
       cellWood.perlin = -1f;
       cellWood.durability = dataWood.Durability;
-
-      //POI
-      GeneratePOI(chunkData);
-      SpawnChunk(0, 0);
-      OnCreateChunk?.Invoke();
+      AfterCellChanged(cellWood);
     }
 
     private void GeneratePOI(ChunkData chunkData) {

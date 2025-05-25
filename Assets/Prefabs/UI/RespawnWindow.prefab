@@ -60,14 +60,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.22745098, g: 0.22745098, b: 0.22745098, a: 0.6666667}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: bb2dee1c607a5c74e8b5ae01997d8967, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -91,7 +91,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isShow: 0
   interactionPromtUI: {fileID: 9018599640229373371}
-  actionName: Press {0} to respawn
+  actionName: 
+  labelText: Press {0} to respawn
 --- !u!1001 &4364387265824836046
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -100,9 +101,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1669475028986456128}
     m_Modifications:
+    - target: {fileID: 67986799192539725, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 67986799192539725, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 67986799192539725, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2701776149379155487, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
       propertyPath: m_text
       value: Static prompt inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 2701776149379155487, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 880402e015ec4f040a0fc5bb0519055e, type: 2}
+    - target: {fileID: 2701776149379155487, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
+      propertyPath: m_fontStyle
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2701776149379155487, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -8160451133914627020, guid: 880402e015ec4f040a0fc5bb0519055e, type: 2}
+    - target: {fileID: 2701776149379155487, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4139801518483900241, guid: 6b211c0f91db2f64a9f8f7c7652ccc47, type: 3}
       propertyPath: m_Pivot.x

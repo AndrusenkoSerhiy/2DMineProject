@@ -336,6 +336,18 @@ namespace World {
           AfterCellChanged(cell);
         }
       }
+      
+      data = ResourceDataLibrary.GetData(0.75f);
+      for (int i = 0; i < 999; i++) {
+        for (int j = 989; j < 999; j++) {
+          var cell = chunkData.GetCellData(i, j);
+          cell.perlin = 0.75f;
+          cell.durability = data.Durability;
+          cell.canTakeDamage = false;
+          chunkData.SetCellFill(i, j);
+          AfterCellChanged(cell);
+        }
+      }
 
       //set first help
       var dataWood = ResourceDataLibrary.GetData(0.3f);

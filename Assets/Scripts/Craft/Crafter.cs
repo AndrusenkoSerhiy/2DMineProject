@@ -71,6 +71,9 @@ namespace Craft {
     }
 
     protected void CheckInteract() {
+      if (gameManager.MenuController.ActiveMenu != Menu.Menu.None)
+        return;
+      
       Init();
 
       if (!gameManager.RecipesManager.HasUnlockedRecipesForStation(station.RecipeType)) {

@@ -202,6 +202,7 @@ namespace Craft {
 
     private void OnCraftClickHandler() {
       if (currentCount < minCount) {
+        gameManager.AudioController.PlayUIClick();
         return;
       }
 
@@ -210,21 +211,23 @@ namespace Craft {
     }
 
     private void OnIncrementClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      
       if (currentCount >= maxCount) {
         return;
       }
 
-      gameManager.AudioController.PlayUIClick();
       currentCount++;
       PrintInputCount();
     }
 
     private void OnDecrementClickHandler() {
+      gameManager.AudioController.PlayUIClick();
+      
       if (currentCount <= minCount) {
         return;
       }
 
-      gameManager.AudioController.PlayUIClick();
       currentCount--;
       PrintInputCount();
     }

@@ -38,6 +38,10 @@ namespace Player {
       miningRobotAttack.LockHighlight(state, reason);
     }
 
+    public void ClearLockList() {
+      miningRobotAttack.ClearLockList();
+    }
+
     protected override void FlipX() {
       if (GameManager.Instance.CurrPlayerController.Actor is ActorPlayer)
         return;

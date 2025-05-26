@@ -141,7 +141,7 @@ public class PlaceCellRobot : MonoBehaviour {
 
   public void Activate() {
     enabled = true;
-    gameManager.UserInput.controls.UI.RightClick.performed += TryPlaceCell;
+    gameManager.UserInput.controls.UI.Click.performed += TryPlaceCell;
     ShowPreview(true);
     blockInfo.Show();
     UpdateBlockInfo();
@@ -181,7 +181,7 @@ public class PlaceCellRobot : MonoBehaviour {
   public void Deactivate() {
     enabled = false;
     ShowPreview(false);
-    gameManager.UserInput.controls.UI.RightClick.performed -= TryPlaceCell;
+    gameManager.UserInput.controls.UI.Click.performed -= TryPlaceCell;
     blockInfo.Hide();
   }
 }

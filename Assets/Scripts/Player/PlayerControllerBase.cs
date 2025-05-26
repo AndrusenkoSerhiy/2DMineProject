@@ -105,6 +105,13 @@ namespace Player {
       AnimationEventManager.onFootstep -= SpawnFootstepEffect;
     }
 
+    protected virtual void JumpSound() {
+      GameManager.Instance.AudioController.PlayPlayerJump();
+    }
+
+    protected virtual void JumpLandSound() {
+      GameManager.Instance.AudioController.PlayPlayerJumpLanding();
+    }
 
     //move forward or backward
     public float GetMoveForward() {
@@ -199,7 +206,7 @@ namespace Player {
     private void PlayLandingEffect() {
       if (fallingPs != null && fallingPs.activeSelf) fallingPs.SetActive(false);
       GameManager.Instance.PoolEffects.SpawnFromPool("LandingEffect", transform.position, Quaternion.identity);
-      GameManager.Instance.AudioController.PlayPlayerJumpLanding();
+      JumpLandSound();
     }
 
     private void SpawnFootstepEffect() {
@@ -262,7 +269,7 @@ namespace Player {
       Jumped?.Invoke();
       startYPos = transform.position.y;
       
-      GameManager.Instance.AudioController.PlayPlayerJump();
+      JumpSound();
     }
 
     public void RestoreHealth() {

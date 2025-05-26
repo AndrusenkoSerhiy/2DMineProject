@@ -40,14 +40,15 @@ namespace Actors {
     private AudioData groanAudioData;
     private float groanInterval = 0f;
     private float timeSinceGroan = 0f;
+    private bool paused;
 
     private void Update() {
-      if (!groanAudioData) {
+      if (!groanAudioData || paused || IsDead) {
         return;
       }
 
       if (timeSinceGroan == 0f || timeSinceGroan >= groanInterval) {
-        audioController.PlayAudio(groanAudioData);
+        audioController.PlayAudio(groanAudioData, transform);
         timeSinceGroan = 0f;
       }
 
@@ -67,10 +68,24 @@ namespace Actors {
     public void PauseBehaviour() {
       behaviourTreeOwner.PauseBehaviour();
       npcMovement.StopAnimator();
+
+      OnPauseAction();
     }
 
     public void UnpauseBehaviour() {
       behaviourTreeOwner.StartBehaviour();
+
+      OnUnPauseAction();
+    }
+
+    private void OnPauseAction() {
+      paused = true;
+      audioController.StopAudio(groanAudioData);
+      timeSinceGroan = 0f;
+    }
+
+    private void OnUnPauseAction() {
+      paused = false;
     }
 
     public void SetDifficulty(ZombieDifficultyProfile difficulty) {
@@ -110,6 +125,9 @@ namespace Actors {
       DamageableType = DamageableType.Enemy;
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
+      
+      ActorPlayer.OnPlayerDeath += OnPauseAction;
+      ActorPlayer.OnPlayerRespawn += OnUnPauseAction;
     }
 
     private void SetAudioData() {
@@ -119,17 +137,17 @@ namespace Actors {
 
       if (difficulty.OnTakeDamageAudioDatas is { Count: > 0 }) {
         OnTakeDamageAudioData =
-          difficulty.OnTakeDamageAudioDatas[Random.Range(0, difficulty.OnTakeDamageAudioDatas.Count - 1)];
+          difficulty.OnTakeDamageAudioDatas[Random.Range(0, difficulty.OnTakeDamageAudioDatas.Count)];
       }
 
       if (difficulty.OnDeathAudioDatas is { Count: > 0 }) {
         deathAudioData =
-          difficulty.OnDeathAudioDatas[Random.Range(0, difficulty.OnDeathAudioDatas.Count - 1)];
+          difficulty.OnDeathAudioDatas[Random.Range(0, difficulty.OnDeathAudioDatas.Count)];
       }
 
       if (difficulty.GroanAudioData) {
         groanAudioData = difficulty.GroanAudioData;
-        groanInterval = Random.Range(difficulty.GroanInterval.x, difficulty.GroanInterval.y);
+        groanInterval = Random.Range(difficulty.GroanInterval.x, difficulty.GroanInterval.y + 1);
       }
     }
 
@@ -146,12 +164,19 @@ namespace Actors {
         return;
       }
 
+      if (IsDead) {
+        return;
+      }
+
       audioController.PlayAudio(OnTakeDamageAudioData, transform.position);
     }
 
     private void OnDestroy() {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
       AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
+      
+      ActorPlayer.OnPlayerDeath -= OnPauseAction;
+      ActorPlayer.OnPlayerRespawn -= OnUnPauseAction;
     }
 
     public void TriggerAttack(IDamageable target) {
@@ -235,8 +260,8 @@ namespace Actors {
     }
 
     public override void Damage(float damage, bool isPlayer) {
-      base.Damage(damage, isPlayer);
       DamageAudio();
+      base.Damage(damage, isPlayer);
       if (stats.Health > 0)
         return;
       //work only 1 layer selected in inspector

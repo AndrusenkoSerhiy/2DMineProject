@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: c9c44a54-b2ac-473b-b441-a4cfd394571b
   repairCost: 4
+  jumpAudioData: {fileID: 11400000, guid: e497209b447e37647a8f3260de5cd226, type: 2}
+  jumpLandingAudioData: {fileID: 11400000, guid: 3983595dd7a6fec48b4c5c6bbc026f0d, type: 2}
+  leftStepAudioData: {fileID: 0}
+  rightStepAudioData: {fileID: 0}
+  damagedAudioData:
+  - {fileID: 11400000, guid: c74ea2efbbdcc65489f27bdcdb55c904, type: 2}

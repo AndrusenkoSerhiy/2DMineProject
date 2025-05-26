@@ -67,6 +67,11 @@ MonoBehaviour:
   playerJumpLanding: {fileID: 11400000, guid: 3e4b2bdfdcb23ed43874880f1cea3f8a, type: 2}
   playerLeftStep: {fileID: 11400000, guid: 0c0b63d204ae41249ab074fa3afe78e3, type: 2}
   playerRightStep: {fileID: 11400000, guid: 9794262676a63b8458de073d2ce059d7, type: 2}
+  playerDamaged:
+  - {fileID: 11400000, guid: a62f08d030964164f91481157ba1ee4d, type: 2}
+  - {fileID: 11400000, guid: df4e8c789a0feb044bc3077e49a12f08, type: 2}
+  - {fileID: 11400000, guid: 9d9f13097e96d3e44b50ceefdfa77a57, type: 2}
+  playerDeath: {fileID: 11400000, guid: 609c893a4de7710499ab31c11f0e2e21, type: 2}
 --- !u!1 &1201469009489140599
 GameObject:
   m_ObjectHideFlags: 0
@@ -76,6 +81,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6843483302127574474}
+  - component: {fileID: 8304331538773566854}
   - component: {fileID: 2535160462728290291}
   - component: {fileID: 5032417999087075207}
   m_Layer: 0
@@ -100,6 +106,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3000554962643831107}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8304331538773566854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201469009489140599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9a86122eb854c2595730b73ea3ab64a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
 --- !u!82 &2535160462728290291
 AudioSource:
   m_ObjectHideFlags: 0
@@ -335,6 +354,20 @@ MonoBehaviour:
   - data: {fileID: 11400000, guid: 0c0b63d204ae41249ab074fa3afe78e3, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: 9794262676a63b8458de073d2ce059d7, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: a62f08d030964164f91481157ba1ee4d, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: df4e8c789a0feb044bc3077e49a12f08, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 9d9f13097e96d3e44b50ceefdfa77a57, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: c74ea2efbbdcc65489f27bdcdb55c904, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: e497209b447e37647a8f3260de5cd226, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 3983595dd7a6fec48b4c5c6bbc026f0d, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 609c893a4de7710499ab31c11f0e2e21, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
 --- !u!1 &6473485979532965659
 GameObject:

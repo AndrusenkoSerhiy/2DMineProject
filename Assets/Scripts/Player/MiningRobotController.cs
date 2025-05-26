@@ -1,8 +1,10 @@
 using Actors;
+using Scriptables.Repair;
 using UnityEngine;
 
 namespace Player {
   public class MiningRobotController : PlayerControllerBase, IPlayerController{
+    public RobotObject robotObject;
     [SerializeField] private MiningRobotAttack miningRobotAttack;
 
     protected override void Awake() {
@@ -88,6 +90,14 @@ namespace Player {
 
     public void SetRBType(RigidbodyType2D bodyType) {
       _rb.bodyType = bodyType;
+    }
+    
+    protected override void JumpSound() {
+      GameManager.Instance.AudioController.PlayAudio(robotObject?.jumpAudioData);
+    }
+
+    protected override void JumpLandSound() {
+      GameManager.Instance.AudioController.PlayAudio(robotObject?.jumpLandingAudioData);
     }
   }
 }

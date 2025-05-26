@@ -15,6 +15,7 @@ namespace Windows {
       GameManager.Instance.UserInput.controls.UI.Respawn.performed += Respawn;
       GetInteractionText();
       SetInteractionText();
+      GameManager.Instance.AudioController.PlayPlayerDeath();
     }
     
     private void GetInteractionText() {
@@ -43,6 +44,7 @@ namespace Windows {
 
     public override void Hide() {
       base.Hide();
+      GameManager.Instance.AudioController.StopPlayerDeath();
       GameManager.Instance.UserInput.controls.UI.Respawn.performed -= Respawn;
     }
 

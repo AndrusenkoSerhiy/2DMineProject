@@ -1,4 +1,5 @@
-﻿using PoolSound;
+﻿using System.Collections.Generic;
+using PoolSound;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -11,6 +12,7 @@ namespace Audio {
     [SerializeField] private Transform loopRoot;
     [SerializeField] private Transform shotRoot;
     [SerializeField] private SoundPooler soundPooler;
+
     [SerializeField] private AudioData mainTheme;
     [SerializeField] private AudioData siegeTheme;
     [SerializeField] private AudioData uiClick;
@@ -24,6 +26,8 @@ namespace Audio {
     [SerializeField] private AudioData playerJumpLanding;
     [SerializeField] private AudioData playerLeftStep;
     [SerializeField] private AudioData playerRightStep;
+    [SerializeField] private List<AudioData> playerDamaged;
+    [SerializeField] private AudioData playerDeath;
 
     public async Task PreloadAsync(AudioData audioData) {
       await soundPooler.PreloadAudioAsync(audioData, GetRootTransform(audioData.type));
@@ -35,6 +39,10 @@ namespace Audio {
       return type == AudioData.AudioTypeE.Looped ? loopRoot : shotRoot;
     }
 
+    /// <summary>
+    /// Plays the specified audio at the listener's position or at the origin if it's not 3D.
+    /// </summary>
+    /// <param name="audioData">The audio data to play.</param>
     public void PlayAudio(AudioData audioData) {
       if (!audioData) {
         return;
@@ -44,12 +52,30 @@ namespace Audio {
       soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
     }
 
+    /// <summary>
+    /// Plays the specified audio at the given position.
+    /// </summary>
+    /// <param name="audioData">The audio data to play.</param>
+    /// <param name="position">The world position where the audio should be played.</param>
     public void PlayAudio(AudioData audioData, Vector3 position) {
       if (!audioData) {
         return;
       }
 
       soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
+    }
+
+    /// <summary>
+    /// Plays the specified audio and makes it follow the given transform.
+    /// </summary>
+    /// <param name="audioData">The audio data to play.</param>
+    /// <param name="followTransform">The transform that the audio should follow.</param>
+    public void PlayAudio(AudioData audioData, Transform followTransform) {
+      if (!audioData || !followTransform) {
+        return;
+      }
+
+      soundPooler.SpawnFromPool(audioData, followTransform, GetRootTransform(audioData.type));
     }
 
     public void PlayMainTheme() => PlayAudio(mainTheme);
@@ -73,12 +99,38 @@ namespace Audio {
     public void PlayPlayerJumpLanding() => PlayAudio(playerJumpLanding);
     public void PlayPlayerLeftStep() => PlayAudio(playerLeftStep);
     public void PlayPlayerRightStep() => PlayAudio(playerRightStep);
+    public void PlayPlayerDamaged() => PlayAudio(playerDamaged[Random.Range(0, playerDamaged.Count)]);
+    public void PlayPlayerDeath() => PlayAudio(playerDeath);
+    public void StopPlayerDeath() => StopAudio(playerDeath);
 
-    public void StopAudio(AudioData data) => soundPooler.StopAudio(data);
+    public void StopAudio(AudioData data) {
+      if (!data) {
+        return;
+      }
+
+      soundPooler.StopAudio(data);
+    }
+
     public void StopAllAudio() => soundPooler.StopAllAudio();
-    public void PauseAudio(AudioData data) => soundPooler.PauseAudio(data);
+
+    public void PauseAudio(AudioData data) {
+      if (!data) {
+        return;
+      }
+
+      soundPooler.PauseAudio(data);
+    }
+
     public void PauseAllAudio() => soundPooler.PauseAllAudio();
-    public void ResumeAudio(AudioData data) => soundPooler.ResumeAudio(data);
+
+    public void ResumeAudio(AudioData data) {
+      if (!data) {
+        return;
+      }
+
+      soundPooler.ResumeAudio(data);
+    }
+
     public void ResumeAllAudio() => soundPooler.ResumeAllAudio();
 
     public void SetMasterVolume(float v) => mixer.SetFloat("masterVolume", Mathf.Log10(v) * 20f);

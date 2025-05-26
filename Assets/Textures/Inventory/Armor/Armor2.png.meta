@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f8d06820d05d4a845863efd04ccffa3a
+guid: 2334457a91386f5488b4ad797e2e14da
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1128947775675819744
-    second: armor_0
+      213: -286701730236802693
+    second: Armor2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -48,7 +48,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 64
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: armor_0
+      name: Armor2_0
       rect:
         serializedVersion: 2
-        x: 12
-        y: 0
-        width: 104
-        height: 128
+        x: 11
+        y: 8
+        width: 106
+        height: 112
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 02910ecbafb2550f0800000000000000
-      internalID: -1128947775675819744
+      spriteID: b79debc9b4e650cf0800000000000000
+      internalID: -286701730236802693
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      armor_0: -1128947775675819744
+      Armor2_0: -286701730236802693
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

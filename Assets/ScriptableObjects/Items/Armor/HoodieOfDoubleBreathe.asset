@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be81ea0e0eba4b798f5f539945e4727b, type: 3}
-  m_Name: Vest
+  m_Name: HoodieOfDoubleBreathe
   m_EditorClassIdentifier: 
-  id: de7e9f41-118e-4e45-a082-1574ad6d90c5
+  id: bfedc540-cf55-4b74-8376-2350ed6708fc
   Type: 21
-  Name: Vest
+  Name: Hoodie of Double Breathe
+  Weight: 0
   ParentType: 0
-  UiDisplay: {fileID: 21300000, guid: f8d06820d05d4a845863efd04ccffa3a, type: 3}
+  UiDisplay: {fileID: 21300000, guid: 2334457a91386f5488b4ad797e2e14da, type: 3}
   CharacterDisplay: {fileID: 0}
   Stackable: 0
   MaxStackSize: 1
@@ -25,14 +26,18 @@ MonoBehaviour:
   spawnPrefab: {fileID: 0}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: +19 Armor
+  Description: 'Chest
+
+    Doubles Stamina regeneration'
   statModifiers:
-  - type: 60
+  - type: 23
     applyType: 2
-    operatorType: 1
-    value: 19
+    operatorType: 2
+    value: 2
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
+    timeLeft: 0
     canApplyWhenPreviousAt: 100
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}

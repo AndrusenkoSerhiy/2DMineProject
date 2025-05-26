@@ -98,13 +98,13 @@ namespace Inventory {
       }
 
       var itemObject = item.info;
-
+      
       if (!item.IsBroken) {
         PlaceItemInHand(item);
       }
 
       equippedItem = item;
-
+      
       if (itemObject.Type != ItemType.Tool) 
         return;
       
@@ -133,8 +133,11 @@ namespace Inventory {
 
       var itemObject = equippedItem.info;
       Destroy(itemInHand.gameObject);
+      
+      if(itemObject.Type != ItemType.Tool)
+        return;
+      
       GetPlayerController().PlayerStats.Mediator.RemoveModifiersByItemId(itemObject.Id);
-
       OnUnequippedWeapon?.Invoke();
     }
 
@@ -146,8 +149,8 @@ namespace Inventory {
       itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
       
       if(item.info.Type != ItemType.Tool)
-          return;
-        
+        return;
+      
       GetPlayerController().PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
       OnEquippedWeapon?.Invoke();
     }

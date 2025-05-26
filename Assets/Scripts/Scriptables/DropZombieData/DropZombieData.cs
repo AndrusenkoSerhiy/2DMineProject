@@ -12,7 +12,7 @@ namespace Scriptables.DropZombieData {
   public class DropZombieData : ScriptableObject {
     public List<DropData> drops = new();
 
-    public void DropItems(ZombieDifficultyProfile difficulty) {
+    public void DropItems(ZombieDifficultyProfile difficulty, Vector3 position) {
       var data = GetDropData(difficulty);
       var items = data.possibleItems;
       var maxItems = data.maxItems;
@@ -33,7 +33,7 @@ namespace Scriptables.DropZombieData {
         count = Mathf.Min(count, maxItems - currItemsCount);
         
         currItemsCount += count;
-        GameManager.Instance.PlayerInventory.SpawnItem(new Item(item.item), count);
+        GameManager.Instance.PlayerInventory.AddItemToInventory(item.item, count, position);
       }
     }
 

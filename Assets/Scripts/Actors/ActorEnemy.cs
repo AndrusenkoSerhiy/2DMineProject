@@ -305,7 +305,7 @@ namespace Actors {
     }
 
     private void SpawnDrop() {
-      GameManager.Instance.DropZombieData.DropItems(difficulty);
+      GameManager.Instance.DropZombieData.DropItems(difficulty, transform.position);
     }
   }
 }

@@ -297,6 +297,7 @@ namespace Tools {
       playerController.EnableCollider(true);
       playerController.EnableController(true);
       playerController.SetLockHighlight(false);
+      miningRobotController.ClearLockList();
       miningRobotController.SetLockHighlight(true);
       playerController.Stamina.EnableSprintScript(true);
       miningRobotController.Stamina.EnableSprintScript(false);

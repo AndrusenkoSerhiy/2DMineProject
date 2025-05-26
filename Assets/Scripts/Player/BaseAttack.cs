@@ -47,6 +47,10 @@ namespace Player {
       playerEquipment = GameManager.Instance.PlayerEquipment;
     }
 
+    //use when we exit from robot 
+    public void ClearLockList() {
+      lockReasons.Clear();
+    }
     protected virtual void Start() {
       attackTimeCounter = PlayerStats.TimeBtwAttacks;
       PrepareAttackParams();

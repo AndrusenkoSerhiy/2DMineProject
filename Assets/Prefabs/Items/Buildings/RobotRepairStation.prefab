@@ -64,7 +64,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5902d7692f41133429cfc0f22e54a4ec, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -198,10 +198,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33e69882ddb489a8b8f91925ae84d9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  robotRepairObject: {fileID: 11400000, guid: 20225897ed2c2124989043907a9eb6c9, type: 2}
+  robotObject: {fileID: 0}
   cellObject: {fileID: 5990886735459512718}
   interactText: Repair
-  interactHeader: 
+  holdInteractText: 
 --- !u!114 &5990886735459512718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,4 +228,6 @@ MonoBehaviour:
     y: 0
     perlin: 0
     durability: 0
+    alreadyDroped: 0
+    fractionalResource: 0
     canTakeDamage: 0

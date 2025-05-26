@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TestOutlineShaderGraphZombie
-  m_Shader: {fileID: -6465566751694194690, guid: 75f6a97342195b54aaec42906fe4fa20, type: 3}
+  m_Name: OutlineMaterial
+  m_Shader: {fileID: -6465566751694194690, guid: fc903c79e80a3a34280b900e26293620, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -36,7 +36,15 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _DissolveTex:
+        m_Texture: {fileID: 2800000, guid: c2030fc2fda221a4fb5f0f403004fbfb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_c1c0a48098ed4b728825ceb38d463c92_Out_0_Texture2D:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -54,11 +62,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ColorPower: 5
-    - _MaxXOffset: 0.003
-    - _MaxYOffset: 0.003
+    - _ColorPower: 2
+    - _Dissolve: 1
+    - _DissolveEmission: 10
+    - _DissolveLineThickness: -0.13
+    - _DissolveNoiseTiling: 0.008
+    - _MaxXOffset: 0.004
+    - _MaxYOffset: 0.004
     - _Thickness: 0
     m_Colors:
+    - _DissolveLineColor: {r: 0.011764705, g: 0.5729528, b: 1, a: 0.078431375}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 0.05882353}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

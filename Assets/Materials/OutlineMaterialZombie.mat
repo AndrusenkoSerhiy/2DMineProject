@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TestOutlineShaderGraph
-  m_Shader: {fileID: -6465566751694194690, guid: fc903c79e80a3a34280b900e26293620, type: 3}
+  m_Name: OutlineMaterialZombie
+  m_Shader: {fileID: -6465566751694194690, guid: 75f6a97342195b54aaec42906fe4fa20, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -54,7 +54,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ColorPower: 2
+    - _ColorPower: 5
     - _MaxXOffset: 0.003
     - _MaxYOffset: 0.003
     - _Thickness: 0

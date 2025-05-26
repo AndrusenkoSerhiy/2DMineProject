@@ -98,16 +98,16 @@ namespace Inventory {
       }
 
       var itemObject = item.info;
-
-      if (itemObject.Type != ItemType.Tool) {
-        return;
-      }
-
+      
       if (!item.IsBroken) {
         PlaceItemInHand(item);
       }
 
       equippedItem = item;
+      
+      if (itemObject.Type != ItemType.Tool) 
+        return;
+      
       AddWeaponEvents();
       CheckIfReloadNeeded();
       CheckIfNeedToShowAmmoUI();
@@ -133,8 +133,11 @@ namespace Inventory {
 
       var itemObject = equippedItem.info;
       Destroy(itemInHand.gameObject);
+      
+      if(itemObject.Type != ItemType.Tool)
+        return;
+      
       GetPlayerController().PlayerStats.Mediator.RemoveModifiersByItemId(itemObject.Id);
-
       OnUnequippedWeapon?.Invoke();
     }
 
@@ -144,9 +147,11 @@ namespace Inventory {
       itemInHand.localPosition = itemObject.SpawnPosition;
       itemInHand.localEulerAngles = itemObject.SpawnRotation;
       itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
-
+      
+      if(item.info.Type != ItemType.Tool)
+        return;
+      
       GetPlayerController().PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
-
       OnEquippedWeapon?.Invoke();
     }
 

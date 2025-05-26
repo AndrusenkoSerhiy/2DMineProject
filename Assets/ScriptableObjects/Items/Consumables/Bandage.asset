@@ -15,10 +15,10 @@ MonoBehaviour:
   id: 7231d200-161d-4fe8-a927-0347db660a2b
   Type: 1
   Name: Bandage
-  Weight: 0
-  ParentType: 0
+  Weight: 10
+  ParentType: 2
   UiDisplay: {fileID: 21300000, guid: 186bc4191ff91c14995a4b6afa677de8, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 01d5df4d2aaad154f8d6f13ab8997979, type: 3}
   Stackable: 1
   MaxStackSize: 50
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -26,12 +26,15 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3890226224433729309, guid: 5328b8a8647c2d84487339510714898b, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: Consumable
+  Description: 'Consumable
+
+    Heals for 15 Health'
   statModifiers:
   - type: 1
     applyType: 1
     operatorType: 1
     value: 15
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0

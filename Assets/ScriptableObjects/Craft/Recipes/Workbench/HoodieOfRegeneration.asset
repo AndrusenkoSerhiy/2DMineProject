@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: HoodieOfRegeneration
+  m_EditorClassIdentifier: 
+  id: dfff579b-b195-4950-a0a2-d9621776ba3a
+  RecipeName: Hoodie of Regeneration
+  RecipeTypes: 02000000
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+    Amount: 10
+  - Material: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
+    Amount: 20
+  - Material: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
+    Amount: 5
+  - Material: {fileID: 11400000, guid: a87e42a0ac2a7b645985034cbec41d23, type: 2}
+    Amount: 50
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
+  Result: {fileID: 11400000, guid: 3ec9a644aa6bea14796bc90465009f92, type: 2}
+  CraftingTime: 150
+  detailImg: {fileID: 0}

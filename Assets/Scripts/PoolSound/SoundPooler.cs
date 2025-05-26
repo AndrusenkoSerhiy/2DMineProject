@@ -19,6 +19,23 @@ namespace PoolSound {
       poolDictionary = new Dictionary<AudioData, Queue<AudioEmmiter>>();
     }
 
+    public AudioEmmiter SpawnFromPool(AudioData data, Transform followTarget, Transform parent) {
+      var emitter = SpawnFromPool(data, followTarget.position, parent);
+
+      if (!emitter) {
+        return emitter;
+      }
+
+      var follower = emitter.GetComponent<FollowTarget>();
+      if (!follower) {
+        follower = emitter.gameObject.AddComponent<FollowTarget>();
+      }
+
+      follower.target = followTarget;
+
+      return emitter;
+    }
+
     public AudioEmmiter SpawnFromPool(AudioData data, Vector3 position, Transform parent) {
       AudioEmmiter objectToSpawn = null;
       var objectPool = new Queue<AudioEmmiter>();

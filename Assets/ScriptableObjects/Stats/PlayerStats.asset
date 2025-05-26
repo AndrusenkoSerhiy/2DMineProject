@@ -15,21 +15,24 @@ MonoBehaviour:
   health: 100
   maxHealth: 100
   healthRegen: 0.5
+  healthMaxPossibleValue: 200
+  armor: 1
+  armorMaxPossibleValue: 20
   stamina: 100
   maxStamina: 100
   staminaDrain: 60
   staminaRecovery: 30
+  staminaMaxPossibleValue: 200
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280
   attackRange: 2.5
   blockDamage: 1
-  entityDamage: 3
+  entityDamage: 1
   timeBtwAttacks: 0.7
   attackStaminaUsage: 1
   attackID: 0
   attackColliderSize: {x: 0.5, y: 0.5}
-  armor: 1
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -44,6 +47,7 @@ MonoBehaviour:
   airDeceleration: 3
   groundingForce: -10
   grounderDistance: 0.05
+  minJumpHeight: 3
   jumpPower: 30
   maxFallSpeed: 25
   fallAcceleration: 65

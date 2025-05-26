@@ -16,9 +16,9 @@ MonoBehaviour:
   Type: 1
   Name: Baked Worms
   Weight: 0
-  ParentType: 0
+  ParentType: 2
   UiDisplay: {fileID: 21300000, guid: 71d481d93ac62db4cadc55e055bc4730, type: 3}
-  CharacterDisplay: {fileID: 0}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 4b24499157323e6428a9b59221a715d9, type: 3}
   Stackable: 1
   MaxStackSize: 20
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -26,25 +26,31 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3890226224433729309, guid: 332ca2a28cdf1164fb95a4159c926695, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
-  Description: Food
+  Description: 'Food
+
+    +20 Max Health
+
+    Duration: 20 min'
   statModifiers:
   - type: 2
     applyType: 1
     operatorType: 1
     value: 20
+    canApplyIfValueIsMax: 0
     permanent: 0
-    duration: 30
+    duration: 1200
     timeLeft: 0
     canApplyWhenPreviousAt: 20
-    removePrevious: 5
+    removePrevious: 3
     modifierDisplayObject: {fileID: 11400000, guid: 35ea8439f87facd47992d91c251e335a, type: 2}
   - type: 1
     applyType: 1
     operatorType: 1
     value: 20
-    permanent: 1
+    canApplyIfValueIsMax: 1
+    permanent: 0
     duration: 0
     timeLeft: 0
-    canApplyWhenPreviousAt: 20
+    canApplyWhenPreviousAt: 0
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}

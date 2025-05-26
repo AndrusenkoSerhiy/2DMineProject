@@ -34,7 +34,7 @@ public class FoodModifierUI : MonoBehaviour {
     statModifier = modifier;
     image.sprite = modifier.modifierDisplayObject.display;
     image.color = modifier.modifierDisplayObject.iconColor;
-    border.sprite = modifier.modifierDisplayObject.border;
+    //border.sprite = modifier.modifierDisplayObject.border;
     border.color = modifier.modifierDisplayObject.borderColor;
     tooltipTrigger.header = modifier.modifierDisplayObject.name;
     SetContent();

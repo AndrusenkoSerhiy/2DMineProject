@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 744208fb-7732-4654-97ca-0f67e2171823
   Type: 2
   Name: Pickaxe
-  Weight: 0
+  Weight: 10
   ParentType: 2
   UiDisplay: {fileID: 21300000, guid: f41e87b0f3fd49145803a568ad15a4c4, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 9a48c4710eaf00d4a8af3a8a02d149b4, type: 3}
@@ -32,6 +32,7 @@ MonoBehaviour:
     applyType: 2
     operatorType: 1
     value: 5
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0
@@ -42,6 +43,7 @@ MonoBehaviour:
     applyType: 2
     operatorType: 1
     value: 0.5
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0
@@ -52,6 +54,7 @@ MonoBehaviour:
     applyType: 2
     operatorType: 1
     value: -0.3
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0
@@ -62,6 +65,18 @@ MonoBehaviour:
     applyType: 2
     operatorType: 1
     value: 4
+    canApplyIfValueIsMax: 0
+    permanent: 0
+    duration: 0
+    timeLeft: 0
+    canApplyWhenPreviousAt: 100
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 42
+    applyType: 2
+    operatorType: 1
+    value: 1
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0
@@ -72,7 +87,6 @@ MonoBehaviour:
   magazineSize: 0
   ammo: {fileID: 0}
   ammoSpeed: 0
-  useSelfAnim: 0
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280

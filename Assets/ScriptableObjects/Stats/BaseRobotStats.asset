@@ -28,7 +28,7 @@ MonoBehaviour:
     m_Bits: 1280
   attackRange: 4
   blockDamage: 20
-  entityDamage: 10
+  entityDamage: 2
   timeBtwAttacks: 0.4
   attackStaminaUsage: 1
   attackID: 0
@@ -47,6 +47,7 @@ MonoBehaviour:
   airDeceleration: 3
   groundingForce: -10
   grounderDistance: 0.05
+  minJumpHeight: 3
   jumpPower: 40
   maxFallSpeed: 50
   fallAcceleration: 65

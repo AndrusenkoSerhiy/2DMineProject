@@ -33,18 +33,18 @@ MonoBehaviour:
     operatorType: 1
     value: 20
     permanent: 0
-    duration: 30
+    duration: 1200
     timeLeft: 0
     canApplyWhenPreviousAt: 20
-    removePrevious: 5
+    removePrevious: 3
     modifierDisplayObject: {fileID: 11400000, guid: 35ea8439f87facd47992d91c251e335a, type: 2}
   - type: 1
     applyType: 1
     operatorType: 1
     value: 20
-    permanent: 1
+    permanent: 0
     duration: 0
     timeLeft: 0
-    canApplyWhenPreviousAt: 20
+    canApplyWhenPreviousAt: 0
     removePrevious: 1
-    modifierDisplayObject: {fileID: 0}
+    modifierDisplayObject: {fileID: 11400000, guid: 35ea8439f87facd47992d91c251e335a, type: 2}

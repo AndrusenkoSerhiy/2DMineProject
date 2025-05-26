@@ -31,7 +31,17 @@ MonoBehaviour:
   - type: 2
     applyType: 1
     operatorType: 1
-    value: 10
+    value: 15
+    permanent: 0
+    duration: 900
+    timeLeft: 0
+    canApplyWhenPreviousAt: 20
+    removePrevious: 5
+    modifierDisplayObject: {fileID: 11400000, guid: c54aaa7f91949184ab0c94ae995e4970, type: 2}
+  - type: 21
+    applyType: 1
+    operatorType: 1
+    value: 15
     permanent: 0
     duration: 60
     timeLeft: 0

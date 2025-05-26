@@ -28,12 +28,12 @@ MonoBehaviour:
   CanDrop: 1
   Description: Food ingredient
   statModifiers:
-  - type: 3
+  - type: 21
     applyType: 1
     operatorType: 1
-    value: 5
+    value: 10
     permanent: 0
-    duration: 30
+    duration: 300
     timeLeft: 0
     canApplyWhenPreviousAt: 20
     removePrevious: 5

@@ -27,4 +27,14 @@ MonoBehaviour:
   CanMoveToAnotherInventory: 1
   CanDrop: 1
   Description: Food ingredient
-  statModifiers: []
+  statModifiers:
+  - type: 2
+    applyType: 1
+    operatorType: 1
+    value: 10
+    permanent: 0
+    duration: 300
+    timeLeft: 0
+    canApplyWhenPreviousAt: 20
+    removePrevious: 5
+    modifierDisplayObject: {fileID: 11400000, guid: 35ea8439f87facd47992d91c251e335a, type: 2}

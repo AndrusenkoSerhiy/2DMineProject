@@ -28,13 +28,13 @@ MonoBehaviour:
   CanDrop: 1
   Description: Food
   statModifiers:
-  - type: 41
+  - type: 21
     applyType: 1
     operatorType: 1
-    value: 1
+    value: 20
     permanent: 0
-    duration: 40
+    duration: 1200
     timeLeft: 0
-    canApplyWhenPreviousAt: 100
-    removePrevious: 1
-    modifierDisplayObject: {fileID: 11400000, guid: 19eb52a40b8a469488df55427cd5fea9, type: 2}
+    canApplyWhenPreviousAt: 20
+    removePrevious: 3
+    modifierDisplayObject: {fileID: 11400000, guid: d4c7cac3ae207d645baddfbfe7ff2a43, type: 2}

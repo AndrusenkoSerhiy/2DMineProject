@@ -13,6 +13,7 @@ namespace Inventory {
     private readonly System.Action<InputAction.CallbackContext> leftClickHandler;
     private InventorySlot activeSlot;
     private bool isClickHandlerAdded;
+    private IConsumableItem consumableItem;
 
     public ItemConsumer() {
       gameManager = GameManager.Instance;
@@ -36,9 +37,11 @@ namespace Inventory {
 
       var itemObject = slot.Item.info;
 
-      if (itemObject is not IConsumableItem) {
+      if (itemObject is not IConsumableItem iConsumableItem) {
         return;
       }
+
+      consumableItem = iConsumableItem;
 
       switch (itemObject) {
         case BuildingBlock buildingBlock:
@@ -55,7 +58,7 @@ namespace Inventory {
         playerController.SetLockHighlight(false, "ItemConsumer");
       }
       else {
-        playerController.SetLockHighlight(true,"ItemConsumer");
+        playerController.SetLockHighlight(true, "ItemConsumer");
       }
     }
 
@@ -94,6 +97,8 @@ namespace Inventory {
         return;
       }
 
+      gameManager.AudioController.PlayAudio(consumableItem?.ConsumeSound);
+
       activeSlot.RemoveAmount(1);
     }
 
@@ -108,7 +113,7 @@ namespace Inventory {
 
     private void UseBuildingBlock(BuildingBlock buildingBlock) {
       var prefab = buildingBlock.CharacterDisplay ? buildingBlock.CharacterDisplay : buildingBlock.spawnPrefab;
-      gameManager.PlaceCell.ActivateBuildMode(buildingBlock.BuildingData,buildingBlock.ResourceData, prefab);
+      gameManager.PlaceCell.ActivateBuildMode(buildingBlock, prefab);
     }
   }
 }

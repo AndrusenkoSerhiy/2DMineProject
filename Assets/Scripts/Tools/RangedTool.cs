@@ -34,7 +34,7 @@ namespace Tools {
       var shootDirection = (crosshair.GetCenter() - firePos).normalized;
 
       bullet.Launch(shootDirection, tool, bulletsPool);
-      audioController.PlayShoot();
+      audioController.PlayAudio(tool.useSound);
       playerEquipment.ConsumeAmmo();
     }
   }

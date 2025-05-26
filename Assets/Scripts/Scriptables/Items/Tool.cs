@@ -34,6 +34,7 @@ namespace Scriptables.Items {
     public float MaxDurability => maxDurability;
     public float DurabilityUse => durabilityUse;
     public DurabilityUsageType DurabilityUsageType => durabilityUsageType;
+    public AudioData useSound;
 
     public void Awake() {
       Type = ItemType.Tool;

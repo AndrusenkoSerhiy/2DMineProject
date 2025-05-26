@@ -18,7 +18,6 @@ namespace Audio {
     [SerializeField] private AudioData uiClick;
     [SerializeField] private AudioData craftClick;
     [SerializeField] private AudioData newRecipe;
-    [SerializeField] private AudioData shoot;
     [SerializeField] private AudioData placeBuilding;
     [SerializeField] private AudioData takeBuilding;
     [SerializeField] private AudioData placeBuildingBlock;
@@ -91,7 +90,6 @@ namespace Audio {
     public void PlayUIClick() => PlayAudio(uiClick);
     public void PlayCraftClick() => PlayAudio(craftClick);
     public void PlayNewRecipe() => PlayAudio(newRecipe);
-    public void PlayShoot() => PlayAudio(shoot);
     public void PlayPlaceBuilding() => PlayAudio(placeBuilding);
     public void PlayTakeBuilding() => PlayAudio(takeBuilding);
     public void PlayPlaceBuildingBlock() => PlayAudio(placeBuildingBlock);

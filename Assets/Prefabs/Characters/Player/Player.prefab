@@ -375,6 +375,66 @@ MonoBehaviour:
   prefab: {fileID: 6712673092602809747, guid: 42f1e9b80fa326d4e94f422d9891b6d5, type: 3}
   previewInstance: {fileID: 0}
   isPreviewing: 0
+  spawnScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5
+      inSlope: 5.5614657
+      outSlope: 5.5614657
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.044503063
+    - serializedVersion: 3
+      time: 0.17495668
+      value: 1.134752
+      inSlope: 0.17291465
+      outSlope: 0.17291465
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.41000378
+      value: 0.8682143
+      inSlope: -0.036696356
+      outSlope: -0.036696356
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.3291379
+      outWeight: 0.25783136
+    - serializedVersion: 3
+      time: 0.648325
+      value: 1.0399973
+      inSlope: 0.11830739
+      outSlope: 0.11830739
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.82348675
+      value: 0.9636821
+      inSlope: 0.1637944
+      outSlope: 0.1637944
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.8232078
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.2057516
+      outSlope: 0.2057516
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   emptyResourceData: {fileID: 11400000, guid: 6f3c9c684742bbd4cac77c250859794c, type: 2}
   radius: 3
 --- !u!114 &6251728841341945271

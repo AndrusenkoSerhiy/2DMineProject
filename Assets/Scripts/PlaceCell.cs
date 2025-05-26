@@ -19,6 +19,7 @@ public class PlaceCell : MonoBehaviour {
   private Color previewColor;
   private Color blockColor;
   private Color currPreviewColor;
+  [SerializeField] private AnimationCurve spawnScaleCurve;
   private SpriteRenderer renderer;
   [SerializeField] private ResourceData emptyResourceData;
 
@@ -244,6 +245,16 @@ public class PlaceCell : MonoBehaviour {
     GameManager.Instance.Locator.SetTarget(pos, coords, GetSelectedSlot().Item.info);
     
     audioController.PlayPlaceBuilding();
+
+    //Tween for spawn effect
+    var spriteRenderer = build.GetComponentInChildren<SpriteRenderer>();
+    var childObject = spriteRenderer.gameObject;
+    var material = spriteRenderer.material;
+    material.SetFloat("_Dissolve", 0f);
+    DOTween.To(() => material.GetFloat("_Dissolve"), x => material.SetFloat("_Dissolve", x), 1f, 0.4f);
+    childObject.transform.localScale = new Vector3(0f, 0f, 0f);
+    childObject.transform.DOScale(Vector3.one, 0.5f).SetEase(spawnScaleCurve);
+    GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position, Quaternion.identity);
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject) {
@@ -262,15 +273,19 @@ public class PlaceCell : MonoBehaviour {
     chunkController.AfterCellChanged(cell);
     chunkController.UpdateCellAround(coords.X, coords.Y);
     chunkController.AddCellToActives(coords.X, coords.Y, resourceData);
-    //Tween for spawn effect
-    var spriteRenderer = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y)
-      .GetComponentInChildren<SpriteRenderer>();
-    Color startColor = spriteRenderer.color;
-    startColor.a = 0f;
-    spriteRenderer.color = startColor;
-    spriteRenderer.DOFade(1f, 0.5f);
-    
+
     audioController.PlayPlaceBuildingBlock();
+
+    //Tween for spawn effect
+    var spawnedGo = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y);
+    var spriteRenderer = spawnedGo.GetComponentInChildren<SpriteRenderer>();
+    var childObject = spriteRenderer.gameObject;
+    var material = spriteRenderer.material;
+    material.SetFloat("_Dissolve", 0f);
+    DOTween.To(() => material.GetFloat("_Dissolve"), x => material.SetFloat("_Dissolve", x), 1f, 0.4f);
+    childObject.transform.localScale = new Vector3(0f, 0f, 0f);
+    childObject.transform.DOScale(Vector3.one, 0.5f).SetEase(spawnScaleCurve);
+    GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position, Quaternion.identity);
   }
 
   private void SetCellsUndamegable(int startX, int startY, int objectSizeX, bool isDamageable = false) {

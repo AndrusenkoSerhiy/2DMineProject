@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 09bbb2b4-6209-402d-8c15-cb88452109ec
   Type: 2
   Name: Drill
-  Weight: 0
+  Weight: 20
   ParentType: 2
   UiDisplay: {fileID: 21300000, guid: 991f36289d69a074facb0615fe02f667, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 9fa11686406cd03469b96a578e9c18cb, type: 3}
@@ -32,6 +32,7 @@ MonoBehaviour:
     applyType: 2
     operatorType: 1
     value: 11
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0
@@ -42,6 +43,7 @@ MonoBehaviour:
     applyType: 2
     operatorType: 1
     value: 0.5
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0
@@ -52,16 +54,18 @@ MonoBehaviour:
     applyType: 2
     operatorType: 1
     value: -0.3
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0
     canApplyWhenPreviousAt: 100
     removePrevious: 1
     modifierDisplayObject: {fileID: 0}
-  - type: 44
+  - type: 42
     applyType: 2
     operatorType: 1
-    value: -1
+    value: 1
+    canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
     timeLeft: 0
@@ -72,7 +76,6 @@ MonoBehaviour:
   magazineSize: 0
   ammo: {fileID: 0}
   ammoSpeed: 0
-  useSelfAnim: 1
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280

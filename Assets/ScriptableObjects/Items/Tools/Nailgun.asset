@@ -76,8 +76,8 @@ MonoBehaviour:
   magazineSize: 16
   ammo: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
   ammoSpeed: 40
-  reloadTime: 1.5
-  reloadSound: {fileID: 11400000, guid: 87437eba1680c1a42873b716ba3274de, type: 2}
+  reloadTime: 1
+  reloadSound: {fileID: 11400000, guid: 0ef5c6cf0bec43744b3ca33ab0e6346c, type: 2}
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280

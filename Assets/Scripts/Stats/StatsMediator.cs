@@ -55,7 +55,7 @@ namespace Stats {
       if (GameManager.Instance.Paused) {
         return;
       }
-      
+
       if (listModifiers.Count == 0) {
         return;
       }
@@ -140,13 +140,13 @@ namespace Stats {
       }
 
       foreach (var modifier in statModifiersByApplyType) {
+        if (modifier.permanent) {
+          continue;
+        }
+
         //Value of current stat reached max
         if (stats.IsValueReachMax(modifier.type)) {
           return false;
-        }
-
-        if (modifier.permanent) {
-          continue;
         }
 
         if (Mathf.Approximately(modifier.canApplyWhenPreviousAt, 100f)) {

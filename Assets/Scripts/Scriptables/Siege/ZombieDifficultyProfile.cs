@@ -11,5 +11,8 @@ namespace Scriptables.Siege {
     
     public List<AudioData> OnTakeDamageAudioDatas;
     public List<AudioData> OnDeathAudioDatas;
+    
+    public AudioData GroanAudioData;
+    public Vector2 GroanInterval;
   }
 }

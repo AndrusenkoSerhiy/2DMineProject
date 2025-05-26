@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Animation;
+using Audio;
 using Enemy;
 using NodeCanvas.BehaviourTrees;
 using Scriptables;
@@ -34,7 +35,24 @@ namespace Actors {
     public ZombieDifficultyProfile Difficulty => difficulty;
     public event Action OnEnemyDied;
 
+    private AudioController audioController;
     private AudioData deathAudioData;
+    private AudioData groanAudioData;
+    private float groanInterval = 0f;
+    private float timeSinceGroan = 0f;
+
+    private void Update() {
+      if (!groanAudioData) {
+        return;
+      }
+
+      if (timeSinceGroan == 0f || timeSinceGroan >= groanInterval) {
+        audioController.PlayAudio(groanAudioData);
+        timeSinceGroan = 0f;
+      }
+
+      timeSinceGroan += Time.deltaTime;
+    }
 
     public void SetBehaviour(BehaviourTree tree) {
       behaviourTreeOwner.behaviour = tree;
@@ -88,6 +106,7 @@ namespace Actors {
 
     protected override void Awake() {
       base.Awake();
+      audioController = GameManager.Instance.AudioController;
       DamageableType = DamageableType.Enemy;
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
@@ -107,6 +126,11 @@ namespace Actors {
         deathAudioData =
           difficulty.OnDeathAudioDatas[Random.Range(0, difficulty.OnDeathAudioDatas.Count - 1)];
       }
+
+      if (difficulty.GroanAudioData) {
+        groanAudioData = difficulty.GroanAudioData;
+        groanInterval = Random.Range(difficulty.GroanInterval.x, difficulty.GroanInterval.y);
+      }
     }
 
     private void DeathAudio() {
@@ -114,8 +138,7 @@ namespace Actors {
         return;
       }
 
-      GameManager.Instance.AudioController.PlayAudio(deathAudioData, transform.position);
-      Debug.Log("Zombie Death Audio Played");
+      audioController.PlayAudio(deathAudioData, transform.position);
     }
 
     private void DamageAudio() {
@@ -123,8 +146,7 @@ namespace Actors {
         return;
       }
 
-      GameManager.Instance.AudioController.PlayAudio(OnTakeDamageAudioData, transform.position);
-      Debug.Log("Zombie Damage Audio Played");
+      audioController.PlayAudio(OnTakeDamageAudioData, transform.position);
     }
 
     private void OnDestroy() {

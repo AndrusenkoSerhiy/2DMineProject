@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SaveSystem;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -39,6 +41,7 @@ namespace Menu {
     [SerializeField] private Menu activeMenu = Menu.None;
     private bool locked;
     private bool cancelEnabled;
+    public static event Action OnExitToMainMenu;
 
     [SerializeField] private bool isNewGame;
     public Menu ActiveMenu => activeMenu;
@@ -118,9 +121,11 @@ namespace Menu {
     }
 
     private void ExitToMainMenu() {
+      Debug.LogError("Exiting to main menu");
       saveLoadSystem.Save();
       gameManager.StartGameCameraController.Init();
       ShowMainMenu();
+      OnExitToMainMenu?.Invoke();
     }
 
     public void Hide() {

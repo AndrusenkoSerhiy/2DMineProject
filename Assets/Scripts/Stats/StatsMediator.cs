@@ -140,13 +140,13 @@ namespace Stats {
       }
 
       foreach (var modifier in statModifiersByApplyType) {
-        if (modifier.permanent) {
-          continue;
+        //Value of current stat reached max
+        if (!modifier.canApplyIfValueIsMax && stats.IsValueReachMax(modifier.type)) {
+          return false;
         }
 
-        //Value of current stat reached max
-        if (stats.IsValueReachMax(modifier.type)) {
-          return false;
+        if (modifier.permanent) {
+          continue;
         }
 
         if (Mathf.Approximately(modifier.canApplyWhenPreviousAt, 100f)) {

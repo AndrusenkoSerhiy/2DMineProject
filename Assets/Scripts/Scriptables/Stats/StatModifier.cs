@@ -10,12 +10,16 @@ namespace Scriptables.Stats {
     public OperatorType operatorType;
     public float value;
 
+    [Tooltip("Can apply modifier if value is max")]
+    public bool canApplyIfValueIsMax = false;
+
     [Tooltip(
       "Immediately applies the modifier to stats, duration ignored, canApplyWhenPreviousAt ignored, removePrevious ignored")]
     public bool permanent;
 
     [Tooltip("Duration in seconds, if 0 - modifier without lifetime")]
     public float duration;
+
     [Tooltip("Need only for load from file")]
     public float timeLeft;
 

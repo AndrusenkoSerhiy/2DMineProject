@@ -8,22 +8,26 @@ namespace UI {
   public class Ammo : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI ammoText;
     [SerializeField] private Image image;
+    [SerializeField] private Image reloadMask;
 
     private int total;
+    private int magazineSize;
     private int currentAmount;
     private string ammoId;
     private PlayerInventory playerInventory;
 
-    public void Show(ItemObject item, int amount) {
+    public void Show(ItemObject item, int amount, int magSize) {
       if (!item) {
         return;
       }
 
       ammoId = item.Id;
+      magazineSize = magSize;
       total = GetPlayerInventory().InventoriesPool.GetResourceTotalAmount(ammoId);
       currentAmount = amount;
 
       UpdateText();
+      UpdateReloadMask();
       image.sprite = item.UiDisplay;
       gameObject.SetActive(true);
       SubscribeToEvents();
@@ -33,6 +37,7 @@ namespace UI {
       currentAmount = amount;
       total = totalCount ?? total;
       UpdateText();
+      UpdateReloadMask();
     }
 
     public void Hide() {
@@ -85,6 +90,10 @@ namespace UI {
       }
 
       return playerInventory;
+    }
+    
+    private void UpdateReloadMask() {
+      reloadMask.fillAmount = (float) currentAmount / magazineSize;
     }
   }
 }

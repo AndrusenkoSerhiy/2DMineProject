@@ -28,6 +28,8 @@ namespace Scriptables.Items {
     public int RepairCost => repairableItemRef?.RepairCost ?? 0;
     public int CurrentAmmoCount => ammoCount;
     public int MagazineSize => attackableItemRef?.MagazineSize ?? 0;
+    public float ReloadTime => attackableItemRef?.ReloadTime ?? 0;
+    public AudioData ReloadSound => attackableItemRef?.ReloadSound;
 
     public event Action<float, float> OnDurabilityChanged;
     public event Action OnItemBroken;
@@ -82,7 +84,7 @@ namespace Scriptables.Items {
         repairableItemRef = repairable;
         canBeRepaired = true;
       }
-      
+
       if (info is IAttackableItem attackable) {
         attackableItemRef = attackable;
       }

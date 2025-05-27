@@ -84,6 +84,7 @@ namespace Menu {
       await Task.Yield();
       await Task.Delay(100);
 
+      gameManager.StartGameCameraController.ResetBeforeNewGame();
       gameManager.StartGameCameraController.Play();
       saveLoadSystem.NewGame();
       isNewGame = true;

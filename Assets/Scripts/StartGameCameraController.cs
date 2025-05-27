@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Player;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -33,6 +34,15 @@ public class StartGameCameraController : MonoBehaviour {
   public void Play() {
     followCoroutine = StartCoroutine(FollowPlayer());
     vignetteCoroutine = StartCoroutine(FadeVignette(0.537f, 1.5f));
+  }
+
+  public void ResetBeforeNewGame() {
+    var gameManager = GameManager.Instance;
+    var playerController = gameManager.PlayerController;
+    playerController.transform.SetParent(null);
+    playerController.enabled = true;
+    playerController.EnableCollider(true);
+    gameManager.CurrPlayerController = playerController;
   }
 
   public void Init() {

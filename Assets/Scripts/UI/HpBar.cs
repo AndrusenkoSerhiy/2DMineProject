@@ -13,6 +13,7 @@ namespace UI {
     private PlayerStats playerStats;
     private RectTransform sliderRectTransform;
     private float heightCoefficient;
+    private bool started;
 
     private void Awake() {
       sliderRectTransform = hpSlider.GetComponent<RectTransform>();
@@ -22,6 +23,15 @@ namespace UI {
     }
 
     private void Start() {
+      UpdateEntityStats();
+      started = true;
+    }
+
+    private void OnEnable() {
+      if (!started) {
+        return;
+      }
+
       UpdateEntityStats();
     }
 

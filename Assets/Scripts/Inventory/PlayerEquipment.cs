@@ -144,6 +144,10 @@ namespace Inventory {
     }
 
     private void PlaceItemInHand(Item item) {
+      //show only food and tool in hand
+      if(item.info.Type != ItemType.Tool && item.info.Type != ItemType.Food)
+        return;
+      
       var itemObject = item.info;
       itemInHand = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
       itemInHand.localPosition = itemObject.SpawnPosition;

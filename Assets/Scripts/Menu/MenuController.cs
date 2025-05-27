@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SaveSystem;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -121,7 +120,6 @@ namespace Menu {
     }
 
     private void ExitToMainMenu() {
-      Debug.LogError("Exiting to main menu");
       saveLoadSystem.Save();
       gameManager.StartGameCameraController.Init();
       ShowMainMenu();

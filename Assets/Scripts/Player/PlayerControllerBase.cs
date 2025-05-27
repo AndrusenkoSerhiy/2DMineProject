@@ -346,10 +346,6 @@ namespace Player {
       transform.localScale = Vector3.one;
     }
 
-    /*public void ResetHeadPos() {
-      Head.localEulerAngles = new Vector3(0f, 0f, 0f);
-    }*/
-
     #endregion
 
     #region Gravity

@@ -130,6 +130,7 @@ namespace Stats {
     }
 
     private bool CanApplyModifier(ApplyType applyType, ItemObject itemObject) {
+      //Debug.LogError("can apply");
       if (itemObject == null || itemObject.statModifiers == null) {
         return false;
       }

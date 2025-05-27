@@ -88,7 +88,7 @@ namespace Inventory {
       if (isClickHandlerAdded) {
         return;
       }
-
+      //Debug.LogError("AddLeftMouseClickHandler");
       gameManager.UserInput.controls.GamePlay.Attack.performed += leftClickHandler;
       isClickHandlerAdded = true;
     }
@@ -112,7 +112,7 @@ namespace Inventory {
       if (!isClickHandlerAdded) {
         return;
       }
-      
+      //Debug.LogError("RemoveLeftMouseClickHandler");
       gameManager.UserInput.controls.GamePlay.Attack.performed -= leftClickHandler;
       isClickHandlerAdded = false;
     }

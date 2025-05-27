@@ -31,7 +31,6 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   public void Load() {
-    //Debug.LogError("Loading QuickSlotListener");
     quickSlots = playerInventory.GetQuickSlots();
     slots = quickSlots.Slots;
     loaded = true;
@@ -93,19 +92,12 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   private void Start() {
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
-    //UpdateQuickSlotsAfterLoad();
   }
 
   private void OnEnable() {
     if (reasonsToBlock.Count >= 1) {
       gameObject.SetActive(false);
-      //return; 
     }
-    /*if (!loaded) {
-      return;
-    }*/
-    //Debug.LogError("onEnable");
-    //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
   }
 
   public InventorySlot GetSelectedSlot() {
@@ -129,23 +121,24 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     SelectSlotByIndex(0);
   }
 
-  public void Activate(string reason) {
+  public void Activate(string reason, bool needActivate = true) {
     if (reasonsToBlock.Contains(reason)) {
       reasonsToBlock.Remove(reason);
     }
-
     gameObject.SetActive(true);
+    
+    if(!needActivate)
+      return;
+    
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
-
-    //UpdateQuickSlotsAfterLoad();
     
     ActivateItemInSelectedSlot(slots[selectedSlotIndex]);
     OnActivate?.Invoke();
   }
 
   public void Deactivate(string reason = "") {
-    if (!string.IsNullOrEmpty(reason)) {
+    if (!string.IsNullOrEmpty(reason) && !reasonsToBlock.Contains(reason)) {
       reasonsToBlock.Add(reason);
     }
     
@@ -183,6 +176,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   private void UpdateQuickSlotsAfterLoad() {
+    //Debug.LogError("UpdateQuickSlotsAfterLoad");
     userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
     SubscribeToAddItem();
     // Manually instantiate equipped items after loading the equipment

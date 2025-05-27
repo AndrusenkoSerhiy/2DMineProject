@@ -4,6 +4,7 @@ using Actors;
 using Animation;
 using Interaction;
 using Inventory;
+using Menu;
 using Player;
 using SaveSystem;
 using Scriptables.Repair;
@@ -49,9 +50,10 @@ namespace Tools {
 
     private string id;
     private bool broken;
-
+    //use after save load and we in the robot
+    private bool needActivateItem = true;
     private int repairValue;
-    private bool playerInRobot;
+    [SerializeField] private bool playerInRobot;
     private ChunkController chunkController;
 
     public static event Action OnPlayerEnteredRobot;
@@ -100,9 +102,17 @@ namespace Tools {
       if (chunkController.ChunkData == null) {
         chunkController.OnCreateChunk += LockOnStart;
       }
-      else {
+
+      MenuController.OnExitToMainMenu += ExitToMainMenu;
+      /*else {
         LockOnStart();
-      }
+      }*/
+    }
+
+    private void ExitToMainMenu() {
+      MenuController.OnExitToMainMenu -= ExitToMainMenu;
+      EnablePhysics(false);
+      needActivateItem = false;
     }
 
     private void LockOnStart() {
@@ -203,14 +213,12 @@ namespace Tools {
       playerController.EnableController(false);
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
-      //playerController.ResetHeadPos();
       playerController.Stamina.EnableSprintScript(false);
+      
       miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
       EnablePhysics(true);
-      /*miningRobotController.EnableCollider(true);
-      miningRobotController.SetRBType(RigidbodyType2D.Dynamic);*/
 
       SetPlayerPosition(playerTransform, Vector3.zero);
       GameManager.Instance.CurrPlayerController = miningRobotController;
@@ -290,9 +298,6 @@ namespace Tools {
       else {
         miningRobotController.GroundedChanged += GroundChanged;
       }
-      /*miningRobotController.EnableCollider(false);
-      miningRobotController.SetRBType(RigidbodyType2D.Kinematic);*/
-      //miningRobotController.EnableController(false);
       placeCellRobot.Deactivate();
       playerController.EnableCollider(true);
       playerController.EnableController(true);
@@ -302,7 +307,8 @@ namespace Tools {
       playerController.Stamina.EnableSprintScript(true);
       miningRobotController.Stamina.EnableSprintScript(false);
       GameManager.Instance.CurrPlayerController = playerController;
-      GameManager.Instance.QuickSlotListener.Activate("MiningRobot");
+      GameManager.Instance.QuickSlotListener.Activate("MiningRobot", needActivateItem);
+      needActivateItem = true;
       UnsubscribeToChangeMode();
       changeModePrompt.ShowPrompt(false);
       
@@ -324,6 +330,10 @@ namespace Tools {
 
     [SerializeField] private List<int> lockedCells = new(){0};
     private void LockCells(bool state) {
+      if (playerInRobot) {
+        return;
+      }
+      
       robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
       var firstX = robotCoordsOutOfBounds.X;
       var firstY = robotCoordsOutOfBounds.Y + 1;

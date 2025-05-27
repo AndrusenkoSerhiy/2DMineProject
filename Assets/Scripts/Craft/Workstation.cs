@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Inventory;
@@ -399,9 +400,13 @@ namespace Craft {
       }
 
       while (count > 0 && tmpFreeSlotsCount > 0) {
+        var canAdd = count > itemObj.MaxStackSize ? itemObj.MaxStackSize : count;
+
         tmpSlotsIds.Add(itemObj.Id);
-        tmpSlotsFreeCounts.Add((itemObj.MaxStackSize - count));
+        tmpSlotsFreeCounts.Add((itemObj.MaxStackSize - canAdd));
         tmpFreeSlotsCount--;
+
+        count -= canAdd;
       }
     }
 
@@ -454,7 +459,7 @@ namespace Craft {
       OnCraftStarted?.Invoke();
 
       var input = Inputs[0];
-      var stopwatch = new System.Diagnostics.Stopwatch();
+      var stopwatch = new Stopwatch();
       stopwatch.Start();
 
       while (input.Count > 0 && !token.IsCancellationRequested) {

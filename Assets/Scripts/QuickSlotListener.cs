@@ -127,11 +127,11 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     }
     gameObject.SetActive(true);
     
-    if(!needActivate)
-      return;
-    
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
+    
+    if(!needActivate)
+      return;
     
     ActivateItemInSelectedSlot(slots[selectedSlotIndex]);
     OnActivate?.Invoke();

@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using Menu;
+using Player;
 using Scriptables.Items;
 using Stats;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace Inventory {
       if (slot == null) {
         return;
       }
-
+      
       if (slot.isEmpty) {
         return;
       }
@@ -76,8 +77,13 @@ namespace Inventory {
 
     private void DefaultConsumeItemSet() {
       AddLeftMouseClickHandler();
+      MenuController.OnExitToMainMenu += ExitToMainMenu;
     }
 
+    private void ExitToMainMenu() {
+      MenuController.OnExitToMainMenu -= RemoveLeftMouseClickHandler;
+      RemoveLeftMouseClickHandler();
+    }
     private void AddLeftMouseClickHandler() {
       if (isClickHandlerAdded) {
         return;
@@ -106,7 +112,7 @@ namespace Inventory {
       if (!isClickHandlerAdded) {
         return;
       }
-
+      
       gameManager.UserInput.controls.GamePlay.Attack.performed -= leftClickHandler;
       isClickHandlerAdded = false;
     }

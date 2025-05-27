@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Inventory;
+using Menu;
 using SaveSystem;
 using Scriptables.Items;
 using Tools;
@@ -30,13 +31,15 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   public void Load() {
+    //Debug.LogError("Loading QuickSlotListener");
     quickSlots = playerInventory.GetQuickSlots();
     slots = quickSlots.Slots;
     loaded = true;
+    userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
   }
 
   public void Clear() {
-    userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
+    //userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
     UnequipSlot();
 
     selectedSlot = null;
@@ -61,15 +64,22 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     //
     MiningRobotTool.OnPlayerEnteredRobot += UnequipSlot; //UnselectCurrSlot;
     PlaceCell.OnSlotReset += UnequipSlot;
+    MenuController.OnExitToMainMenu += ExitToMainMenu;
+  }
+  
+  private void ExitToMainMenu() {
+    UnsubscribeToAddItem();
   }
 
   private void SubscribeToAddItem() {
+    //Debug.LogError("+++subscribe to add item");
     foreach (var slot in slots) {
       slot.OnAfterUpdated += TryActivateItem;
     }
   }
   
   private void UnsubscribeToAddItem() {
+    //Debug.LogError("----unsubscribe to add item");
     foreach (var slot in slots) {
       slot.OnAfterUpdated -= TryActivateItem;
     }
@@ -83,21 +93,19 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   private void Start() {
     SubscribeToClickQuickSlots();
     SubscribeToMouseWheel();
-    SubscribeToAddItem();
-    UpdateQuickSlotsAfterLoad();
+    //UpdateQuickSlotsAfterLoad();
   }
 
   private void OnEnable() {
     if (reasonsToBlock.Count >= 1) {
       gameObject.SetActive(false);
-      return; 
+      //return; 
     }
-    
-    if (!loaded) {
+    /*if (!loaded) {
       return;
-    }
-    
-    userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
+    }*/
+    //Debug.LogError("onEnable");
+    //userInterface.OnLoaded += UpdateQuickSlotsAfterLoad;
   }
 
   public InventorySlot GetSelectedSlot() {
@@ -175,11 +183,13 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   private void UpdateQuickSlotsAfterLoad() {
+    userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
+    SubscribeToAddItem();
     // Manually instantiate equipped items after loading the equipment
     for (var i = 0; i < slots.Length; i++) {
       var slot = slots[i];
       if (slot.isSelected) {
-        GetConsumer().SetActiveSlot(slot);
+        //GetConsumer().SetActiveSlot(slot);
         SelectSlotByIndex(i);
       }
       else {

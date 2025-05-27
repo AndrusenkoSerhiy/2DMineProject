@@ -470,7 +470,12 @@ namespace Inventory {
 
       //Add split item
       if (!dragFull) {
-        inventory.AddItem(slot.Item, dragAmount, targetSlot);
+        if (!targetSlot.isEmpty && slot.Item.info.Id != targetSlot.Item.info.Id) {
+          gameManager.MessagesManager.ShowSimpleMessage("You can only split items of the same type.");
+          return false;
+        }
+        
+        gameManager.PlayerInventory.InventoriesPool.AddItemToInventoriesPool(slot.Item, dragAmount, targetSlot);
         // Debug.Log("Add split item");
         return true;
       }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Inventory;
 using Scriptables.Items;
 using UnityEngine;
@@ -40,13 +41,27 @@ namespace Craft {
       return remainingAmount;
     }
 
-    public int AddItemToInventoriesPool(Item item, int amount) {
+    public int AddItemToInventoriesPool(Item item, int amount,
+      InventorySlot targetSlot = null) {
       if (amount <= 0) {
         return amount;
       }
 
       var remainingAmount = amount;
+      var startInventoryId = targetSlot?.InventoryId;
+
+      if (!string.IsNullOrEmpty(startInventoryId)) {
+        var startInventory = pool.FirstOrDefault(inv => inv.Id == startInventoryId);
+        if (startInventory != null) {
+          remainingAmount = startInventory.AddItem(item, remainingAmount, targetSlot);
+        }
+      }
+
       foreach (var inventory in pool) {
+        if (!string.IsNullOrEmpty(startInventoryId) && inventory.Id == startInventoryId) {
+          continue;
+        }
+
         remainingAmount = inventory.AddItem(item, remainingAmount);
         if (remainingAmount <= 0) {
           break;

@@ -7,6 +7,8 @@ namespace Scriptables.Items {
     public int magazineSize;
     public ItemObject ammo;
     public float ammoSpeed;
+    public float reloadTime;
+    public AudioData reloadSound;
 
     [SerializeField] private LayerMask attackLayer;
     [SerializeField] private int animationattackID = 0;
@@ -26,6 +28,8 @@ namespace Scriptables.Items {
     public int MagazineSize => magazineSize;
     public ItemObject Ammo => ammo;
     public float AmmoSpeed => ammoSpeed;
+    public float ReloadTime => reloadTime;
+    public AudioData ReloadSound => reloadSound;
     public LayerMask AttackLayer => attackLayer;
     public int AnimationAttackID => animationattackID;
     public Vector2 ColliderSize => colliderSize;
@@ -34,6 +38,7 @@ namespace Scriptables.Items {
     public float MaxDurability => maxDurability;
     public float DurabilityUse => durabilityUse;
     public DurabilityUsageType DurabilityUsageType => durabilityUsageType;
+    public AudioData useSound;
 
     public void Awake() {
       Type = ItemType.Tool;

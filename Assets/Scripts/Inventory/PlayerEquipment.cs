@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Interaction;
 using Player;
 using SaveSystem;
@@ -25,6 +26,7 @@ namespace Inventory {
     private PlayerInventory playerInventory;
     private Item equippedItem;
     private string reloadButtonName;
+    private bool isReloading = false;
 
     public Transform ItemInHand {
       get => itemInHand;
@@ -98,16 +100,16 @@ namespace Inventory {
       }
 
       var itemObject = item.info;
-      
+
       if (!item.IsBroken) {
         PlaceItemInHand(item);
       }
 
       equippedItem = item;
-      
-      if (itemObject.Type != ItemType.Tool) 
+
+      if (itemObject.Type != ItemType.Tool)
         return;
-      
+
       AddWeaponEvents();
       CheckIfReloadNeeded();
       CheckIfNeedToShowAmmoUI();
@@ -133,10 +135,10 @@ namespace Inventory {
 
       var itemObject = equippedItem.info;
       Destroy(itemInHand.gameObject);
-      
-      if(itemObject.Type != ItemType.Tool)
+
+      if (itemObject.Type != ItemType.Tool)
         return;
-      
+
       GetPlayerController().PlayerStats.Mediator.RemoveModifiersByItemId(itemObject.Id);
       OnUnequippedWeapon?.Invoke();
     }
@@ -151,10 +153,10 @@ namespace Inventory {
       itemInHand.localPosition = itemObject.SpawnPosition;
       itemInHand.localEulerAngles = itemObject.SpawnRotation;
       itemInHand.gameObject.layer = LayerMask.NameToLayer("Character");
-      
-      if(item.info.Type != ItemType.Tool)
+
+      if (item.info.Type != ItemType.Tool)
         return;
-      
+
       GetPlayerController().PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, itemObject);
       OnEquippedWeapon?.Invoke();
     }
@@ -288,7 +290,7 @@ namespace Inventory {
         return;
       }
 
-      ammoUI.Show(equippedItem.GetAmmoItemObject(), equippedItem.CurrentAmmoCount);
+      ammoUI.Show(equippedItem.GetAmmoItemObject(), equippedItem.CurrentAmmoCount, equippedItem.MagazineSize);
     }
 
     private void CheckIfReloadNeeded() {
@@ -303,20 +305,51 @@ namespace Inventory {
     }
 
     private void ReloadHandler(InputAction.CallbackContext obj) {
+      if (isReloading || equippedItem == null) {
+        return;
+      }
+
+      StartCoroutine(ReloadRoutine());
+    }
+
+    private IEnumerator ReloadRoutine() {
+      isReloading = true;
+
       var ammo = equippedItem.GetAmmoItemObject();
       var ammoAmount = GetPlayerInventory().InventoriesPool.GetResourceTotalAmount(ammo.Id);
 
       if (ammoAmount <= 0) {
         gameManager.MessagesManager.ShowSimpleMessage("You don't have ammo.");
-        return;
+        isReloading = false;
+        yield break;
       }
+
+      gameManager.AudioController.PlayAudio(equippedItem.ReloadSound);
+
+      // yield return new WaitForSeconds(equippedItem.ReloadTime);
 
       var ammoNeeded = equippedItem.MagazineSize - equippedItem.CurrentAmmoCount;
       var reloadAmount = ammoAmount > ammoNeeded ? ammoNeeded : ammoAmount;
+      var reloadTime = equippedItem.ReloadTime;
+
+      var startFill = (float)equippedItem.CurrentAmmoCount / equippedItem.MagazineSize;
+      var targetFill = (float)(equippedItem.CurrentAmmoCount + reloadAmount) / equippedItem.MagazineSize;
+
+      var elapsed = 0f;
+      while (elapsed < reloadTime) {
+        elapsed += Time.deltaTime;
+        var t = elapsed / reloadTime;
+        var currentFill = Mathf.Lerp(startFill, targetFill, t);
+        ammoUI.UpdateReloadMaskByFill(currentFill);
+        yield return null;
+      }
+
       equippedItem.Reload(reloadAmount);
       GetPlayerInventory().InventoriesPool.RemoveFromInventoriesPool(ammo.Id, reloadAmount);
-      ammoUI.UpdateCount(equippedItem.CurrentAmmoCount, (ammoAmount - reloadAmount));
+      ammoUI.UpdateCount(equippedItem.CurrentAmmoCount, ammoAmount - reloadAmount);
       CheckIfReloadNeeded();
+
+      isReloading = false;
     }
 
     private void ShowReloadPrompt() {

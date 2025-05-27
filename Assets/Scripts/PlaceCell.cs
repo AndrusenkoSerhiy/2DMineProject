@@ -6,6 +6,7 @@ using DG.Tweening;
 using Inventory;
 using Player;
 using Scriptables;
+using Scriptables.Items;
 using UnityEngine;
 using Utils;
 using World;
@@ -32,6 +33,8 @@ public class PlaceCell : MonoBehaviour {
   private BuildingsDataController buildingDataController;
   private WindowsController windowsController;
   private AudioController audioController;
+  private BuildingBlock currentBuildingBlock;
+
   private void Start() {
     playerController = GameManager.Instance.CurrPlayerController;
     chunkController = GameManager.Instance.ChunkController;
@@ -40,14 +43,20 @@ public class PlaceCell : MonoBehaviour {
     audioController = GameManager.Instance.AudioController;
   }
 
-  public void ActivateBuildMode(Building bData, ResourceData rData, GameObject sPrefab) {
+  // public void ActivateBuildMode(Building bData, ResourceData rData, GameObject sPrefab) {
+  public void ActivateBuildMode(BuildingBlock buildingBlock, GameObject sPrefab) {
     spawnPrefab = sPrefab;
+    currentBuildingBlock = buildingBlock;
+    var bData = buildingBlock.BuildingData;
+    var rData = buildingBlock.ResourceData;
+
     if (!isPreviewing) {
       EnableBuildMode(bData, rData);
       if (rData != null) {
         previewColor = rData.PreviewColor;
         blockColor = rData.BlockColor;
       }
+
       if (bData != null) {
         previewColor = bData.PreviewColor;
         blockColor = bData.BlockColor;
@@ -157,6 +166,7 @@ public class PlaceCell : MonoBehaviour {
   private Coords GetPlayerCoords() {
     return GameManager.Instance.PlayerController.PlayerCoords.GetCoordsOutOfBounds();
   }
+
   private bool ShouldUseBlockColor(Vector3 worldPosition) {
     var grid = CoordsTransformer.MouseToGridPosition(worldPosition);
     var sizeX = buildingData ? buildingData.SizeX : 1;
@@ -243,8 +253,8 @@ public class PlaceCell : MonoBehaviour {
     var test = CoordsTransformer.MouseToGridPosition(pos);
     SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
     GameManager.Instance.Locator.SetTarget(pos, coords, GetSelectedSlot().Item.info);
-    
-    audioController.PlayPlaceBuilding();
+
+    PlayBuildingBlockPlaceSound();
 
     //Tween for spawn effect
     var spriteRenderer = build.GetComponentInChildren<SpriteRenderer>();
@@ -254,7 +264,8 @@ public class PlaceCell : MonoBehaviour {
     DOTween.To(() => material.GetFloat("_Dissolve"), x => material.SetFloat("_Dissolve", x), 1f, 0.4f);
     childObject.transform.localScale = new Vector3(0f, 0f, 0f);
     childObject.transform.DOScale(Vector3.one, 0.5f).SetEase(spawnScaleCurve);
-    GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position, Quaternion.identity);
+    GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position,
+      Quaternion.identity);
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject) {
@@ -274,7 +285,7 @@ public class PlaceCell : MonoBehaviour {
     chunkController.UpdateCellAround(coords.X, coords.Y);
     chunkController.AddCellToActives(coords.X, coords.Y, resourceData);
 
-    audioController.PlayPlaceBuildingBlock();
+    PlayBuildingPlaceSound();
 
     //Tween for spawn effect
     var spawnedGo = GameManager.Instance.ChunkController.GetCell(coords.X, coords.Y);
@@ -285,7 +296,8 @@ public class PlaceCell : MonoBehaviour {
     DOTween.To(() => material.GetFloat("_Dissolve"), x => material.SetFloat("_Dissolve", x), 1f, 0.4f);
     childObject.transform.localScale = new Vector3(0f, 0f, 0f);
     childObject.transform.DOScale(Vector3.one, 0.5f).SetEase(spawnScaleCurve);
-    GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position, Quaternion.identity);
+    GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position,
+      Quaternion.identity);
   }
 
   private void SetCellsUndamegable(int startX, int startY, int objectSizeX, bool isDamageable = false) {
@@ -309,6 +321,24 @@ public class PlaceCell : MonoBehaviour {
     }
 
     GameManager.Instance.RecipesManager.UnlockStation(station.RecipeType);
+  }
+
+  private void PlayBuildingPlaceSound() {
+    if (currentBuildingBlock && currentBuildingBlock.ConsumeSound) {
+      audioController.PlayAudio(currentBuildingBlock.ConsumeSound);
+    }
+    else {
+      audioController.PlayPlaceBuilding();
+    }
+  }
+
+  private void PlayBuildingBlockPlaceSound() {
+    if (currentBuildingBlock && currentBuildingBlock.ConsumeSound) {
+      audioController.PlayAudio(currentBuildingBlock.ConsumeSound);
+    }
+    else {
+      audioController.PlayPlaceBuildingBlock();
+    }
   }
 
   private void ClearSLot() {

@@ -35,10 +35,10 @@ MonoBehaviour:
   - type: 2
     applyType: 1
     operatorType: 1
-    value: 10
+    value: 300
     canApplyIfValueIsMax: 1
     permanent: 0
-    duration: 300
+    duration: 10
     timeLeft: 0
     canApplyWhenPreviousAt: 20
     removePrevious: 5
@@ -48,9 +48,10 @@ MonoBehaviour:
     operatorType: 1
     value: 10
     canApplyIfValueIsMax: 1
-    permanent: 0
+    permanent: 1
     duration: 0
     timeLeft: 0
     canApplyWhenPreviousAt: 0
     removePrevious: 1
-    modifierDisplayObject: {fileID: 11400000, guid: 35ea8439f87facd47992d91c251e335a, type: 2}
+    modifierDisplayObject: {fileID: 0}
+  consumeSound: {fileID: 11400000, guid: 37727e2e4e44dac418f60e497860df27, type: 2}

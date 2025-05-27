@@ -42,7 +42,7 @@ MonoBehaviour:
   - type: 42
     applyType: 2
     operatorType: 1
-    value: 4
+    value: 5
     canApplyIfValueIsMax: 0
     permanent: 0
     duration: 0
@@ -76,6 +76,8 @@ MonoBehaviour:
   magazineSize: 16
   ammo: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
   ammoSpeed: 40
+  reloadTime: 1
+  reloadSound: {fileID: 11400000, guid: 0ef5c6cf0bec43744b3ca33ab0e6346c, type: 2}
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280
@@ -86,3 +88,4 @@ MonoBehaviour:
   maxDurability: 500
   durabilityUse: 1
   durabilityUsageType: 0
+  useSound: {fileID: 11400000, guid: 12c6e267964b3fb43a1945556d648783, type: 2}

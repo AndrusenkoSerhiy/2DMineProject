@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: SiegesSettings
   m_EditorClassIdentifier: 
   FirstSiege:
-    Duration: {x: 900, y: 900}
-    ZombieCount: {x: 2, y: 3}
+    Duration: {x: 300, y: 300}
+    ZombieCount: {x: 1, y: 2}
     WavesOfZombies: {x: 45, y: 45}
     TimeBeforeSiege: {x: 1800, y: 1800}
   RandomSiegeTemplate:
-    Duration: {x: 900, y: 900}
-    ZombieCount: {x: 3, y: 4}
+    Duration: {x: 600, y: 600}
+    ZombieCount: {x: 2, y: 4}
     WavesOfZombies: {x: 90, y: 90}
     TimeBeforeSiege: {x: 1800, y: 2400}
   FinalSiege:
     Duration: {x: 900, y: 900}
-    ZombieCount: {x: 5, y: 6}
+    ZombieCount: {x: 4, y: 6}
     WavesOfZombies: {x: 90, y: 90}
-    TimeBeforeSiege: {x: 1800, y: 1800}
+    TimeBeforeSiege: {x: 2200, y: 2400}
   SiegesCount: {x: 3, y: 4}

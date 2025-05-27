@@ -1,14 +1,15 @@
 using Scriptables.Stats;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 using StatModifier = Stats.StatModifier;
 
 public class FoodModifierUI : MonoBehaviour {
   [SerializeField] private Image image;
+
   [SerializeField] private Image border;
-  [SerializeField] protected TooltipTrigger tooltipTrigger;
-  [SerializeField] private string emptyText = "Empty food slot";
+
+  // [SerializeField] protected TooltipTrigger tooltipTrigger;
+  // [SerializeField] private string emptyText = "Empty food slot";
   [SerializeField] private Color emptyColor;
   [SerializeField] private ModifierDisplayObject modifier;
 
@@ -16,7 +17,7 @@ public class FoodModifierUI : MonoBehaviour {
 
   private void Start() {
     SetDefaultImages();
-    ClearTooltip();
+    // ClearTooltip();
   }
 
   public void Update() {
@@ -24,8 +25,10 @@ public class FoodModifierUI : MonoBehaviour {
       return;
     }
 
-    SetContent();
-    tooltipTrigger.UpdateText();
+    // SetContent();
+    // tooltipTrigger.UpdateText();
+
+    border.fillAmount = statModifier.TimeLeft / statModifier.Duration;
   }
 
   public string Id => modifier.Id;
@@ -36,23 +39,14 @@ public class FoodModifierUI : MonoBehaviour {
     image.color = modifier.modifierDisplayObject.iconColor;
     //border.sprite = modifier.modifierDisplayObject.border;
     border.color = modifier.modifierDisplayObject.borderColor;
-    tooltipTrigger.header = modifier.modifierDisplayObject.name;
-    SetContent();
+    // tooltipTrigger.header = modifier.modifierDisplayObject.name;
+    // SetContent();
   }
 
   public void Hide() {
     statModifier = null;
     SetDefaultImages();
-    ClearTooltip();
-  }
-
-  private void SetContent() {
-    tooltipTrigger.content = statModifier.modifierDisplayObject.description;
-    tooltipTrigger.content += "\n";
-    tooltipTrigger.content += "Value: " + statModifier.Value;
-    if (statModifier.Duration > 0) {
-      tooltipTrigger.content += ", Duration: " + (int)statModifier.TimeLeft;
-    }
+    // ClearTooltip();
   }
 
   private void SetDefaultImages() {
@@ -60,10 +54,21 @@ public class FoodModifierUI : MonoBehaviour {
     border.sprite = modifier.border;
     image.color = emptyColor;
     border.color = emptyColor;
+    
+    border.fillAmount = 1;
   }
 
-  private void ClearTooltip() {
+  /*private void SetContent() {
+    tooltipTrigger.content = statModifier.modifierDisplayObject.description;
+    tooltipTrigger.content += "\n";
+    tooltipTrigger.content += "Value: " + statModifier.Value;
+    if (statModifier.Duration > 0) {
+      tooltipTrigger.content += ", Duration: " + (int)statModifier.TimeLeft;
+    }
+  }*/
+
+  /*private void ClearTooltip() {
     tooltipTrigger.header = string.Empty;
     tooltipTrigger.content = emptyText;
-  }
+  }*/
 }

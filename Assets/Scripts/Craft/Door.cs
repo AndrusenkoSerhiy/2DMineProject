@@ -1,4 +1,3 @@
-using System;
 using Interaction;
 using Scriptables;
 using Scriptables.Items;
@@ -18,6 +17,8 @@ namespace Craft {
     [SerializeField] private BoxCollider2D boxCollider;
     [SerializeField] private UnitHealth unitHealth;
     [SerializeField] private int startHealth;
+    [SerializeField] private AudioData openDoorAudioData;
+    [SerializeField] private AudioData closeDoorAudioData;
     public string InteractionText => IsOpened ? interactCloseText : interactOpenText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
@@ -39,11 +40,13 @@ namespace Craft {
         animator.SetBool("IsOpened", false);
         IsOpened = false;
         boxCollider.enabled = true;
+        GameManager.Instance.AudioController.PlayAudio(closeDoorAudioData);
       }
       else {
         animator.SetBool("IsOpened", true);
         IsOpened = true;
         boxCollider.enabled = false;
+        GameManager.Instance.AudioController.PlayAudio(openDoorAudioData);
       }
 
       return true;

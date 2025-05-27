@@ -324,7 +324,9 @@ MonoBehaviour:
   buildObject: {fileID: 8353487390178152608}
   itemObject: {fileID: 11400000, guid: 51653058d22bb6848a531203104108ba, type: 2}
   boxCollider: {fileID: 2746014305926589579}
-  startHealth: 20
+  startHealth: 400
+  openDoorAudioData: {fileID: 11400000, guid: 8db9023c9d330d24b8ddf5fb866ab048, type: 2}
+  closeDoorAudioData: {fileID: 11400000, guid: 87437eba1680c1a42873b716ba3274de, type: 2}
 --- !u!114 &902977277039852723
 MonoBehaviour:
   m_ObjectHideFlags: 0

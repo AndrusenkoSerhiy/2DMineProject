@@ -7,6 +7,9 @@ namespace Tools {
     public ItemObject Item => item;
 
     public virtual void StartUse() {
+      if (item is Tool tool) {
+        GameManager.Instance.AudioController.PlayAudio(tool.useSound);
+      }
     }
 
     public virtual void EndUse() {

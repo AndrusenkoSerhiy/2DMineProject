@@ -41,7 +41,12 @@ namespace Actors {
     #endregion
 
     public override void Damage(float damage, bool isPlayer) {
+      if (stats.Health > 0) {
+        GameManager.Instance.AudioController.PlayPlayerDamaged();
+      }
+
       base.Damage(damage, isPlayer);
+
       if (stats.Health <= 0) {
         OnPlayerDeath?.Invoke();
       }

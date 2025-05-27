@@ -38,12 +38,12 @@ namespace World {
 
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
+      Seed = GenerateSeed();
 
       if (!GameManager.Instance.InitScriptsOnStart()) {
         return;
       }
 
-      Seed = GenerateSeed();
       Init();
     }
 

@@ -18,8 +18,6 @@ public class FoodModifierUI : MonoBehaviour {
   private void Start() {
     SetDefaultImages();
     // ClearTooltip();
-
-    border.fillAmount = 1;
   }
 
   public void Update() {
@@ -56,6 +54,8 @@ public class FoodModifierUI : MonoBehaviour {
     border.sprite = modifier.border;
     image.color = emptyColor;
     border.color = emptyColor;
+    
+    border.fillAmount = 1;
   }
 
   /*private void SetContent() {

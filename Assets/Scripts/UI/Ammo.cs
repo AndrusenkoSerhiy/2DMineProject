@@ -91,9 +91,13 @@ namespace UI {
 
       return playerInventory;
     }
-    
+
     private void UpdateReloadMask() {
-      reloadMask.fillAmount = (float) currentAmount / magazineSize;
+      reloadMask.fillAmount = (float)currentAmount / magazineSize;
+    }
+
+    public void UpdateReloadMaskByFill(float fill) {
+      reloadMask.fillAmount = fill;
     }
   }
 }

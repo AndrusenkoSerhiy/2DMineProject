@@ -322,10 +322,23 @@ namespace Inventory {
 
       gameManager.AudioController.PlayAudio(equippedItem.ReloadSound);
 
-      yield return new WaitForSeconds(equippedItem.ReloadTime);
+      // yield return new WaitForSeconds(equippedItem.ReloadTime);
 
       var ammoNeeded = equippedItem.MagazineSize - equippedItem.CurrentAmmoCount;
       var reloadAmount = ammoAmount > ammoNeeded ? ammoNeeded : ammoAmount;
+      var reloadTime = equippedItem.ReloadTime;
+
+      var startFill = (float)equippedItem.CurrentAmmoCount / equippedItem.MagazineSize;
+      var targetFill = (float)(equippedItem.CurrentAmmoCount + reloadAmount) / equippedItem.MagazineSize;
+
+      var elapsed = 0f;
+      while (elapsed < reloadTime) {
+        elapsed += Time.deltaTime;
+        var t = elapsed / reloadTime;
+        var currentFill = Mathf.Lerp(startFill, targetFill, t);
+        ammoUI.UpdateReloadMaskByFill(currentFill);
+        yield return null;
+      }
 
       equippedItem.Reload(reloadAmount);
       GetPlayerInventory().InventoriesPool.RemoveFromInventoriesPool(ammo.Id, reloadAmount);

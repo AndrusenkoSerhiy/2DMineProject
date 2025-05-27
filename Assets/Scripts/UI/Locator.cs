@@ -17,9 +17,13 @@ namespace UI {
     private Coords? targetGridCoords;
     private Vector3? target;
     private GameManager gameManager;
+    private bool isPaused;
 
     private void Awake() {
       gameManager = GameManager.Instance;
+
+      gameManager.OnGamePaused += OnGamePausedHandler;
+      gameManager.OnGameResumed += OnGameResumedHandler;
     }
 
     private void Update() => CheckArea();
@@ -47,8 +51,17 @@ namespace UI {
       target = null;
     }
 
+    private void OnGamePausedHandler() {
+      isPaused = true;
+      pointerUI.gameObject.SetActive(false);
+    }
+
+    private void OnGameResumedHandler() {
+      isPaused = false;
+    }
+
     private void CheckArea() {
-      if (target == null) {
+      if (target == null || isPaused) {
         return;
       }
 

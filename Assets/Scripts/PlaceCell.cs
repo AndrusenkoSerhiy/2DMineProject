@@ -252,7 +252,9 @@ public class PlaceCell : MonoBehaviour {
     AfterPlaceCellActions(build);
     var test = CoordsTransformer.MouseToGridPosition(pos);
     SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
-    GameManager.Instance.Locator.SetTarget(pos, coords, GetSelectedSlot().Item.info);
+
+    var item = GetSelectedSlot().Item;
+    GameManager.Instance.Locator.SetTargetBuilding(pos, item.info);
 
     PlayBuildingBlockPlaceSound();
 
@@ -268,12 +270,12 @@ public class PlaceCell : MonoBehaviour {
       Quaternion.identity);
   }
 
-  public bool RemoveBuilding(BuildingDataObject buildObject) {
+  public bool RemoveBuilding(BuildingDataObject buildObject, ItemObject itemObject) {
     var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
     var worldCoords = CoordsTransformer.WorldToGridBuildings(buildObject.transform.position);
     chunkController.RemoveBuild(buildObject);
     SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
-    GameManager.Instance.Locator.RemoveTarget(worldCoords);
+    GameManager.Instance.Locator.RemoveTarget(itemObject.Id);
     audioController.PlayTakeBuilding();
     return true;
   }

@@ -15,5 +15,6 @@ namespace Scriptables.Repair {
     public AudioData leftStepAudioData;
     public AudioData rightStepAudioData;
     public List<AudioData> damagedAudioData;
+    public Sprite icon;
   }
 }

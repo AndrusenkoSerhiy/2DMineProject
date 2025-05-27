@@ -288,7 +288,7 @@ namespace Inventory {
         return false;
       }
 
-      if (!gameManager.PlaceCell.RemoveBuilding(buildObject)) {
+      if (!gameManager.PlaceCell.RemoveBuilding(buildObject, itemObject)) {
         return false;
       }
 

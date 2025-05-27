@@ -84,7 +84,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [Tooltip("UI object that need to be disabled when we start from menu")]
   [SerializeField]
   private List<GameObject> uiObjectList;
-  
+
   private PlayerController playerController;
   private PlayerControllerBase currPlayerController;
   private MiningRobotController miningRobotController;
@@ -190,7 +190,7 @@ public class GameManager : PersistentSingleton<GameManager> {
       menuController.Hide();
       return;
     }
-    
+
     menuController.Show();
   }
 
@@ -198,6 +198,8 @@ public class GameManager : PersistentSingleton<GameManager> {
     foreach (var obj in uiObjectList) {
       obj.SetActive(state);
     }
+
+    Locator.ShowHide(state);
   }
 
   //use for start cutscene fall to ground
@@ -205,7 +207,7 @@ public class GameManager : PersistentSingleton<GameManager> {
     userInput.EnableGamePlayControls(state);
     userInput.EnableUIControls(state);
   }
-  
+
   //lock only gameplay controls
   public void EnableGamePlayInput(bool state) {
     userInput.EnableGamePlayControls(state);

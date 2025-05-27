@@ -74,6 +74,8 @@ namespace Tools {
     }
 
     private void Start() {
+      GameManager.Instance.Locator.SetTarget(transform.position, id, robotObject.icon);
+      
       if (!GameManager.Instance.InitScriptsOnStart()) {
         return;
       }

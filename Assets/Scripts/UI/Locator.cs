@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using Scriptables.Items;
+﻿using System;
+using System.Collections.Generic;
+using SaveSystem;
 using UnityEngine;
 
 namespace UI {
@@ -13,7 +14,14 @@ namespace UI {
     public LocatorDistance locatorDistance;
   }
 
-  public class Locator : MonoBehaviour {
+  [Serializable]
+  public class AllowPoint {
+    public string id;
+    public Sprite sprite;
+    public Color color;
+  }
+
+  public class Locator : MonoBehaviour, ISaveLoad {
     [SerializeField] private Transform locatorPoints;
     [SerializeField] private Transform locatorDistances;
     [SerializeField] private GameObject locatorPointPrefab;
@@ -22,15 +30,53 @@ namespace UI {
     [SerializeField] private Camera cam;
     [SerializeField] private List<LocatorPoint> points = new();
     [SerializeField] private List<LocatorDistance> distances = new();
-    [SerializeField] private List<ItemObject> allowBuildings = new();
+    [SerializeField] private List<AllowPoint> allowed = new();
     [SerializeField] private float sortInterval = 1f;
 
     private Queue<Point> pointsPool = new();
     private Dictionary<string, LocatorTarget> locatorTargets = new();
+    private Dictionary<string, AllowPoint> allowedPoints = new();
     private GameManager gameManager;
+    private SaveLoadSystem saveLoadSystem;
     private bool hidden;
     private bool paused;
     private float lastSortTime;
+
+    #region Save/Load
+
+    public int Priority => LoadPriority.LOCATOR;
+
+    public void Save() {
+      saveLoadSystem.gameData.LocatorPointsData.Clear();
+
+      foreach (var (id, target) in locatorTargets) {
+        saveLoadSystem.gameData.LocatorPointsData.Add(new LocatorPointData
+          { Id = id, Position = target.target, Color = allowedPoints[id].color });
+      }
+    }
+
+    public void Load() {
+      if (saveLoadSystem.IsNewGame() ||
+          saveLoadSystem.gameData.LocatorPointsData.Count <= 0) {
+        return;
+      }
+
+      foreach (var target in saveLoadSystem.gameData.LocatorPointsData) {
+        SetTarget(target.Position, target.Id);
+      }
+    }
+
+    public void Clear() {
+      foreach (var (id, target) in locatorTargets) {
+        target.point.locatorPoint.Hide();
+        target.point.locatorDistance.Hide();
+        pointsPool.Enqueue(target.point);
+      }
+
+      locatorTargets.Clear();
+    }
+
+    #endregion
 
     private void Awake() {
       if (points.Count == 0 || points.Count != distances.Count) {
@@ -39,6 +85,8 @@ namespace UI {
       }
 
       gameManager = GameManager.Instance;
+      saveLoadSystem = SaveLoadSystem.Instance;
+      saveLoadSystem.Register(this);
 
       for (var i = 0; i < points.Count; i++) {
         var point = points[i];
@@ -46,6 +94,10 @@ namespace UI {
         point.gameObject.SetActive(false);
         distance.gameObject.SetActive(false);
         pointsPool.Enqueue(new Point { locatorPoint = point, locatorDistance = distance });
+      }
+
+      foreach (var point in allowed) {
+        allowedPoints.Add(point.id, point);
       }
 
       gameManager.OnGamePaused += OnGamePausedHandler;
@@ -64,22 +116,20 @@ namespace UI {
       }
     }
 
-    public void SetTargetBuilding(Vector3 position, ItemObject itemObject) {
-      if (!allowBuildings.Contains(itemObject)) {
+    public void SetTarget(Vector3 position, string id) {
+      if (!allowedPoints.ContainsKey(id)) {
         return;
       }
 
-      SetTarget(position, itemObject.Id, itemObject.UiDisplay);
-    }
-
-    public void SetTarget(Vector3 position, string id, Sprite icon) {
       if (locatorTargets.ContainsKey(id)) {
         return;
       }
 
       var point = pointsPool.Count > 0 ? pointsPool.Dequeue() : CreateNewPoint();
+      var icon = allowedPoints[id].sprite;
+      var color = allowedPoints[id].color;
 
-      point.locatorPoint.SetPoint(icon);
+      point.locatorPoint.SetPoint(icon, color);
       point.locatorDistance.SetPoint(icon);
 
       locatorTargets[id] = new LocatorTarget { target = position, point = point };
@@ -103,8 +153,12 @@ namespace UI {
       }
 
       var target = locatorTargets[id];
+
       pointsPool.Enqueue(target.point);
       locatorTargets.Remove(id);
+
+      target.point.locatorPoint.Hide();
+      target.point.locatorDistance.Hide();
     }
 
     private void OnGamePausedHandler() {

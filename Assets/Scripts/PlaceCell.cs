@@ -254,7 +254,7 @@ public class PlaceCell : MonoBehaviour {
     SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
 
     var item = GetSelectedSlot().Item;
-    GameManager.Instance.Locator.SetTargetBuilding(pos, item.info);
+    GameManager.Instance.Locator.SetTarget(pos, item.id);
 
     PlayBuildingBlockPlaceSound();
 

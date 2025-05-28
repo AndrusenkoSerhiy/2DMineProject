@@ -19,6 +19,7 @@ namespace SaveSystem {
     public const int ACTORS = 60;
     public const int SIEGE = 70;
     public const int ENEMIES = 80;
+    public const int LOCATOR = 90;
   }
 
   [DefaultExecutionOrder(-10)]
@@ -257,7 +258,8 @@ namespace SaveSystem {
         WorldData = new WorldData(),
         PlayerData = new PlayerData(),
         SiegeData = new SiegeData(),
-        Zombies = new List<ZombiesData>()
+        Zombies = new List<ZombiesData>(),
+        LocatorPointsData = new List<LocatorPointData>()
       };
     }
 

@@ -105,6 +105,8 @@ namespace Tools {
       robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
       if (chunkController.ChunkData == null) {
         chunkController.OnCreateChunk += LockOnStart;
+      } else {
+        LockOnStart();
       }
 
       MenuController.OnExitToMainMenu += ExitToMainMenu;
@@ -112,9 +114,6 @@ namespace Tools {
       if (SaveLoadSystem.Instance.IsNewGame()) {
         GameManager.Instance.Locator.SetTarget(transform.position, id);
       }
-      /*else {
-        LockOnStart();
-      }*/
     }
 
     private void ExitToMainMenu() {
@@ -300,13 +299,6 @@ namespace Tools {
     private void ExitFromRobot() {
       ActorRobot.OnRobotBroked -= ExitFromRobot;
       SetPlayerPosition(null, exitTransforms[0].position);
-      if (miningRobotController.Grounded) {
-        EnablePhysics(false);
-        LockCells(true);
-      }
-      else {
-        miningRobotController.GroundedChanged += GroundChanged;
-      }
 
       placeCellRobot.Deactivate();
       playerController.EnableCollider(true);
@@ -328,6 +320,15 @@ namespace Tools {
 
       RemoveRobotInventoryFromMainInventory();
       playerInRobot = false;
+      
+      if (miningRobotController.Grounded) {
+        EnablePhysics(false);
+        LockCells(true);
+      }
+      else {
+        miningRobotController.GroundedChanged += GroundChanged;
+      }
+      
       OnPlayerExitFromRobot?.Invoke();
     }
 
@@ -344,7 +345,7 @@ namespace Tools {
       if (playerInRobot) {
         return;
       }
-
+      
       robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
       var firstX = robotCoordsOutOfBounds.X;
       var firstY = robotCoordsOutOfBounds.Y + 1;

@@ -17,6 +17,7 @@ namespace Analytics {
     [SerializeField] private int siteId = 1;
 
     [Header("Options")] [SerializeField] private bool analyticsEnabled = true;
+    [SerializeField] private bool onlyInBuild = true;
     [SerializeField] private AnalyticsEvent analyticsEvent;
 
     private string playerId;
@@ -44,14 +45,17 @@ namespace Analytics {
       }
 
       playerId = PlayerPrefs.GetString("player_id");
+
+      // ✅ Вимкнути аналітику, якщо тільки для білда і ми в редакторі
+#if UNITY_EDITOR
+      if (onlyInBuild) {
+        analyticsEnabled = false;
+      }
+#endif
     }
 
     private void Start() {
       lastInputTime = Time.time;
-    }
-
-    private async Task OnApplicationQuit() {
-      await SendBasicStatsAsync();
     }
 
     private void Update() {
@@ -70,11 +74,7 @@ namespace Analytics {
       }
     }
 
-    private async Task SendBasicStatsAsync() {
-      if (!analyticsEnabled) {
-        return;
-      }
-
+    public async Task SendBasicStatsAsync() {
       await LogCustomEvent("GameTime(m)", "GameTime", "Playtime", (gameTime / 60));
       await LogCustomEvent("GameTime(m)", "IdleTime", "Idle", (idleTime / 60));
       await LogCustomEvent("GameTime(m)", "MenuTime", "Menu", (menuTime / 60));
@@ -84,6 +84,12 @@ namespace Analytics {
       if (!analyticsEnabled || string.IsNullOrEmpty(matomoUrl)) {
         return;
       }
+
+#if UNITY_EDITOR
+      if (onlyInBuild) {
+        return;
+      }
+#endif
 
       var url = $"{matomoUrl}?idsite={siteId}&rec=1" +
                 $"&uid={playerId}" +
@@ -104,7 +110,7 @@ namespace Analytics {
       }
 
       if (request.result != UnityWebRequest.Result.Success) {
-        Debug.LogWarning("Matomo analytics failed: " + request.error);
+        Debug.LogError("Matomo analytics failed: " + request.error);
       }
     }
 

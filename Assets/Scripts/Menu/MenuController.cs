@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Analytics;
 using SaveSystem;
 using TMPro;
 using UnityEngine;
@@ -109,7 +110,8 @@ namespace Menu {
       HideLoading();
     }
 
-    private void ExitGame() {
+    private async Task ExitGame() {
+      await AnalyticsManager.Instance.SendBasicStatsAsync();
       if (Application.isEditor) {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

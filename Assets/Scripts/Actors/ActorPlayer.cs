@@ -1,4 +1,5 @@
 using System;
+using Analytics;
 using SaveSystem;
 
 namespace Actors {
@@ -49,6 +50,7 @@ namespace Actors {
 
       if (stats.Health <= 0) {
         OnPlayerDeath?.Invoke();
+        AnalyticsManager.Instance.LogPlayerDied();
       }
     }
 

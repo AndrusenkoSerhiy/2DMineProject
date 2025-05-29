@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Actors;
+using Analytics;
 using Animation;
 using Interaction;
 using Inventory;
@@ -412,6 +413,7 @@ namespace Tools {
       ShowNormalTexture();
       AnimationEventManager.onRobotRepaired -= RobotRepaired;
       miningRobotController.Actor.Respawn();
+      AnalyticsManager.Instance.LogRobotRepaired(robotObject.name, repairValue);
     }
 
     private void CheckRobotRepaired() {

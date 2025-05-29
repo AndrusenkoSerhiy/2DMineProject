@@ -1,5 +1,6 @@
 using System;
 using Windows;
+using Analytics;
 using Audio;
 using Craft;
 using DG.Tweening;
@@ -268,6 +269,8 @@ public class PlaceCell : MonoBehaviour {
     childObject.transform.DOScale(Vector3.one, 0.5f).SetEase(spawnScaleCurve);
     GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position,
       Quaternion.identity);
+    
+    AnalyticsManager.Instance.LogStationPlaced(item.name);
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject, ItemObject itemObject) {

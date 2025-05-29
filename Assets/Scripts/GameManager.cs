@@ -19,6 +19,7 @@ using Messages;
 using Movement;
 using Pool;
 using PoolActors;
+using Quests;
 using ScriptableObjects;
 using Scriptables.DropZombieData;
 using Settings;
@@ -74,6 +75,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private DynamicCrosshair dynamicCrosshair;
   [SerializeField] private BulletsPool bulletsPool;
   [SerializeField] private Locator locator;
+  [SerializeField] private QuestManager questManager;
 
   //TODO 
   //robot don't need this param in own script
@@ -136,6 +138,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public DynamicCrosshair DynamicCrosshair => dynamicCrosshair;
   public BulletsPool BulletsPool => bulletsPool;
   public Locator Locator => locator;
+  public QuestManager QuestManager => questManager;
 
   public PlayerController PlayerController {
     set => playerController = value;
@@ -180,7 +183,6 @@ public class GameManager : PersistentSingleton<GameManager> {
 
     DOTween.Init();
     UnityEngine.Rendering.DebugManager.instance.enableRuntimeUI = false;
-
     statModifierFactory = new StatModifierFactory();
   }
 

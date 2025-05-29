@@ -87,6 +87,7 @@ public class StartGameCameraController : MonoBehaviour {
     playerRb.gravityScale = 0f;
     yield return new WaitForSeconds(1f);
     GameManager.Instance.CameraConfigManager.SetCameraDefault();
+    GameManager.Instance.QuestManager.StartQuest(0);
     Stop();
   }
 

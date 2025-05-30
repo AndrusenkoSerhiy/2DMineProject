@@ -30,8 +30,8 @@ namespace Player {
     private List<IDamageable> iDamageables = new();
     [SerializeField] private bool isHighlightLock;
     [SerializeField] private Vector2 originalSize;
-    private int lookDirection;
-    private AnimatorParameters animParam;
+    [SerializeField] protected int lookDirection;
+    protected AnimatorParameters animParam;
     protected PlayerEquipment playerEquipment;
 
     protected PlayerStats playerStats;
@@ -112,32 +112,7 @@ namespace Player {
       GetDirection();
     }
 
-    private void GetDirection() {
-      Vector2 direction = attackCollider.transform.position - transform.position;
-      //Debug.LogError($"directionY {direction.y}");
-
-      //3f distance between player and mouse for top border 
-      if (direction.y > 3f) {
-        lookDirection = 1;
-        
-        //use only for drill upside attack
-        if (animator.GetInteger("WeaponID") == 1 && Mathf.Abs(direction.x) > 1) {
-          lookDirection = 2;
-        }
-      }
-      else if (direction.y < .3f) {
-        lookDirection = -1;
-        //use only for drill upside attack
-        if (animator.GetInteger("WeaponID") == 1 && Mathf.Abs(direction.x) > 1) {
-          lookDirection = -2;
-        }
-      }
-      else {
-        lookDirection = 0;
-      }
-
-      animator.SetInteger(animParam.LookDirection, lookDirection);
-    }
+    public virtual void GetDirection() { }
 
     protected virtual void TriggerAttack() {
       attackTimeCounter = 0f;

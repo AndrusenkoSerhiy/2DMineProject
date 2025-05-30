@@ -65,6 +65,33 @@ namespace Player {
         animator.SetInteger("WeaponID", attackID);
       }
     }
+    
+    public override void GetDirection() {
+      Vector2 direction = attackCollider.transform.position - transform.position;
+      //Debug.LogError($"directionY {direction.y}");
+
+      //3f distance between player and mouse for top border 
+      if (direction.y > 3f) {
+        lookDirection = 1;
+        
+        //use only for drill upside attack
+        if (animator.GetInteger("WeaponID") == 1 && Mathf.Abs(direction.x) > 1) {
+          lookDirection = 2;
+        }
+      }
+      else if (direction.y < .3f) {
+        lookDirection = -1;
+        //use only for drill upside attack
+        if (animator.GetInteger("WeaponID") == 1 && Mathf.Abs(direction.x) > 1) {
+          lookDirection = -2;
+        }
+      }
+      else {
+        lookDirection = 0;
+      }
+
+      animator.SetInteger(animParam.LookDirection, lookDirection);
+    }
 
     //get param from equipped tool
     protected override void PrepareAttackParams() {

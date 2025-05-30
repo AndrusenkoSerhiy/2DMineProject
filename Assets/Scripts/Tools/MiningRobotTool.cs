@@ -23,8 +23,8 @@ namespace Tools {
     [SerializeField] private string holdInteractText;
 
     [SerializeField] private RobotObject robotObject;
-    [SerializeField] private SpriteRenderer robotImage;
-    [SerializeField] private SpriteRenderer brokenRobotImage;
+    //[SerializeField] private SpriteRenderer robotImage;
+    //[SerializeField] private SpriteRenderer brokenRobotImage;
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
     [SerializeField] private PlaceCellRobot placeCellRobot;
@@ -86,7 +86,7 @@ namespace Tools {
 
     private void Init() {
       broken = IsBroken();
-      CheckRobotRepaired();
+      //CheckRobotRepaired();
 
       playerController = gameManager.PlayerController;
       miningRobotController = gameManager.MiningRobotController;
@@ -183,7 +183,7 @@ namespace Tools {
       }
 
       animator.SetBool("IsBroken", broken);
-      CheckRobotRepaired();
+      //CheckRobotRepaired();
     }
 
     public bool Interact(PlayerInteractor playerInteractor) {
@@ -228,7 +228,7 @@ namespace Tools {
       miningRobotController.SetLockHighlight(false);
       EnablePhysics(true);
 
-      SetPlayerPosition(playerTransform, Vector3.zero);
+      SetPlayerPosition(playerTransform, new Vector3( 0.212f, 0.327f, 0));
       GameManager.Instance.CurrPlayerController = miningRobotController;
 
       playerController.ResetLocalScale();
@@ -413,22 +413,22 @@ namespace Tools {
 
     private void RobotRepaired() {
       stats.AddHealth(repairValue);
-      ShowNormalTexture();
+      //ShowNormalTexture();
       AnimationEventManager.onRobotRepaired -= RobotRepaired;
       miningRobotController.Actor.Respawn();
       AnalyticsManager.Instance.LogRobotRepaired(robotObject.name, repairValue);
     }
 
-    private void CheckRobotRepaired() {
+    /*private void CheckRobotRepaired() {
       if (!broken) {
         ShowNormalTexture();
       }
       else {
         ShowBrokenTexture();
       }
-    }
+    }*/
 
-    private void ShowNormalTexture() {
+    /*private void ShowNormalTexture() {
       robotImage.enabled = true;
       brokenRobotImage.enabled = false;
     }
@@ -436,7 +436,7 @@ namespace Tools {
     private void ShowBrokenTexture() {
       brokenRobotImage.enabled = true;
       robotImage.enabled = false;
-    }
+    }*/
 
     private bool CanRepair() {
       if (stats == null) {

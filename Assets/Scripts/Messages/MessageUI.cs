@@ -84,11 +84,16 @@ namespace Messages {
     }
 
     private void ApplyAdditionalMessage() {
-      if (!additionalMessageText) {
+      if (!additionalMessageText || string.IsNullOrEmpty(addMsgText)) {
+        additionalMessageText.gameObject.SetActive(false);
         return;
       }
 
-      additionalMessageText.text = string.IsNullOrEmpty(addMsgText) ? string.Empty : addMsgText;
+      if (!additionalMessageText.gameObject.activeSelf) {
+        additionalMessageText.gameObject.SetActive(true);
+      }
+
+      additionalMessageText.text = addMsgText;
     }
 
     private void SetupIcon() {

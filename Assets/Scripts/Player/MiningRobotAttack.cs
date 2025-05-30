@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Player {
   public class MiningRobotAttack : BaseAttack {
     private bool lockAttack;
@@ -11,8 +13,36 @@ namespace Player {
         return;
         
       base.TriggerAttack();
-      animator.SetTrigger("Attack");
-      animator.SetInteger("WeaponID", attackID);
+      if (!firstAttack) {
+        firstAttack = true;
+        animator.SetTrigger("Attack");
+        animator.SetInteger("WeaponID", attackID);
+      }
+    }
+    
+    public override void GetDirection() {
+      Vector2 direction = attackCollider.transform.position - transform.position;
+      //Debug.LogError($"directionY {direction.y}");
+
+      //6f distance between player and mouse for top border 
+      if (direction.y > 6f) {
+        lookDirection = 1;
+        
+        if (Mathf.Abs(direction.x) > 1.5f) {
+          lookDirection = 2;
+        }
+      }
+      else if (direction.y < .3f) {
+        lookDirection = -1;
+        if (Mathf.Abs(direction.x) > 1.5f) {
+          lookDirection = -2;
+        }
+      }
+      else {
+        lookDirection = 0;
+      }
+
+      animator.SetInteger(animParam.LookDirection, lookDirection);
     }
 
     //get param from robot stats

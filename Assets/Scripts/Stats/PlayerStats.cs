@@ -21,6 +21,7 @@ public class PlayerStats : StatsBase {
   public float MaxSpeed => GetStatValue(StatType.MaxSpeed);
   public float MaxBackSpeed => GetStatValue(StatType.MaxBackSpeed);
   public float SprintSpeed => GetStatValue(StatType.SprintSpeed);
+  public float SprintBackSpeed => GetStatValue(StatType.SprintBackSpeed);
 
   //TODO: refactor
   protected override void Awake() => Init();
@@ -43,6 +44,7 @@ public class PlayerStats : StatsBase {
     baseValues[StatType.MaxSpeed] = StatsObject.maxSpeed;
     baseValues[StatType.MaxBackSpeed] = StatsObject.maxBackSpeed;
     baseValues[StatType.SprintSpeed] = StatsObject.sprintSpeed;
+    baseValues[StatType.SprintBackSpeed] = StatsObject.sprintBackSpeed;
 
     if (data?.StatModifiersData?.Count > 0) {
       Mediator.Load(data.StatModifiersData);

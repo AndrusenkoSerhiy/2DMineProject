@@ -43,6 +43,9 @@ namespace Scriptables.Stats {
     
     [Tooltip("The top horizontal sprint speed")]
     public float sprintSpeed = 20;
+    
+    [Tooltip("The top horizontal back sprint speed")]
+    public float sprintBackSpeed = 14;
 
     [Tooltip("The player's capacity to gain horizontal speed")]
     public float acceleration = 120;

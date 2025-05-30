@@ -312,12 +312,14 @@ namespace Player {
 
     protected virtual float GetMaxSpeed() {
       var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
-      //var canSprintInAir = !grounded && wasSprintingOnJump;
-      return isMovingForward
-        ? (stamina.IsSprinting /*&& (grounded || canSprintInAir)*/)
-          ? PlayerStats.SprintSpeed
-          : PlayerStats.MaxSpeed
-        : PlayerStats.MaxBackSpeed;
+      /*return isMovingForward ? (stamina.IsSprinting) ? PlayerStats.SprintSpeed : PlayerStats.MaxSpeed
+        : PlayerStats.MaxBackSpeed;*/
+      if (isMovingForward) {
+        return stamina.IsSprinting ? PlayerStats.SprintSpeed : PlayerStats.MaxSpeed;
+      }
+      else {
+        return stamina.IsSprinting ? PlayerStats.SprintBackSpeed : PlayerStats.MaxBackSpeed;
+      }
     }
 
     private void SetAnimVelocityX(float value) {

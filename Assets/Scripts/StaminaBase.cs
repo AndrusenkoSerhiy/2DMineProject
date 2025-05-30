@@ -4,13 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class StaminaBase : MonoBehaviour {
-  // [SerializeField] protected StaminaBar staminaBar;
-
   protected PlayerStats stats;
-  // [SerializeField] protected float maxStamina = 100f;
-  // [SerializeField] protected float currentStamina;
-  // [SerializeField] protected float staminaDrain = 20f;
-  // [SerializeField] protected float staminaRecovery = 10f;
 
   [Tooltip("min amount of stamina when we can start sprinting")] [SerializeField]
   protected float minStamina = 10f;
@@ -31,10 +25,6 @@ public class StaminaBase : MonoBehaviour {
     enabled = state;
   }
 
-  /*public void SetStaminaBarRef() {
-    staminaBar = GameManager.Instance.StaminaBar;
-  }*/
-
   private void Update() {
     StopSprinting();
     UpdateStaminaValue();
@@ -49,6 +39,7 @@ public class StaminaBase : MonoBehaviour {
   }
 
   private void StopSprinting() {
+    return;
     if (GameManager.Instance.UserInput.GetMovement().magnitude <= 0) {
       SetSprinting(false);
     }

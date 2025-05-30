@@ -14,6 +14,7 @@ namespace SaveSystem {
     public const int CRAFT = 30;
     public const int CRAFT_WINDOWS = 35;
     public const int RECIPES = 40;
+    public const int QUESTS = 45;
     public const int PLAYER_CONTROLLER = 50;
     public const int EQUIPMENT = 55;
     public const int ACTORS = 60;
@@ -254,6 +255,7 @@ namespace SaveSystem {
         Inventories = new SerializedDictionary<string, InventoryData>(),
         Workstations = new SerializedDictionary<string, WorkstationsData>(),
         Recipes = new RecipesData(),
+        QuestData = new QuestData(),
         Robots = new SerializedDictionary<string, RobotData>(),
         WorldData = new WorldData(),
         PlayerData = new PlayerData(),

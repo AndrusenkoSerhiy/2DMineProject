@@ -23,8 +23,8 @@ namespace Tools {
     [SerializeField] private string holdInteractText;
 
     [SerializeField] private RobotObject robotObject;
-    [SerializeField] private SpriteRenderer robotImage;
-    [SerializeField] private SpriteRenderer brokenRobotImage;
+    //[SerializeField] private SpriteRenderer robotImage;
+    //[SerializeField] private SpriteRenderer brokenRobotImage;
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
     [SerializeField] private PlaceCellRobot placeCellRobot;
@@ -86,7 +86,7 @@ namespace Tools {
 
     private void Init() {
       broken = IsBroken();
-      CheckRobotRepaired();
+      //CheckRobotRepaired();
 
       playerController = gameManager.PlayerController;
       miningRobotController = gameManager.MiningRobotController;
@@ -105,7 +105,8 @@ namespace Tools {
       robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
       if (chunkController.ChunkData == null) {
         chunkController.OnCreateChunk += LockOnStart;
-      } else {
+      }
+      else {
         LockOnStart();
       }
 
@@ -182,7 +183,7 @@ namespace Tools {
       }
 
       animator.SetBool("IsBroken", broken);
-      CheckRobotRepaired();
+      //CheckRobotRepaired();
     }
 
     public bool Interact(PlayerInteractor playerInteractor) {
@@ -227,7 +228,7 @@ namespace Tools {
       miningRobotController.SetLockHighlight(false);
       EnablePhysics(true);
 
-      SetPlayerPosition(playerTransform, Vector3.zero);
+      SetPlayerPosition(playerTransform, new Vector3( 0.212f, 0.327f, 0));
       GameManager.Instance.CurrPlayerController = miningRobotController;
 
       playerController.ResetLocalScale();
@@ -320,7 +321,7 @@ namespace Tools {
 
       RemoveRobotInventoryFromMainInventory();
       playerInRobot = false;
-      
+
       if (miningRobotController.Grounded) {
         EnablePhysics(false);
         LockCells(true);
@@ -328,7 +329,7 @@ namespace Tools {
       else {
         miningRobotController.GroundedChanged += GroundChanged;
       }
-      
+
       OnPlayerExitFromRobot?.Invoke();
     }
 
@@ -345,7 +346,7 @@ namespace Tools {
       if (playerInRobot) {
         return;
       }
-      
+
       robotCoordsOutOfBounds = miningRobotController.PlayerCoords.GetCoordsOutOfBounds();
       var firstX = robotCoordsOutOfBounds.X;
       var firstY = robotCoordsOutOfBounds.Y + 1;
@@ -397,6 +398,7 @@ namespace Tools {
         return;
       }
 
+      gameManager.QuestManager.StartQuest(2);
       gameManager.SiegeManager.StartSieges();
 
       if (broken) {
@@ -411,22 +413,22 @@ namespace Tools {
 
     private void RobotRepaired() {
       stats.AddHealth(repairValue);
-      ShowNormalTexture();
+      //ShowNormalTexture();
       AnimationEventManager.onRobotRepaired -= RobotRepaired;
       miningRobotController.Actor.Respawn();
       AnalyticsManager.Instance.LogRobotRepaired(robotObject.name, repairValue);
     }
 
-    private void CheckRobotRepaired() {
+    /*private void CheckRobotRepaired() {
       if (!broken) {
         ShowNormalTexture();
       }
       else {
         ShowBrokenTexture();
       }
-    }
+    }*/
 
-    private void ShowNormalTexture() {
+    /*private void ShowNormalTexture() {
       robotImage.enabled = true;
       brokenRobotImage.enabled = false;
     }
@@ -434,7 +436,7 @@ namespace Tools {
     private void ShowBrokenTexture() {
       brokenRobotImage.enabled = true;
       robotImage.enabled = false;
-    }
+    }*/
 
     private bool CanRepair() {
       if (stats == null) {

@@ -19,6 +19,7 @@
 
     MaxSpeed = 80,
     MaxBackSpeed = 81,
-    SprintSpeed = 82
+    SprintSpeed = 82,
+    SprintBackSpeed = 83,
   }
 }

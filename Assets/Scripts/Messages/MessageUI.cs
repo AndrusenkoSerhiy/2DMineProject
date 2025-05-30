@@ -9,6 +9,7 @@ namespace Messages {
   public class MessageUI : MonoBehaviour {
     public CanvasGroup canvasGroup;
     public TextMeshProUGUI messageText;
+    public TextMeshProUGUI additionalMessageText;
     public Image iconImage;
 
     private Coroutine fadeCoroutine;
@@ -17,6 +18,7 @@ namespace Messages {
 
     private string template;
     private string msgName;
+    private string addMsgText;
     [CanBeNull] private string entityId;
     private int? currentAmount;
     [CanBeNull] private Sprite icon;
@@ -35,6 +37,12 @@ namespace Messages {
 
     public MessageUI SetName(string name) {
       msgName = name;
+
+      return this;
+    }
+
+    public MessageUI SetAdditionalMessage(string text = null) {
+      addMsgText = text;
 
       return this;
     }
@@ -65,6 +73,7 @@ namespace Messages {
 
     public void Setup() {
       messageText.text = ApplyTemplate();
+      ApplyAdditionalMessage();
       SetupIcon();
 
       if (fadeCoroutine != null) {
@@ -72,6 +81,14 @@ namespace Messages {
       }
 
       fadeCoroutine = StartCoroutine(ShowAndFade());
+    }
+
+    private void ApplyAdditionalMessage() {
+      if (!additionalMessageText) {
+        return;
+      }
+
+      additionalMessageText.text = string.IsNullOrEmpty(addMsgText) ? string.Empty : addMsgText;
     }
 
     private void SetupIcon() {

@@ -413,18 +413,18 @@ namespace Inventory {
       return false;
     }
 
-    public bool HasNotFinishedStack(ItemObject itemObject) {
+    public InventorySlot SlotWithNotFinishedStack(ItemObject itemObject) {
       if (!itemObject) {
-        return false;
+        return null;
       }
 
       foreach (var slot in Slots) {
         if (!slot.isEmpty && slot.Item.info.Id == itemObject.Id && slot.amount < slot.GetMaxSize()) {
-          return true;
+          return slot;
         }
       }
 
-      return false;
+      return null;
     }
 
     public bool IsEmpty() {

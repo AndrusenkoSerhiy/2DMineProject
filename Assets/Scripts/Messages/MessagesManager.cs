@@ -106,7 +106,10 @@ namespace Messages {
 
     public void ShowNewRecipeMessage(Recipe recipe) {
       var position = messagePositions[MessageType.NewRecipe];
-      ShowMessage(MessageType.NewRecipe, position, recipe.RecipeName, recipe.Id, null, null);
+      var additionalMessage = recipe.RecipeTypes.Count > 0
+        ? $"{string.Join(", ", recipe.RecipeTypes)}"
+        : null;
+      ShowMessage(MessageType.NewRecipe, position, recipe.RecipeName, recipe.Id, null, null, additionalMessage);
     }
 
     public void ShowPickupResourceMessage(ItemObject item, int amount) {
@@ -133,7 +136,8 @@ namespace Messages {
       string msgName,
       [CanBeNull] string entityId = null,
       int? amount = null,
-      [CanBeNull] Sprite icon = null) {
+      [CanBeNull] Sprite icon = null,
+      [CanBeNull] string additionalMessage = null) {
       var container = GetContainer(position);
       var template = messageTemplates[type];
 
@@ -150,6 +154,7 @@ namespace Messages {
         .SetDuration(messageDuration)
         .SetEntityId(entityId)
         .SetName(msgName)
+        .SetAdditionalMessage(additionalMessage)
         .SetAmount(amount)
         .SetIcon(icon)
         .SetHideCallback(msg => ReturnMessage(container, msg))
@@ -185,7 +190,7 @@ namespace Messages {
     private void ReturnMessage(Transform container, MessageUI message) {
       message.gameObject.SetActive(false);
       activeMessages[container].Remove(message);
-      
+
       var pool = container != topContainer ? messagePool : messageRecipePool;
       pool.Add(message);
       /*Debug.LogError("Return :" + container.name, container.gameObject);

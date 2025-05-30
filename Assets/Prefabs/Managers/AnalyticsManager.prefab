@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cd6cd9af47e4d09865e27e620527cda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matomoUrl: https://matomo.olehm.site/matomo.php
-  siteId: 1
+  postgrestUrl: https://postgrest.olehm.site
   analyticsEnabled: 1
+  onlyInBuild: 1
   analyticsEvent: {fileID: 11400000, guid: e7f39ddbc07f41f4c82d919792f68416, type: 2}
+  sendPlayTimeInterval: 10

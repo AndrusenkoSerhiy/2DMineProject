@@ -133,7 +133,7 @@ namespace Craft {
           continue;
         }
 
-        if (inventory.HasNotFinishedStack(item.info)) {
+        if (inventory.SlotWithNotFinishedStack(item.info) != null) {
           remainingAmount = inventory.AddItem(item, remainingAmount);
         }
 

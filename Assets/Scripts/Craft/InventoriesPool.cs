@@ -91,6 +91,18 @@ namespace Craft {
       return false;
     }
 
+    public InventorySlot GetNotFinishedStackInQuickSlots(ItemObject itemObject) {
+      foreach (var inventory in pool) {
+        if (inventory.Type != InventoryType.QuickSlots) {
+          continue;
+        }
+
+        return inventory.SlotWithNotFinishedStack(itemObject);
+      }
+
+      return null;
+    }
+
     public bool HasRepairKits() {
       foreach (var inventory in pool) {
         if (inventory.HasRepairKits()) {

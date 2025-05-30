@@ -79,7 +79,7 @@ namespace Inventory {
 
     public void Load() {
       Clear();
-      
+
       weight = saveLoadSystem.gameData.Weight;
       weightItems = saveLoadSystem.gameData.WeightItems;
       Init();
@@ -223,7 +223,8 @@ namespace Inventory {
     /// <param name="amount">Amount of this item</param>
     /// <returns>Amount of items that was added to inventory</returns>
     public int AddItemToInventoryWithOverflowDrop(Item item, int amount) {
-      var overflow = inventoriesPool.AddItemToInventoriesPool(item, amount);
+      var slot = inventoriesPool.GetNotFinishedStackInQuickSlots(item.info);
+      var overflow = inventoriesPool.AddItemToInventoriesPool(item, amount, slot);
 
       AddWeight(item.info);
 

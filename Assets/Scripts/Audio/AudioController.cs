@@ -95,8 +95,20 @@ namespace Audio {
     public void PlayPlaceBuildingBlock() => PlayAudio(placeBuildingBlock);
     public void PlayPlayerJump() => PlayAudio(playerJump);
     public void PlayPlayerJumpLanding() => PlayAudio(playerJumpLanding);
-    public void PlayPlayerLeftStep() => PlayAudio(playerLeftStep);
-    public void PlayPlayerRightStep() => PlayAudio(playerRightStep);
+    public void PlayPlayerLeftStep() {
+      if (!GameManager.Instance.PlayerController.Grounded)
+        return;
+      
+      PlayAudio(playerLeftStep);
+    }
+
+    public void PlayPlayerRightStep() {
+      if (!GameManager.Instance.PlayerController.Grounded)
+        return;
+      
+      PlayAudio(playerRightStep);
+    }
+
     public void PlayPlayerDamaged() => PlayAudio(playerDamaged[Random.Range(0, playerDamaged.Count)]);
     public void PlayPlayerDeath() => PlayAudio(playerDeath);
     public void StopPlayerDeath() => StopAudio(playerDeath);

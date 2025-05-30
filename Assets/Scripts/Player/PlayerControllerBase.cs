@@ -55,7 +55,6 @@ namespace Player {
     private bool _coyoteUsable;
     private float _timeJumpWasPressed;
     private AnimatorParameters animParam;
-    [SerializeField] private SkeletonMecanim skeletonMecanim;
 
     private GameObject jumpPs;
     private GameObject fallingPs;
@@ -90,16 +89,7 @@ namespace Player {
       animParam = GameManager.Instance.AnimatorParameters;
     }
 
-    protected virtual void Start() {
-      SetEmptyHand();
-    }
-
-    private void SetEmptyHand() {
-      if (skeletonMecanim == null)
-        return;
-
-      skeletonMecanim.Skeleton.SetAttachment("Weapon", null);
-    }
+    protected virtual void Start() { }
 
     protected virtual void OnDestroy() {
       AnimationEventManager.onFootstep -= SpawnFootstepEffect;

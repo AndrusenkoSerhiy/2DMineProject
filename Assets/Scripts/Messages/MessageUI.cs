@@ -84,7 +84,8 @@ namespace Messages {
     }
 
     private void ApplyAdditionalMessage() {
-      if (!additionalMessageText || string.IsNullOrEmpty(addMsgText)) {
+      if (!additionalMessageText || !additionalMessageText.gameObject) return;
+      if (string.IsNullOrEmpty(addMsgText)) {
         additionalMessageText.gameObject.SetActive(false);
         return;
       }

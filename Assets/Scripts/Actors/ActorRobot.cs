@@ -1,5 +1,6 @@
 using System;
 using Scriptables.Repair;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Actors {
@@ -15,11 +16,11 @@ namespace Actors {
 
     public override void Damage(float damage, bool isPlayer) {
       base.Damage(damage, isPlayer);
-
-      DamageAudio();
-
-      if (IsDead) {
+      if (GetHealth() <= 0) {
         OnRobotBroked?.Invoke();
+      }
+      else {
+        DamageAudio();
       }
     }
 
@@ -30,7 +31,7 @@ namespace Actors {
     }
 
     private void DamageAudio() {
-      if (IsDead || !robotObject || robotObject.damagedAudioData.Count == 0) {
+      if (GetHealth() <= 0 || !robotObject || robotObject.damagedAudioData.Count == 0) {
         return;
       }
 

@@ -295,7 +295,10 @@ namespace Siege {
       siegeCycleElapsedTime += remainingTime;
       timeToNextSegment = 0f;
 
-      StopCoroutine(activeSiegeCoroutine);
+      if (activeSiegeCoroutine == null) {
+        StopCoroutine(activeSiegeCoroutine);
+      }
+      
       EndSiege();
       currentSiegeIndex++;
       activeSiegeCoroutine = StartCoroutine(RunNextSiege());

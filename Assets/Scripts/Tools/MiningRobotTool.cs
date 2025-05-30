@@ -41,7 +41,8 @@ namespace Tools {
     private string buttonName;
     private string changeBlockButtonName;
 
-    private bool isPlayerInside;
+    //use for interact
+    //[SerializeField] private bool isPlayerInside;
     private RobotData robotLoadData;
 
     private GameManager gameManager;
@@ -56,6 +57,7 @@ namespace Tools {
     //use after save load and we in the robot
     private bool needActivateItem = true;
     private int repairValue;
+    //use for 
     [SerializeField] private bool playerInRobot;
     private ChunkController chunkController;
 
@@ -63,7 +65,7 @@ namespace Tools {
     public static event Action OnPlayerSitOnRobot;
     public static event Action OnPlayerExitFromRobot;
 
-    public string InteractionText => isPlayerInside
+    public string InteractionText => playerInRobot
       ? $"{interactExitName}"
       : $"{interactEnterName}";
 
@@ -92,11 +94,11 @@ namespace Tools {
       miningRobotController = gameManager.MiningRobotController;
       playerInventory = gameManager.PlayerInventory;
       animator.SetBool("IsBroken", broken);
+      if(broken) animator.SetTrigger("Die");
       stats.OnAddHealth += OnAddHealthHandler;
 
       UpdateRobotPosition();
       if (robotLoadData is { IsPlayerInside: true }) {
-        isPlayerInside = !isPlayerInside;
         SitOnRobot();
         ResetPlayerAnim();
       }
@@ -163,9 +165,12 @@ namespace Tools {
     }
 
     public void Clear() {
-      isPlayerInside = false;
-      playerInRobot = false;
+      SetPlayerInRobot(false);
       robotLoadData = null;
+    }
+
+    private void SetPlayerInRobot(bool state) {
+      playerInRobot = state;
     }
 
     #endregion
@@ -191,9 +196,8 @@ namespace Tools {
         GameManager.Instance.MessagesManager.ShowSimpleMessage("Robot is broken.");
         return true;
       }
-
-      isPlayerInside = !isPlayerInside;
-      if (isPlayerInside) {
+      
+      if (!playerInRobot) {
         SitOnRobot();
         ResetPlayerAnim();
       }
@@ -222,19 +226,19 @@ namespace Tools {
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
       playerController.Stamina.EnableSprintScript(false);
-
+      
       miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
       EnablePhysics(true);
 
-      SetPlayerPosition(playerTransform, new Vector3( 0.212f, 0.327f, 0));
+      SetPlayerPosition(playerTransform, new Vector3( 0.212f, 0.327f, 0), new Vector3(0, 0, -92));
       GameManager.Instance.CurrPlayerController = miningRobotController;
 
       playerController.ResetLocalScale();
 
       AddRobotInventoryToMainInventory();
-      playerInRobot = true;
+      SetPlayerInRobot(true);
       OnPlayerSitOnRobot?.Invoke();
 
       SubscribeToChangeMode();
@@ -299,7 +303,7 @@ namespace Tools {
 
     private void ExitFromRobot() {
       ActorRobot.OnRobotBroked -= ExitFromRobot;
-      SetPlayerPosition(null, exitTransforms[0].position);
+      SetPlayerPosition(null, exitTransforms[0].position, Vector3.zero);
 
       placeCellRobot.Deactivate();
       playerController.EnableCollider(true);
@@ -309,6 +313,7 @@ namespace Tools {
       miningRobotController.SetLockHighlight(true);
       playerController.Stamina.EnableSprintScript(true);
       miningRobotController.Stamina.EnableSprintScript(false);
+      miningRobotController.ResetAnimatorMovement();
       GameManager.Instance.CurrPlayerController = playerController;
       GameManager.Instance.QuickSlotListener.Activate("MiningRobot", needActivateItem);
       needActivateItem = true;
@@ -320,7 +325,7 @@ namespace Tools {
       UnsubscribeToChangeBlockType();
 
       RemoveRobotInventoryFromMainInventory();
-      playerInRobot = false;
+      SetPlayerInRobot(false);
 
       if (miningRobotController.Grounded) {
         EnablePhysics(false);
@@ -370,9 +375,10 @@ namespace Tools {
       miningRobotController.EnableController(state);
     }
 
-    private void SetPlayerPosition(Transform tr, Vector3 pos) {
+    private void SetPlayerPosition(Transform tr, Vector3 pos, Vector3 rot) {
       playerController.SetParent(tr);
       playerController.SetPosition(pos);
+      playerController.SetRotation(rot);
     }
 
     private void AddRobotInventoryToMainInventory() {
@@ -418,25 +424,6 @@ namespace Tools {
       miningRobotController.Actor.Respawn();
       AnalyticsManager.Instance.LogRobotRepaired(robotObject.name, repairValue);
     }
-
-    /*private void CheckRobotRepaired() {
-      if (!broken) {
-        ShowNormalTexture();
-      }
-      else {
-        ShowBrokenTexture();
-      }
-    }*/
-
-    /*private void ShowNormalTexture() {
-      robotImage.enabled = true;
-      brokenRobotImage.enabled = false;
-    }
-
-    private void ShowBrokenTexture() {
-      brokenRobotImage.enabled = true;
-      robotImage.enabled = false;
-    }*/
 
     private bool CanRepair() {
       if (stats == null) {

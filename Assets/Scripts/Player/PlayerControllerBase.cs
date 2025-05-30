@@ -328,6 +328,10 @@ namespace Player {
     public void SetPosition(Vector3 pos) {
       transform.localPosition = pos;
     }
+    
+    public void SetRotation(Vector3 rotation) {
+      transform.localEulerAngles = rotation;
+    }
 
     public void EnableCollider(bool state) {
       _col.enabled = state;

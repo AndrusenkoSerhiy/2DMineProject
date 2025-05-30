@@ -61,7 +61,7 @@ namespace NPCMovement
     }
 
     private void CheckObstacles() {
-      if (!IsGrounded())
+      if (!IsGrounded() && !CheckDown())
         return;
 
       // Check for obstacles in front of the NPC
@@ -193,13 +193,9 @@ namespace NPCMovement
       // Store hit information
       RaycastHit2D hit = Physics2D.CircleCast(origin, sphereRadius, direction, maxDistance, downLayer);
       if (hit.collider != null) {
-        // If we hit something, log its name
-        Debug.Log($"npc {gameObject.name} | Hit: {hit.collider.name}");
-
-        // Optionally, draw a debug line to visualize the cast
-        Debug.DrawLine(origin, hit.point, Color.red);
         return true;
       }
+      
       return false;
     }
 
@@ -294,7 +290,7 @@ namespace NPCMovement
       }
 
       hasObstacle = false;
-      if (IsGrounded() /*|| CheckDown()*/) {
+      if (IsGrounded() || CheckDown()) {
         //Debug.LogError($"jump {gameObject.name}");
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, actor.GetStats().StatsObject.jumpPower);
       }

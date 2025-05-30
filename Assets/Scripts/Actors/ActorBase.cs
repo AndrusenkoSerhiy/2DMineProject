@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Actors {
   public class ActorBase : MonoBehaviour, IDamageable {
     [SerializeField] protected Animator _animator;
-    [SerializeField] private bool isDead;
+    //[SerializeField] private bool isDead;
     [SerializeField] protected Rigidbody2D rigidbody;
     [SerializeField] private CapsuleCollider2D capsuleCollider;
 
@@ -13,7 +13,7 @@ namespace Actors {
     protected PlayerStats stats;
     [SerializeField] private bool _hasTakenDamage;
     public AnimatorParameters AnimParam => animParam;
-    public bool IsDead => isDead;
+    public bool IsDead => _animator.GetBool(animParam.IsDeadHash);
     public DamageableType DamageableType { get; set; }
     public AudioData OnTakeDamageAudioData { get; set; }
 
@@ -33,7 +33,8 @@ namespace Actors {
     }
 
     public virtual void Damage(float damage, bool isPlayer) {
-      if (isDead)
+      //get param from animator
+      if (IsDead)
         return;
 
       hasTakenDamage = true;
@@ -46,7 +47,7 @@ namespace Actors {
     }
 
     protected virtual void DeathActions() {
-      isDead = true;
+      //isDead = true;
       PlayDeathAnim();
     }
 
@@ -61,9 +62,8 @@ namespace Actors {
     }
 
     public virtual void Respawn() {
-      isDead = false;
+      _hasTakenDamage = false;
       _animator.SetLayerWeight(1, 1);
-      //OnPlayerRespawn?.Invoke();
     }
 
     public float GetHealth() {

@@ -149,7 +149,7 @@ public class PlaceCellRobot : MonoBehaviour {
 
   //update ui for current block
   private void UpdateBlockInfo() {
-    var sprite = possibleResourceList[activeBlockIndex].Sprite(0);
+    var sprite = possibleResourceList[activeBlockIndex].Sprite(15);
     var itemCount = gameManager.PlayerInventory.GetInventory()
       .GetTotalCount(possibleResourceList[activeBlockIndex].ItemData.Id);
     

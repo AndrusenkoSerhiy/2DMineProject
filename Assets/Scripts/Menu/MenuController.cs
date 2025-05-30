@@ -130,7 +130,7 @@ namespace Menu {
     }
 
     public void Hide() {
-      gameManager.UserInput.ShowCursor(false);
+      //gameManager.UserInput.ShowCursor(false);
       ShowAndLock(false);
 
       HideMainMenu();
@@ -142,7 +142,7 @@ namespace Menu {
     }
 
     public void Show() {
-      gameManager.UserInput.ShowCursor(true);
+      //gameManager.UserInput.ShowCursor(true);
       ShowAndLock(true);
       gameManager.StartGameCameraController.Init();
 
@@ -247,7 +247,7 @@ namespace Menu {
       HideSwitchProfiles();
 
       activeMenu = Menu.InGameMenu;
-      GameManager.Instance.UserInput.ShowCursor(true);
+      //GameManager.Instance.UserInput.ShowCursor(true);
     }
 
     private void HideInGameMenu() {

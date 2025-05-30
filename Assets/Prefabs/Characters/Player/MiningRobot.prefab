@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 8612669857292059665}
   - component: {fileID: 7099317164211854518}
   - component: {fileID: 2135133590650167321}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spine Mecanim GameObject (Robot)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -754,7 +754,7 @@ MonoBehaviour:
   stamina: {fileID: 6340536068884831584}
   grounded: 1
   startFalling: 0
-  skeletonMecanim: {fileID: 0}
+  skeletonMecanim: {fileID: 7099317164211854518}
   robotObject: {fileID: 11400000, guid: 20225897ed2c2124989043907a9eb6c9, type: 2}
   miningRobotAttack: {fileID: 858450107997457076}
 --- !u!70 &4114749698386090115

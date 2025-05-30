@@ -1,12 +1,13 @@
 using Animation;
 using SaveSystem;
+using Spine.Unity;
 using UnityEngine;
 
 namespace Player {
   [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
   public class PlayerController : PlayerControllerBase, IPlayerController, ISaveLoad {
     [SerializeField] private PlayerAttack playerAttack;
-
+    [SerializeField] private SkeletonMecanim skeletonMecanim;
     protected override void Awake() {
       SaveLoadSystem.Instance.Register(this);
       base.Awake();
@@ -15,6 +16,16 @@ namespace Player {
       
       AnimationEventManager.onLeftStep += GameManager.Instance.AudioController.PlayPlayerLeftStep;
       AnimationEventManager.onRightStep += GameManager.Instance.AudioController.PlayPlayerRightStep;
+    }
+
+    protected override void Start() {
+      SetEmptyHand();
+    }
+    private void SetEmptyHand() {
+      if (skeletonMecanim == null)
+        return;
+
+      skeletonMecanim.Skeleton.SetAttachment("Weapon", null);
     }
 
     #region save/load

@@ -26,7 +26,9 @@ namespace UI {
         2 => thirdText,
         _ => textField.text
       };
-      
+      GameManager.Instance.UserInput.BlockAction("Movement","Quest");
+      GameManager.Instance.UserInput.BlockAction("Attack","Quest");
+      GameManager.Instance.CameraConfigManager.SetCameraLow();
       bgImage.DOColor(showColor,1f);
       catImage.DOColor(showColor,1f);
       interactImage.DOColor(showColor,1f);
@@ -35,6 +37,9 @@ namespace UI {
     }
     
     public void HideDialogue() {
+      GameManager.Instance.CameraConfigManager.SetCameraDefault();
+      GameManager.Instance.UserInput.UnblockAction("Movement","Quest");
+      GameManager.Instance.UserInput.UnblockAction("Attack","Quest");
       bgImage.DOColor(hideColor,1f);
       catImage.DOColor(hideColor,1f);
       interactImage.DOColor(hideColor,1f);

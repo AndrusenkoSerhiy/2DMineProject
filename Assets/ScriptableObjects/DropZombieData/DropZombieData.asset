@@ -17,44 +17,59 @@ MonoBehaviour:
     maxItems: 3
     possibleItems:
     - item: {fileID: 11400000, guid: a87e42a0ac2a7b645985034cbec41d23, type: 2}
-      chance: 0.5
+      chance: 0.4
       rndCount: {x: 1, y: 2}
-    - item: {fileID: 11400000, guid: 8bba1794d06b92b48adc9626fe1bd275, type: 2}
-      chance: 0.5
+    - item: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
+      chance: 0.2
+      rndCount: {x: 1, y: 2}
+    - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+      chance: 0.2
       rndCount: {x: 1, y: 2}
   - difficultyProfile: {fileID: 11400000, guid: cf1e02ea97cf7264bb8028e985e5be4a, type: 2}
     maxItems: 1
     possibleItems:
-    - item: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
-      chance: 0.345
-      rndCount: {x: 1, y: 1}
-    - item: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
-      chance: 0.108
-      rndCount: {x: 1, y: 1}
+    - item: {fileID: 11400000, guid: a87e42a0ac2a7b645985034cbec41d23, type: 2}
+      chance: 0.4
+      rndCount: {x: 2, y: 4}
+    - item: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
+      chance: 0.2
+      rndCount: {x: 2, y: 4}
+    - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+      chance: 0.2
+      rndCount: {x: 2, y: 4}
   - difficultyProfile: {fileID: 11400000, guid: d7eb0e7d99980714392fec0f8682c61c, type: 2}
     maxItems: 1
     possibleItems:
-    - item: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
-      chance: 0.345
-      rndCount: {x: 1, y: 1}
-    - item: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
-      chance: 0.108
-      rndCount: {x: 1, y: 1}
+    - item: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
+      chance: 0.4
+      rndCount: {x: 3, y: 4}
+    - item: {fileID: 11400000, guid: 4a9d2b1894bcf6d41a676cfbc89be5f6, type: 2}
+      chance: 0.2
+      rndCount: {x: 1, y: 2}
+    - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+      chance: 0.4
+      rndCount: {x: 5, y: 6}
   - difficultyProfile: {fileID: 11400000, guid: c20f6e652cb5cee4dbff9b06e0c2609d, type: 2}
     maxItems: 1
     possibleItems:
-    - item: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
-      chance: 0.345
+    - item: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
+      chance: 0.4
+      rndCount: {x: 6, y: 8}
+    - item: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
+      chance: 0.2
       rndCount: {x: 1, y: 1}
-    - item: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
-      chance: 0.108
-      rndCount: {x: 1, y: 1}
+    - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+      chance: 0.5
+      rndCount: {x: 5, y: 6}
   - difficultyProfile: {fileID: 11400000, guid: c20f6e652cb5cee4dbff9b06e0c2609d, type: 2}
     maxItems: 1
     possibleItems:
-    - item: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
-      chance: 0.345
-      rndCount: {x: 1, y: 1}
-    - item: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
-      chance: 0.108
-      rndCount: {x: 1, y: 1}
+    - item: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
+      chance: 0.4
+      rndCount: {x: 3, y: 4}
+    - item: {fileID: 11400000, guid: cb571e081ccbabd419c27b6d0c2660a1, type: 2}
+      chance: 0.2
+      rndCount: {x: 1, y: 2}
+    - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+      chance: 0.4
+      rndCount: {x: 10, y: 12}

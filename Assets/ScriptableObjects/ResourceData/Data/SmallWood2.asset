@@ -58,13 +58,13 @@ MonoBehaviour:
   cellSize: {x: 1, y: 1}
   bonusResources:
   - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
-    chance: 0.4
+    chance: 0.6
     rndCount: {x: 15, y: 30}
   - item: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
     chance: 0.4
     rndCount: {x: 30, y: 50}
   - item: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
     chance: 0.4
-    rndCount: {x: 30, y: 50}
+    rndCount: {x: 20, y: 30}
   OnTakeDamageAudioData: {fileID: 11400000, guid: 8c31f43c9a736a24696ae83244e0bdf0, type: 2}
   debug: 0

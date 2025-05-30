@@ -145,6 +145,7 @@ namespace World {
     }
 
     public void DestroyObject() {
+      GameManager.Instance.QuestManager.StartQuest(1);
       var pos = transform.position;
       ResetShake();
       GameManager.Instance.ChunkController.TriggerCellDestroyed(this);

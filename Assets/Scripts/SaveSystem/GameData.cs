@@ -19,6 +19,7 @@ namespace SaveSystem {
     public SiegeData SiegeData;
     public List<ZombiesData> Zombies;
     public List<LocatorPointData> LocatorPointsData;
+    public QuestData QuestData;
   }
 
   [Serializable]

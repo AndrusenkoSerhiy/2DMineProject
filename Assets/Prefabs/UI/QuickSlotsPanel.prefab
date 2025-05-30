@@ -78,7 +78,7 @@ MonoBehaviour:
   inventoryType: 3
   fastDropInventoryType: 0
   preventItemDropIn: 0
-  preventDropOnGround: 1
+  preventDropOnGround: 0
   preventSwapIn: 0
   preventMergeIn: 0
   preventSplit: 0
@@ -130,6 +130,7 @@ MonoBehaviour:
     id: 
     name: 
   selectedSlotIndex: -1
+  reasonsToBlock: []
 --- !u!114 &2619697107618083881
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ namespace Actors {
 
     protected AnimatorParameters animParam;
     protected PlayerStats stats;
-    [SerializeField] private bool _hasTakenDamage;
+    //[SerializeField] private bool _hasTakenDamage;
     public AnimatorParameters AnimParam => animParam;
     public bool IsDead => _animator.GetBool(animParam.IsDeadHash);
     public DamageableType DamageableType { get; set; }
@@ -27,17 +27,17 @@ namespace Actors {
 
     public float ActorBoundsWidth => capsuleCollider.size.x * .5f;
 
-    public bool hasTakenDamage {
-      get { return _hasTakenDamage; }
+    /*public bool hasTakenDamage {
+      get { return false; }
       set { _hasTakenDamage = value; }
-    }
+    }*/
 
     public virtual void Damage(float damage, bool isPlayer) {
       //get param from animator
       if (IsDead)
         return;
 
-      hasTakenDamage = true;
+      //hasTakenDamage = true;
       if (stats.TakeDamage(damage) <= 0) {
         DeathActions();
       }
@@ -62,7 +62,7 @@ namespace Actors {
     }
 
     public virtual void Respawn() {
-      _hasTakenDamage = false;
+      //_hasTakenDamage = false;
       _animator.SetLayerWeight(1, 1);
     }
 

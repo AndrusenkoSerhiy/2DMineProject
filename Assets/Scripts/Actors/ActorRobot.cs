@@ -26,7 +26,7 @@ namespace Actors {
 
     public override void Respawn() {
       base.Respawn();
-      hasTakenDamage = false;
+      //hasTakenDamage = false;
       OnRobotRepaired?.Invoke();
     }
 

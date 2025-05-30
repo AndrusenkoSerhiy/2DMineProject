@@ -26,13 +26,14 @@ namespace NPCMovement
     [SerializeField] private bool hasArrived;
     [SerializeField] private Animator animator;
     [SerializeField] private ActorEnemy actor;
-    //
     [SerializeField] private bool hasObstacle;
+    private GameManager gameManager;
     public bool HasArrived => hasArrived;
     void Start() {
       rb = GetComponent<Rigidbody2D>();
       boxCollider2D = GetComponent<BoxCollider2D>();
       localScale = transform.localScale;
+      gameManager = GameManager.Instance;
     }
 
     //for patrol
@@ -49,7 +50,7 @@ namespace NPCMovement
     }
 
     private void FixedUpdate() {
-      if(GameManager.Instance.Paused)
+      if(gameManager.Paused)
         return;
       
       IsGrounded();
@@ -99,7 +100,7 @@ namespace NPCMovement
       hasObstacle = true;
       var cellCoords = new Coords(obstacle.CellData.x, obstacle.CellData.y);
       //Debug.DrawRay(hit.transform.position, Vector3.up, Color.blue, 2f);
-      var currPlayer = GameManager.Instance.CurrPlayerController.PlayerCoords.GetCoordsOutOfBounds();
+      var currPlayer = gameManager.CurrPlayerController.PlayerCoords.GetCoordsOutOfBounds();
 
       //cell above the cast cell
       var upCellCoords = new Coords(cellCoords.X, cellCoords.Y - 1);
@@ -128,7 +129,7 @@ namespace NPCMovement
           AttackCell(GetCellObject(aboveCell.X, aboveCell.Y));
         }
         else {
-          if (GameManager.Instance.ChunkController.ChunkData.GetCellFill(upCellCoords.X, upCellCoords.Y) == 1) {
+          if (gameManager.ChunkController.ChunkData.GetCellFill(upCellCoords.X, upCellCoords.Y) == 1) {
             AttackCell(GetCellObject(upCellCoords.X, upCellCoords.Y));
           }
           else Jump();
@@ -140,7 +141,7 @@ namespace NPCMovement
       var forwardCell = new Coords(cellCoords.X, cellCoords.Y);
       Debug.DrawRay(CoordsTransformer.GridToWorld(forwardCell.X, forwardCell.Y), Vector3.up, Color.yellow, 2f);
       //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
-      if (!CheckUP() && GameManager.Instance.ChunkController.ChunkData.GetCellFill(upCellCoords.X, upCellCoords.Y) == 0) {
+      if (!CheckUP() && gameManager.ChunkController.ChunkData.GetCellFill(upCellCoords.X, upCellCoords.Y) == 0) {
         Jump();
       }
       else if (obstacle != null) {
@@ -178,11 +179,11 @@ namespace NPCMovement
     }
 
     private CellObject GetCellObject(int x, int y) {
-      return GameManager.Instance.ChunkController.GetCell(x, y);
+      return gameManager.ChunkController.GetCell(x, y);
     }
 
     private BuildingDataObject GetBuildingDataObject(int x, int y) {
-      return GameManager.Instance.ChunkController.GetBuildingData(x, y);
+      return gameManager.ChunkController.GetBuildingData(x, y);
     }
     //need for zombie can jump from head of other zombie
     private bool CheckDown() {
@@ -231,9 +232,8 @@ namespace NPCMovement
       SetAnimVelocityX(rb.linearVelocity.x);
     }
     
-    //attack only when target player
     public void AttackPlayer() {
-      actor?.TriggerAttack(GameManager.Instance.CurrPlayerController.Actor);
+      actor?.TriggerAttack(gameManager.CurrPlayerController.Actor);
     }
 
     public void AttackCell(IDamageable cell) {

@@ -38,7 +38,7 @@ namespace Player {
     protected bool firstAttack;
     public PlayerStats PlayerStats => playerStats ??= GameManager.Instance.CurrPlayerController.PlayerStats;
 
-    public bool shouldBeDamaging { get; private set; } = false;
+    //public bool shouldBeDamaging { get; private set; } = false;
 
     protected virtual void Awake() {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
@@ -155,10 +155,10 @@ namespace Player {
     }
 
     private void Attack() {
-      shouldBeDamaging = true;
+      //shouldBeDamaging = true;
       SetTargetsFromHighlight();
       foreach (var target in targets) {
-        if (target == null || target.hasTakenDamage) continue;
+        if (target == null /*|| target.hasTakenDamage*/) continue;
         var damage = target.DamageableType == DamageableType.Enemy ? playerStats.EntityDamage : playerStats.BlockDamage;
         target.Damage(damage, true);
         iDamageables.Add(target);
@@ -186,16 +186,16 @@ namespace Player {
     }
 
     private void ReturnAttackableToDamageable() {
-      foreach (IDamageable damaged in iDamageables) {
+      /*foreach (IDamageable damaged in iDamageables) {
         damaged.hasTakenDamage = false;
-      }
+      }*/
 
       iDamageables.Clear();
     }
 
-    private void ShouldBeDamagingToFalse() {
+    /*private void ShouldBeDamagingToFalse() {
       shouldBeDamaging = false;
-    }
+    }*/
 
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
       if (go != gameObject) {
@@ -217,7 +217,7 @@ namespace Player {
     private void HandleAnimationEnded(AnimationEvent animationEvent, GameObject go) {
       if (go != gameObject)
         return;
-      ShouldBeDamagingToFalse();
+      //ShouldBeDamagingToFalse();
       DestroyTarget();
     }
 

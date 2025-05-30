@@ -193,7 +193,8 @@ namespace Actors {
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
       if (go != gameObject)
         return;
-      StartCoroutine(DamageWhileSlashIsActive());
+      //StartCoroutine(DamageWhileSlashIsActive());
+      Attack();
       // Debug.Log("Attack started");
       currentTarget?.AfterDamageReceived();
     }
@@ -234,9 +235,9 @@ namespace Actors {
     }
 
     private void ReturnAttackablesToDamageable() {
-      foreach (IDamageable damaged in iDamageables) {
+      /*foreach (IDamageable damaged in iDamageables) {
         damaged.hasTakenDamage = false;
-      }
+      }*/
 
       iDamageables.Clear();
     }
@@ -246,7 +247,7 @@ namespace Actors {
     }
 
     private void Attack() {
-      if (currentTarget == null || currentTarget.hasTakenDamage || currentTarget.GetHealth() <= 0) {
+      if (currentTarget == null || /*currentTarget.hasTakenDamage ||*/ currentTarget.GetHealth() <= 0) {
         return;
       }
 

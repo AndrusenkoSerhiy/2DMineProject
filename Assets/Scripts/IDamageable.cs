@@ -11,7 +11,7 @@ public enum DamageableType {
 public interface IDamageable {
   public DamageableType DamageableType { get; set; }
   public AudioData OnTakeDamageAudioData { get; set; }
-  public bool hasTakenDamage { get; set; }
+  //public bool hasTakenDamage { get; set; }
 
   public void Damage(float damage, bool isPlayer);
 

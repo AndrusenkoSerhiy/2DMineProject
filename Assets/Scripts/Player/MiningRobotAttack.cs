@@ -28,13 +28,13 @@ namespace Player {
       if (direction.y > 6f) {
         lookDirection = 1;
         
-        if (Mathf.Abs(direction.x) > 1.5f) {
+        if (Mathf.Abs(direction.x) > 2.5f) {
           lookDirection = 2;
         }
       }
       else if (direction.y < .3f) {
         lookDirection = -1;
-        if (Mathf.Abs(direction.x) > 1.5f) {
+        if (Mathf.Abs(direction.x) > 2.5f) {
           lookDirection = -2;
         }
       }

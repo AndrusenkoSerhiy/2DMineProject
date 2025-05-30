@@ -1,32 +1,52 @@
 ﻿using System;
-using System.Globalization;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Analytics {
+  [Serializable]
+  public class TimelineEvent {
+    public string player_id;
+    public string session_id;
+    public int play_time_seconds;
+    public int idle_time_seconds;
+    public int menu_time_seconds;
+  }
+
+  [Serializable]
+  public class GameEvent {
+    public string player_id;
+    public string session_id;
+    public string event_name;
+    public string metadata;
+  }
+
   [DefaultExecutionOrder(-2)]
   public class AnalyticsManager : MonoBehaviour {
     public static AnalyticsManager Instance;
 
-    [Header("Matomo Config")] [SerializeField]
-    private string matomoUrl = "https://matomo.olehm.site/matomo.php";
-
-    [SerializeField] private string siteUrl = "https://rockstoolshordes.com/";
-
-    [SerializeField] private int siteId = 1;
+    [Header("PostgREST Config")] [SerializeField]
+    private string postgrestUrl = "https://postgrest.olehm.site";
 
     [Header("Options")] [SerializeField] private bool analyticsEnabled = true;
     [SerializeField] private bool onlyInBuild = true;
     [SerializeField] private AnalyticsEvent analyticsEvent;
+    [SerializeField] private int sendPlayTimeInterval = 5;
 
     private string playerId;
+    private string sessionId;
     private float gameTime = 0f;
     private float idleTime = 0f;
     private float menuTime = 0f;
 
     private float idleThreshold = 5f;
     private float lastInputTime;
+
+    private bool timelineSent = false;
+
+    private string token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoibmV1cmFsbW9ua2V5c191c2VyIn0.2ny64uTqnmdY8QHWFfvVt5X9XELn-f-80SW8YD-GOPc";
 
     private void Awake() {
       if (Instance) {
@@ -37,7 +57,7 @@ namespace Analytics {
       Instance = this;
       DontDestroyOnLoad(gameObject);
 
-      // Завантажити/створити playerId
+      // Створення або завантаження playerId
       if (!PlayerPrefs.HasKey("player_id")) {
         var newId = Guid.NewGuid().ToString("N");
         PlayerPrefs.SetString("player_id", newId);
@@ -45,8 +65,8 @@ namespace Analytics {
       }
 
       playerId = PlayerPrefs.GetString("player_id");
+      sessionId = Guid.NewGuid().ToString("N");
 
-      // ✅ Вимкнути аналітику, якщо тільки для білда і ми в редакторі
 #if UNITY_EDITOR
       if (onlyInBuild) {
         analyticsEnabled = false;
@@ -56,6 +76,17 @@ namespace Analytics {
 
     private void Start() {
       lastInputTime = Time.time;
+
+      if (analyticsEnabled) {
+        StartCoroutine(TimelineUpdateCoroutine());
+      }
+    }
+
+    private IEnumerator TimelineUpdateCoroutine() {
+      while (true) {
+        yield return new WaitForSeconds(sendPlayTimeInterval);
+        _ = SendTimelineEvent(gameTime, idleTime, menuTime);
+      }
     }
 
     private void Update() {
@@ -75,59 +106,102 @@ namespace Analytics {
     }
 
     public async Task SendBasicStatsAsync() {
-      await LogCustomEvent("GameTime(m)", "GameTime", "Playtime", (gameTime / 60));
-      await LogCustomEvent("GameTime(m)", "IdleTime", "Idle", (idleTime / 60));
-      await LogCustomEvent("GameTime(m)", "MenuTime", "Menu", (menuTime / 60));
-    }
-
-    public async Task LogCustomEvent(string category, string action, string eventName, double value = 0) {
-      if (!analyticsEnabled || string.IsNullOrEmpty(matomoUrl)) {
-        return;
-      }
-
-#if UNITY_EDITOR
-      if (onlyInBuild) {
-        return;
-      }
-#endif
-
-      var url = $"{matomoUrl}?idsite={siteId}&rec=1" +
-                $"&uid={playerId}" +
-                $"&_id={playerId.Substring(0, 16)}" +
-                "&apiv=1" +
-                "&bots=1" +
-                $"&url={siteUrl}" +
-                $"&e_c={UnityWebRequest.EscapeURL(category)}" +
-                $"&e_a={UnityWebRequest.EscapeURL(action)}" +
-                $"&e_n={UnityWebRequest.EscapeURL(eventName)}" +
-                $"&e_v={value.ToString("F2", CultureInfo.InvariantCulture)}" +
-                $"&rand={UnityEngine.Random.Range(0, 999999)}";
-
-      using var request = UnityWebRequest.Get(url);
-      var op = request.SendWebRequest();
-      while (!op.isDone) {
-        await Task.Yield();
-      }
-
-      if (request.result != UnityWebRequest.Result.Success) {
-        Debug.LogError("Matomo analytics failed: " + request.error);
-      }
+      await SendTimelineEvent(gameTime, idleTime, menuTime);
     }
 
     public void LogItemCrafted(string item, int count) {
-      LogCustomEvent("Items", analyticsEvent.ItemCrafted, item, count);
+      SendGameEvent(analyticsEvent.ItemCrafted, $"{item}, {count}");
     }
 
     public void LogStationPlaced(string stationName) {
-      LogCustomEvent("Stations", analyticsEvent.StationPlaced, stationName);
+      SendGameEvent(analyticsEvent.StationPlaced, stationName);
     }
 
     public void LogPlayerDied() {
-      LogCustomEvent("Player", analyticsEvent.PlayerDied, analyticsEvent.PlayerDied);
+      SendGameEvent(analyticsEvent.PlayerDied);
     }
 
     public void LogRobotRepaired(string robot, float repairValue) {
-      LogCustomEvent("Robots", analyticsEvent.RobotRepaired, robot, repairValue);
+      SendGameEvent(analyticsEvent.RobotRepaired, $"{robot}, {repairValue}");
+    }
+
+    private async Task SendGameEvent(string eventName, string metadata = null) {
+      if (!analyticsEnabled || string.IsNullOrEmpty(postgrestUrl)) {
+        return;
+      }
+
+      try {
+        var ev = new GameEvent {
+          player_id = playerId,
+          session_id = sessionId,
+          event_name = eventName,
+          metadata = metadata
+        };
+
+        var json = JsonUtility.ToJson(ev);
+        var request = new UnityWebRequest($"{postgrestUrl}/game_events", "POST");
+        var bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Authorization", "Bearer " + token);
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        var op = request.SendWebRequest();
+        while (!op.isDone) {
+          await Task.Yield();
+        }
+
+        if (request.result != UnityWebRequest.Result.Success) {
+          Debug.LogWarning("PostgREST error (game_event): " + request.error);
+        }
+      }
+      catch (Exception ex) {
+        Debug.LogException(ex);
+      }
+    }
+
+    private async Task SendTimelineEvent(float playTime, float idle, float menu) {
+      if (!analyticsEnabled || string.IsNullOrEmpty(postgrestUrl)) {
+        return;
+      }
+
+      try {
+        var ev = new TimelineEvent {
+          player_id = playerId,
+          session_id = sessionId,
+          play_time_seconds = Mathf.RoundToInt(playTime),
+          idle_time_seconds = Mathf.RoundToInt(idle),
+          menu_time_seconds = Mathf.RoundToInt(menu)
+        };
+
+        var json = JsonUtility.ToJson(ev);
+        UnityWebRequest request;
+
+        request = !timelineSent
+          ? new UnityWebRequest($"{postgrestUrl}/time_events", "POST")
+          : new UnityWebRequest($"{postgrestUrl}/time_events?session_id=eq.{sessionId}", "PATCH");
+
+        var bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Authorization", "Bearer " + token);
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        var op = request.SendWebRequest();
+        while (!op.isDone) {
+          await Task.Yield();
+        }
+
+        if (request.result != UnityWebRequest.Result.Success) {
+          Debug.LogWarning("PostgREST error (timeline): " + request.error);
+        }
+        else {
+          timelineSent = true;
+        }
+      }
+      catch (Exception ex) {
+        Debug.LogException(ex);
+      }
     }
   }
 }

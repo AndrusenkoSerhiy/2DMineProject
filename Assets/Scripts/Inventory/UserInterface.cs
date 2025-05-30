@@ -65,9 +65,7 @@ namespace Inventory {
     }
 
     public void Load() {
-      // DisableActions();
       InitInventories();
-      // EnableActions();
     }
 
     public void Clear() {

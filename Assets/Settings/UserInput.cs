@@ -104,7 +104,7 @@ namespace Settings {
     public void ShowCursor(bool state) {
       if (state && _activeGameDevice != GameDevice.KeyboardAndMouse)
         return;
-      
+      //Cursor.lockState = state ? CursorLockMode.Locked : CursorLockMode.None;
       Cursor.visible = state;
     }
 

@@ -7,5 +7,7 @@ namespace Analytics {
     public string RobotRepaired = "Robot Repaired";
     public string ItemCrafted = "Item Crafted";
     public string StationPlaced = "Station Placed";
+    public string UserInfo = "User Info";
+    public string ProfileSelected = "Profile Selected";
   }
 }

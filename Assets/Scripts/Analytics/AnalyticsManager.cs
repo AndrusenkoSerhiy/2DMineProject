@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
+using SaveSystem;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -75,6 +76,8 @@ namespace Analytics {
     }
 
     private void Start() {
+      LogUserInfo();
+
       lastInputTime = Time.time;
 
       if (analyticsEnabled) {
@@ -110,7 +113,7 @@ namespace Analytics {
     }
 
     public void LogItemCrafted(string item, int count) {
-      SendGameEvent(analyticsEvent.ItemCrafted, $"{item}, {count}");
+      //SendGameEvent(analyticsEvent.ItemCrafted, $"{item}, {count}");
     }
 
     public void LogStationPlaced(string stationName) {
@@ -123,6 +126,29 @@ namespace Analytics {
 
     public void LogRobotRepaired(string robot, float repairValue) {
       SendGameEvent(analyticsEvent.RobotRepaired, $"{robot}, {repairValue}");
+    }
+
+    public void LogUserInfo() {
+      SendGameEvent(analyticsEvent.UserInfo, GetSystemInfoText());
+    }
+
+    public void LogProfileInfo(string profileName) {
+      SendGameEvent(analyticsEvent.ProfileSelected, profileName);
+    }
+
+    private string GetSystemInfoText() {
+      const string newline = "\n";
+      return
+        $"| os: {SystemInfo.operatingSystem}{newline} | " +
+        $"platform: {Application.platform}{newline} | " +
+        $"device_model: {SystemInfo.deviceModel}{newline} | " +
+        $"cpu: {SystemInfo.processorType}{newline} | " +
+        $"gpu: {SystemInfo.graphicsDeviceName}{newline} | " +
+        $"ram_mb: {SystemInfo.systemMemorySize}{newline} | " +
+        $"gpu_ram_mb: {SystemInfo.graphicsMemorySize}{newline} | " +
+        $"screen_res: {Screen.width}x{Screen.height}{newline} | " +
+        $"language: {Application.systemLanguage}{newline} | " +
+        $"game_version: {Application.version} |";
     }
 
     private async Task SendGameEvent(string eventName, string metadata = null) {

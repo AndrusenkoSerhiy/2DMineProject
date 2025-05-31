@@ -86,7 +86,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -120,10 +120,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 4141543556025107183}
-  isDead: 0
   rigidbody: {fileID: 8148056154536312960}
   capsuleCollider: {fileID: 8141082641052085697}
-  _hasTakenDamage: 0
   npcMovement: {fileID: 6852139997247226084}
   coords: {fileID: 4278888900822443520}
   layerAfterDeath:
@@ -133,6 +131,12 @@ MonoBehaviour:
   difficulty: {fileID: 0}
   destroyAfterDeath: 1
   destroyAfter: 5
+  excludeLayerOnDeath:
+    serializedVersion: 2
+    m_Bits: 1089
+  excludeLayerOnAlive:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!61 &5323630564359519687
 BoxCollider2D:
   m_ObjectHideFlags: 0

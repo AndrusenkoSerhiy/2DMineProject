@@ -5,10 +5,12 @@ using Animation;
 using Audio;
 using Enemy;
 using NodeCanvas.BehaviourTrees;
+using ParadoxNotion;
 using Scriptables;
 using Scriptables.Siege;
 using Stats;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -20,7 +22,6 @@ namespace Actors {
 
     [SerializeField] private NPCMovement.NPCMovement npcMovement;
     [SerializeField] private EnemyCoords coords;
-    [SerializeField] private LayerMask layerAfterDeath;
     [SerializeField] private BehaviourTreeOwner behaviourTreeOwner;
 
     [SerializeField] private ZombieDifficultyProfile difficulty;
@@ -29,6 +30,9 @@ namespace Actors {
     private bool destroyAfterDeath;
 
     [SerializeField] private float destroyAfter = 5f;
+    [SerializeField] private LayerMask excludeLayerOnDeath;
+    [SerializeField] private LayerMask excludeLayerOnAlive;
+    
     private IEnumerator coroutine;
     public Coords GetCoords => coords.GetCoords();
     public Coords GetCoordsOutOfBounds => coords.GetCoordsOutOfBounds();
@@ -41,8 +45,13 @@ namespace Actors {
     private float groanInterval = 0f;
     private float timeSinceGroan = 0f;
     private bool paused;
+    private bool isDead;
 
     private void Update() {
+      if (isDead) {
+        rigidbody.linearVelocity = new Vector3(0, rigidbody.linearVelocity.y, 0);  
+      }
+      
       if (!groanAudioData || paused || IsDead) {
         return;
       }
@@ -222,18 +231,6 @@ namespace Actors {
       currentTarget = null;
     }
 
-    public IEnumerator DamageWhileSlashIsActive() {
-      shouldBeDamaging = true;
-
-      while (shouldBeDamaging) {
-        Attack();
-
-        yield return null;
-      }
-
-      ReturnAttackablesToDamageable();
-    }
-
     private void ReturnAttackablesToDamageable() {
       /*foreach (IDamageable damaged in iDamageables) {
         damaged.hasTakenDamage = false;
@@ -263,16 +260,14 @@ namespace Actors {
     public override void Damage(float damage, bool isPlayer) {
       DamageAudio();
       base.Damage(damage, isPlayer);
-      if (stats.Health > 0)
+      if (isDead)//(stats.Health > 0)
         return;
-      //work only 1 layer selected in inspector
-      var layerIndex = Mathf.RoundToInt(Mathf.Log(layerAfterDeath.value, 2));
-
-      gameObject.layer = layerIndex;
-      Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Character"), layerIndex);
+      isDead = true;
+      rigidbody.excludeLayers = excludeLayerOnDeath;
     }
 
     protected override void DeathActions() {
+      //Debug.LogError($"Death actions");
       base.DeathActions();
       DeathAudio();
       OnEnemyDied?.Invoke();
@@ -284,6 +279,7 @@ namespace Actors {
     private void DestroyAfterDeath() {
       if (!destroyAfterDeath)
         return;
+      //Debug.LogError("destroy after death");
       coroutine = WaitDestroy();
       StartCoroutine(coroutine);
     }
@@ -297,12 +293,10 @@ namespace Actors {
 
     public override void Respawn() {
       base.Respawn();
+      isDead = false;
       _animator.Rebind();
       _animator.Update(0f);
-
-      var layerIndex = Mathf.RoundToInt(Mathf.Log(layerAfterDeath.value, 2));
-      gameObject.layer = LayerMask.NameToLayer("Enemies");
-      Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Character"), layerIndex, false);
+      rigidbody.excludeLayers = excludeLayerOnAlive;
     }
 
     private void SpawnDrop() {

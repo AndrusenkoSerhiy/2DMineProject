@@ -122,6 +122,7 @@ MonoBehaviour:
   interactEnterName: sit in robot
   interactExitName: exit from robot
   playerTransform: {fileID: 2018962168670391672}
+  positionForPlayer: {x: -0.06, y: 0.16, z: 0}
   exitTransforms:
   - {fileID: 4071054159070599446}
   - {fileID: 5602485324963326271}
@@ -754,7 +755,6 @@ MonoBehaviour:
   stamina: {fileID: 6340536068884831584}
   grounded: 1
   startFalling: 0
-  skeletonMecanim: {fileID: 7099317164211854518}
   robotObject: {fileID: 11400000, guid: 20225897ed2c2124989043907a9eb6c9, type: 2}
   miningRobotAttack: {fileID: 858450107997457076}
 --- !u!70 &4114749698386090115
@@ -887,10 +887,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 8612669857292059665}
-  isDead: 0
   rigidbody: {fileID: 6949316742863476391}
   capsuleCollider: {fileID: 4114749698386090115}
-  _hasTakenDamage: 0
   robotObject: {fileID: 11400000, guid: 20225897ed2c2124989043907a9eb6c9, type: 2}
 --- !u!114 &2341544127072019824
 MonoBehaviour:

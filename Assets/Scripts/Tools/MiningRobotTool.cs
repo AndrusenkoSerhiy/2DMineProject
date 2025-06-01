@@ -19,12 +19,11 @@ namespace Tools {
     [SerializeField] private string interactEnterName;
     [SerializeField] private string interactExitName;
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private Vector3 positionForPlayer;
     [SerializeField] private List<Transform> exitTransforms;
     [SerializeField] private string holdInteractText;
 
     [SerializeField] private RobotObject robotObject;
-    //[SerializeField] private SpriteRenderer robotImage;
-    //[SerializeField] private SpriteRenderer brokenRobotImage;
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerStats stats;
     [SerializeField] private PlaceCellRobot placeCellRobot;
@@ -40,11 +39,7 @@ namespace Tools {
     private bool isAttackMode = true;
     private string buttonName;
     private string changeBlockButtonName;
-
-    //use for interact
-    //[SerializeField] private bool isPlayerInside;
     private RobotData robotLoadData;
-
     private GameManager gameManager;
     private PlayerController playerController;
     private MiningRobotController miningRobotController;
@@ -57,7 +52,7 @@ namespace Tools {
     //use after save load and we in the robot
     private bool needActivateItem = true;
     private int repairValue;
-    //use for 
+    
     [SerializeField] private bool playerInRobot;
     private ChunkController chunkController;
 
@@ -88,7 +83,6 @@ namespace Tools {
 
     private void Init() {
       broken = IsBroken();
-      //CheckRobotRepaired();
 
       playerController = gameManager.PlayerController;
       miningRobotController = gameManager.MiningRobotController;
@@ -188,7 +182,6 @@ namespace Tools {
       }
 
       animator.SetBool("IsBroken", broken);
-      //CheckRobotRepaired();
     }
 
     public bool Interact(PlayerInteractor playerInteractor) {
@@ -233,7 +226,7 @@ namespace Tools {
       miningRobotController.SetLockHighlight(false);
       EnablePhysics(true);
 
-      SetPlayerPosition(playerTransform, new Vector3( 0.212f, 0.327f, 0), new Vector3(0, 0, -92));
+      SetPlayerPosition(playerTransform, positionForPlayer, new Vector3(0, 0, -92));
       GameManager.Instance.CurrPlayerController = miningRobotController;
 
       playerController.ResetLocalScale();

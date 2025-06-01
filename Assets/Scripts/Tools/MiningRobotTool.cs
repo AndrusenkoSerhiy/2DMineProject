@@ -115,7 +115,7 @@ namespace Tools {
       MenuController.OnExitToMainMenu += ExitToMainMenu;
 
       if (SaveLoadSystem.Instance.IsNewGame()) {
-        GameManager.Instance.Locator.SetTarget(transform.position, id);
+        gameManager.Locator.SetTarget(transform.position, id);
       }
     }
 
@@ -218,6 +218,7 @@ namespace Tools {
     }
 
     private void SitOnRobot() {
+      gameManager.Locator.RemoveTarget(id);
       LockCells(false);
       ActorRobot.OnRobotBroked += ExitFromRobot;
       OnPlayerEnteredRobot?.Invoke();
@@ -302,6 +303,7 @@ namespace Tools {
     }
 
     private void ExitFromRobot() {
+      gameManager.Locator.SetTarget(transform.position, id);
       ActorRobot.OnRobotBroked -= ExitFromRobot;
       SetPlayerPosition(null, exitTransforms[0].position, Vector3.zero);
 

@@ -16,11 +16,18 @@ namespace Player {
     }
 
     protected override void PressAttack(object sender, EventArgs e) {
+      if(!enabled)
+        return;
+      
+      Debug.LogError("PressAttack");
       base.PressAttack(sender, e);
       audioController.PlayAudio(drillSound);
     }
 
     protected override void CancelAttack(object sender, EventArgs e) {
+      if(!enabled)
+        return;
+      
       base.CancelAttack(sender, e);
       audioController.StopAudio(drillSound);
       audioController.PlayAudio(drillEndSound);

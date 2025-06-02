@@ -16,7 +16,7 @@ MonoBehaviour:
     Duration: {x: 15, y: 15}
     ZombieCount: {x: 2, y: 3}
     WavesOfZombies: {x: 1, y: 2}
-    TimeBeforeSiege: {x: 30, y: 30}
+    TimeBeforeSiege: {x: 125, y: 125}
   RandomSiegeTemplate:
     Duration: {x: 15, y: 15}
     ZombieCount: {x: 1, y: 2}
@@ -28,3 +28,10 @@ MonoBehaviour:
     WavesOfZombies: {x: 2, y: 4}
     TimeBeforeSiege: {x: 5, y: 10}
   SiegesCount: {x: 1, y: 2}
+  PreSiegeNotifications:
+  - SecondsBeforeStart: 60
+    Message: Siege will start in 1 minute.
+  - SecondsBeforeStart: 120
+    Message: Siege will start in 2 minutes.
+  - SecondsBeforeStart: 300
+    Message: Siege will start in 5 minutes.

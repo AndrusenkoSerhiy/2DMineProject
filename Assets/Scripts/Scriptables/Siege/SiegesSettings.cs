@@ -1,4 +1,5 @@
-﻿using Siege;
+﻿using System.Collections.Generic;
+using Siege;
 using UnityEngine;
 
 namespace Scriptables.Siege {
@@ -8,5 +9,7 @@ namespace Scriptables.Siege {
     public SiegeTemplate RandomSiegeTemplate;
     public SiegeTemplate FinalSiege;
     public Vector2 SiegesCount;
+
+    public List<SiegeNotification> PreSiegeNotifications = new();
   }
 }

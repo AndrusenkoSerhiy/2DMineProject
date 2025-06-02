@@ -59,11 +59,11 @@ namespace Player {
       GameManager.Instance.UserInput.OnAttackCanceled += CancelAttack;
     }
 
-    private void PressAttack(object sender, EventArgs e) {
+    protected virtual void PressAttack(object sender, EventArgs e) {
       animator.SetBool(animParam.IsAttacking, true);
     }
 
-    protected void CancelAttack(object sender, EventArgs e) {
+    protected virtual void CancelAttack(object sender, EventArgs e) {
       animator.SetBool(animParam.IsAttacking, false);
       firstAttack = false;
     }

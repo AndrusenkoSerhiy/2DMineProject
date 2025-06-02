@@ -140,6 +140,9 @@ MonoBehaviour:
   robotCoordsOutOfBounds:
     X: 0
     Y: 0
+  brokenInteract: {fileID: 11400000, guid: 60fbbc600c3618843862bcad35a0b7bd, type: 2}
+  robotBreak: {fileID: 11400000, guid: b57c565b42ceba84ab113ba34e8f29ba, type: 2}
+  robotRepair: {fileID: 11400000, guid: 5c72c61da5311794ca690dee602e485e, type: 2}
   playerInRobot: 0
   lockedCells: 00000000
 --- !u!1 &3402669225382664824
@@ -844,6 +847,8 @@ MonoBehaviour:
   isHighlightLock: 0
   originalSize: {x: 0, y: 0}
   lookDirection: 0
+  drillSound: {fileID: 11400000, guid: bdb8ff6ad323b8d4e937f4142453b07a, type: 2}
+  drillEndSound: {fileID: 11400000, guid: 9fce35e046a7f4e4cb6f6ab717b3a98d, type: 2}
 --- !u!114 &7553158782713885977
 MonoBehaviour:
   m_ObjectHideFlags: 0

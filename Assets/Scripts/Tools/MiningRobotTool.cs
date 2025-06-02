@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using Actors;
 using Analytics;
 using Animation;
+using Audio;
 using Interaction;
 using Inventory;
 using Menu;
 using Player;
 using SaveSystem;
+using Scriptables;
 using Scriptables.Repair;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -36,6 +38,11 @@ namespace Tools {
     [SerializeField] private InteractionPrompt changeBlockTypePrompt;
     [SerializeField] private string changeBlockActionName;
     [SerializeField] private Coords robotCoordsOutOfBounds;
+    [SerializeField] private AudioData brokenInteract;
+    [SerializeField] private AudioData robotBreak;
+    [SerializeField] private AudioData robotRepair;
+    private AudioController audioController;
+    
     private bool isAttackMode = true;
     private string buttonName;
     private string changeBlockButtonName;
@@ -71,6 +78,7 @@ namespace Tools {
       SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
       id = robotObject.Id;
+      audioController = GameManager.Instance.AudioController;
     }
 
     private void Start() {
@@ -88,7 +96,9 @@ namespace Tools {
       miningRobotController = gameManager.MiningRobotController;
       playerInventory = gameManager.PlayerInventory;
       animator.SetBool("IsBroken", broken);
-      if(broken) animator.SetTrigger("Die");
+      if (broken) {
+        animator.SetTrigger("Die");
+      }
       stats.OnAddHealth += OnAddHealthHandler;
 
       UpdateRobotPosition();
@@ -182,10 +192,12 @@ namespace Tools {
       }
 
       animator.SetBool("IsBroken", broken);
+      if(broken) audioController.PlayAudio(robotBreak, transform.position);
     }
 
     public bool Interact(PlayerInteractor playerInteractor) {
       if (broken) {
+        audioController.PlayAudio(brokenInteract, transform.position);
         GameManager.Instance.MessagesManager.ShowSimpleMessage("Robot is broken.");
         return true;
       }
@@ -406,6 +418,7 @@ namespace Tools {
         AnimationEventManager.onRobotRepaired += RobotRepaired;
         animator.SetBool("IsBroken", false);
         animator.SetTrigger("Repair");
+        audioController.PlayAudio(robotRepair, transform.position);
       }
       else {
         stats.AddHealth(repairValue);

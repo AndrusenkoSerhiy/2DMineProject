@@ -1,11 +1,29 @@
+using System;
+using Audio;
+using Scriptables;
 using UnityEngine;
 
 namespace Player {
   public class MiningRobotAttack : BaseAttack {
+    private AudioController audioController;
     private bool lockAttack;
+    [SerializeField] private AudioData drillSound;
+    [SerializeField] private AudioData drillEndSound;
     protected override void Awake() {
       base.Awake();
       LockHighlight(true);
+      audioController = GameManager.Instance.AudioController;
+    }
+
+    protected override void PressAttack(object sender, EventArgs e) {
+      base.PressAttack(sender, e);
+      audioController.PlayAudio(drillSound);
+    }
+
+    protected override void CancelAttack(object sender, EventArgs e) {
+      base.CancelAttack(sender, e);
+      audioController.StopAudio(drillSound);
+      audioController.PlayAudio(drillEndSound);
     }
 
     protected override void TriggerAttack() {
@@ -15,6 +33,7 @@ namespace Player {
       base.TriggerAttack();
       if (!firstAttack) {
         firstAttack = true;
+        audioController.PlayAudio(drillSound, transform.position);
         animator.SetTrigger("Attack");
         animator.SetInteger("WeaponID", attackID);
       }

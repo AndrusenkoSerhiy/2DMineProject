@@ -231,14 +231,6 @@ namespace Actors {
       currentTarget = null;
     }
 
-    private void ReturnAttackablesToDamageable() {
-      /*foreach (IDamageable damaged in iDamageables) {
-        damaged.hasTakenDamage = false;
-      }*/
-
-      iDamageables.Clear();
-    }
-
     public void ShouldBeDamagingToFalse() {
       shouldBeDamaging = false;
     }
@@ -260,8 +252,12 @@ namespace Actors {
     public override void Damage(float damage, bool isPlayer) {
       DamageAudio();
       base.Damage(damage, isPlayer);
+      if (stats.Health > 0)
+        return;
+      
       if (isDead)//(stats.Health > 0)
         return;
+      
       isDead = true;
       rigidbody.excludeLayers = excludeLayerOnDeath;
     }

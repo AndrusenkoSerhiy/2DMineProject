@@ -46,6 +46,14 @@ namespace Siege {
     private Coroutine activeSiegeCoroutine;
     private AudioController audioController;
 
+    private class PendingNotification {
+      public float TriggerTime;
+      public string Message;
+      public bool Triggered;
+    }
+
+    private readonly List<PendingNotification> pendingNotifications = new();
+
     private void Start() {
       SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
@@ -127,7 +135,7 @@ namespace Siege {
       if (siegesStarted) {
         return;
       }
-      
+
       siegeQueue.Clear();
       siegeQueue.Add(GetActiveTemplate(siegesSettings.FirstSiege));
 
@@ -185,6 +193,17 @@ namespace Siege {
 
       currentSiege = siegeQueue[currentSiegeIndex];
       var waitTime = currentSiege.TimeBeforeSiege;
+      pendingNotifications.Clear();
+
+      foreach (var notif in siegesSettings.PreSiegeNotifications) {
+        if (notif.SecondsBeforeStart < waitTime) {
+          pendingNotifications.Add(new PendingNotification {
+            TriggerTime = notif.SecondsBeforeStart,
+            Message = notif.Message,
+            Triggered = false
+          });
+        }
+      }
 
       while (waitTime > 0f) {
         if (!isPaused) {
@@ -192,10 +211,18 @@ namespace Siege {
           waitTime -= delta;
           timeToNextSegment = Mathf.Max(waitTime, 0f);
           siegeCycleElapsedTime += delta;
+
+          foreach (var notif in pendingNotifications) {
+            if (!notif.Triggered && waitTime <= notif.TriggerTime) {
+              notif.Triggered = true;
+              gameManager.MessagesManager.ShowSimpleMessage(notif.Message);
+            }
+          }
         }
 
         yield return null;
       }
+
 
       StartSiege();
 
@@ -298,7 +325,7 @@ namespace Siege {
       if (activeSiegeCoroutine == null) {
         StopCoroutine(activeSiegeCoroutine);
       }
-      
+
       EndSiege();
       currentSiegeIndex++;
       activeSiegeCoroutine = StartCoroutine(RunNextSiege());

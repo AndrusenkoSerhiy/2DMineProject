@@ -1,6 +1,7 @@
 using System;
 using Analytics;
 using SaveSystem;
+using UnityEngine;
 
 namespace Actors {
   public class ActorPlayer : ActorBase, ISaveLoad {
@@ -48,7 +49,7 @@ namespace Actors {
 
       base.Damage(damage, isPlayer);
 
-      if (stats.Health <= 0) {
+      if (stats.Health <= 0 && !IsDead) {
         OnPlayerDeath?.Invoke();
         AnalyticsManager.Instance.LogPlayerDied();
       }

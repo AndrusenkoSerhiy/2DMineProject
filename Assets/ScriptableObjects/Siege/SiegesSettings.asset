@@ -28,3 +28,8 @@ MonoBehaviour:
     WavesOfZombies: {x: 90, y: 90}
     TimeBeforeSiege: {x: 2200, y: 2400}
   SiegesCount: {x: 3, y: 4}
+  PreSiegeNotifications:
+  - SecondsBeforeStart: 60
+    Message: Siege will start in 1 minute.
+  - SecondsBeforeStart: 300
+    Message: Siege will start in 5 minutes.

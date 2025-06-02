@@ -19,7 +19,7 @@ namespace Menu {
     public event Action<int> OnProfileSelected;
     public event Action OnProfileDeleted;
 
-    private static readonly Regex allowedCharacters = new(@"[^a-zA-Z0-9 _\-]");
+    private static readonly Regex allowedCharacters = new(@"[^a-zA-Z0-9_\-]");
     private int profileId = 0;
     private string profileName = string.Empty;
     private bool active;

@@ -1,4 +1,5 @@
-﻿using Scriptables.Items;
+﻿using Craft;
+using Scriptables.Items;
 using UnityEngine;
 using World;
 
@@ -61,6 +62,10 @@ namespace Tools {
       }
 
       if (target.DamageableType is DamageableType.Player or DamageableType.Robot) {
+        return;
+      }
+      
+      if (target.DamageableType is DamageableType.Door && !target.CanGetDamage) {
         return;
       }
 

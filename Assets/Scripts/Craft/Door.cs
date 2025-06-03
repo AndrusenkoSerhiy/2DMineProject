@@ -22,12 +22,11 @@ namespace Craft {
     public string InteractionText => IsOpened ? interactCloseText : interactOpenText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
-
-    public bool hasTakenDamage {
-      get { return unitHealth.hasTakenDamage; }
-      set { unitHealth.hasTakenDamage = value; }
-    }
+    public bool IsOpen => IsOpened;
+    
     private void Start() {
+      DamageableType = DamageableType.Door;
+      CanGetDamage = true;
       InitUnitHealth();
     }
     
@@ -38,12 +37,14 @@ namespace Craft {
     public bool Interact(PlayerInteractor playerInteractor) {
       if (IsOpened) {
         animator.SetBool("IsOpened", false);
+        CanGetDamage = true;
         IsOpened = false;
         boxCollider.enabled = true;
         GameManager.Instance.AudioController.PlayAudio(closeDoorAudioData);
       }
       else {
         animator.SetBool("IsOpened", true);
+        CanGetDamage = false;
         IsOpened = true;
         boxCollider.enabled = false;
         GameManager.Instance.AudioController.PlayAudio(openDoorAudioData);
@@ -59,6 +60,8 @@ namespace Craft {
 
     public DamageableType DamageableType { get; set; }
     public AudioData OnTakeDamageAudioData { get; set; }
+    public bool CanGetDamage { get; set; }
+
     public void Damage(float damage, bool isPlayer) {
       unitHealth.TakeDamage(damage, isPlayer);
       if (GetHealth() <= 0) {

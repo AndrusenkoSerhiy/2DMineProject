@@ -28,6 +28,7 @@ namespace Audio {
     [SerializeField] private AudioData playerRightStep;
     [SerializeField] private List<AudioData> playerDamaged;
     [SerializeField] private AudioData playerDeath;
+    [SerializeField] private AudioData robotStep;
 
     public async Task PreloadAsync(AudioData audioData) {
       await soundPooler.PreloadAudioAsync(audioData, GetRootTransform(audioData.type));
@@ -99,11 +100,21 @@ namespace Audio {
     public AudioEmmiter PlayPlayerJumpLanding() => PlayAudio(playerJumpLanding);
 
     public void PlayPlayerLeftStep() {
-      if (!GameManager.Instance.PlayerController.Grounded) {
+      if (!GameManager.Instance.PlayerController.enabled ||
+          !GameManager.Instance.PlayerController.Grounded) {
         return;
       }
 
       PlayAudio(playerLeftStep);
+    }
+    
+    public void PlayRobotStep() {
+      if (!GameManager.Instance.MiningRobotController.enabled || 
+          !GameManager.Instance.MiningRobotController.Grounded) {
+        return;
+      }
+
+      PlayAudio(robotStep);
     }
 
     public void PlayPlayerRightStep() {

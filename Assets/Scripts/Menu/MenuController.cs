@@ -36,14 +36,16 @@ namespace Menu {
 
     [Header("Profiles")] [SerializeField] private TextMeshProUGUI profileNameText;
     [SerializeField] private Button switchButton;
-
+    
     private GameManager gameManager;
     private SaveLoadSystem saveLoadSystem;
     [SerializeField] private Menu activeMenu = Menu.None;
     private bool locked;
     private bool cancelEnabled;
     public static event Action OnExitToMainMenu;
-    [SerializeField] VideoPlayer videoPlayer;
+    [Header("Cutscene")]
+    [SerializeField] private VideoPlayer videoPlayer;
+    [SerializeField] private GameObject skipPrompt;
     [SerializeField] private bool isNewGame;
     public Menu ActiveMenu => activeMenu;
 
@@ -83,25 +85,44 @@ namespace Menu {
     private async void StartNewGame() {
       gameManager.LockOnNewGame();
       gameManager.UserInput.ShowCursor(false);
-      videoPlayer.loopPointReached += OnVideoEnd;
       videoPlayer.gameObject.SetActive(true);
+      videoPlayer.loopPointReached += OnVideoEnd;
       HideMainMenu();
       HideSwitchProfiles();
       await Task.Yield();
       await Task.Delay(2000);
+      ShowSkip();
       gameManager.StartGameCameraController.SetCameraTarget();
+    }
+
+    private void ShowSkip() {
+      gameManager.UserInput.EnableInteractAction(true);
+      gameManager.UserInput.controls.GamePlay.Interact.performed += StopCutscene;
+      skipPrompt.SetActive(true);
+    }
+    
+    private void HideSkip() {
+      skipPrompt.SetActive(false);
+    }
+
+    private void StopCutscene(InputAction.CallbackContext obj) {
+      videoPlayer.Stop();
+      HideSkip();
+      OnVideoEnd(videoPlayer);
     }
 
     //after cutscene continue to start game
     private void OnVideoEnd(VideoPlayer vp) {
+      gameManager.UserInput.controls.GamePlay.Interact.performed -= StopCutscene;
+      gameManager.UserInput.EnableInteractAction(false);
       videoPlayer.gameObject.SetActive(false);
       //ShowLoading();
-      gameManager.UserInput.ShowCursor(true);
       gameManager.StartGameCameraController.ResetBeforeNewGame();
       gameManager.StartGameCameraController.Play();
       saveLoadSystem.NewGame();
       isNewGame = true;
       Hide();
+      gameManager.UserInput.ShowCursor(true);
       //HideLoading();
     }
 

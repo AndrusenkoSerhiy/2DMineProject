@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Scriptables;
 using Scriptables.Stats;
-using Stats;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,7 +13,6 @@ namespace Settings {
     [HideInInspector] public Controls controls;
 
     private bool attacking;
-    // [SerializeField] private PlayerStats _stats;
     [SerializeField] private PlayerStatsObject statsObject;
     [SerializeField] private VirtualMouseUI _virtualMouse;
     private Dictionary<string, List<string>> blockedActions = new ();
@@ -33,7 +30,6 @@ namespace Settings {
 
       controls.GamePlay.Attack.performed += AttackPerformed;
       controls.GamePlay.Attack.canceled += AttackCanceled;
-      //InputSystem.onActionChange += InputActionChangeCallback;
       SubscribeToChangeInputType();
     }
 
@@ -67,28 +63,11 @@ namespace Settings {
       }
     }
 
-    /*private void InputActionChangeCallback(object arg1, InputActionChange inputActionChange) {
-      if (inputActionChange == InputActionChange.ActionPerformed && arg1 is InputAction) {
-        //
-        InputAction inputAction = arg1 as InputAction;
-        //Debug.LogError($"InputActionChangeCallback {inputAction.activeControl.device.displayName}");
-        if (inputAction.activeControl.device.displayName == "VirtualMouse") {
-          return;
-        }
-
-        if (inputAction.activeControl.device is Gamepad) {
-          //(lastDevice.name.Equals("Keyboard") || lastDevice.name.Equals("Mouse")){//
-          if (_activeGameDevice != GameDevice.Gamepad) {
-            ChangeActiveGameDevice(GameDevice.Gamepad);
-          }
-        }
-        else {
-          if (_activeGameDevice != GameDevice.KeyboardAndMouse) {
-            ChangeActiveGameDevice(GameDevice.KeyboardAndMouse);
-          }
-        }
-      }
-    }*/
+    //use for allow press for skip cutscene
+    public void EnableInteractAction(bool state) {
+      if (state) controls.GamePlay.Interact.Enable();
+      else controls.GamePlay.Interact.Disable();
+    }
 
     private void ChangeActiveGameDevice(GameDevice activeGameDevice) {
       if(_activeGameDevice == activeGameDevice)

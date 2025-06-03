@@ -1,4 +1,6 @@
+using Audio;
 using SaveSystem;
+using Scriptables;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,13 +9,19 @@ namespace Quests {
   public class QuestManager : MonoBehaviour, ISaveLoad {
     [SerializeField] private DialoguePanel dialoguePanel;
     [SerializeField] private GameObject catPrefab;
-
+    [SerializeField] private AudioData appearSound;
+    [SerializeField] private AudioData loopedSound;
+    
     private bool firstQuestCompleted;
     private bool secondQuestCompleted;
     private bool thirdQuestCompleted;
+    private AudioController audioController;
 
     public int Priority => LoadPriority.QUESTS;
 
+    private void Start() {
+      audioController = GameManager.Instance.AudioController;
+    }
     public void StartQuest(int index) {
       if (!CanStartQuest(index)) return;
       GameManager.Instance.UserInput.controls.GamePlay.Interact.performed += StopQuest;
@@ -21,6 +29,9 @@ namespace Quests {
       pos.y += 2.55f;
       pos.x += 4f;
       catPrefab.transform.position = pos;
+      audioController.PlayAudio(appearSound, pos);
+      audioController.PlayAudio(loopedSound, pos);
+      
       catPrefab.SetActive(true);
       TriggerDialogue(index);
       SaveID(index);
@@ -43,6 +54,7 @@ namespace Quests {
       GameManager.Instance.UserInput.controls.GamePlay.Interact.performed -= StopQuest;
       catPrefab.SetActive(false);
       dialoguePanel.HideDialogue();
+      audioController.StopAudio(loopedSound);
     }
 
     private void OnDestroy() {

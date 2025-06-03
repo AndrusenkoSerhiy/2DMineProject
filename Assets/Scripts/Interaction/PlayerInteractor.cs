@@ -133,6 +133,14 @@ namespace Interaction {
       if (!isHolding) {
         return;
       }
+      
+      //skip hold progress if we don't have equipped item
+      if (interactable == null && (playerEquipment.EquippedItem == null ||
+                                   playerEquipment.EquippedItem.Durability.Equals(playerEquipment.EquippedItem
+                                     .MaxDurability))) {
+        CancelHoldProgress();
+        return;
+      }
 
       holdTime += Time.deltaTime;
       holdActionProgressSlider.value = holdTime / requiredHoldDuration;

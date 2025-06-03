@@ -1,4 +1,6 @@
 using System;
+using Audio;
+using Scriptables;
 using UnityEngine;
 
 namespace Tools {
@@ -6,10 +8,14 @@ namespace Tools {
     private static readonly int IsActive = Animator.StringToHash("isActive");
 
     [SerializeField] private Animator animator;
+    [SerializeField] private AudioData drillSound;
+    
     private Vector3 defaultRotation;
-
+    private AudioController audioController;
+    
     private void Awake() {
       animator.enabled = false;
+      audioController = GameManager.Instance.AudioController;
     }
 
     private void Start() {
@@ -24,12 +30,13 @@ namespace Tools {
     }
 
     private void StartDrilling(object sender, EventArgs e) {
+      audioController.PlayAudio(drillSound, transform.position);
       StartAnimation();
     }
 
     private void StopDrilling(object sender, EventArgs e) {
+      audioController.StopAudio(drillSound);
       StopAnimation();
-
       transform.localEulerAngles = defaultRotation;
     }
 

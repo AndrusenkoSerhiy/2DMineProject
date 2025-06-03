@@ -79,7 +79,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3625460618267473847}
   - component: {fileID: 9064497359182062437}
-  - component: {fileID: -6889427705607331626}
   - component: {fileID: 55139054597057927}
   - component: {fileID: 5180316471056181880}
   m_Layer: 3
@@ -120,22 +119,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 1
   interactName: 
-  interactHeader: 
+  holdInteractText: 
   item: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
   isPicked: 0
---- !u!114 &-6889427705607331626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3890226224433729309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f13a5f303d441a1a9d52964d06fd8a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 7591950596701817530}
 --- !u!50 &55139054597057927
 Rigidbody2D:
   serializedVersion: 5

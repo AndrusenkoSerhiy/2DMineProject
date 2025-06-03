@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Inventory;
 using Scriptables.Items;
 using UnityEngine;
@@ -7,7 +8,6 @@ namespace Scriptables.Craft {
   public class WorkstationObject : BaseScriptableObject {
     public RecipeType RecipeType;
     public ItemObject InventoryItem;
-    public string ResourcePath;
     public InventoryType OutputInventoryType;
     public InventoryType FuelInventoryType;
     public RecipesDatabaseObject RecipeDB;
@@ -16,10 +16,7 @@ namespace Scriptables.Craft {
     public bool ShowSuccessCraftMessages;
     public int CraftSlotsCount = 5;
 
-#if UNITY_EDITOR
-    private void OnValidate() {
-      ResourcePath = UnityEditor.AssetDatabase.GetAssetPath(this).Replace("Assets/", "").Replace(".asset", "");
-    }
-#endif
+    public List<AudioData> MusicAudioDatas;
+    public Vector2 SecondsBetweenMusic = new Vector2(15, 30);
   }
 }

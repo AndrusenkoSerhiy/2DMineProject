@@ -15,7 +15,6 @@ MonoBehaviour:
   id: 949f1b4f-bee4-4ccd-b91c-f341a3fc752b
   RecipeType: 1
   InventoryItem: {fileID: 11400000, guid: ed9ccb5b17204e642be25817d0a55a99, type: 2}
-  ResourcePath: ScriptableObjects/Craft/Stonecutter
   OutputInventoryType: 20
   FuelInventoryType: 0
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
@@ -23,3 +22,7 @@ MonoBehaviour:
   Description: Workbench desc
   ShowSuccessCraftMessages: 0
   CraftSlotsCount: 5
+  MusicAudioDatas:
+  - {fileID: 11400000, guid: ce3e357cc6bd62741bd3e3ac765b915e, type: 2}
+  - {fileID: 11400000, guid: 3082318037c38da4aa4dd01a7ea6c80d, type: 2}
+  SecondsBetweenMusic: {x: 5, y: 15}

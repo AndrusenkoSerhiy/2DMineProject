@@ -16,6 +16,7 @@ namespace Audio {
     [SerializeField] private AudioData mainTheme;
     [SerializeField] private AudioData siegeTheme;
     [SerializeField] private AudioData uiClick;
+    [SerializeField] private AudioData fail;
     [SerializeField] private AudioData craftClick;
     [SerializeField] private AudioData newRecipe;
     [SerializeField] private AudioData placeBuilding;
@@ -42,13 +43,13 @@ namespace Audio {
     /// Plays the specified audio at the listener's position or at the origin if it's not 3D.
     /// </summary>
     /// <param name="audioData">The audio data to play.</param>
-    public void PlayAudio(AudioData audioData) {
+    public AudioEmmiter PlayAudio(AudioData audioData) {
       if (!audioData) {
-        return;
+        return null;
       }
 
       var position = audioData.is3D ? listener.transform.position : Vector3.zero;
-      soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
+      return soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
     }
 
     /// <summary>
@@ -56,12 +57,12 @@ namespace Audio {
     /// </summary>
     /// <param name="audioData">The audio data to play.</param>
     /// <param name="position">The world position where the audio should be played.</param>
-    public void PlayAudio(AudioData audioData, Vector3 position) {
+    public AudioEmmiter PlayAudio(AudioData audioData, Vector3 position) {
       if (!audioData) {
-        return;
+        return null;
       }
 
-      soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
+      return soundPooler.SpawnFromPool(audioData, position, GetRootTransform(audioData.type));
     }
 
     /// <summary>
@@ -69,48 +70,52 @@ namespace Audio {
     /// </summary>
     /// <param name="audioData">The audio data to play.</param>
     /// <param name="followTransform">The transform that the audio should follow.</param>
-    public void PlayAudio(AudioData audioData, Transform followTransform) {
+    public AudioEmmiter PlayAudio(AudioData audioData, Transform followTransform) {
       if (!audioData || !followTransform) {
-        return;
+        return null;
       }
 
-      soundPooler.SpawnFromPool(audioData, followTransform, GetRootTransform(audioData.type));
+      return soundPooler.SpawnFromPool(audioData, followTransform, GetRootTransform(audioData.type));
     }
 
-    public void PlayMainTheme() => PlayAudio(mainTheme);
+    public AudioEmmiter PlayMainTheme() => PlayAudio(mainTheme);
     public void StopMainTheme() => StopAudio(mainTheme);
     public void PauseMainTheme() => PauseAudio(mainTheme);
     public void ResumeMainTheme() => ResumeAudio(mainTheme);
 
-    public void PlaySiegeTheme() => PlayAudio(siegeTheme);
+    public AudioEmmiter PlaySiegeTheme() => PlayAudio(siegeTheme);
     public void StopSiegeTheme() => StopAudio(siegeTheme);
     public void PauseSiegeTheme() => PauseAudio(siegeTheme);
     public void ResumeSiegeTheme() => ResumeAudio(siegeTheme);
 
-    public void PlayUIClick() => PlayAudio(uiClick);
-    public void PlayCraftClick() => PlayAudio(craftClick);
-    public void PlayNewRecipe() => PlayAudio(newRecipe);
-    public void PlayPlaceBuilding() => PlayAudio(placeBuilding);
-    public void PlayTakeBuilding() => PlayAudio(takeBuilding);
-    public void PlayPlaceBuildingBlock() => PlayAudio(placeBuildingBlock);
-    public void PlayPlayerJump() => PlayAudio(playerJump);
-    public void PlayPlayerJumpLanding() => PlayAudio(playerJumpLanding);
+    public AudioEmmiter PlayUIClick() => PlayAudio(uiClick);
+    public AudioEmmiter PlayFail() => PlayAudio(fail);
+    public AudioEmmiter PlayCraftClick() => PlayAudio(craftClick);
+    public AudioEmmiter PlayNewRecipe() => PlayAudio(newRecipe);
+    public AudioEmmiter PlayPlaceBuilding() => PlayAudio(placeBuilding);
+    public AudioEmmiter PlayTakeBuilding() => PlayAudio(takeBuilding);
+    public AudioEmmiter PlayPlaceBuildingBlock() => PlayAudio(placeBuildingBlock);
+    public AudioEmmiter PlayPlayerJump() => PlayAudio(playerJump);
+    public AudioEmmiter PlayPlayerJumpLanding() => PlayAudio(playerJumpLanding);
+
     public void PlayPlayerLeftStep() {
-      if (!GameManager.Instance.PlayerController.Grounded)
+      if (!GameManager.Instance.PlayerController.Grounded) {
         return;
-      
+      }
+
       PlayAudio(playerLeftStep);
     }
 
     public void PlayPlayerRightStep() {
-      if (!GameManager.Instance.PlayerController.Grounded)
+      if (!GameManager.Instance.PlayerController.Grounded) {
         return;
-      
+      }
+
       PlayAudio(playerRightStep);
     }
 
-    public void PlayPlayerDamaged() => PlayAudio(playerDamaged[Random.Range(0, playerDamaged.Count)]);
-    public void PlayPlayerDeath() => PlayAudio(playerDeath);
+    public AudioEmmiter PlayPlayerDamaged() => PlayAudio(playerDamaged[Random.Range(0, playerDamaged.Count)]);
+    public AudioEmmiter PlayPlayerDeath() => PlayAudio(playerDeath);
     public void StopPlayerDeath() => StopAudio(playerDeath);
 
     public void StopAudio(AudioData data) {

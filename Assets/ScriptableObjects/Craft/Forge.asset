@@ -15,7 +15,6 @@ MonoBehaviour:
   id: 1cee76d2-bca6-4314-a260-682d224580e1
   RecipeType: 3
   InventoryItem: {fileID: 11400000, guid: f1bef750166edcf41b0864c062106763, type: 2}
-  ResourcePath: ScriptableObjects/Craft/Forge
   OutputInventoryType: 20
   FuelInventoryType: 21
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
@@ -23,3 +22,7 @@ MonoBehaviour:
   Description: 
   ShowSuccessCraftMessages: 0
   CraftSlotsCount: 5
+  MusicAudioDatas:
+  - {fileID: 11400000, guid: f5dbf8d8f434e0940a60bcc84f89e152, type: 2}
+  - {fileID: 11400000, guid: 7222ff49f96ad40449c938fb163e3368, type: 2}
+  SecondsBetweenMusic: {x: 5, y: 15}

@@ -50,8 +50,10 @@ namespace NPCMovement
     }
 
     private void FixedUpdate() {
-      if(gameManager.Paused)
+      if (gameManager.Paused || targetTransform == null && target.Equals(Vector3.zero)) {
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
         return;
+      }
       
       IsGrounded();
       

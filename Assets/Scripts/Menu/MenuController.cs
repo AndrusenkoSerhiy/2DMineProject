@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace Menu {
   public enum Menu {
@@ -42,7 +43,7 @@ namespace Menu {
     private bool locked;
     private bool cancelEnabled;
     public static event Action OnExitToMainMenu;
-
+    [SerializeField] VideoPlayer videoPlayer;
     [SerializeField] private bool isNewGame;
     public Menu ActiveMenu => activeMenu;
 
@@ -81,15 +82,27 @@ namespace Menu {
 
     private async void StartNewGame() {
       gameManager.LockOnNewGame();
-      ShowLoading();
+      gameManager.UserInput.ShowCursor(false);
+      videoPlayer.loopPointReached += OnVideoEnd;
+      videoPlayer.gameObject.SetActive(true);
+      HideMainMenu();
+      HideSwitchProfiles();
       await Task.Yield();
-      await Task.Delay(100);
+      await Task.Delay(2000);
+      gameManager.StartGameCameraController.SetCameraTarget();
+    }
 
+    //after cutscene continue to start game
+    private void OnVideoEnd(VideoPlayer vp) {
+      videoPlayer.gameObject.SetActive(false);
+      //ShowLoading();
+      gameManager.UserInput.ShowCursor(true);
       gameManager.StartGameCameraController.ResetBeforeNewGame();
       gameManager.StartGameCameraController.Play();
       saveLoadSystem.NewGame();
       isNewGame = true;
-      HideLoading();
+      Hide();
+      //HideLoading();
     }
 
     private async void ContinueGame() {

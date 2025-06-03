@@ -36,6 +36,10 @@ public class StartGameCameraController : MonoBehaviour {
     vignetteCoroutine = StartCoroutine(FadeVignette(0.537f, 1.5f));
   }
 
+  public void SetCameraTarget() {
+    cinemachineCamera.Follow = player;
+  }
+
   public void ResetBeforeNewGame() {
     var gameManager = GameManager.Instance;
     var playerController = gameManager.PlayerController;
@@ -75,7 +79,7 @@ public class StartGameCameraController : MonoBehaviour {
   }
 
   private IEnumerator FollowPlayer() {
-    cinemachineCamera.Follow = player;
+    //cinemachineCamera.Follow = player;
     GameManager.Instance.CameraConfigManager.SetCameraHigh();
     playerRb.simulated = true;
     yield return new WaitForSeconds(waitOnStart);

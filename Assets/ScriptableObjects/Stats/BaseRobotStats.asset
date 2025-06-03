@@ -29,7 +29,7 @@ MonoBehaviour:
   attackRange: 4
   blockDamage: 20
   entityDamage: 2
-  timeBtwAttacks: 0.4
+  timeBtwAttacks: 1
   attackStaminaUsage: 1
   attackID: 0
   attackColliderSize: {x: 1, y: 1}
@@ -42,6 +42,7 @@ MonoBehaviour:
   maxSpeed: 20
   maxBackSpeed: 16
   sprintSpeed: 26
+  sprintBackSpeed: 14
   acceleration: 60
   groundDeceleration: 60
   airDeceleration: 3

@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace Player {
   public class BaseAttack : MonoBehaviour {
-    // [SerializeField] protected PlayerStats stats;
     [SerializeField] protected PlayerStatsObject statsObject;
     [SerializeField] protected Animator animator;
     [SerializeField] protected ObjectHighlighter objectHighlighter;
@@ -17,7 +16,7 @@ namespace Player {
     [SerializeField] private float minDistance = 2f;
     [SerializeField] private float maxDistance = 5f;
     [SerializeField] private List<string> lockReasons = new();
-    private float attackTimeCounter;
+    protected float attackTimeCounter;
     protected LayerMask attackLayer;
     protected int attackID;
     protected int maxTargets;
@@ -154,7 +153,7 @@ namespace Player {
       return mousePos;
     }
 
-    private void Attack() {
+    protected void Attack() {
       //shouldBeDamaging = true;
       SetTargetsFromHighlight();
       foreach (var target in targets) {
@@ -221,7 +220,7 @@ namespace Player {
       DestroyTarget();
     }
 
-    private void DestroyTarget() {
+    protected void DestroyTarget() {
       foreach (var t in targets) {
         if (t == null) continue;
         var getHp = t.GetHealth();

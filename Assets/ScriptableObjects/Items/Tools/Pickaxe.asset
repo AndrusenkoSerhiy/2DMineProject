@@ -87,6 +87,8 @@ MonoBehaviour:
   magazineSize: 0
   ammo: {fileID: 0}
   ammoSpeed: 0
+  reloadTime: 0
+  reloadSound: {fileID: 0}
   attackLayer:
     serializedVersion: 2
     m_Bits: 1280
@@ -94,6 +96,7 @@ MonoBehaviour:
   colliderSize: {x: 0.5, y: 0.5}
   maxTargets: 1
   repairCost: 1
-  maxDurability: 300
+  maxDurability: 600
   durabilityUse: 1
   durabilityUsageType: 1
+  useSound: {fileID: 0}

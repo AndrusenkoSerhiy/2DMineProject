@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 58943efc-1258-41cb-8bc9-a9e85f04fb63
   RecipeName: Iron ingot
-  RecipeType: 3
   RecipeTypes: 03000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
@@ -23,5 +22,5 @@ MonoBehaviour:
     Material: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
     Amount: 1
   Result: {fileID: 11400000, guid: a6ec05e23db0ff6459f4e4b32ceda697, type: 2}
-  CraftingTime: 10
+  CraftingTime: 5
   detailImg: {fileID: 0}

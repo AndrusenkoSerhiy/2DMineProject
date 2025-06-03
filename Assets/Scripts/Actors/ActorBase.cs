@@ -16,6 +16,7 @@ namespace Actors {
     public bool IsDead => _animator.GetBool(animParam.IsDeadHash);
     public DamageableType DamageableType { get; set; }
     public AudioData OnTakeDamageAudioData { get; set; }
+    public bool CanGetDamage { get; set; }
 
     protected virtual void Awake() {
       stats = GetComponent<PlayerStats>();

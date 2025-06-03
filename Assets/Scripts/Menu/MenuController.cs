@@ -95,11 +95,13 @@ namespace Menu {
       gameManager.StartGameCameraController.SetCameraTarget();
     }
 
+
     private void ShowSkip() {
       gameManager.UserInput.EnableInteractAction(true);
       gameManager.UserInput.controls.GamePlay.Interact.performed += StopCutscene;
       skipPrompt.SetActive(true);
     }
+    
     
     private void HideSkip() {
       skipPrompt.SetActive(false);
@@ -107,12 +109,12 @@ namespace Menu {
 
     private void StopCutscene(InputAction.CallbackContext obj) {
       videoPlayer.Stop();
-      HideSkip();
       OnVideoEnd(videoPlayer);
     }
 
     //after cutscene continue to start game
     private void OnVideoEnd(VideoPlayer vp) {
+      HideSkip();
       gameManager.UserInput.controls.GamePlay.Interact.performed -= StopCutscene;
       gameManager.UserInput.EnableInteractAction(false);
       videoPlayer.gameObject.SetActive(false);

@@ -16,7 +16,7 @@ MonoBehaviour:
     Duration: {x: 300, y: 300}
     ZombieCount: {x: 1, y: 2}
     WavesOfZombies: {x: 45, y: 45}
-    TimeBeforeSiege: {x: 1800, y: 1800}
+    TimeBeforeSiege: {x: 900, y: 900}
   RandomSiegeTemplate:
     Duration: {x: 600, y: 600}
     ZombieCount: {x: 2, y: 4}
@@ -30,6 +30,6 @@ MonoBehaviour:
   SiegesCount: {x: 3, y: 4}
   PreSiegeNotifications:
   - SecondsBeforeStart: 60
-    Message: Siege will start in 1 minute.
+    Message: Horde is coming for you.
   - SecondsBeforeStart: 300
-    Message: Siege will start in 5 minutes.
+    Message: Horde knows where you hide.

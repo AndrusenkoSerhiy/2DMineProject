@@ -37,9 +37,15 @@ namespace Player {
         return;
         
       base.TriggerAttack();
+      
+      //robot animation don't have trigger and call every time btw attacks from stats
+      if (firstAttack) {
+        Attack();
+        DestroyTarget();
+      }
+      
       if (!firstAttack) {
         firstAttack = true;
-        audioController.PlayAudio(drillSound, transform.position);
         animator.SetTrigger("Attack");
         animator.SetInteger("WeaponID", attackID);
       }

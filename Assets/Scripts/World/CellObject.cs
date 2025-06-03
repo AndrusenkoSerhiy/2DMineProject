@@ -18,6 +18,7 @@ namespace World {
     
     public DamageableType DamageableType { get; set; }
     public AudioData OnTakeDamageAudioData { get; set; }
+    public bool CanGetDamage { get; set; }
 
     public ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;

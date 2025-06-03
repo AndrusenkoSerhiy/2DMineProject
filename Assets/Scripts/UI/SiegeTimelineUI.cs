@@ -134,7 +134,7 @@ namespace UI {
           $"SiegeTimelineUI TotalCycleTime: {siegeManager.TotalCycleTime}, SiegeCycleElapsedTime: {siegeManager.SiegeCycleElapsedTime}");
       }
 
-      if (!siegeManager || siegeManager.TotalCycleTime <= 0f) {
+      if (!siegeManager || siegeManager.TotalCycleTime <= 0f || siegeManager.IsPaused) {
         return;
       }
 

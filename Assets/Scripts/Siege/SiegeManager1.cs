@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*using System;
+using System.Collections;
 using System.Collections.Generic;
 using Actors;
 using Audio;
@@ -22,10 +23,12 @@ namespace Siege {
     private List<ActiveSiegeTemplate> siegeQueue = new();
     [SerializeField] private int currentSiegeCycle = 1;
     [SerializeField] private int currentSiegeIndex = 0;
+
     [SerializeField] private ActiveSiegeTemplate currentSiege;
+    private GameManager gameManager;
 
     [SerializeField] private bool siegesStarted = false;
-    [SerializeField] private bool isSiegeInProgress = false;
+    [SerializeField] private bool isSiegeInProgress;
     [SerializeField] private bool isPaused = false;
 
     [SerializeField] private float durationTimer = 0f;
@@ -41,19 +44,8 @@ namespace Siege {
     public float TotalCycleTime => totalCycleTime;
     public ZombieDifficultyDatabase ZombieDifficultyDatabase => zombieDifficultyDatabase;
 
-    private enum SiegePhase {
-      Idle,
-      WaitingBeforeSiege,
-      ActiveSiege
-    }
-
-    private SiegePhase currentPhase = SiegePhase.Idle;
-    private GameManager gameManager;
+    private Coroutine activeSiegeCoroutine;
     private AudioController audioController;
-
-    private float waitTimer = 0f;
-    private float nextWaveTime = 0f;
-    private int wavesSpawned = 0;
 
     private class PendingNotification {
       public float TriggerTime;
@@ -63,7 +55,18 @@ namespace Siege {
 
     private readonly List<PendingNotification> pendingNotifications = new();
 
-    #region SaveLoad
+    private void Start() {
+      SaveLoadSystem.Instance.Register(this);
+      gameManager = GameManager.Instance;
+      audioController = gameManager.AudioController;
+      ActorPlayer.OnPlayerDeath += OnPlayerDeathHandler;
+      ActorPlayer.OnPlayerRespawn += OnPlayerRespawnHandler;
+
+      gameManager.OnGamePaused += OnGamePausedHandler;
+      gameManager.OnGameResumed += OnGameResumedHandler;
+    }
+
+    #region Save/Load
 
     public int Priority => LoadPriority.SIEGE;
 
@@ -76,15 +79,10 @@ namespace Siege {
       data.SiegeCycleElapsedTime = siegeCycleElapsedTime;
       data.SiegesStarted = siegesStarted;
       data.IsPaused = isPaused;
-      data.SiegeQueue = new List<ActiveSiegeTemplate>(siegeQueue);
+      data.SiegeQueue = siegeQueue;
       data.TotalCycleTime = totalCycleTime;
       data.IsSiegeInProgress = isSiegeInProgress;
       data.TimeToNextSegment = timeToNextSegment;
-      data.CurrentPhase = (int)currentPhase;
-      data.CurrentSiege = currentSiege;
-      data.WaitTimer = waitTimer;
-      data.NextWaveTime = nextWaveTime;
-      data.WavesSpawned = wavesSpawned;
       data.IsSet = true;
     }
 
@@ -100,134 +98,47 @@ namespace Siege {
       siegeCycleElapsedTime = data.SiegeCycleElapsedTime;
       siegesStarted = data.SiegesStarted;
       isPaused = data.IsPaused;
-      siegeQueue = new List<ActiveSiegeTemplate>(data.SiegeQueue);
+      siegeQueue = data.SiegeQueue;
       totalCycleTime = data.TotalCycleTime;
       isSiegeInProgress = data.IsSiegeInProgress;
       timeToNextSegment = data.TimeToNextSegment;
-      currentPhase = (SiegePhase)data.CurrentPhase;
-      currentSiege = data.CurrentSiege;
-      waitTimer = data.WaitTimer;
-      nextWaveTime = data.NextWaveTime;
-      wavesSpawned = data.WavesSpawned;
 
-      pendingNotifications.Clear();
-
-      if (siegesStarted && siegeQueue.Count > 0) {
+      if (siegesStarted) {
         siegeTimelineUI.SetupTimeline(siegeQueue);
+        StopActiveCoroutine();
+        activeSiegeCoroutine = StartCoroutine(RunNextSiege());
       }
     }
 
     public void Clear() {
+      StopActiveCoroutine();
+
       siegeTimelineUI.Reset();
       siegeQueue.Clear();
-
       currentSiegeCycle = 1;
       currentSiegeIndex = 0;
       currentSiege = null;
       siegesStarted = false;
       isSiegeInProgress = false;
       isPaused = false;
-
       durationTimer = 0f;
       siegeCycleElapsedTime = 0f;
       totalCycleTime = 0f;
       timeToNextSegment = 0f;
-      waitTimer = 0f;
-      nextWaveTime = 0f;
-      wavesSpawned = 0;
-
-      pendingNotifications.Clear();
-      currentPhase = SiegePhase.Idle;
     }
 
     #endregion
 
-    private void Start() {
-      SaveLoadSystem.Instance.Register(this);
-      gameManager = GameManager.Instance;
-      audioController = gameManager.AudioController;
-
-      ActorPlayer.OnPlayerDeath += OnPlayerDeathHandler;
-      ActorPlayer.OnPlayerRespawn += OnPlayerRespawnHandler;
-      gameManager.OnGamePaused += OnGamePausedHandler;
-      gameManager.OnGameResumed += OnGameResumedHandler;
+    public DifficultyEntry GetDifficultyProfilesByWeight() {
+      return zombieDifficultyDatabase.GetProfileByWeight(gameManager.PlayerInventory.Weight);
     }
-
-    private void Update() {
-      if (!siegesStarted || isPaused || currentSiege == null) {
-        return;
-      }
-
-      var deltaTime = Time.deltaTime;
-      siegeCycleElapsedTime += deltaTime;
-
-      switch (currentPhase) {
-        case SiegePhase.WaitingBeforeSiege:
-          UpdateWaitingBeforeSiege(deltaTime);
-          break;
-
-        case SiegePhase.ActiveSiege:
-          UpdateActiveSiege(deltaTime);
-          break;
-
-        case SiegePhase.Idle:
-          break;
-
-        default:
-          throw new ArgumentOutOfRangeException();
-      }
-    }
-
-    private void UpdateWaitingBeforeSiege(float deltaTime) {
-      waitTimer -= deltaTime;
-      timeToNextSegment = Mathf.Max(waitTimer, 0f);
-
-      TriggerPendingNotifications();
-
-      if (waitTimer <= 0f) {
-        StartSiege();
-      }
-    }
-
-    private void TriggerPendingNotifications() {
-      foreach (var notif in pendingNotifications) {
-        if (notif.Triggered || !(waitTimer <= notif.TriggerTime)) {
-          continue;
-        }
-
-        notif.Triggered = true;
-        gameManager.MessagesManager.ShowSimpleMessage(notif.Message);
-      }
-    }
-
-    private void UpdateActiveSiege(float deltaTime) {
-      durationTimer += deltaTime;
-      timeToNextSegment = Mathf.Max(currentSiege.Duration - durationTimer, 0f);
-
-      if (ShouldSpawnNextWave()) {
-        ZombieSpawn();
-        wavesSpawned++;
-        nextWaveTime += currentSiege.Duration / currentSiege.WavesOfZombies;
-      }
-
-      if (!(durationTimer >= currentSiege.Duration)) {
-        return;
-      }
-
-      EndSiege();
-      PrepareNextSiege();
-    }
-
-    private bool ShouldSpawnNextWave() {
-      return durationTimer >= nextWaveTime && wavesSpawned < currentSiege.WavesOfZombies;
-    }
-
-    #region Siege Control
 
     public void StartSieges() {
       if (siegesStarted) {
         return;
       }
+
+      StopActiveCoroutine();
 
       siegeQueue.Clear();
       siegeQueue.Add(GetActiveTemplate(siegesSettings.FirstSiege));
@@ -248,31 +159,50 @@ namespace Siege {
       }
 
       siegeCycleElapsedTime = 0f;
-      currentSiegeIndex = 0;
-      siegesStarted = true;
-
       siegeTimelineUI.SetupTimeline(siegeQueue);
 
-      PrepareNextSiege();
+      siegesStarted = true;
+      activeSiegeCoroutine = StartCoroutine(RunNextSiege());
+      /*foreach (var siege in siegeQueue) {
+        Debug.LogWarning(
+          $"TimeBeforeSiege {siege.TimeBeforeSiege} | duration {siege.Duration} | waves {siege.WavesOfZombies} | zombies {siege.ZombieCount}");
+      }#1#
     }
 
-    private void PrepareNextSiege() {
-      if (currentSiegeIndex >= siegeQueue.Count) {
-        siegesStarted = false;
-        currentSiegeCycle++;
-        StartSieges();
+    private void StopActiveCoroutine() {
+      if (activeSiegeCoroutine == null) {
         return;
       }
 
-      currentSiege = siegeQueue[currentSiegeIndex];
-      currentPhase = SiegePhase.WaitingBeforeSiege;
-      waitTimer = currentSiege.TimeBeforeSiege;
-      durationTimer = 0f;
-      timeToNextSegment = waitTimer;
+      StopCoroutine(activeSiegeCoroutine);
+      activeSiegeCoroutine = null;
+    }
 
+    private ActiveSiegeTemplate GetActiveTemplate(SiegeTemplate template) {
+      var weight = gameManager.PlayerInventory.Weight;
+      return calculateWithWeightAndCycle
+        ? new ActiveSiegeTemplate(template, weight, currentSiegeCycle)
+        : new ActiveSiegeTemplate(template);
+    }
+
+    private IEnumerator RunNextSiege() {
+      if (currentSiegeIndex >= siegeQueue.Count) {
+        // Debug.LogWarning("Run second Siege");
+        siegesStarted = false;
+        currentSiegeIndex = 0;
+        currentSiegeCycle++;
+
+        StartSieges();
+
+        yield break;
+      }
+
+      currentSiege = siegeQueue[currentSiegeIndex];
+      var waitTime = currentSiege.TimeBeforeSiege;
       pendingNotifications.Clear();
+
       foreach (var notif in siegesSettings.PreSiegeNotifications) {
-        if (notif.SecondsBeforeStart < waitTimer) {
+        if (notif.SecondsBeforeStart < waitTime) {
           pendingNotifications.Add(new PendingNotification {
             TriggerTime = notif.SecondsBeforeStart,
             Message = notif.Message,
@@ -280,16 +210,60 @@ namespace Siege {
           });
         }
       }
+
+      while (waitTime > 0f) {
+        if (!isPaused) {
+          var delta = Time.deltaTime;
+          waitTime -= delta;
+          timeToNextSegment = Mathf.Max(waitTime, 0f);
+          siegeCycleElapsedTime += delta;
+
+          foreach (var notif in pendingNotifications) {
+            if (!notif.Triggered && waitTime <= notif.TriggerTime) {
+              notif.Triggered = true;
+              gameManager.MessagesManager.ShowSimpleMessage(notif.Message);
+            }
+          }
+        }
+
+        yield return null;
+      }
+
+      StartSiege();
+
+      var wavesSpawned = 0;
+      durationTimer = 0f;
+      var nextWaveTime = 0f;
+      var interval = currentSiege.Duration / currentSiege.WavesOfZombies;
+
+      while (durationTimer < currentSiege.Duration) {
+        if (!isPaused) {
+          var delta = Time.deltaTime;
+          durationTimer += delta;
+          siegeCycleElapsedTime += delta;
+          timeToNextSegment = Mathf.Max(currentSiege.Duration - durationTimer, 0f);
+
+          if (durationTimer >= nextWaveTime && wavesSpawned < currentSiege.WavesOfZombies) {
+            ZombieSpawn();
+            wavesSpawned++;
+            nextWaveTime += interval;
+          }
+        }
+
+        yield return null;
+      }
+
+      EndSiege();
+      currentSiegeIndex++;
+
+      StopActiveCoroutine();
+
+      activeSiegeCoroutine = StartCoroutine(RunNextSiege());
     }
 
     private void StartSiege() {
       StratSiegeAudio();
-      currentPhase = SiegePhase.ActiveSiege;
       isSiegeInProgress = true;
-      durationTimer = 0f;
-      wavesSpawned = 0;
-      nextWaveTime = 0f;
-
       OnSiegeStarted?.Invoke(currentSiege);
       gameManager.MessagesManager.ShowSimpleMessage("Siege started!");
     }
@@ -297,20 +271,9 @@ namespace Siege {
     private void EndSiege() {
       EndSiegeAudio();
       isSiegeInProgress = false;
-      currentPhase = SiegePhase.Idle;
-
       OnSiegeEnded?.Invoke(currentSiege);
       gameManager.MessagesManager.ShowSimpleMessage("Siege ended!");
-      currentSiegeIndex++;
     }
-
-    private void ZombieSpawn() {
-      OnZombieSpawn?.Invoke(currentSiege);
-    }
-
-    #endregion
-
-    #region Audio
 
     private void StratSiegeAudio() {
       audioController.StopMainTheme();
@@ -332,9 +295,9 @@ namespace Siege {
       audioController.PlayMainTheme();
     }
 
-    #endregion
-
-    #region Pause/Resume
+    private void ZombieSpawn() {
+      OnZombieSpawn?.Invoke(currentSiege);
+    }
 
     private void PauseSiege() {
       isPaused = true;
@@ -350,6 +313,7 @@ namespace Siege {
       }
 
       isPaused = false;
+
       if (isSiegeInProgress) {
         ResumeSiegeAudio();
       }
@@ -361,19 +325,19 @@ namespace Siege {
         return;
       }
 
+      StopActiveCoroutine();
+      EndSiege();
+
       var remainingTime = Mathf.Max(currentSiege.Duration - durationTimer, 0f);
       siegeCycleElapsedTime += remainingTime;
       timeToNextSegment = 0f;
       durationTimer = 0f;
 
-      EndSiege();
-      PrepareNextSiege();
+      currentSiegeIndex++;
+      activeSiegeCoroutine = StartCoroutine(RunNextSiege());
+
       ResumeSiege();
     }
-
-    #endregion
-
-    #region EventHandlers
 
     private void OnPlayerDeathHandler() {
       PauseSiege();
@@ -392,18 +356,5 @@ namespace Siege {
       PauseSiege();
       siegeTimelineUI.gameObject.SetActive(false);
     }
-
-    #endregion
-
-    public DifficultyEntry GetDifficultyProfilesByWeight() {
-      return zombieDifficultyDatabase.GetProfileByWeight(gameManager.PlayerInventory.Weight);
-    }
-
-    private ActiveSiegeTemplate GetActiveTemplate(SiegeTemplate template) {
-      var weight = gameManager.PlayerInventory.Weight;
-      return calculateWithWeightAndCycle
-        ? new ActiveSiegeTemplate(template, weight, currentSiegeCycle)
-        : new ActiveSiegeTemplate(template);
-    }
   }
-}
+}*/

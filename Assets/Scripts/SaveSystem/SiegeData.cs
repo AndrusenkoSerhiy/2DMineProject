@@ -16,5 +16,10 @@ namespace SaveSystem {
     public bool IsSiegeInProgress;
     public float TimeToNextSegment;
     public List<ActiveSiegeTemplate> SiegeQueue;
+    public int CurrentPhase;
+    public ActiveSiegeTemplate CurrentSiege;
+    public float WaitTimer;
+    public float NextWaveTime;
+    public int WavesSpawned;
   }
 }

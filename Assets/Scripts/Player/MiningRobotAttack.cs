@@ -19,7 +19,6 @@ namespace Player {
       if(!enabled)
         return;
       
-      Debug.LogError("PressAttack");
       base.PressAttack(sender, e);
       audioController.PlayAudio(drillSound);
     }

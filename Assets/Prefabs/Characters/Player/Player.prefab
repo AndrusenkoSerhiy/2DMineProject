@@ -167,10 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 4077487680828195514}
-  isDead: 0
   rigidbody: {fileID: 0}
   capsuleCollider: {fileID: 1626194104983258937}
-  _hasTakenDamage: 0
 --- !u!114 &4951586190832703889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,8 +190,8 @@ MonoBehaviour:
   stamina: {fileID: 6251728841341945271}
   grounded: 0
   startFalling: 0
-  skeletonMecanim: {fileID: 7381558752013238858}
   playerAttack: {fileID: 3203884702869887430}
+  skeletonMecanim: {fileID: 7381558752013238858}
 --- !u!114 &3203884702869887430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,6 +214,7 @@ MonoBehaviour:
   lockReasons: []
   isHighlightLock: 0
   originalSize: {x: 0, y: 0}
+  lookDirection: 0
 --- !u!114 &4383261363474124888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -502,7 +501,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4612203187092052450}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.69194233, w: 0.7219528}
+  m_LocalRotation: {x: -0, y: -0, z: -0.6919424, w: 0.72195274}
   m_LocalPosition: {x: 0.505373, y: 1.1168451, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -655,7 +654,7 @@ Transform:
   m_GameObject: {fileID: 5549740774766015139}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.1922924, w: 0.9813377}
-  m_LocalPosition: {x: -0.7381973, y: 1.0929763, z: 0}
+  m_LocalPosition: {x: -0.7381973, y: 1.0929766, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -956,7 +955,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2145118225
   m_SortingLayer: 4
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!95 &4077487680828195514
 Animator:

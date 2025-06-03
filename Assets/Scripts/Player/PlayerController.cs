@@ -8,6 +8,7 @@ namespace Player {
   public class PlayerController : PlayerControllerBase, IPlayerController, ISaveLoad {
     [SerializeField] private PlayerAttack playerAttack;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
+    private MeshRenderer meshRenderer;
     protected override void Awake() {
       SaveLoadSystem.Instance.Register(this);
       base.Awake();
@@ -62,6 +63,13 @@ namespace Player {
 
     #endregion
 
+    public void SetOrderInLayer(int order) {
+      if (meshRenderer == null) {
+        meshRenderer = skeletonMecanim.GetComponent<MeshRenderer>();
+      }
+      
+      meshRenderer.sortingOrder = order;
+    }
     public override void SetLockHighlight(bool state, string reason = "") {
       playerAttack.LockHighlight(state, reason);
     }

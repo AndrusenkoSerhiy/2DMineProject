@@ -386,6 +386,7 @@ namespace Tools {
       playerController.SetParent(tr);
       playerController.SetPosition(pos);
       playerController.SetRotation(rot);
+      playerController.SetOrderInLayer(tr != null ? 0 : 2);
     }
 
     private void AddRobotInventoryToMainInventory() {

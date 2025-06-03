@@ -1,4 +1,5 @@
 using Actors;
+using Animation;
 using Scriptables.Repair;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ namespace Player {
       EnableController(false);
       // stamina.SetStaminaBarRef();
       _ladderMovement = GameManager.Instance.PlayerLadderMovement;
+      AnimationEventManager.onLeftStep += GameManager.Instance.AudioController.PlayRobotStep;
+      AnimationEventManager.onRightStep += GameManager.Instance.AudioController.PlayRobotStep;
     }
 
     protected override void FixedUpdate() {

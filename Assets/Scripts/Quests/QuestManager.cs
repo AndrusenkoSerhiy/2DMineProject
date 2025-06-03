@@ -19,11 +19,15 @@ namespace Quests {
 
     public int Priority => LoadPriority.QUESTS;
 
+    private void Awake() {
+      SaveLoadSystem.Instance.Register(this);
+    }
     private void Start() {
       audioController = GameManager.Instance.AudioController;
     }
     public void StartQuest(int index) {
       if (!CanStartQuest(index)) return;
+      GameManager.Instance.UserInput.EnableUIControls(false);
       GameManager.Instance.UserInput.controls.GamePlay.Interact.performed += StopQuest;
       var pos = GameManager.Instance.PlayerController.transform.position;
       pos.y += 2.55f;
@@ -51,6 +55,7 @@ namespace Quests {
     }
 
     private void StopQuest(InputAction.CallbackContext callbackContext) {
+      GameManager.Instance.UserInput.EnableUIControls(true);
       GameManager.Instance.UserInput.controls.GamePlay.Interact.performed -= StopQuest;
       catPrefab.SetActive(false);
       dialoguePanel.HideDialogue();
@@ -88,9 +93,9 @@ namespace Quests {
     }
 
     public void Clear() {
-      SaveLoadSystem.Instance.gameData.QuestData.FirstCompleted = false;
-      SaveLoadSystem.Instance.gameData.QuestData.SecondCompleted = false;
-      SaveLoadSystem.Instance.gameData.QuestData.ThirdCompleted = false;
+      firstQuestCompleted = false;
+      secondQuestCompleted = false;
+      thirdQuestCompleted = false;
     }
   }
 }

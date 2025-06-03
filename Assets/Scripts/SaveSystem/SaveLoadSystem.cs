@@ -261,7 +261,7 @@ namespace SaveSystem {
         PlayerData = new PlayerData(),
         SiegeData = new SiegeData(),
         Zombies = new List<ZombiesData>(),
-        LocatorPointsData = new List<LocatorPointData>()
+        LocatorPointsData = new List<LocatorPointData>(),
       };
     }
 

@@ -136,6 +136,7 @@ namespace Menu {
       }
       else {
         gameManager.StartGameCameraController.ResetPlayer();
+        gameManager.StartGameCameraController.SetCameraTarget();
         gameManager.StartGameCameraController.Play();
       }
 

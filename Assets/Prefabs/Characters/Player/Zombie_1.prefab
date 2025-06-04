@@ -104,8 +104,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 1.04}
-  m_Size: {x: 1, y: 2}
+  m_Offset: {x: 0, y: 1.51}
+  m_Size: {x: 1, y: 3.04}
   m_Direction: 0
 --- !u!114 &8562245207658300178
 MonoBehaviour:
@@ -124,9 +124,6 @@ MonoBehaviour:
   capsuleCollider: {fileID: 8141082641052085697}
   npcMovement: {fileID: 6852139997247226084}
   coords: {fileID: 4278888900822443520}
-  layerAfterDeath:
-    serializedVersion: 2
-    m_Bits: 2048
   behaviourTreeOwner: {fileID: 1260485521753335071}
   difficulty: {fileID: 0}
   destroyAfterDeath: 1

@@ -20,6 +20,7 @@ namespace World {
     public POIDataLibrary POIDataLibrary => _poiDataLibrary;
 
     public event Action OnCreateChunk;
+
     //ChunkInfo
     [SerializeField] private ChunkGenerator _chunkGenerator;
     private Dictionary<Coords, CellObject> _activeCellObjects = new();
@@ -274,10 +275,10 @@ namespace World {
       var cellData = chunkData.GetCellData(x, y);
       var pos = CoordsTransformer.GridToWorld(x, y);
       var cell = CellObjectsPool.Get(pos);
-      
+
       cell.Init(cellData, resourceData);
       cell.InitSprite();
-      _activeCellObjects[new Coords(x,y)] = cell;
+      _activeCellObjects[new Coords(x, y)] = cell;
     }
 
     public void TriggerCellDestroyed(CellObject cellObject) {
@@ -312,7 +313,7 @@ namespace World {
 
     private void InitStartChunk() {
       chunkData = _chunkGenerator.GetChunk(0, 0);
-      
+
       SetFirstRow();
       //POI
       GeneratePOI(chunkData);
@@ -322,22 +323,8 @@ namespace World {
 
     //Use only on new game fill 10 cells with dirt and 1 wood block
     private void SetFirstRow() {
-      if (!SaveLoadSystem.Instance.IsNewGame()) 
-        return;
-      
-      //fill first row
-      var data = ResourceDataLibrary.GetData(0.3f);
-      for (int i = 248; i < 258; i++) {
-        var cell = chunkData.GetCellData(i, 0);
-        if (cell.perlin <= 0.3f) {
-          cell.perlin = 0.3f;
-          cell.durability = data.Durability;
-          chunkData.SetCellFill(i, 0);
-          AfterCellChanged(cell);
-        }
-      }
-      
-      data = ResourceDataLibrary.GetData(0.75f);
+      //fill bottom edge with stone
+      var data = ResourceDataLibrary.GetData(0.75f);
       for (int i = 0; i < 999; i++) {
         for (int j = 989; j < 999; j++) {
           var cell = chunkData.GetCellData(i, j);
@@ -345,6 +332,21 @@ namespace World {
           cell.durability = data.Durability;
           cell.canTakeDamage = false;
           chunkData.SetCellFill(i, j);
+        }
+      }
+
+      if (!SaveLoadSystem.Instance.IsNewGame()) {
+        return;
+      }
+
+      //fill first row
+      var firstRowData = ResourceDataLibrary.GetData(0.3f);
+      for (int i = 248; i < 258; i++) {
+        var cell = chunkData.GetCellData(i, 0);
+        if (cell.perlin <= 0.3f) {
+          cell.perlin = 0.3f;
+          cell.durability = firstRowData.Durability;
+          chunkData.SetCellFill(i, 0);
           AfterCellChanged(cell);
         }
       }
@@ -353,9 +355,9 @@ namespace World {
       var dataWood = ResourceDataLibrary.GetData(0.3f);
       var cellWood = chunkData.GetCellData(258, 0);
       //if cell is empty need to fill him
-      if(chunkData.GetCellFill(258, 0) == 0)
+      if (chunkData.GetCellFill(258, 0) == 0)
         chunkData.SetCellFill(258, 0);
-      
+
       cellWood.perlin = -1f;
       cellWood.durability = dataWood.Durability;
       AfterCellChanged(cellWood);
@@ -378,7 +380,7 @@ namespace World {
           if (data.x == 0 || data.y == 0 || data.x == chunkData.width - 1 || data.y == chunkData.height - 1) continue;
           var cellData = chunkData.GetCellData(i, j);
           if (!cellData.HasStandPoint) continue;
-          if(i==258 && j == 0)Debug.LogError($"the same coord 258 0");
+          if (i == 258 && j == 0) Debug.LogError($"the same coord 258 0");
           emptyCells.Add(chunkData.GetCellData(i, j));
         }
       }
@@ -393,7 +395,7 @@ namespace World {
             if (targetData == null) continue;
             var xCoord = startCell.x + targetData.localX;
             var yCoord = startCell.y + targetData.localY;
-            if(xCoord==258 && yCoord == 0)Debug.LogError($"the same coord 258 0");
+            if (xCoord == 258 && yCoord == 0) Debug.LogError($"the same coord 258 0");
             var cell = chunkData.ForceCellFill(targetData.resourceData, xCoord, yCoord);
             if (cell == null) continue;
             emptyCells.Remove(cell);
@@ -440,7 +442,7 @@ namespace World {
     }
 
     public BuildingDataObject GetBuildingData(int x, int y) {
-      return _activeBuildObjects.GetValueOrDefault(new Coords(x,y));
+      return _activeBuildObjects.GetValueOrDefault(new Coords(x, y));
     }
 
     private void RemoveCellFromChanged(int x, int y) {

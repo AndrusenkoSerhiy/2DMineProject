@@ -198,7 +198,7 @@ namespace Tools {
     public bool Interact(PlayerInteractor playerInteractor) {
       if (broken) {
         audioController.PlayAudio(brokenInteract, transform.position);
-        GameManager.Instance.MessagesManager.ShowSimpleMessage("Robot is broken.");
+        GameManager.Instance.MessagesManager.ShowSimpleMessage("Robot is broken. Get repair kit!");
         return true;
       }
       

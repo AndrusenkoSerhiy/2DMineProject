@@ -15,11 +15,12 @@ MonoBehaviour:
   id: f67712f8-d9db-4a13-8bae-6ce49e301e15
   RecipeType: 4
   InventoryItem: {fileID: 11400000, guid: a377d8219d82555468a6ecbd4b5d0de6, type: 2}
-  ResourcePath: ScriptableObjects/Craft/FoodStation
   OutputInventoryType: 20
   FuelInventoryType: 21
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Food Station
-  Description: Workbench desc
+  Description: 
   ShowSuccessCraftMessages: 0
   CraftSlotsCount: 5
+  MusicAudioDatas: []
+  SecondsBetweenMusic: {x: 15, y: 30}

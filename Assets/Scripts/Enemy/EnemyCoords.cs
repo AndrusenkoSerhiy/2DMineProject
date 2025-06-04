@@ -24,7 +24,7 @@ namespace Enemy {
     }
 
     private void SetCoords() {
-      var coords = CoordsTransformer.WorldToGrid(trForGrid.position);
+      var coords = CoordsTransformer.MouseToGridPosition(trForGrid.position);
       Coords.X = coords.X;
       Coords.Y = coords.Y;
     }

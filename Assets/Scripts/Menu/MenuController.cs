@@ -134,6 +134,7 @@ namespace Menu {
       await Task.Delay(100);
 
       if (saveLoadSystem.IsNewGame()) {
+        gameManager.StartGameCameraController.SetCameraTarget();
         gameManager.StartGameCameraController.Play();
       }
       else {

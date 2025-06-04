@@ -13,11 +13,8 @@ namespace Inventory {
     private bool ascending;
     private Inventory inventory;
 
-    private void Start() {
-      inventory = inventoryUI.Inventory;
-    }
-
     private void OnEnable() {
+      inventory = inventoryUI.Inventory;
       ascending = defaultSortAsc;
       UpdateImage();
       button.onClick.AddListener(Run);

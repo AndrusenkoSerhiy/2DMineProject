@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: SiegesSettingsTest
   m_EditorClassIdentifier: 
   FirstSiege:
-    Duration: {x: 15, y: 15}
+    Duration: {x: 20, y: 20}
     ZombieCount: {x: 2, y: 3}
     WavesOfZombies: {x: 1, y: 2}
-    TimeBeforeSiege: {x: 125, y: 125}
+    TimeBeforeSiege: {x: 20, y: 20}
   RandomSiegeTemplate:
-    Duration: {x: 15, y: 15}
+    Duration: {x: 20, y: 20}
     ZombieCount: {x: 1, y: 2}
     WavesOfZombies: {x: 2, y: 3}
-    TimeBeforeSiege: {x: 30, y: 40}
+    TimeBeforeSiege: {x: 20, y: 20}
   FinalSiege:
-    Duration: {x: 15, y: 15}
+    Duration: {x: 20, y: 20}
     ZombieCount: {x: 3, y: 4}
     WavesOfZombies: {x: 2, y: 4}
-    TimeBeforeSiege: {x: 5, y: 10}
+    TimeBeforeSiege: {x: 20, y: 20}
   SiegesCount: {x: 1, y: 2}
   PreSiegeNotifications:
   - SecondsBeforeStart: 60

@@ -364,6 +364,10 @@ namespace World {
     }
 
     private void GeneratePOI(ChunkData chunkData) {
+      if (!SaveLoadSystem.Instance.IsNewGame()) {
+        return;
+      }
+      
       //Get all empty points
       var emptyCells = new List<CellData>();
       for (int i = 0; i < chunkData.width; i++) {
@@ -398,7 +402,10 @@ namespace World {
             if (xCoord == 258 && yCoord == 0) Debug.LogError($"the same coord 258 0");
             var cell = chunkData.ForceCellFill(targetData.resourceData, xCoord, yCoord);
             if (cell == null) continue;
+            
             emptyCells.Remove(cell);
+            AfterCellChanged(cell);
+            
             if (emptyCells.Count == 0) return;
           }
         }

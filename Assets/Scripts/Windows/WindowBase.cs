@@ -36,6 +36,9 @@ namespace Windows {
     }
 
     protected virtual void SetInteractionText() {
+      if (string.IsNullOrEmpty(actionName) && string.IsNullOrEmpty(buttonName)) {
+        return;
+      }
       interactionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(actionName, buttonName));
     }
 

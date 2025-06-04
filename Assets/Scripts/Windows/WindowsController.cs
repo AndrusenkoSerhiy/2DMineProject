@@ -85,5 +85,12 @@ namespace Windows {
         GameManager.Instance.MenuController.ShowInGameMenu();
       }
     }
+
+    public void CloseActiveWindow() {
+      var window = windowsList.Find(e => e.IsShow);
+      if (window) {
+        window.Hide();
+      }
+    }
   }
 }

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Menu;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,15 @@ namespace UI {
     [SerializeField] private bool isShowDialogue;
 
     public void ShowDialogue(int index) {
+      //check if some windows is open and close
+      if (GameManager.Instance.MenuController.ActiveMenu != Menu.Menu.None) {
+        GameManager.Instance.MenuController.Hide();
+      }
+
+      if (GameManager.Instance.WindowsController.IsAnyWindowOpen) {
+        GameManager.Instance.WindowsController.CloseActiveWindow();
+      }
+      
       textField.text = index switch {
         0 => firstText,
         1 => secondText,

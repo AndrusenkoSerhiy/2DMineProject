@@ -71,6 +71,16 @@ namespace Craft {
       return remainingAmount;
     }
 
+    public bool IsInventoryInPool(string inventoryId) {
+      foreach (var inventory in pool) {
+        if (inventory.Id == inventoryId) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     public bool CanAddItem(ItemObject item) {
       foreach (var inventory in pool) {
         if (inventory.CanAddItem(item)) {

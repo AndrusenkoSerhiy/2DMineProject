@@ -55,7 +55,8 @@ namespace Tools {
     private string id;
 
     private bool broken;
-
+    //set param true after first lock
+    private bool lockedOnStart;
     //use after save load and we in the robot
     private bool needActivateItem = true;
     private int repairValue;
@@ -131,6 +132,7 @@ namespace Tools {
 
     private void LockOnStart() {
       chunkController.OnCreateChunk -= LockOnStart;
+      lockedOnStart = true;
       LockCells(true);
     }
 
@@ -356,7 +358,7 @@ namespace Tools {
     [SerializeField] private List<int> lockedCells = new() { 0 };
 
     private void LockCells(bool state) {
-      if (playerInRobot) {
+      if (playerInRobot || !lockedOnStart) {
         return;
       }
 

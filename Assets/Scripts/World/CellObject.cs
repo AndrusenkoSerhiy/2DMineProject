@@ -28,7 +28,7 @@ namespace World {
     private Tween currentShakeTween;
     private Vector3 originalPosition;
     private Vector3 originalScale;
-    private GameManager gameManager;
+
     private int originalSortingOrder;
 
     //for spawn drop count
@@ -49,7 +49,6 @@ namespace World {
       _cellData = cellData;
       resourceData = data;
       InitUnitHealth();
-      gameManager = GameManager.Instance;
     }
 
     private void InitUnitHealth() {
@@ -79,6 +78,11 @@ namespace World {
       boxCollider2D.size = resourceData.ColSize();
     }
 
+    public bool hasTakenDamage {
+      get { return unitHealth.hasTakenDamage; }
+      set { unitHealth.hasTakenDamage = value; }
+    }
+
     public void Damage(float damage, bool isPlayer) {
       if (!_cellData.canTakeDamage)
         return;
@@ -92,7 +96,7 @@ namespace World {
         return;
       }
 
-      gameManager.AudioController.PlayAudio(OnTakeDamageAudioData, transform.position);
+      GameManager.Instance.AudioController.PlayAudio(OnTakeDamageAudioData, transform.position);
     }
 
     private void UpdateDurability(float damage, bool isPlayer) {
@@ -110,7 +114,7 @@ namespace World {
         return;
 
       CalculateCountToSpawn(damage);
-      gameManager.ChunkController.AfterCellChanged(_cellData);
+      GameManager.Instance.ChunkController.AfterCellChanged(_cellData);
     }
 
     private void CalculateCountToSpawn(float damage) {
@@ -121,13 +125,13 @@ namespace World {
       _cellData.alreadyDroped += integerResource;
       _cellData.fractionalResource = fractionalResource;
       if (integerResource <= 0) return;
-      gameManager.PlayerInventory.AddItemToInventory(resourceData.ItemData, integerResource,
+      GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData, integerResource,
         transform.position);
       if (_cellData.durability <= 0) {
-        gameManager.PlayerInventory.AddAdditionalItem(resourceData, transform.position);
+        GameManager.Instance.PlayerInventory.AddAdditionalItem(resourceData, transform.position);
         //if cell is destroyed need to check for spawn left item
         if (resourceData.DropCount - _cellData.alreadyDroped > 0) {
-          gameManager.PlayerInventory.AddItemToInventory(resourceData.ItemData,
+          GameManager.Instance.PlayerInventory.AddItemToInventory(resourceData.ItemData,
             resourceData.DropCount - _cellData.alreadyDroped, transform.position);
         }
       }
@@ -142,13 +146,15 @@ namespace World {
     }
 
     public void DestroyObject() {
-      gameManager.QuestManager.StartQuest(1);
-      gameManager.ChunkController.TriggerCellDestroyed(this);
-      gameManager.CellObjectsPool.ReturnObject(this);
+      GameManager.Instance.QuestManager.StartQuest(1);
       var pos = transform.position;
+      ResetShake();
+      GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
+      GameManager.Instance.CellObjectsPool.ReturnObject(this);
       
-      var psGo = gameManager.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity).gameObject;
-      var ps = psGo.GetComponent<ParticleSystem>();
+      var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity).gameObject;
+      ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
+      //ps.startColor = resourceData.EffectColor;
       if (ps != null) {
         var main = ps.main;
         main.startColor = new ParticleSystem.MinMaxGradient(resourceData.EffectColor);
@@ -157,9 +163,13 @@ namespace World {
     }
 
     public void AfterDamageReceived() {
-      Debug.LogError("AfterDamageReceived");
+      if (gameObject == null) {
+        Debug.LogError("Cell AfterDamageReceived is NULL!!!!!!!!!!!!!!!!!");
+        return;
+      }
+      
       var pos = transform.position;
-      var psGo = gameManager.PoolEffects.SpawnFromPool("CellDamageEffect", pos, Quaternion.identity).gameObject;
+      var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDamageEffect", pos, Quaternion.identity).gameObject;
       var ps = psGo.GetComponent<ParticleSystem>();
       if (ps != null) {
         var main = ps.main;
@@ -167,8 +177,59 @@ namespace World {
       }
     }
 
+    private void Shake() {
+      ResetShake();
+
+      originalPosition = sprite.transform.position;
+      originalScale = sprite.transform.localScale;
+      float healthPercentage = GetHealth() / GetMaxHealth();
+
+      cellRenderer = GetCellRenderer();
+      originalSortingOrder = cellRenderer.sortingOrder;
+      cellRenderer.sortingOrder += 1;
+
+      GetDamageOverlayRenderer().sortingOrder = originalSortingOrder + 2;
+
+      float shakeDuration = Mathf.Lerp(cellStats.minShakeDuration, cellStats.maxShakeDuration, 1 - healthPercentage);
+      float shakeIntensity = Mathf.Lerp(cellStats.minShakeIntensity, cellStats.maxShakeIntensity, 1 - healthPercentage);
+      int vibrato = Mathf.RoundToInt(Mathf.Lerp(cellStats.minVibrato, cellStats.maxVibrato, 1 - healthPercentage));
+
+      float scaleFactorX = Mathf.Lerp(originalScale.x, cellStats.scaleFactor.x, 1 - healthPercentage);
+      float scaleFactorY = Mathf.Lerp(originalScale.y, cellStats.scaleFactor.y, 1 - healthPercentage);
+      Vector3 shakeScale = originalScale;
+      shakeScale.x *= scaleFactorX;
+      shakeScale.y *= scaleFactorY;
+      sprite.transform.localScale = shakeScale;
+
+      currentShakeTween = sprite.transform
+        .DOShakePosition(shakeDuration, shakeIntensity, vibrato, cellStats.randomness, false, true)
+        .OnComplete(() => ResetShake());
+    }
+
+    private void ResetShake() {
+      if (currentShakeTween == null) {
+        return;
+      }
+
+      currentShakeTween.Kill();
+      currentShakeTween = null;
+      sprite.transform.position = originalPosition;
+      sprite.transform.localScale = originalScale;
+      cellRenderer.sortingOrder = originalSortingOrder;
+      GetDamageOverlayRenderer().sortingOrder = originalSortingOrder + 1;
+    }
+
     public void ResetAll() {
+      ResetShake();
       damageOverlay.gameObject.SetActive(false);
+    }
+
+    private Renderer GetCellRenderer() {
+      if (cellRenderer == null) {
+        return sprite.GetComponent<Renderer>();
+      }
+
+      return cellRenderer;
     }
 
     private void UpdateDamageOverlay(float damage) {

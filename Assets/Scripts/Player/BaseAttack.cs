@@ -26,7 +26,6 @@ namespace Player {
     protected Vector2 colliderSize;
 
     private List<IDamageable> targets = new();
-    private List<IDamageable> iDamageables = new();
     [SerializeField] private bool isHighlightLock;
     [SerializeField] private Vector2 originalSize;
     [SerializeField] protected int lookDirection;
@@ -37,11 +36,9 @@ namespace Player {
     protected bool firstAttack;
     public PlayerStats PlayerStats => playerStats ??= GameManager.Instance.CurrPlayerController.PlayerStats;
 
-    //public bool shouldBeDamaging { get; private set; } = false;
-
     protected virtual void Awake() {
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
-      AnimationEventManager.onAttackEnded += HandleAnimationEnded;
+      //AnimationEventManager.onAttackEnded += HandleAnimationEnded;
       animParam = GameManager.Instance.AnimatorParameters;
       playerEquipment = GameManager.Instance.PlayerEquipment;
     }
@@ -154,18 +151,14 @@ namespace Player {
     }
 
     protected void Attack() {
-      //shouldBeDamaging = true;
       SetTargetsFromHighlight();
       foreach (var target in targets) {
-        if (target == null /*|| target.hasTakenDamage*/) continue;
+        if (target == null) continue;
         var damage = target.DamageableType == DamageableType.Enemy ? playerStats.EntityDamage : playerStats.BlockDamage;
         target.Damage(damage, true);
-        iDamageables.Add(target);
       }
 
       AfterTargetsTakenDamage(targets.Count);
-
-      ReturnAttackableToDamageable();
     }
 
     protected virtual void RangeAttack() {
@@ -176,25 +169,9 @@ namespace Player {
 
     private void SetTargetsFromHighlight() {
       foreach (var elem in objectHighlighter.Highlights) {
-        //Debug.LogError($"elem {elem.damageableRef}");
-        /*var pos = CoordsTransformer.WorldToGrid(elem.transform.position);
-        var cell = GameManager.Instance.ChunkController.GetCell(pos.X, pos.Y);
-        if (cell != null) targets.Add(cell);*/
         targets.Add(elem.damageableRef);
       }
     }
-
-    private void ReturnAttackableToDamageable() {
-      /*foreach (IDamageable damaged in iDamageables) {
-        damaged.hasTakenDamage = false;
-      }*/
-
-      iDamageables.Clear();
-    }
-
-    /*private void ShouldBeDamagingToFalse() {
-      shouldBeDamaging = false;
-    }*/
 
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
       if (go != gameObject) {
@@ -203,20 +180,23 @@ namespace Player {
 
       if (isRangedAttack) {
         RangeAttack();
-        return;
       }
+      else {
+        Attack();
 
-      Attack();
-
-      for (int i = 0; i < targets.Count; i++) {
-        targets[i]?.AfterDamageReceived();
+        for (int i = 0; i < targets.Count; i++) {
+          targets[i]?.AfterDamageReceived();
+        }
       }
+      
+      DestroyTarget();
     }
 
     private void HandleAnimationEnded(AnimationEvent animationEvent, GameObject go) {
+      Debug.LogError("Animation Ended");
       if (go != gameObject)
         return;
-      //ShouldBeDamagingToFalse();
+      
       DestroyTarget();
     }
 
@@ -236,15 +216,9 @@ namespace Player {
       targets.Clear();
     }
 
-    /*private void OnDrawGizmosSelected() {
-      var range = PlayerStats?.AttackRange ?? statsObject.attackRange;
-      Gizmos.DrawWireSphere(attackTransform.position, range);
-      Gizmos.color = Color.red;
-    }*/
-
     protected virtual void OnDestroy() {
       AnimationEventManager.onAttackStarted -= HandleAnimationStarted;
-      AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
+      //AnimationEventManager.onAttackEnded -= HandleAnimationEnded;
       if (GameManager.HasInstance) {
         GameManager.Instance.UserInput.OnAttackPerformed -= PressAttack;
         GameManager.Instance.UserInput.OnAttackCanceled -= CancelAttack;

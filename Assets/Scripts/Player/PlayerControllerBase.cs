@@ -239,6 +239,10 @@ namespace Player {
       _animator.SetFloat(animParam.VelocityYHash, 0f);
     }
 
+    public void ResetAttackParam() {
+      _animator.SetBool("IsAttacking", false);
+    }
+
     public void SetAnimatorRespawn() {
       _animator.SetTrigger("Respawn");
     }

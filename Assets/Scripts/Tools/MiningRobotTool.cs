@@ -321,6 +321,7 @@ namespace Tools {
       playerController.Stamina.EnableSprintScript(true);
       miningRobotController.Stamina.EnableSprintScript(false);
       miningRobotController.ResetAnimatorMovement();
+      miningRobotController.ResetAttackParam();
       GameManager.Instance.CurrPlayerController = playerController;
       GameManager.Instance.QuickSlotListener.Activate("MiningRobot", needActivateItem);
       needActivateItem = true;

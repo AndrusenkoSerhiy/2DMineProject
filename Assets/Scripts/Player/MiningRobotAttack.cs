@@ -1,6 +1,7 @@
 using System;
 using Audio;
 using Scriptables;
+using Tools;
 using UnityEngine;
 
 namespace Player {
@@ -13,6 +14,17 @@ namespace Player {
       base.Awake();
       LockHighlight(true);
       audioController = GameManager.Instance.AudioController;
+      MiningRobotTool.OnPlayerExitFromRobot += ExitFromRobot;
+    }
+
+    private void ExitFromRobot() {
+      if (!firstAttack) {
+        return;
+      }
+      //Try to stop attack when we exit from robot
+      base.CancelAttack(null, null);
+      audioController.StopAudio(drillSound);
+      audioController.PlayAudio(drillEndSound);
     }
 
     protected override void PressAttack(object sender, EventArgs e) {

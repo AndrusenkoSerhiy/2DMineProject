@@ -10,7 +10,7 @@ namespace Scriptables.Siege {
 
     public DifficultyEntry GetProfileByWeight(float totalWeight) {
       foreach (var entry in difficultyEntries) {
-        if (totalWeight >= entry.minWeight && totalWeight < entry.maxWeight) {
+        if (totalWeight >= entry.minWeight && totalWeight <= entry.maxWeight) {
           return entry;
         }
       }

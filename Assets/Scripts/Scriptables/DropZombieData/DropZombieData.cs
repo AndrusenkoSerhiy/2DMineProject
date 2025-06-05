@@ -14,6 +14,11 @@ namespace Scriptables.DropZombieData {
 
     public void DropItems(ZombieDifficultyProfile difficulty, Vector3 position) {
       var data = GetDropData(difficulty);
+      if (data == null) {
+        Debug.LogError("Drop zombie data is NULL!!!!!!!!!!!!!!!!!!");
+        return;  
+      }
+      
       var items = data.possibleItems;
       var maxItems = data.maxItems;
       var currItemsCount = 0;

@@ -20,7 +20,7 @@ namespace Inventory {
     private SaveLoadSystem saveLoadSystem;
 
     private List<string> weightItems = new();
-    private float weight = 0f;
+    [SerializeField]private float weight = 0f;
 
     //Inventories that are used in farm/craft
     public InventoriesPool InventoriesPool => inventoriesPool;

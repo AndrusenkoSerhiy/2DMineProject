@@ -119,7 +119,7 @@ namespace Menu {
       gameManager.UserInput.EnableInteractAction(false);
       videoPlayer.gameObject.SetActive(false);
       //ShowLoading();
-      gameManager.StartGameCameraController.ResetBeforeNewGame();
+      //gameManager.StartGameCameraController.ResetBeforeNewGame();
       gameManager.StartGameCameraController.Play();
       saveLoadSystem.NewGame();
       isNewGame = true;
@@ -163,6 +163,7 @@ namespace Menu {
     private void ExitToMainMenu() {
       saveLoadSystem.Save();
       gameManager.StartGameCameraController.Init();
+      gameManager.StartGameCameraController.ResetRobot();
       ShowMainMenu();
       OnExitToMainMenu?.Invoke();
     }

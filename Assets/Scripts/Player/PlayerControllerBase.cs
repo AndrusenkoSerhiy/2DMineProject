@@ -192,6 +192,14 @@ namespace Player {
     private void SetAnimBool(int hash, bool state) {
       _animator.SetBool(hash, state);
     }
+    
+    public void ResetRobotToDefault() {
+      //need to reset when only isBroken
+      if (_animator.GetBool("IsBroken")) {
+        _animator.SetBool("IsBroken", false);
+        _animator.SetTrigger("Repair");
+      }
+    }
 
     private void PlayLandingEffect() {
       if (fallingPs != null && fallingPs.activeSelf) fallingPs.SetActive(false);

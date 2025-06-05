@@ -132,7 +132,7 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
     
     if(!needActivate)
       return;
-    
+
     ActivateItemInSelectedSlot(slots[selectedSlotIndex]);
     OnActivate?.Invoke();
   }
@@ -176,9 +176,9 @@ public class QuickSlotListener : MonoBehaviour, ISaveLoad {
   }
 
   private void UpdateQuickSlotsAfterLoad() {
-    //Debug.LogError("UpdateQuickSlotsAfterLoad");
     userInterface.OnLoaded -= UpdateQuickSlotsAfterLoad;
     SubscribeToAddItem();
+    
     // Manually instantiate equipped items after loading the equipment
     for (var i = 0; i < slots.Length; i++) {
       var slot = slots[i];

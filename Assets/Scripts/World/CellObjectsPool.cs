@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Pool;
 
 namespace World {
   public class CellObjectsPool : MonoBehaviour {
@@ -45,6 +43,7 @@ namespace World {
       obj.IsActive = true;
       obj.ResetAll();
       obj.transform.position = pos;
+      obj.gameObject.SetActive(true);
     }
 
     public CellObject Get(Vector3 pos) {
@@ -64,6 +63,7 @@ namespace World {
     private void OnReturnedToPool(CellObject obj) {
       obj.transform.position = initialPos;
       obj.IsActive = false;
+      obj.gameObject.SetActive(false);
     }
 
     // Method to return an object to the pool

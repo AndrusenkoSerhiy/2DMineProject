@@ -8,7 +8,9 @@ using UnityEngine.Rendering.Universal;
 public class StartGameCameraController : MonoBehaviour {
   public CinemachineCamera cinemachineCamera;
   public Transform player;
+  public Transform robot;
   public Vector3 playerStartPosition;
+  public Vector3 robotStartPosition;
   public Vector3 cameraStartPosition;
   public float startOrthographicSize = 30f;
   public float targetOrthographicSize = 18f;
@@ -46,12 +48,22 @@ public class StartGameCameraController : MonoBehaviour {
     playerController.transform.SetParent(null);
     playerController.enabled = true;
     playerController.EnableCollider(true);
+    playerController.SetOrderInLayer(2);
     gameManager.CurrPlayerController = playerController;
   }
 
+  //only when we go to menu
+  public void ResetRobot() {
+    var gameManager = GameManager.Instance;
+    var robotController = gameManager.MiningRobotController;
+    robotController.SetLockPlayer(false);
+    robotController.ResetRobotToDefault();
+  }
   public void Init() {
+    ResetBeforeNewGame();
     SetPlayerToStartPosition();
     SetCameraToStartPosition();
+    SetRobotToStartPosition();
   }
 
   public void ResetPlayer() {
@@ -64,6 +76,10 @@ public class StartGameCameraController : MonoBehaviour {
     playerRb.simulated = false;
     playerRb.gravityScale = 200f;
     player.transform.position = playerStartPosition;
+  }
+  
+  private void SetRobotToStartPosition() {
+    robot.transform.localPosition = robotStartPosition;
   }
 
   private void SetCameraToStartPosition() {

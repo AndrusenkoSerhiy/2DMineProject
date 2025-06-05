@@ -104,6 +104,8 @@ namespace Tools {
 
       UpdateRobotPosition();
       if (robotLoadData is { IsPlayerInside: true }) {
+        //dont need activate after load
+        needActivateItem = false;
         SitOnRobot();
         ResetPlayerAnim();
       }

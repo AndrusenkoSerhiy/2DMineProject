@@ -148,7 +148,6 @@ namespace World {
     public void DestroyObject() {
       GameManager.Instance.QuestManager.StartQuest(1);
       var pos = transform.position;
-      ResetShake();
       GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
       GameManager.Instance.CellObjectsPool.ReturnObject(this);
       
@@ -163,11 +162,6 @@ namespace World {
     }
 
     public void AfterDamageReceived() {
-      if (gameObject == null) {
-        Debug.LogError("Cell AfterDamageReceived is NULL!!!!!!!!!!!!!!!!!");
-        return;
-      }
-      
       var pos = transform.position;
       var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDamageEffect", pos, Quaternion.identity).gameObject;
       var ps = psGo.GetComponent<ParticleSystem>();
@@ -177,50 +171,7 @@ namespace World {
       }
     }
 
-    private void Shake() {
-      ResetShake();
-
-      originalPosition = sprite.transform.position;
-      originalScale = sprite.transform.localScale;
-      float healthPercentage = GetHealth() / GetMaxHealth();
-
-      cellRenderer = GetCellRenderer();
-      originalSortingOrder = cellRenderer.sortingOrder;
-      cellRenderer.sortingOrder += 1;
-
-      GetDamageOverlayRenderer().sortingOrder = originalSortingOrder + 2;
-
-      float shakeDuration = Mathf.Lerp(cellStats.minShakeDuration, cellStats.maxShakeDuration, 1 - healthPercentage);
-      float shakeIntensity = Mathf.Lerp(cellStats.minShakeIntensity, cellStats.maxShakeIntensity, 1 - healthPercentage);
-      int vibrato = Mathf.RoundToInt(Mathf.Lerp(cellStats.minVibrato, cellStats.maxVibrato, 1 - healthPercentage));
-
-      float scaleFactorX = Mathf.Lerp(originalScale.x, cellStats.scaleFactor.x, 1 - healthPercentage);
-      float scaleFactorY = Mathf.Lerp(originalScale.y, cellStats.scaleFactor.y, 1 - healthPercentage);
-      Vector3 shakeScale = originalScale;
-      shakeScale.x *= scaleFactorX;
-      shakeScale.y *= scaleFactorY;
-      sprite.transform.localScale = shakeScale;
-
-      currentShakeTween = sprite.transform
-        .DOShakePosition(shakeDuration, shakeIntensity, vibrato, cellStats.randomness, false, true)
-        .OnComplete(() => ResetShake());
-    }
-
-    private void ResetShake() {
-      if (currentShakeTween == null) {
-        return;
-      }
-
-      currentShakeTween.Kill();
-      currentShakeTween = null;
-      sprite.transform.position = originalPosition;
-      sprite.transform.localScale = originalScale;
-      cellRenderer.sortingOrder = originalSortingOrder;
-      GetDamageOverlayRenderer().sortingOrder = originalSortingOrder + 1;
-    }
-
     public void ResetAll() {
-      ResetShake();
       damageOverlay.gameObject.SetActive(false);
     }
 

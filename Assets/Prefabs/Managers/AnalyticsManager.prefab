@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cd6cd9af47e4d09865e27e620527cda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  distributionTag: 1
   postgrestUrl: https://postgrest.olehm.site
   analyticsEnabled: 1
   onlyInBuild: 1

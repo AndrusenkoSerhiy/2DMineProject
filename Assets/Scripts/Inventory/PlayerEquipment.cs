@@ -145,7 +145,7 @@ namespace Inventory {
 
     private void PlaceItemInHand(Item item) {
       //show only food and tool in hand
-      if(item.info.Type != ItemType.Tool && item.info.Type != ItemType.Food)
+      if(item.info.Type == ItemType.Chest || item.info.Type == ItemType.BuildingBlock)
         return;
       
       var itemObject = item.info;

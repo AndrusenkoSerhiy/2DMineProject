@@ -258,6 +258,7 @@ namespace Inventory {
       groundObj.transform.position = gameManager.PlayerController.transform.position + new Vector3(0, 3, 0);
       groundObj.transform.rotation = Quaternion.identity;
       groundObj.Count = amount;
+      groundObj.Durability = item.Durability;
 
       gameManager.MessagesManager.ShowDroppedResourceMessage(item.info, amount);
       return true;

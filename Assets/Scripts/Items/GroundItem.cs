@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Interaction;
 using Scriptables.Items;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Items {
   public class GroundItem : MonoBehaviour, IInteractable {
@@ -15,9 +17,16 @@ namespace Items {
     private bool startMerging;
     private Coroutine destructionCoroutine;
 
+    private float? durability;
+
     public int Count {
       get => count;
       set => count = value;
+    }
+
+    public float? Durability {
+      get => durability;
+      set => durability = value;
     }
 
     public string InteractionText => $"Pickup {item.name}";
@@ -103,6 +112,7 @@ namespace Items {
       isPicked = false;
       count = 1;
       startMerging = false;
+      durability = null;
     }
 
     public bool Interact(PlayerInteractor playerInteractor) {
@@ -117,7 +127,8 @@ namespace Items {
         return false;
       }
 
-      var addedAmount = gameManager.PlayerInventory.AddItemToInventoryWithOverflowDrop(new Item(item), Count);
+      var addedAmount =
+        gameManager.PlayerInventory.AddItemToInventoryWithOverflowDrop(new Item(item, Durability), Count);
       gameManager.MessagesManager.ShowPickupResourceMessage(item, addedAmount);
 
       isPicked = true;

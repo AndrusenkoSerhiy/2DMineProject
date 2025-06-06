@@ -42,7 +42,7 @@ namespace Scriptables.Items {
       name = string.Empty;
     }
 
-    public Item(ItemObject item) {
+    public Item(ItemObject item, float? restoreDurability = null) {
       info = item;
       id = item.Id;
       name = item.Name;
@@ -50,7 +50,7 @@ namespace Scriptables.Items {
       if (item is IDurableItem durableItem) {
         durableItemRef = durableItem;
         hasDurability = true;
-        durability = durableItem.MaxDurability;
+        durability = restoreDurability ?? durableItem.MaxDurability;
         maxDurability = durableItem.MaxDurability;
       }
 

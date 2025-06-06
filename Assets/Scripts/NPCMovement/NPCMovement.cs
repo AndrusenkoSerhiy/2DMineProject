@@ -95,7 +95,8 @@ namespace NPCMovement
 
       //if we don't have obstacle or distance is too big then return
       if (obstacle == null || distanceToObstacle > 3.5f) {
-        if (actorCoords.X == currPlayer.X) {
+        //zombie attack cell under self
+        if (actorCoords.X == currPlayer.X && actorCoords.Y < currPlayer.Y) {
           StraightDown(actorCoords.X, actorCoords.Y);
         }
         hasObstacle = false;

@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using SaveSystem;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Analytics {
+  public enum DistributionTag {
+    Default,
+    Publisher,
+  }
+
   [Serializable]
   public class TimelineEvent {
     public string player_id;
@@ -13,6 +18,7 @@ namespace Analytics {
     public int play_time_seconds;
     public int idle_time_seconds;
     public int menu_time_seconds;
+    public string distribution_tag;
   }
 
   [Serializable]
@@ -21,11 +27,14 @@ namespace Analytics {
     public string session_id;
     public string event_name;
     public string metadata;
+    public string distribution_tag;
   }
 
   [DefaultExecutionOrder(-2)]
   public class AnalyticsManager : MonoBehaviour {
     public static AnalyticsManager Instance;
+
+    [Header("Metadata")] [SerializeField] private DistributionTag distributionTag = DistributionTag.Default;
 
     [Header("PostgREST Config")] [SerializeField]
     private string postgrestUrl = "https://postgrest.olehm.site";
@@ -49,6 +58,8 @@ namespace Analytics {
     private string token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoibmV1cmFsbW9ua2V5c191c2VyIn0.2ny64uTqnmdY8QHWFfvVt5X9XELn-f-80SW8YD-GOPc";
 
+    private HashSet<string> sentErrors = new();
+
     private void Awake() {
       if (Instance) {
         Destroy(gameObject);
@@ -68,6 +79,10 @@ namespace Analytics {
       playerId = PlayerPrefs.GetString("player_id");
       sessionId = Guid.NewGuid().ToString("N");
 
+      Application.logMessageReceived += HandleLog;
+      AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
+      TaskScheduler.UnobservedTaskException += HandleUnobservedTaskException;
+
 #if UNITY_EDITOR
       if (onlyInBuild) {
         analyticsEnabled = false;
@@ -83,6 +98,16 @@ namespace Analytics {
       if (analyticsEnabled) {
         StartCoroutine(TimelineUpdateCoroutine());
       }
+    }
+
+    private void OnDestroy() {
+      if (Instance != this) {
+        return;
+      }
+
+      Application.logMessageReceived -= HandleLog;
+      AppDomain.CurrentDomain.UnhandledException -= HandleUnhandledException;
+      TaskScheduler.UnobservedTaskException -= HandleUnobservedTaskException;
     }
 
     private IEnumerator TimelineUpdateCoroutine() {
@@ -112,12 +137,12 @@ namespace Analytics {
       await SendTimelineEvent(gameTime, idleTime, menuTime);
     }
 
-    public void LogItemCrafted(string item, int count) {
-      //SendGameEvent(analyticsEvent.ItemCrafted, $"{item}, {count}");
-    }
-
     public void LogStationPlaced(string stationName) {
       SendGameEvent(analyticsEvent.StationPlaced, stationName);
+    }
+
+    public void LogStationRemoved(string stationName) {
+      SendGameEvent(analyticsEvent.StationRemoved, stationName);
     }
 
     public void LogPlayerDied() {
@@ -132,8 +157,12 @@ namespace Analytics {
       SendGameEvent(analyticsEvent.UserInfo, GetSystemInfoText());
     }
 
-    public void LogProfileInfo(string profileName) {
-      SendGameEvent(analyticsEvent.ProfileSelected, profileName);
+    public void LogProfileContinueGame(string profileName) {
+      SendGameEvent(analyticsEvent.ContinueGame, profileName);
+    }
+
+    public void LogProfileNewGame(string profileName) {
+      SendGameEvent(analyticsEvent.NewGame, profileName);
     }
 
     private string GetSystemInfoText() {
@@ -161,7 +190,8 @@ namespace Analytics {
           player_id = playerId,
           session_id = sessionId,
           event_name = eventName,
-          metadata = metadata
+          metadata = metadata,
+          distribution_tag = distributionTag.ToString()
         };
 
         var json = JsonUtility.ToJson(ev);
@@ -197,7 +227,8 @@ namespace Analytics {
           session_id = sessionId,
           play_time_seconds = Mathf.RoundToInt(playTime),
           idle_time_seconds = Mathf.RoundToInt(idle),
-          menu_time_seconds = Mathf.RoundToInt(menu)
+          menu_time_seconds = Mathf.RoundToInt(menu),
+          distribution_tag = distributionTag.ToString()
         };
 
         var json = JsonUtility.ToJson(ev);
@@ -228,6 +259,45 @@ namespace Analytics {
       catch (Exception ex) {
         Debug.LogException(ex);
       }
+    }
+
+    private void HandleLog(string condition, string stackTrace, LogType type) {
+      if (type != LogType.Exception && type != LogType.Error) {
+        return;
+      }
+
+      var error = $"{condition}\n{stackTrace}";
+      TrySendUniqueError(analyticsEvent.LogError, error);
+    }
+
+    private void HandleUnhandledException(object sender, UnhandledExceptionEventArgs e) {
+      if (e.ExceptionObject is Exception ex) {
+        var error = $"{ex.Message}\n{ex.StackTrace}";
+        TrySendUniqueError(analyticsEvent.UnhandledException, error);
+      }
+      else {
+        TrySendUniqueError(analyticsEvent.UnhandledException, "Unknown exception");
+      }
+    }
+
+    private void HandleUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
+      var error = $"{e.Exception.Message}\n{e.Exception.StackTrace}";
+      TrySendUniqueError(analyticsEvent.UnobservedTaskException, error);
+      e.SetObserved();
+    }
+
+    private void TrySendUniqueError(string eventName, string errorMessage) {
+      if (!analyticsEnabled || string.IsNullOrEmpty(errorMessage)) {
+        return;
+      }
+
+      var hash = errorMessage.GetHashCode();
+      if (sentErrors.Contains(hash.ToString())) {
+        return;
+      }
+
+      sentErrors.Add(hash.ToString());
+      SendGameEvent(eventName, errorMessage);
     }
   }
 }

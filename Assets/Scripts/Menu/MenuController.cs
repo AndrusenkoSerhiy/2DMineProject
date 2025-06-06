@@ -36,15 +36,14 @@ namespace Menu {
 
     [Header("Profiles")] [SerializeField] private TextMeshProUGUI profileNameText;
     [SerializeField] private Button switchButton;
-    
+
     private GameManager gameManager;
     private SaveLoadSystem saveLoadSystem;
     [SerializeField] private Menu activeMenu = Menu.None;
     private bool locked;
     private bool cancelEnabled;
     public static event Action OnExitToMainMenu;
-    [Header("Cutscene")]
-    [SerializeField] private VideoPlayer videoPlayer;
+    [Header("Cutscene")] [SerializeField] private VideoPlayer videoPlayer;
     [SerializeField] private GameObject skipPrompt;
     [SerializeField] private bool isNewGame;
     public Menu ActiveMenu => activeMenu;
@@ -101,8 +100,8 @@ namespace Menu {
       gameManager.UserInput.controls.GamePlay.Interact.performed += StopCutscene;
       skipPrompt.SetActive(true);
     }
-    
-    
+
+
     private void HideSkip() {
       skipPrompt.SetActive(false);
     }
@@ -403,6 +402,9 @@ namespace Menu {
     private void StartNewGameClickHandler() {
       gameManager.AudioController.PlayUIClick();
       StartNewGame();
+
+      var profileName = saveLoadSystem.profilesData.CurrentProfile.Name;
+      AnalyticsManager.Instance.LogProfileNewGame(profileName);
     }
 
     private void ExitGameClickHandler() {
@@ -433,6 +435,9 @@ namespace Menu {
     private void ContinueGameClickHandler() {
       gameManager.AudioController.PlayUIClick();
       ContinueGame();
+
+      var profileName = saveLoadSystem.profilesData.CurrentProfile.Name;
+      AnalyticsManager.Instance.LogProfileContinueGame(profileName);
     }
   }
 }

@@ -269,7 +269,7 @@ public class PlaceCell : MonoBehaviour {
     childObject.transform.DOScale(Vector3.one, 0.5f).SetEase(spawnScaleCurve);
     GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position,
       Quaternion.identity);
-    
+
     AnalyticsManager.Instance.LogStationPlaced(item.name);
   }
 
@@ -280,6 +280,9 @@ public class PlaceCell : MonoBehaviour {
     SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
     GameManager.Instance.Locator.RemoveTarget(itemObject.Id);
     audioController.PlayTakeBuilding();
+
+    AnalyticsManager.Instance.LogStationRemoved(itemObject.name);
+
     return true;
   }
 

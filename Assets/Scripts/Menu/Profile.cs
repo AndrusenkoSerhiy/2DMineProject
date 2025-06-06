@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Analytics;
 using SaveSystem;
 using TMPro;
 using UnityEngine;
@@ -160,8 +159,6 @@ namespace Menu {
       GameManager.Instance.AudioController.PlayUIClick();
       saveLoadSystem.SetCurrentProfile(profileId, profileName);
       OnProfileSelected?.Invoke(profileId);
-      
-      AnalyticsManager.Instance.LogProfileInfo(profileName);
     }
   }
 }

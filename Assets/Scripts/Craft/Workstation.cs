@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Analytics;
 using Inventory;
 using Messages;
 using SaveSystem;
@@ -592,8 +591,6 @@ namespace Craft {
       AddItemToOutput(item, count);
 
       OnItemCrafted?.Invoke();
-
-      AnalyticsManager.Instance.LogItemCrafted(item.name, count);
 
       if (WorkstationObject.ShowSuccessCraftMessages && !craftManager.IsWindowOpen(Id)) {
         messageManager.ShowCraftMessage(inputRecipe.Result, 1);

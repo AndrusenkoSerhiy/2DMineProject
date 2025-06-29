@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Scriptables.POI;
 using UnityEditor;
 using UnityEngine;
@@ -7,6 +6,8 @@ using UnityEngine;
 namespace World {
   public class POISaver : MonoBehaviour {
     public string Name;
+    public int SizeX;
+    public int SizeY;
     public List<POICellObject> targetCellObjects = new();
 
 #if UNITY_EDITOR
@@ -14,10 +15,12 @@ namespace World {
     private void SavePOIData() {
       var poiData = ScriptableObject.CreateInstance<POIData>();
       poiData.name = Name;
+      poiData.SizeX = SizeX;
+      poiData.SizeY = SizeY;
       for (int i = 0; i < targetCellObjects.Count; i++) {
         var poiCell = new POICell() {
-          localX = targetCellObjects[i].LocalX,
-          localY = targetCellObjects[i].LocalY,
+          localX = Mathf.RoundToInt(targetCellObjects[i].transform.position.x/3.44f),
+          localY = SizeY - 1 - Mathf.RoundToInt(targetCellObjects[i].transform.position.y/3.44f),
           resourceData = targetCellObjects[i].CellObject.resourceData
         };
         poiData.SetCell(poiCell);

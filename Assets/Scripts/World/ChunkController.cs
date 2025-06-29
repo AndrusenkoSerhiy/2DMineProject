@@ -370,8 +370,8 @@ namespace World {
       
       //Get all empty points
       var emptyCells = new List<CellData>();
-      for (int i = 0; i < chunkData.width; i++) {
-        for (int j = 0; j < chunkData.width; j++) {
+      for (int i = 30; i < chunkData.width-30; i++) {
+        for (int j = 30; j < chunkData.width-30; j++) {
           if (IsRemoved(i, j)) {
             continue;
           }
@@ -394,14 +394,25 @@ namespace World {
         for (int j = 0; j < _poiDataLibrary.POIDataList[i].minCount; j++) {
           var randIndex = Random.Range(0, emptyCells.Count);
           var startCell = emptyCells[randIndex];
+          for (int k = 0; k < _poiDataLibrary.POIDataList[i].SizeX; k++) {
+            for (int l = 0; l < _poiDataLibrary.POIDataList[i].SizeY; l++) {
+              var xCoord = startCell.x + k;
+              var yCoord = startCell.y + l;
+              var cell = chunkData.GetCellData(xCoord, yCoord);
+              if(cell == null) continue;
+              cell.Destroy();
+            }
+          }
           for (int k = 0; k < _poiDataLibrary.POIDataList[i].Cells.Count; k++) {
-            var targetData = _poiDataLibrary.POIDataList[k].Cells[k];
+            var targetData = _poiDataLibrary.POIDataList[i].Cells[k];
             if (targetData == null) continue;
             var xCoord = startCell.x + targetData.localX;
             var yCoord = startCell.y + targetData.localY;
             if (xCoord == 258 && yCoord == 0) Debug.LogError($"the same coord 258 0");
-            var cell = chunkData.ForceCellFill(targetData.resourceData, xCoord, yCoord);
-            if (cell == null) continue;
+            var cell = chunkData.GetCellData(xCoord, yCoord);
+            if(cell == null) continue;
+            var cellFill = chunkData.ForceCellFill(targetData.resourceData, xCoord, yCoord);
+            if (cellFill == null) continue;
             
             emptyCells.Remove(cell);
             AfterCellChanged(cell);

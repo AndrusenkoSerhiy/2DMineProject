@@ -111,7 +111,7 @@ namespace World {
     }
 
     public CellData GetCellData(int xCoord, int yCoord) {
-      if (xCoord < 0 || xCoord > width || yCoord < 0 || yCoord > height) return null;
+      if (xCoord < 0 || xCoord >= width || yCoord < 0 || yCoord >= height) return null;
       return _cellDatas[xCoord, yCoord];
     }
 

@@ -130,13 +130,13 @@ namespace NPCMovement
         //if we have some cell above zombie need to destroy that
         var aboveCell = new Coords(actorCoords.X, actorCoords.Y - 1);
         if (CheckUP() && gameManager.ChunkController.ChunkData.GetCellFill(aboveCell.X, aboveCell.Y) == 1 &&
-            gameManager.ChunkController.ChunkData.GetCellData(aboveCell.X, aboveCell.Y).canTakeDamage) {
+            gameManager.ChunkController.GetCell(aboveCell.X, aboveCell.Y).CanGetDamage) {
           //Destroy cell above
           AttackCell(GetCellObject(aboveCell.X, aboveCell.Y));
         }
         else {
           if (gameManager.ChunkController.ChunkData.GetCellFill(upCellCoords.X, upCellCoords.Y) == 1 && 
-              gameManager.ChunkController.ChunkData.GetCellData(upCellCoords.X, upCellCoords.Y).canTakeDamage) {
+              gameManager.ChunkController.GetCell(upCellCoords.X, upCellCoords.Y).CanGetDamage) {
             AttackCell(GetCellObject(upCellCoords.X, upCellCoords.Y));
           }
           else {
@@ -172,7 +172,7 @@ namespace NPCMovement
     //use only zombie on the player and need dig down
     private void StraightDown(int x, int y) {
       if (gameManager.ChunkController.ChunkData.GetCellFill(x, y + 1) == 0 ||
-          !gameManager.ChunkController.ChunkData.GetCellData(x, y + 1).canTakeDamage)
+          !gameManager.ChunkController.GetCell(x, y + 1).CanGetDamage)
         return;
       
       AttackCell(GetCellObject(x, y + 1));

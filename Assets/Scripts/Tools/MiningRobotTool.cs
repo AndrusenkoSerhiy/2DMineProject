@@ -369,13 +369,13 @@ namespace Tools {
       var firstY = robotCoordsOutOfBounds.Y + 1;
 
       if (chunkController.ChunkData.GetCellFill(firstX, firstY).Equals(1)) {
-        if (state && chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage) {
-          chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage = false;
+        if (state && chunkController.GetCell(firstX, firstY).CanGetDamage) {
+          chunkController.GetCell(firstX, firstY).CanGetDamage = false;
           lockedCells[0] = 1;
         }
         else if (!state && lockedCells[0] == 1) {
           lockedCells[0] = 0;
-          chunkController.ChunkData.GetCellData(firstX, firstY).canTakeDamage = true;
+          chunkController.GetCell(firstX, firstY).CanGetDamage = true;
         }
       }
     }

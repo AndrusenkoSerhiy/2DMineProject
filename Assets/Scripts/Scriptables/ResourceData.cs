@@ -49,5 +49,6 @@ namespace Scriptables {
     //public bool IsBuilding => isBuilding;
     public Vector2 CellSize => cellSize;
     public bool debug;
+    public bool CanTakeDamage;
   }
 }

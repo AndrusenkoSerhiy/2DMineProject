@@ -13,7 +13,7 @@ namespace World {
     public int alreadyDroped;
     //how exactly we close to drop item
     public float fractionalResource;
-    public bool canTakeDamage = true;
+    //public bool canTakeDamage = true;
     private ChunkData _chunk;
     private ResourceData resData;
     public int NeighboursIndex => neighboursIndex();
@@ -33,9 +33,9 @@ namespace World {
     }
 
     //use for don't allow to break the cell under the building
-    public void SetCanTakeDamage(bool value) {
+    /*public void SetCanTakeDamage(bool value) {
       canTakeDamage = value;
-    }
+    }*/
     private int neighboursIndex() {
       //allNeighbours
       if (_chunk.GetCellFill(x, y - 1, perlin) == 1 &&

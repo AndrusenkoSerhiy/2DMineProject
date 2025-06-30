@@ -48,6 +48,7 @@ namespace World {
       }
       _cellData = cellData;
       resourceData = data;
+      CanGetDamage = resourceData.CanTakeDamage;
       InitUnitHealth();
     }
 
@@ -84,7 +85,7 @@ namespace World {
     }
 
     public void Damage(float damage, bool isPlayer) {
-      if (!_cellData.canTakeDamage)
+      if (!CanGetDamage)
         return;
       unitHealth.TakeDamage(damage, isPlayer);
       DamageAudio();

@@ -330,7 +330,7 @@ namespace World {
           var cell = chunkData.GetCellData(i, j);
           cell.perlin = 0.75f;
           cell.durability = data.Durability;
-          cell.canTakeDamage = false;
+          //cell.canTakeDamage = false;
           chunkData.SetCellFill(i, j);
         }
       }

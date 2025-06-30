@@ -312,7 +312,7 @@ public class PlaceCell : MonoBehaviour {
     var coordY = startY + 1;
     for (var x = 0; x < objectSizeX; x++) {
       var coordX = startX + x;
-      chunkController.ChunkData.GetCellData(coordX, coordY).canTakeDamage = isDamageable;
+      chunkController.GetCell(coordX, coordY).CanGetDamage = isDamageable;
       //Debug.DrawRay(CoordsTransformer.GridToWorld(coordX, coordY), Vector3.up, Color.green, 100f);
     }
   }

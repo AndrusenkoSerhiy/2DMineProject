@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23419512bd349d18debac7d35c1f6fe, type: 3}
+  m_Name: ObsidianData
+  m_EditorClassIdentifier: 
+  Durability: 15
+  DropCount: 1
+  tileDatas:
+  - sprite: {fileID: 21300000, guid: fedcb87a997216d4e8c5f3aba2f2c6ff, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 0adfb047dc4a10442a71618e0e2177fa, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: b0c1b6b1918b1e94e80bf65281bc381c, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 9444f5f3a1c08d94fb0e45f10dc3434e, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 8a4343a3f2198d749ad9f90b0f3c528a, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 20e24c114102d8f4d97fc9ecbd127d48, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 6805269e53e26be489583227a3a31db7, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 5e683155ff32a574680d7f9a7d2f964b, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 8c1a391f8faf77c4aaf31b212445cedb, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 893fa590d88f24c49999ad211b50c081, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 4ba2baab91f3fef4ebe5ac42ffa42013, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: f32462bd74f54594185dbfb23a058c64, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: f41e8bbc1f1e9854f860ddc5174e3f3b, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: c9d7829bc4aed9d4e942c867cc5ddf9e, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 8d75dc50caa1d4d4c90c6aaabd7242a0, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 9dc07b39c1ee5cf41b714ae1dad39a8e, type: 3}
+    offsetSorting: 0
+  sortingOrder: 2
+  itemData: {fileID: 0}
+  mapColor: {r: 0.15239471, g: 0, b: 0.26415092, a: 1}
+  effectColor: {r: 0.5803922, g: 0.7764706, b: 1, a: 1}
+  previewColor: {r: 0.32156864, g: 0.7529412, b: 1, a: 0.3137255}
+  blockColor: {r: 1, g: 0.3372549, b: 0.3372549, a: 0.3137255}
+  colliderOffset: {x: 0, y: 0}
+  colliderSize: {x: 3.44, y: 3.44}
+  cellSize: {x: 1, y: 1}
+  bonusResources: []
+  OnTakeDamageAudioData: {fileID: 11400000, guid: 0596818a34c85cd4495b643126df5e89, type: 2}
+  debug: 0
+  CanTakeDamage: 1

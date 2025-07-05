@@ -252,7 +252,7 @@ public class PlaceCell : MonoBehaviour {
     //Debug.LogError($"spawn build {coords.X}, {coords.Y}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     AfterPlaceCellActions(build);
     var test = CoordsTransformer.MouseToGridPosition(pos);
-    SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
+    //SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
 
     var item = GetSelectedSlot().Item;
     GameManager.Instance.Locator.SetTarget(pos, item.id);
@@ -277,7 +277,7 @@ public class PlaceCell : MonoBehaviour {
     var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
     var worldCoords = CoordsTransformer.WorldToGridBuildings(buildObject.transform.position);
     chunkController.RemoveBuild(buildObject);
-    SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
+    //SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
     GameManager.Instance.Locator.RemoveTarget(itemObject.Id);
     audioController.PlayTakeBuilding();
 
@@ -308,14 +308,14 @@ public class PlaceCell : MonoBehaviour {
       Quaternion.identity);
   }
 
-  private void SetCellsUndamegable(int startX, int startY, int objectSizeX, bool isDamageable = false) {
+  /*private void SetCellsUndamegable(int startX, int startY, int objectSizeX, bool isDamageable = false) {
     var coordY = startY + 1;
     for (var x = 0; x < objectSizeX; x++) {
       var coordX = startX + x;
       chunkController.GetCell(coordX, coordY).CanGetDamage = isDamageable;
       //Debug.DrawRay(CoordsTransformer.GridToWorld(coordX, coordY), Vector3.up, Color.green, 100f);
     }
-  }
+  }*/
 
   private void AfterPlaceCellActions(BuildingDataObject build) {
     build.TryGetComponent<Workbench>(out var worckbench);

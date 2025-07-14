@@ -10,7 +10,7 @@ namespace World {
     public bool IsActive = false;
     [SerializeField] private CellStats cellStats;
     [SerializeField] private SpriteAtlas atlasRef;
-    [SerializeField] private SpriteRenderer sprite;
+    public SpriteRenderer sprite;
     [SerializeField] private BoxCollider2D boxCollider2D;
     [SerializeField] private ObjectHighlight highlight;
     [SerializeField] private Transform damageOverlay;

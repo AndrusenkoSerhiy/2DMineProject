@@ -12,7 +12,7 @@ namespace World {
 
 #if UNITY_EDITOR
     [ContextMenu("Create POIData")]
-    private void SavePOIData() {
+    public void SavePOIData() {
       var poiData = ScriptableObject.CreateInstance<POIData>();
       poiData.name = Name;
       poiData.SizeX = SizeX;

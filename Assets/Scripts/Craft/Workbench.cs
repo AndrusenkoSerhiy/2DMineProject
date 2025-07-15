@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Interaction;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Craft {
     [SerializeField] private bool hasHoldInteraction = true;
 
     private List<CellObject> baseCells = new();
+    private readonly Dictionary<CellObject, Action> cellDestroyedHandlers = new();
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
@@ -27,23 +29,35 @@ namespace Craft {
       return true;
     }
 
-    public void SetBaseCells(List<CellObject> cells) {
-      baseCells.Clear();
-
-      if (cells == null || cells.Count == 0) {
-        return;
+    public void ClearBaseCells() {
+      foreach (var kvp in cellDestroyedHandlers) {
+        kvp.Key.OnDestroyed -= kvp.Value;
       }
+
+      cellDestroyedHandlers.Clear();
+      baseCells.Clear();
+    }
+
+    public void SetBaseCells(List<CellObject> cells) {
+      ClearBaseCells();
 
       baseCells = cells;
 
       foreach (var cell in cells) {
-        cell.OnDestroyed += () => OnBaseCellDestroyedHandler(cell);
+        Action handler = () => OnBaseCellDestroyedHandler(cell);
+        cellDestroyedHandlers[cell] = handler;
+        cell.OnDestroyed += handler;
       }
     }
 
     private void OnBaseCellDestroyedHandler(CellObject cell) {
       if (baseCells == null || baseCells.Count == 0) {
         return;
+      }
+
+      if (cellDestroyedHandlers.TryGetValue(cell, out var handler)) {
+        cell.OnDestroyed -= handler;
+        cellDestroyedHandlers.Remove(cell);
       }
 
       baseCells.Remove(cell);

@@ -52,6 +52,10 @@ namespace World {
     public static Coords GridToBuildingsGrid(int x_original, int y_original) {
       return new Coords(x_original, y_original + GameManager.Instance.GameConfig.BuildingAreaYDiff);
     }
+    
+    public static Coords BuildingsGridToGrid(Coords original) {
+      return new Coords(original.X, original.Y - GameManager.Instance.GameConfig.BuildingAreaYDiff);
+    }
 
     public static Vector3 OutOfGridToWorls(int x_original, int y_original) {
       var x = (x_original - GameManager.Instance.GameConfig.OriginCol) * GameManager.Instance.GameConfig.CellSizeX;

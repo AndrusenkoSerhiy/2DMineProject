@@ -252,6 +252,7 @@ public class PlaceCell : MonoBehaviour {
     var build = chunkController.SpawnBuild(coords, buildingData);
     //Debug.LogError($"spawn build {coords.X}, {coords.Y}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     var posCoords = CoordsTransformer.MouseToGridPosition(pos);
+
     AfterPlaceCellActions(build, posCoords);
     //SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
 
@@ -275,12 +276,14 @@ public class PlaceCell : MonoBehaviour {
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject, ItemObject itemObject) {
-    var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
-    var worldCoords = CoordsTransformer.WorldToGridBuildings(buildObject.transform.position);
+    // var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
+    // var worldCoords = CoordsTransformer.WorldToGridBuildings(buildObject.transform.position);
     chunkController.RemoveBuild(buildObject);
     //SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
     GameManager.Instance.Locator.RemoveTarget(itemObject.Id);
     audioController.PlayTakeBuilding();
+
+    AfterBuildingRemoved(buildObject);
 
     AnalyticsManager.Instance.LogStationRemoved(itemObject.name);
 
@@ -318,7 +321,7 @@ public class PlaceCell : MonoBehaviour {
     }
   }*/
 
-  private void AfterPlaceCellActions(BuildingDataObject build, Coords coords) {
+  public void AfterPlaceCellActions(BuildingDataObject build, Coords coords) {
     if (build.TryGetComponent<Workbench>(out var workbench)) {
       var station = workbench.StationObject;
       if (!station) {
@@ -344,6 +347,12 @@ public class PlaceCell : MonoBehaviour {
     }
 
     baseCellHolder.SetBaseCells(cells);
+  }
+
+  public void AfterBuildingRemoved(BuildingDataObject build) {
+    if (build.TryGetComponent<IBaseCellHolder>(out var cellHolder)) {
+      cellHolder.ClearBaseCells();
+    }
   }
 
   private void PlayBuildingPlaceSound() {

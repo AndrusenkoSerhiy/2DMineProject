@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Windows;
 using Interaction;
 using Scriptables.Items;
@@ -25,6 +26,7 @@ namespace Inventory {
     private string entityId;
 
     private List<CellObject> baseCells = new();
+    private readonly Dictionary<CellObject, Action> cellDestroyedHandlers = new();
 
     private void Awake() {
       gameManager = GameManager.Instance;
@@ -89,23 +91,35 @@ namespace Inventory {
       return entityId;
     }
 
-    public void SetBaseCells(List<CellObject> cells) {
-      baseCells.Clear();
-
-      if (cells == null || cells.Count == 0) {
-        return;
+    public void ClearBaseCells() {
+      foreach (var kvp in cellDestroyedHandlers) {
+        kvp.Key.OnDestroyed -= kvp.Value;
       }
+
+      cellDestroyedHandlers.Clear();
+      baseCells.Clear();
+    }
+    
+    public void SetBaseCells(List<CellObject> cells) {
+      ClearBaseCells();
 
       baseCells = cells;
 
       foreach (var cell in cells) {
-        cell.OnDestroyed += () => OnBaseCellDestroyedHandler(cell);
+        Action handler = () => OnBaseCellDestroyedHandler(cell);
+        cellDestroyedHandlers[cell] = handler;
+        cell.OnDestroyed += handler;
       }
     }
 
     private void OnBaseCellDestroyedHandler(CellObject cell) {
       if (baseCells == null || baseCells.Count == 0) {
         return;
+      }
+
+      if (cellDestroyedHandlers.TryGetValue(cell, out var handler)) {
+        cell.OnDestroyed -= handler;
+        cellDestroyedHandlers.Remove(cell);
       }
 
       baseCells.Remove(cell);

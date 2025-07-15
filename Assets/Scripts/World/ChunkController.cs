@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Craft;
+using Inventory;
 using SaveSystem;
 using Scriptables;
 using Scriptables.POI;
@@ -200,8 +202,11 @@ namespace World {
           }
 
           var buildData = GameManager.Instance.BuildingsDataController.GetBuildData(i, j);
-          if (buildData)
-            _activeBuildObjects[_proxyCoords] = SpawnBuild(_proxyCoords, buildData);
+          if (buildData) {
+            var building = SpawnBuild(_proxyCoords, buildData);
+            _activeBuildObjects[_proxyCoords] = building;
+            AfterBuildingGet(building, _proxyCoords);
+          }
         }
       }
 
@@ -255,6 +260,7 @@ namespace World {
         if (Mathf.Abs(playerCoordsBuild.X - coord.X) > visionOffsetX ||
             Mathf.Abs(playerCoordsBuild.Y - coord.Y) > visionOffsetY) {
           BuildPoolsController.ReturnObject(_activeBuildObjects[coord]);
+          AfterBuildingReturned(_activeBuildObjects[coord]);
           clearList.Add(coord);
         }
       }
@@ -265,6 +271,15 @@ namespace World {
 
       clearList.Clear();
       SpawnNearbyCells();
+    }
+
+    private void AfterBuildingGet(BuildingDataObject activeBuildObject, Coords coords) {
+      var pos = CoordsTransformer.BuildingsGridToGrid(coords);
+      GameManager.Instance.PlaceCell.AfterPlaceCellActions(activeBuildObject, pos);
+    }
+
+    private void AfterBuildingReturned(BuildingDataObject activeBuildObject) {
+      GameManager.Instance.PlaceCell.AfterBuildingRemoved(activeBuildObject);
     }
 
     private void RemoveCellFromActives(Coords coords) {
@@ -367,11 +382,11 @@ namespace World {
       if (!SaveLoadSystem.Instance.IsNewGame()) {
         return;
       }
-      
+
       //Get all empty points
       var emptyCells = new List<CellData>();
-      for (int i = 30; i < chunkData.width-30; i++) {
-        for (int j = 30; j < chunkData.width-30; j++) {
+      for (int i = 30; i < chunkData.width - 30; i++) {
+        for (int j = 30; j < chunkData.width - 30; j++) {
           if (IsRemoved(i, j)) {
             continue;
           }
@@ -399,10 +414,11 @@ namespace World {
               var xCoord = startCell.x + k;
               var yCoord = startCell.y + l;
               var cell = chunkData.GetCellData(xCoord, yCoord);
-              if(cell == null) continue;
+              if (cell == null) continue;
               cell.Destroy();
             }
           }
+
           for (int k = 0; k < _poiDataLibrary.POIDataList[i].Cells.Count; k++) {
             var targetData = _poiDataLibrary.POIDataList[i].Cells[k];
             if (targetData == null) continue;
@@ -410,13 +426,13 @@ namespace World {
             var yCoord = startCell.y + targetData.localY;
             if (xCoord == 258 && yCoord == 0) Debug.LogError($"the same coord 258 0");
             var cell = chunkData.GetCellData(xCoord, yCoord);
-            if(cell == null) continue;
+            if (cell == null) continue;
             var cellFill = chunkData.ForceCellFill(targetData.resourceData, xCoord, yCoord);
             if (cellFill == null) continue;
-            
+
             emptyCells.Remove(cell);
             AfterCellChanged(cell);
-            
+
             if (emptyCells.Count == 0) return;
           }
         }

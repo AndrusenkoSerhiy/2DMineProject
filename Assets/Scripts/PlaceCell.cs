@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Windows;
 using Analytics;
 using Audio;
@@ -250,8 +251,8 @@ public class PlaceCell : MonoBehaviour {
     var coords = CoordsTransformer.WorldToGridBuildings(pos);
     var build = chunkController.SpawnBuild(coords, buildingData);
     //Debug.LogError($"spawn build {coords.X}, {coords.Y}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    AfterPlaceCellActions(build);
-    var test = CoordsTransformer.MouseToGridPosition(pos);
+    var posCoords = CoordsTransformer.MouseToGridPosition(pos);
+    AfterPlaceCellActions(build, posCoords);
     //SetCellsUndamegable(test.X, test.Y, build.Building.SizeX);
 
     var item = GetSelectedSlot().Item;
@@ -317,18 +318,32 @@ public class PlaceCell : MonoBehaviour {
     }
   }*/
 
-  private void AfterPlaceCellActions(BuildingDataObject build) {
-    build.TryGetComponent<Workbench>(out var worckbench);
-    if (!worckbench) {
-      return;
+  private void AfterPlaceCellActions(BuildingDataObject build, Coords coords) {
+    if (build.TryGetComponent<Workbench>(out var workbench)) {
+      var station = workbench.StationObject;
+      if (!station) {
+        return;
+      }
+
+      GameManager.Instance.RecipesManager.UnlockStation(station.RecipeType);
+      AfterPlaceCellWithBaseCells(workbench, coords, build.Building.SizeX);
+    }
+    else if (build.TryGetComponent<Storage>(out var storage)) {
+      AfterPlaceCellWithBaseCells(storage, coords, build.Building.SizeX);
+    }
+  }
+
+  private void AfterPlaceCellWithBaseCells(IBaseCellHolder baseCellHolder, Coords coords, int sizeX) {
+    var cells = new List<CellObject>();
+    var coordY = coords.Y + 1;
+    for (var x = 0; x < sizeX; x++) {
+      var coordX = coords.X + x;
+      var cell = chunkController.GetCell(coordX, coordY);
+      cells.Add(cell);
+      // Debug.DrawRay(CoordsTransformer.GridToWorld(coordX, coordY), Vector3.up, Color.green, 100f);
     }
 
-    var station = worckbench.StationObject;
-    if (station == null) {
-      return;
-    }
-
-    GameManager.Instance.RecipesManager.UnlockStation(station.RecipeType);
+    baseCellHolder.SetBaseCells(cells);
   }
 
   private void PlayBuildingPlaceSound() {

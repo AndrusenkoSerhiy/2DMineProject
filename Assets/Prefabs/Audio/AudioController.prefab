@@ -72,6 +72,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: df4e8c789a0feb044bc3077e49a12f08, type: 2}
   - {fileID: 11400000, guid: 9d9f13097e96d3e44b50ceefdfa77a57, type: 2}
   playerDeath: {fileID: 11400000, guid: 609c893a4de7710499ab31c11f0e2e21, type: 2}
+  robotStep: {fileID: 11400000, guid: e9b0311661a377a4788ddc2e14cda849, type: 2}
+  workstationDestroyed: {fileID: 11400000, guid: c93514c3fe8d8ed4da6c73477ad799e5, type: 2}
+  storageDestroyed: {fileID: 11400000, guid: 194a02850fb1465408f9547d09ca5094, type: 2}
 --- !u!1 &1201469009489140599
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,6 +411,20 @@ MonoBehaviour:
   - data: {fileID: 11400000, guid: 609f1cf41f907a642b3dbb7a7b705693, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: 3f730ab530fb9ee4085fddced1176eb8, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 370aafa10ece9834e82b2811ff491712, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: afa889627c5c12641af4fc1f59d44b04, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: e9b0311661a377a4788ddc2e14cda849, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: e9b0311661a377a4788ddc2e14cda849, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: e9b0311661a377a4788ddc2e14cda849, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: c93514c3fe8d8ed4da6c73477ad799e5, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 194a02850fb1465408f9547d09ca5094, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
 --- !u!1 &6473485979532965659
 GameObject:

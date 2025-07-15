@@ -8,6 +8,7 @@ using Messages;
 using SaveSystem;
 using Scriptables.Craft;
 using Scriptables.Items;
+using UnityEngine;
 using World;
 
 namespace Craft {
@@ -98,6 +99,58 @@ namespace Craft {
         ? $"{stationObject.name}_{buildObject.transform.position.x}_{buildObject.transform.position.y}".ToLower()
         : stationObject.name.ToLower();
     }
+
+    #region Stop and Drop
+
+    public void StopAndDropItems(Vector3 spawnPosition) {
+      PauseCraft();
+
+      var playerInventory = gameManager.PlayerInventory;
+
+      //spawn resources from inputs
+      foreach (var input in Inputs) {
+        foreach (var material in input.Recipe.RequiredMaterials) {
+          var totalCount = input.Count * material.Amount;
+          var item = new Item(material.Material);
+          playerInventory.SpawnItem(item, totalCount, spawnPosition);
+        }
+      }
+
+      Inputs.Clear();
+
+      //spawn resources from output
+      var outputInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(OutputInventoryType, Id);
+      if (outputInventory != null) {
+        foreach (var slot in outputInventory.Slots) {
+          if (slot.isEmpty) {
+            continue;
+          }
+
+          playerInventory.SpawnItem(slot.Item, slot.amount, spawnPosition);
+        }
+
+        outputInventory.Clear();
+      }
+
+      //spawn resources from fuel
+      var fuelInventoryTmp = GetFuelInventory();
+      if (fuelInventoryTmp != null) {
+        foreach (var slot in fuelInventoryTmp.Slots) {
+          if (slot.isEmpty) {
+            continue;
+          }
+
+          playerInventory.SpawnItem(slot.Item, slot.amount, spawnPosition);
+        }
+
+        fuelInventoryTmp.Clear();
+      }
+
+      CancelCraftProcess();
+      CurrentProgress.Reset();
+    }
+
+    #endregion
 
     #region Inventories
 

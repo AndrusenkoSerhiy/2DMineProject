@@ -1,11 +1,12 @@
-﻿using Windows;
+﻿using System.Collections.Generic;
+using Windows;
 using Interaction;
 using Scriptables.Items;
 using UnityEngine;
 using World;
 
 namespace Inventory {
-  public class Storage : MonoBehaviour, IInteractable {
+  public class Storage : MonoBehaviour, IInteractable, IBaseCellHolder {
     [SerializeField] private GameObject interfacePrefab;
     [SerializeField] private string interactText;
     [SerializeField] private string holdInteractText;
@@ -13,6 +14,7 @@ namespace Inventory {
     [SerializeField] private BuildingDataObject buildObject;
     [SerializeField] private ItemObject storageItemObject;
     [SerializeField] private bool hasHoldInteraction = true;
+
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
@@ -21,6 +23,8 @@ namespace Inventory {
     private GameManager gameManager;
     private string id;
     private string entityId;
+
+    private List<CellObject> baseCells = new();
 
     private void Awake() {
       gameManager = GameManager.Instance;
@@ -83,6 +87,52 @@ namespace Inventory {
       }
 
       return entityId;
+    }
+
+    public void SetBaseCells(List<CellObject> cells) {
+      baseCells.Clear();
+
+      if (cells == null || cells.Count == 0) {
+        return;
+      }
+
+      baseCells = cells;
+
+      foreach (var cell in cells) {
+        cell.OnDestroyed += () => OnBaseCellDestroyedHandler(cell);
+      }
+    }
+
+    private void OnBaseCellDestroyedHandler(CellObject cell) {
+      if (baseCells == null || baseCells.Count == 0) {
+        return;
+      }
+
+      baseCells.Remove(cell);
+
+      if (baseCells.Count > 0) {
+        return;
+      }
+
+      var storageInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, GetId());
+      if (storageInventory != null) {
+        foreach (var slot in storageInventory.Slots) {
+          if (slot.isEmpty) {
+            continue;
+          }
+
+          gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount, transform.position);
+        }
+
+        storageInventory.Clear();
+      }
+
+      gameManager.PlaceCell.RemoveBuilding(buildObject, storageItemObject);
+
+      gameManager.MessagesManager.ShowSimpleMessage("Storage destroyed");
+
+      gameManager.PoolEffects.SpawnFromPool("PlaceCellEffect", transform.position, Quaternion.identity);
+      gameManager.AudioController.PlayStorageDestroyed();
     }
   }
 }

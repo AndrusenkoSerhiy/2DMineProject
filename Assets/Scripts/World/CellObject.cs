@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using DG.Tweening;
 using Player;
@@ -15,10 +16,12 @@ namespace World {
     [SerializeField] private ObjectHighlight highlight;
     [SerializeField] private Transform damageOverlay;
     [SerializeField] private Sprite[] damageOverlays;
-    
+
     public DamageableType DamageableType { get; set; }
     public AudioData OnTakeDamageAudioData { get; set; }
     public bool CanGetDamage { get; set; }
+
+    public event Action OnDestroyed;
 
     public ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
@@ -46,6 +49,7 @@ namespace World {
       if (data.OnTakeDamageAudioData) {
         OnTakeDamageAudioData = data.OnTakeDamageAudioData;
       }
+
       _cellData = cellData;
       resourceData = data;
       CanGetDamage = resourceData.CanTakeDamage;
@@ -91,7 +95,7 @@ namespace World {
       DamageAudio();
       UpdateDamageOverlay(damage);
     }
-    
+
     private void DamageAudio() {
       if (!OnTakeDamageAudioData) {
         return;
@@ -151,20 +155,25 @@ namespace World {
       var pos = transform.position;
       GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
       GameManager.Instance.CellObjectsPool.ReturnObject(this);
-      
-      var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity).gameObject;
+
+      var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity)
+        .gameObject;
       ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
       //ps.startColor = resourceData.EffectColor;
       if (ps != null) {
         var main = ps.main;
         main.startColor = new ParticleSystem.MinMaxGradient(resourceData.EffectColor);
       }
+
       highlight.SetHighlight(false);
+
+      OnDestroyed?.Invoke();
     }
 
     public void AfterDamageReceived() {
       var pos = transform.position;
-      var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDamageEffect", pos, Quaternion.identity).gameObject;
+      var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDamageEffect", pos, Quaternion.identity)
+        .gameObject;
       var ps = psGo.GetComponent<ParticleSystem>();
       if (ps != null) {
         var main = ps.main;

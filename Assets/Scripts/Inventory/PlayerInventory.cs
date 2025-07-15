@@ -20,7 +20,7 @@ namespace Inventory {
     private SaveLoadSystem saveLoadSystem;
 
     private List<string> weightItems = new();
-    [SerializeField]private float weight = 0f;
+    [SerializeField] private float weight = 0f;
 
     //Inventories that are used in farm/craft
     public InventoriesPool InventoriesPool => inventoriesPool;
@@ -243,7 +243,7 @@ namespace Inventory {
       return inventoriesPool.CanAddItem(item);
     }
 
-    public bool SpawnItem(Item item, int amount) {
+    public bool SpawnItem(Item item, int amount, Vector3? spawnPosition = null) {
       if (item.isEmpty || item.info.spawnPrefab == null) {
         return false;
       }
@@ -255,7 +255,9 @@ namespace Inventory {
         return false;
       }
 
-      groundObj.transform.position = gameManager.PlayerController.transform.position + new Vector3(0, 3, 0);
+      var pos = spawnPosition ?? gameManager.PlayerController.transform.position;
+
+      groundObj.transform.position = pos + new Vector3(0, 3, 0);
       groundObj.transform.rotation = Quaternion.identity;
       groundObj.Count = amount;
       groundObj.Durability = item.Durability;

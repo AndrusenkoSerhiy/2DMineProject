@@ -9,13 +9,13 @@ namespace Craft {
   public class Crafter : MonoBehaviour, ISaveLoad {
     [SerializeField] private GameObject interfacePrefab;
     [SerializeField] protected WorkstationObject stationObject;
-    [SerializeField] private BuildingDataObject buildObject;
+    [SerializeField] protected BuildingDataObject buildObject;
 
     protected GameManager gameManager;
     private CraftWindow craftWindow;
     private GameObject craftWindowObj;
     private Window window;
-    private Workstation station;
+    protected Workstation station;
     private string id;
 
     public WorkstationObject StationObject => stationObject;

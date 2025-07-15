@@ -29,6 +29,8 @@ namespace Audio {
     [SerializeField] private List<AudioData> playerDamaged;
     [SerializeField] private AudioData playerDeath;
     [SerializeField] private AudioData robotStep;
+    [SerializeField] private AudioData workstationDestroyed;
+    [SerializeField] private AudioData storageDestroyed;
 
     public async Task PreloadAsync(AudioData audioData) {
       await soundPooler.PreloadAudioAsync(audioData, GetRootTransform(audioData.type));
@@ -98,6 +100,8 @@ namespace Audio {
     public AudioEmmiter PlayPlaceBuildingBlock() => PlayAudio(placeBuildingBlock);
     public AudioEmmiter PlayPlayerJump() => PlayAudio(playerJump);
     public AudioEmmiter PlayPlayerJumpLanding() => PlayAudio(playerJumpLanding);
+    public AudioEmmiter PlayWorkstationDestroyed() => PlayAudio(workstationDestroyed);
+    public AudioEmmiter PlayStorageDestroyed() => PlayAudio(storageDestroyed);
 
     public void PlayPlayerLeftStep() {
       if (!GameManager.Instance.PlayerController.enabled ||
@@ -107,9 +111,9 @@ namespace Audio {
 
       PlayAudio(playerLeftStep);
     }
-    
+
     public void PlayRobotStep() {
-      if (!GameManager.Instance.MiningRobotController.enabled || 
+      if (!GameManager.Instance.MiningRobotController.enabled ||
           !GameManager.Instance.MiningRobotController.Grounded) {
         return;
       }

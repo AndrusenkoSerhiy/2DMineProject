@@ -79,9 +79,10 @@ namespace Player {
         return;
 
       Vector2 mousePosition = _camera.ScreenToWorldPoint(GameManager.Instance.UserInput.GetMousePosition());
-      var direction = (mousePosition - (Vector2)transform.position).normalized;
+      var currPosition = transform.position;
+      var direction = (mousePosition - (Vector2)currPosition).normalized;
 
-      if (Mathf.Abs(mousePosition.x - transform.position.x) > _flipDeadZone) {
+      if (Mathf.Abs(mousePosition.x - currPosition.x) > _flipDeadZone) {
         // Flip player
         Vector3 localScale = transform.localScale;
         localScale.x = Mathf.Sign(direction.x);

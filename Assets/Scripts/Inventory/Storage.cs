@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Windows;
 using Interaction;
+using Scriptables.Craft;
 using Scriptables.Items;
 using UnityEngine;
 using World;
@@ -15,6 +15,7 @@ namespace Inventory {
     [SerializeField] private BuildingDataObject buildObject;
     [SerializeField] private ItemObject storageItemObject;
     [SerializeField] private bool hasHoldInteraction = true;
+    [SerializeField] private Recipe storageRecipe;
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
@@ -25,11 +26,11 @@ namespace Inventory {
     private string id;
     private string entityId;
 
-    private List<CellObject> baseCells = new();
-    private readonly Dictionary<CellObject, Action> cellDestroyedHandlers = new();
+    private CellHolderHandler cellHandler;
 
     private void Awake() {
       gameManager = GameManager.Instance;
+      cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, storageRecipe, transform.position);
     }
 
     public bool Interact(PlayerInteractor playerInteractor) {
@@ -91,60 +92,28 @@ namespace Inventory {
       return entityId;
     }
 
-    public void ClearBaseCells() {
-      foreach (var kvp in cellDestroyedHandlers) {
-        kvp.Key.OnDestroyed -= kvp.Value;
-      }
-
-      cellDestroyedHandlers.Clear();
-      baseCells.Clear();
-    }
-    
     public void SetBaseCells(List<CellObject> cells) {
-      ClearBaseCells();
-
-      baseCells = cells;
-
-      foreach (var cell in cells) {
-        Action handler = () => OnBaseCellDestroyedHandler(cell);
-        cellDestroyedHandlers[cell] = handler;
-        cell.OnDestroyed += handler;
-      }
+      cellHandler.SetBaseCells(cells, transform.position);
     }
 
-    private void OnBaseCellDestroyedHandler(CellObject cell) {
-      if (baseCells == null || baseCells.Count == 0) {
-        return;
-      }
+    public void ClearBaseCells() {
+      cellHandler.ClearBaseCells();
+    }
 
-      if (cellDestroyedHandlers.TryGetValue(cell, out var handler)) {
-        cell.OnDestroyed -= handler;
-        cellDestroyedHandlers.Remove(cell);
-      }
-
-      baseCells.Remove(cell);
-
-      if (baseCells.Count > 0) {
-        return;
-      }
-
+    private void OnAllBaseCellsDestroyed() {
       var storageInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, GetId());
       if (storageInventory != null) {
         foreach (var slot in storageInventory.Slots) {
-          if (slot.isEmpty) {
-            continue;
+          if (!slot.isEmpty) {
+            gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount, transform.position);
           }
-
-          gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount, transform.position);
         }
 
         storageInventory.Clear();
       }
 
       gameManager.PlaceCell.RemoveBuilding(buildObject, storageItemObject);
-
       gameManager.MessagesManager.ShowSimpleMessage("Storage destroyed");
-
       gameManager.PoolEffects.SpawnFromPool("PlaceCellEffect", transform.position, Quaternion.identity);
       gameManager.AudioController.PlayStorageDestroyed();
     }

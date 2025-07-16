@@ -38,7 +38,7 @@ namespace Craft {
 
     #endregion
 
-    private void Awake() {
+    protected virtual void Awake() {
       SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
     }
@@ -48,7 +48,7 @@ namespace Craft {
         return;
       }
 
-      station = gameManager.CraftManager.GetWorkstation(GetId(), stationObject.Id);
+      station = GetWorkstation();
       craftWindowObj = Instantiate(interfacePrefab, gameManager.Canvas.transform);
       window = craftWindowObj.GetComponent<Window>();
       window.Setup(station);
@@ -73,7 +73,7 @@ namespace Craft {
     protected void CheckInteract() {
       if (gameManager.MenuController.ActiveMenu != Menu.Menu.None)
         return;
-      
+
       Init();
 
       if (!gameManager.RecipesManager.HasUnlockedRecipesForStation(station.RecipeType)) {
@@ -124,6 +124,10 @@ namespace Craft {
       }
 
       return id;
+    }
+
+    protected Workstation GetWorkstation() {
+      return station ??= gameManager.CraftManager.GetWorkstation(GetId(), stationObject.Id);
     }
   }
 }

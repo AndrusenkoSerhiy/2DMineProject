@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using Interaction;
+using Scriptables.Craft;
 using UnityEngine;
 using World;
 
@@ -9,13 +9,18 @@ namespace Craft {
     [SerializeField] private string interactText;
     [SerializeField] private string holdInteractText;
     [SerializeField] private bool hasHoldInteraction = true;
+    [SerializeField] private Recipe stationRecipe;
 
-    private List<CellObject> baseCells = new();
-    private readonly Dictionary<CellObject, Action> cellDestroyedHandlers = new();
+    private CellHolderHandler cellHandler;
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
+
+    protected override void Awake() {
+      base.Awake();
+      cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, stationRecipe, transform.position);
+    }
 
     public bool Interact(PlayerInteractor playerInteractor) {
       CheckInteract();
@@ -30,48 +35,19 @@ namespace Craft {
     }
 
     public void ClearBaseCells() {
-      foreach (var kvp in cellDestroyedHandlers) {
-        kvp.Key.OnDestroyed -= kvp.Value;
-      }
-
-      cellDestroyedHandlers.Clear();
-      baseCells.Clear();
+      cellHandler.ClearBaseCells();
     }
 
     public void SetBaseCells(List<CellObject> cells) {
-      ClearBaseCells();
-
-      baseCells = cells;
-
-      foreach (var cell in cells) {
-        Action handler = () => OnBaseCellDestroyedHandler(cell);
-        cellDestroyedHandlers[cell] = handler;
-        cell.OnDestroyed += handler;
-      }
+      cellHandler.SetBaseCells(cells, transform.position);
     }
 
-    private void OnBaseCellDestroyedHandler(CellObject cell) {
-      if (baseCells == null || baseCells.Count == 0) {
-        return;
-      }
-
-      if (cellDestroyedHandlers.TryGetValue(cell, out var handler)) {
-        cell.OnDestroyed -= handler;
-        cellDestroyedHandlers.Remove(cell);
-      }
-
-      baseCells.Remove(cell);
-
-      if (baseCells.Count > 0) {
-        return;
-      }
-
-      station?.StopAndDropItems(transform.position);
+    private void OnAllBaseCellsDestroyed() {
+      var workStation = GetWorkstation();
+      workStation?.StopAndDropItems(transform.position);
 
       gameManager.PlaceCell.RemoveBuilding(buildObject, stationObject.InventoryItem);
-
       gameManager.MessagesManager.ShowSimpleMessage(stationObject.Title + " destroyed");
-
       gameManager.PoolEffects.SpawnFromPool("PlaceCellEffect", transform.position, Quaternion.identity);
       gameManager.AudioController.PlayWorkstationDestroyed();
     }

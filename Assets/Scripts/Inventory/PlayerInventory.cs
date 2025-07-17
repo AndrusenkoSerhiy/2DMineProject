@@ -257,7 +257,7 @@ namespace Inventory {
 
       var pos = spawnPosition ?? gameManager.PlayerController.transform.position;
 
-      groundObj.transform.position = pos + new Vector3(0, 3, 0);
+      groundObj.transform.position = spawnPosition != null ? pos : pos + new Vector3(0, 3, 0);
       groundObj.transform.rotation = Quaternion.identity;
       groundObj.Count = amount;
       groundObj.Durability = item.Durability;

@@ -47,11 +47,12 @@ namespace Actors {
     private bool paused;
     private bool isDead;
 
+    private Vector3 currPosition;
     private void Update() {
-      if (isDead) {
-        rigidbody.linearVelocity = new Vector3(0, rigidbody.linearVelocity.y, 0);  
-      }
-      
+      PlayGroan();
+    }
+
+    private void PlayGroan() {
       if (!groanAudioData || paused || IsDead) {
         return;
       }
@@ -165,7 +166,7 @@ namespace Actors {
         return;
       }
 
-      audioController.PlayAudio(deathAudioData, transform.position);
+      audioController.PlayAudio(deathAudioData, currPosition);
     }
 
     private void DamageAudio() {
@@ -177,7 +178,8 @@ namespace Actors {
         return;
       }
 
-      audioController.PlayAudio(OnTakeDamageAudioData, transform.position);
+      currPosition = transform.position;
+      audioController.PlayAudio(OnTakeDamageAudioData, currPosition);
     }
 
     private void OnDestroy() {
@@ -296,7 +298,7 @@ namespace Actors {
     }
 
     private void SpawnDrop() {
-      GameManager.Instance.DropZombieData.DropItems(difficulty, transform.position);
+      GameManager.Instance.DropZombieData.DropItems(difficulty, currPosition);
     }
   }
 }

@@ -1,15 +1,12 @@
 ﻿namespace Objectives {
   public enum ObjectiveTaskType {
-    DestroyCell = 10,
-    PickupItem = 20,
-    PlaceBuilding = 30,
-    PlaceBuildingBlock = 40,
-    CraftItem = 50,
-    SurviveSiege = 60,
-    SurviveSiegeCycle = 70,
-    KillEnemies = 80,
-    KillBoss = 90,
-    RepairItem = 100,
-    RepairRobot = 110
+    PickupItem = 10,
+    CraftItem = 20,
+    Build = 30,
+    SurviveSiege = 40,
+    RobotRepair = 50,
+    ItemRepair = 60,
+    ItemUse = 70,
+    ItemEquip = 80
   }
 }

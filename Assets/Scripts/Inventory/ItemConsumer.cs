@@ -104,6 +104,7 @@ namespace Inventory {
       }
 
       gameManager.AudioController.PlayAudio(consumableItem?.ConsumeSound);
+      gameManager.ObjectivesSystem.ReportItemUse(activeSlot.Item.info, 1);
 
       activeSlot.RemoveAmount(1);
     }

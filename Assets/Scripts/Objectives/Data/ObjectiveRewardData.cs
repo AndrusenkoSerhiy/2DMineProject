@@ -1,7 +1,7 @@
 ﻿using System;
 using Scriptables.Items;
 
-namespace Objectives {
+namespace Objectives.Data {
   [Serializable]
   public class ObjectiveRewardData {
     public ItemObject item;

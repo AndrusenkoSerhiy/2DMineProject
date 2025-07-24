@@ -227,6 +227,7 @@ namespace Inventory {
       var overflow = inventoriesPool.AddItemToInventoriesPool(item, amount, slot);
 
       AddWeight(item.info);
+      gameManager.ObjectivesSystem.ReportPickup(item.info, amount);
 
       if (overflow <= 0) {
         return amount;

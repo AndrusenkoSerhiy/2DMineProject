@@ -17,6 +17,7 @@ using Scriptables.CameraController;
 using Menu;
 using Messages;
 using Movement;
+using Objectives;
 using Pool;
 using PoolActors;
 using Quests;
@@ -76,6 +77,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private BulletsPool bulletsPool;
   [SerializeField] private Locator locator;
   [SerializeField] private QuestManager questManager;
+  [SerializeField] private ObjectivesSystem objectivesSystem;
 
   //TODO 
   //robot don't need this param in own script
@@ -139,6 +141,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public BulletsPool BulletsPool => bulletsPool;
   public Locator Locator => locator;
   public QuestManager QuestManager => questManager;
+  public ObjectivesSystem ObjectivesSystem => objectivesSystem;
 
   public PlayerController PlayerController {
     set => playerController = value;

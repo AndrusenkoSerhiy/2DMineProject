@@ -419,6 +419,7 @@ namespace Tools {
 
       gameManager.QuestManager.StartQuest(2);
       gameManager.SiegeManager.StartSieges();
+      gameManager.ObjectivesSystem.ReportRobotRepair(true);
 
       if (broken) {
         AnimationEventManager.onRobotRepaired += RobotRepaired;

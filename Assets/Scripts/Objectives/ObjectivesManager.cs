@@ -1,123 +1,165 @@
 ﻿using System;
 using System.Collections.Generic;
-using Scriptables.Items;
+using Objectives.Data;
+using Objectives.Handlers;
+using SaveSystem;
 using Scriptables.Objectives;
 using UnityEngine;
 
 namespace Objectives {
-  public class ObjectivesManager : MonoBehaviour {
-    [SerializeField] private ObjectiveGroupScriptableObject startGroup;
+  public class ObjectivesManager {
+    private readonly ObjectivesConfig config;
+    private readonly ObjectiveProgressState state = new();
+    private readonly Dictionary<ObjectiveTaskType, IObjectiveTaskHandler> handlers = new();
+    private readonly HashSet<string> completedGroups = new();
+    private GameManager gameManager;
 
-    private ObjectiveGroupScriptableObject currentGroup;
-    private HashSet<string> completedObjectives = new();
-    private GameManager gameManager; // заміни на свій спосіб доступу
+    public event Action<ObjectiveData> OnTaskCompleted;
+    public event Action<ObjectiveData> OnTaskRewarded;
+    public event Action<ObjectiveGroup> OnGroupRewarded;
+    public event Action<ObjectiveData, int> OnTaskProgress;
+    public event Action<ObjectiveGroup> OnGroupCompleted;
 
-    public static ObjectivesManager Instance { get; private set; }
-
-    private void Awake() {
-      if (Instance != null && Instance != this) {
-        Destroy(gameObject);
-        return;
-      }
-
-      Instance = this;
-      DontDestroyOnLoad(gameObject);
-
+    public ObjectivesManager(ObjectivesConfig config) {
+      this.config = config;
       gameManager = GameManager.Instance;
-      LoadProgress();
+      RegisterDefaultHandlers();
     }
 
-    public ObjectiveGroupScriptableObject GetCurrentGroup() => currentGroup;
-
-    private void Start() {
-      if (currentGroup == null) {
-        currentGroup = startGroup;
-      }
+    public string GetConfigId() {
+      return config.id;
     }
 
-    public void CompleteObjective(string id) {
-      if (currentGroup == null) return;
+    private void RegisterDefaultHandlers() {
+      RegisterHandler(new PickupItemTaskHandler());
+      RegisterHandler(new CraftItemTaskHandler());
+      RegisterHandler(new BuildTaskHandler());
+      RegisterHandler(new RobotRepairTaskHandler());
+      RegisterHandler(new ItemUseTaskHandler());
+      RegisterHandler(new ItemRepairTaskHandler());
+      RegisterHandler(new ItemEquipTaskHandler());
+      RegisterHandler(new SurviveSiegeTaskHandler());
+    }
 
-      var obj = currentGroup.objectives.Find(o => o.id == id);
-      if (obj == null) return;
-      if (completedObjectives.Contains(id)) return;
+    private void RegisterHandler(IObjectiveTaskHandler handler) {
+      handlers[handler.Type] = handler;
+    }
 
-      completedObjectives.Add(id);
-      GrantReward(obj.reward);
-
-      Debug.Log($"Objective Completed: {obj.title}");
-
-      if (IsCurrentGroupCompleted()) {
-        Debug.Log("All objectives in group completed!");
-
-        if (currentGroup.nextGroup != null) {
-          currentGroup = currentGroup.nextGroup;
-          Debug.Log("Next group activated: " + currentGroup.groupTitle);
+    public ObjectiveGroup GetCurrentGroup() {
+      foreach (var group in config.groups) {
+        if (!IsGroupCompleted(group)) {
+          return group;
         }
-      }
-
-      SaveProgress();
-    }
-
-    private void GrantReward(ObjectiveRewardData reward) {
-      if (reward.item == null || reward.amount <= 0) return;
-
-      var item = new Item(reward.item);
-
-      gameManager.PlayerInventory.SpawnItem(item, reward.amount);
-      gameManager.MessagesManager.ShowSimpleMessage("Received reward: " + reward.item.name);
-    }
-
-    private bool IsCurrentGroupCompleted() {
-      foreach (var obj in currentGroup.objectives) {
-        if (!completedObjectives.Contains(obj.id)) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    public bool IsObjectiveCompleted(string id) => completedObjectives.Contains(id);
-
-    private void SaveProgress() {
-      var key = "Objectives_Completed";
-      var save = string.Join(",", completedObjectives);
-      PlayerPrefs.SetString(key, save);
-      PlayerPrefs.SetString("Objectives_CurrentGroup", currentGroup?.Id ?? "");
-    }
-
-    private void LoadProgress() {
-      var key = "Objectives_Completed";
-      if (PlayerPrefs.HasKey(key)) {
-        var saved = PlayerPrefs.GetString(key);
-        completedObjectives = new HashSet<string>(saved.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
-      }
-
-      var groupId = PlayerPrefs.GetString("Objectives_CurrentGroup", "");
-      if (!string.IsNullOrEmpty(groupId)) {
-        currentGroup = FindGroupById(groupId);
-      }
-      else {
-        currentGroup = startGroup;
-      }
-    }
-
-    private ObjectiveGroupScriptableObject FindGroupById(string id) {
-      var allGroups = Resources.LoadAll<ObjectiveGroupScriptableObject>("");
-      foreach (var g in allGroups) {
-        if (g.Id == id)
-          return g;
       }
 
       return null;
     }
 
-    public void ResetProgress() {
-      PlayerPrefs.DeleteKey("Objectives_Completed");
-      PlayerPrefs.DeleteKey("Objectives_CurrentGroup");
-      completedObjectives.Clear();
-      currentGroup = startGroup;
+    private bool IsGroupCompleted(ObjectiveGroup group) {
+      return completedGroups.Contains(group.id);
+    }
+
+    public bool IsTaskCompleted(ObjectiveData data) {
+      return state.IsCompleted(data.id);
+    }
+
+    public void Report(ObjectiveTaskType type, object context) {
+      if (!handlers.TryGetValue(type, out var handler)) {
+        Debug.LogWarning($"No handler registered for type {type}");
+        return;
+      }
+
+      var group = GetCurrentGroup();
+      if (group == null) {
+        return;
+      }
+
+      var groupNowCompleted = true;
+
+      foreach (var obj in group.objectives) {
+        if (state.IsCompleted(obj.id)) {
+          continue;
+        }
+
+        if (obj.taskData.TaskType != type) {
+          groupNowCompleted = false;
+          continue;
+        }
+
+        var current = state.GetAccumulated(obj.id);
+
+        if (handler.IsTaskSatisfied(obj.taskData, context, current, out int toAdd)) {
+          state.MarkCompleted(obj.id);
+          OnTaskCompleted?.Invoke(obj);
+
+          gameManager.MessagesManager.ShowSimpleMessage("You completed a task");
+
+          if (obj.reward?.item != null) {
+            OnTaskRewarded?.Invoke(obj);
+          }
+
+          // Debug.Log($"✅ Objective completed: {obj.title}");
+        }
+        else {
+          if (toAdd > 0) {
+            var newCurrent = current + toAdd;
+            state.AddAmount(obj.id, toAdd);
+            OnTaskProgress?.Invoke(obj, newCurrent);
+            // Debug.Log($"Progress: {newCurrent}/{GetTargetAmount(obj.taskData)} for {obj.title}");
+          }
+
+          groupNowCompleted = false;
+        }
+      }
+
+      if (!groupNowCompleted || completedGroups.Contains(group.id)) {
+        return;
+      }
+
+      completedGroups.Add(group.id);
+      OnGroupCompleted?.Invoke(group);
+
+      gameManager.MessagesManager.ShowSimpleMessage("You completed a group");
+
+      if (group.reward?.item != null) {
+        OnGroupRewarded?.Invoke(group);
+      }
+
+      // Debug.Log($"🏁 Objective Group completed: {group.groupTitle}");
+    }
+
+    public int GetTargetAmount(ObjectiveTaskData data) {
+      return data switch {
+        BuildTaskData b => b.amount,
+        CraftItemTaskData c => c.amount,
+        ItemEquipTaskData e => e.amount,
+        ItemRepairTaskData r => r.amount,
+        ItemUseTaskData u => u.amount,
+        PickupItemTaskData p => p.amount,
+        _ => 1
+      };
+    }
+
+    public int GetAccumulatedAmount(string objectiveId) {
+      return state.GetAccumulated(objectiveId);
+    }
+
+    public ObjectivesData GetSaveData() {
+      return new ObjectivesData {
+        Progress = state.GetAllProgress(),
+        CompletedTasks = state.GetCompletedTasks(),
+        CompletedGroups = new List<string>(completedGroups)
+      };
+    }
+
+    public void LoadData(ObjectivesData data) {
+      state.SetProgress(data.Progress);
+      state.SetCompletedTasks(data.CompletedTasks);
+
+      completedGroups.Clear();
+      foreach (var groupId in data.CompletedGroups) {
+        completedGroups.Add(groupId);
+      }
     }
   }
 }

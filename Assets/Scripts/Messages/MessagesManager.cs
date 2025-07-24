@@ -138,6 +138,11 @@ namespace Messages {
       int? amount = null,
       [CanBeNull] Sprite icon = null,
       [CanBeNull] string additionalMessage = null) {
+      //check if right container is free to show messages
+      position = position == Position.Right && !GameManager.Instance.ObjectivesSystem.HasActiveGroups()
+        ? Position.Left
+        : position;
+
       var container = GetContainer(position);
       var template = messageTemplates[type];
 

@@ -145,9 +145,9 @@ namespace Inventory {
 
     private void PlaceItemInHand(Item item) {
       //show only food and tool in hand
-      if(item.info.Type == ItemType.Chest || item.info.Type == ItemType.BuildingBlock)
+      if (item.info.Type == ItemType.Chest || item.info.Type == ItemType.BuildingBlock)
         return;
-      
+
       var itemObject = item.info;
       itemInHand = Instantiate(itemObject.CharacterDisplay, GetParent(itemObject)).transform;
       itemInHand.localPosition = itemObject.SpawnPosition;
@@ -217,7 +217,7 @@ namespace Inventory {
     }
 
     private void EquipArmor(SlotUpdateEventData data) {
-      if (data.before.amount == data.after.amount) {
+      if (data.before.Item.id == data.after.Item.id) {
         return;
       }
 
@@ -226,6 +226,7 @@ namespace Inventory {
       }
       else {
         GetPlayerController().PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, data.after.Item.info);
+        gameManager.ObjectivesSystem.ReportItemEquip(data.after.Item.info, 1);
       }
     }
 
@@ -260,6 +261,7 @@ namespace Inventory {
       }
 
       equippedItem.AddDurability(repairValue);
+      gameManager.ObjectivesSystem.ReportItemRepair(equippedItem.info, 1);
     }
 
     public bool ShowEquippedItemHoldAction() {

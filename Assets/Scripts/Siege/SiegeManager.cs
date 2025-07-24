@@ -294,13 +294,18 @@ namespace Siege {
       gameManager.MessagesManager.ShowSimpleMessage("Siege started!");
     }
 
-    private void EndSiege() {
+    private void EndSiege(bool playedDied = false) {
       EndSiegeAudio();
       isSiegeInProgress = false;
       currentPhase = SiegePhase.Idle;
 
       OnSiegeEnded?.Invoke(currentSiege);
       gameManager.MessagesManager.ShowSimpleMessage("Siege ended!");
+
+      if (!playedDied && currentSiegeIndex == siegeQueue.Count - 1) {
+        gameManager.ObjectivesSystem.ReportSurviveSiege(true);
+      }
+
       currentSiegeIndex++;
     }
 
@@ -366,7 +371,7 @@ namespace Siege {
       timeToNextSegment = 0f;
       durationTimer = 0f;
 
-      EndSiege();
+      EndSiege(true);
       PrepareNextSiege();
       ResumeSiege();
     }

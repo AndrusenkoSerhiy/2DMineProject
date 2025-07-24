@@ -1,13 +1,12 @@
 ﻿using System;
+using UnityEngine;
 
-namespace Objectives {
+namespace Objectives.Data {
   [Serializable]
   public class ObjectiveData {
     public string id;
     public string title;
-    public ObjectiveTaskType type;
-    public string targetId;
-    public int requiredCount;
+    [SerializeReference] public ObjectiveTaskData taskData;
     public ObjectiveRewardData reward;
   }
 }

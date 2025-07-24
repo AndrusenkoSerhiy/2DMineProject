@@ -137,6 +137,7 @@ public class PlaceCellRobot : MonoBehaviour {
     gameManager.PlayerInventory.InventoriesPool.RemoveFromInventoriesPool(possibleResourceList[activeBlockIndex].ItemData.Id, 1);
     
     gameManager.AudioController.PlayPlaceBuildingBlock();
+    GameManager.Instance.ChunkController.CheckArea();
   }
 
   public void Activate() {

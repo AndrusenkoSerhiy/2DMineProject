@@ -83,11 +83,6 @@ namespace World {
       boxCollider2D.size = resourceData.ColSize();
     }
 
-    public bool hasTakenDamage {
-      get { return unitHealth.hasTakenDamage; }
-      set { unitHealth.hasTakenDamage = value; }
-    }
-
     public void Damage(float damage, bool isPlayer) {
       if (!CanGetDamage)
         return;
@@ -144,6 +139,14 @@ namespace World {
 
     public float GetHealth() {
       return unitHealth.health;
+    }
+
+    public Vector3 GetPosition() {
+      return transform.position;
+    }
+
+    public string GetName() {
+      return name;
     }
 
     public float GetMaxHealth() {

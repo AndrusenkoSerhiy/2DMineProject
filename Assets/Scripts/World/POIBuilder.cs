@@ -28,7 +28,7 @@ namespace World {
           Color pixelColor = texture.GetPixel(x, y);
 
           // Skip white or fully transparent pixels
-          if (pixelColor == Color.white)
+          if (pixelColor == Color.white || pixelColor.a == 0f)
             continue;
 
           // Try to find a matching data entry
@@ -53,6 +53,7 @@ namespace World {
           }
         }
       }
+
       saver.SavePOIData();
       Debug.Log("POIs generated from texture.");
     }

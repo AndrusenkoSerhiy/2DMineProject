@@ -1,4 +1,5 @@
 using Scriptables;
+using UnityEngine;
 
 public enum DamageableType {
   Default = 0,
@@ -19,6 +20,8 @@ public interface IDamageable {
 
   public float GetHealth();
 
+  public Vector3 GetPosition();
+  public string GetName();
   public float GetMaxHealth();
 
   public void AfterDamageReceived();

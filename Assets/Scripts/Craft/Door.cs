@@ -73,6 +73,14 @@ namespace Craft {
       return unitHealth.health;
     }
 
+    public Vector3 GetPosition() {
+      return transform.position;
+    }
+
+    public string GetName() {
+      return name;
+    }
+
     public float GetMaxHealth() {
       return unitHealth.maxHealth;
     }

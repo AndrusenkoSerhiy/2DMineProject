@@ -120,6 +120,9 @@ namespace Player {
 
     protected virtual void FlipX() { }
 
+    public int GetFlip() {
+      return transform.localScale.x < 0 ? -1 : 1;
+    }
     private void GatherInput() {
       _frameInput = new FrameInput {
         JumpDown = GameManager.Instance.UserInput.controls.GamePlay.Jump

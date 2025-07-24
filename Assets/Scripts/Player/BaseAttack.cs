@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Animation;
 using Inventory;
 using Scriptables;
 using Scriptables.Stats;
 using UnityEngine;
+using World;
 
 namespace Player {
   public class BaseAttack : MonoBehaviour {
@@ -149,9 +151,188 @@ namespace Player {
       mousePos.z = 0f;
       return mousePos;
     }
+    
+    List<IDamageable> results = new();
+    private IOrderedEnumerable<KeyValuePair<Vector2Int, IDamageable>> sorted;
 
+    private List<IDamageable> LockByWall() {
+      results.Clear();
+      var tempList = SetTargetsFromHighlight();
+      
+      if (tempList == null || tempList.Count == 0) {
+        return null;
+      }
+
+      var cellMap = CreateCellMap(tempList);
+      
+      if (lookDirection == 1 || lookDirection == -1) {
+        return CheckVertical(cellMap);
+      }
+      if (lookDirection == 0) {
+        return CheckHorizontal(cellMap);
+      }
+      if (lookDirection == 2 || lookDirection == -2) {
+        return CheckDiagonal(cellMap);
+      }
+      
+      return null;
+    }
+    
+    private Dictionary<Vector2Int, IDamageable> CreateCellMap(List<IDamageable> tempList) {
+      var map = new Dictionary<Vector2Int, IDamageable>();
+      foreach (var cell in tempList) {
+        var coords = CoordsTransformer.WorldToGrid(cell.GetPosition());
+        map.Add(new Vector2Int(coords.X, coords.Y), cell);  
+      }
+      return map;
+    }
+    
+    private List<IDamageable> CheckDiagonal(Dictionary<Vector2Int, IDamageable> cellMap) {
+        if (GameManager.Instance.CurrPlayerController.GetFlip() == 1) {
+          if(lookDirection == 2)
+            sorted = cellMap.OrderByDescending(pair => pair.Key.y).ThenBy(pair => pair.Key.x);
+          if(lookDirection == -2)
+            sorted = cellMap.OrderBy(pair => pair.Key.y).ThenBy(pair => pair.Key.x);
+        }
+        else {
+          if(lookDirection == 2)
+            sorted = cellMap.OrderByDescending(pair => pair.Key.y).ThenByDescending(pair => pair.Key.x);
+          if(lookDirection == -2)
+            sorted = cellMap.OrderBy(pair => pair.Key.y).ThenByDescending(pair => pair.Key.x);
+        }
+        // йдемо по горизонталі
+        //Debug.LogError("diagonal");
+      
+        var rowCount = -1;
+        var colCount = -1;
+        var blocked = false;
+        foreach (var cell in sorted) {
+          var cellObj = GameManager.Instance.ChunkController.GetCell(cell.Key.x, cell.Key.y);
+          if (cellObj != null && !cellObj.CanGetDamage) {
+            if (rowCount == -1) {
+              rowCount = cell.Key.y;
+            }
+            if (colCount == -1) {
+              colCount = cell.Key.x;
+            }
+          }
+
+          if (GameManager.Instance.CurrPlayerController.GetFlip() == 1) {
+            if (lookDirection == -2) {
+              if (colCount != -1 && rowCount != -1) {
+                if ((cell.Key.x >= colCount && cell.Key.y >= rowCount)) {
+                  continue;
+                } 
+              }
+            }
+            if (lookDirection == 2) {
+              if (colCount != -1 && rowCount != -1) {
+                if ((cell.Key.x >= colCount && cell.Key.y <= rowCount)) {
+                  continue;
+                } 
+              }
+            }
+          }
+          else {
+            if (lookDirection == -2) {
+              if (colCount != -1 && rowCount != -1) {
+                if ((cell.Key.x <= colCount && cell.Key.y >= rowCount)) {
+                  continue;
+                }
+              }
+            }
+            if (lookDirection == 2) {
+              if (colCount != -1 && rowCount != -1) {
+                if ((cell.Key.x <= colCount && cell.Key.y <= rowCount)) {
+                  continue;
+                }
+              }
+            }
+          }
+          
+          results.Add(cell.Value);
+        }
+
+        return results;
+    }
+
+    private List<IDamageable> CheckVertical(Dictionary<Vector2Int, IDamageable> cellMap) {
+      var playerCoords = GameManager.Instance.CurrPlayerController.PlayerCoords;
+      // йдемо по вертикалі
+      //Debug.LogError("vertical");
+      sorted = lookDirection == -1
+        ? cellMap.OrderBy(pair => pair.Key.x).ThenBy(pair => pair.Key.y)
+        : cellMap.OrderByDescending(pair => pair.Key.x).ThenByDescending(pair => pair.Key.y);
+      
+      var colCount = -1;
+      var blocked = false;
+      foreach (var cell in sorted) {
+        if (colCount != cell.Key.x) {
+          colCount = cell.Key.x;
+          blocked = false;
+        }
+        var cellObj = GameManager.Instance.ChunkController.GetCell(cell.Key.x, cell.Key.y);
+        var special = GameManager.Instance.ChunkController.GetCell(cell.Key.x, playerCoords.Coords.Y + lookDirection);
+        if (cellObj != null && !cellObj.CanGetDamage || 
+            special != null && !special.CanGetDamage && playerCoords.Coords.X != cell.Key.x) {
+          blocked = true;
+        }
+          
+        if (blocked && colCount == cell.Key.x) {
+          continue;
+        }
+        
+        if (!blocked) {
+          results.Add(cell.Value);
+        }
+      }
+      return results;
+    }
+
+    private List<IDamageable> CheckHorizontal(Dictionary<Vector2Int, IDamageable> cellMap) {
+      var sorted = GameManager.Instance.CurrPlayerController.GetFlip() == 1
+        ? cellMap.OrderBy(pair => pair.Key.y).ThenBy(pair => pair.Key.x)
+        : cellMap.OrderBy(pair => pair.Key.y).ThenByDescending(pair => pair.Key.x);
+
+        // йдемо по горизонталі
+        //Debug.LogError("horizontal");
+        var playerCoords = GameManager.Instance.CurrPlayerController.PlayerCoords;
+        var rowCount = -1;
+        var blocked = false;
+        foreach (var cell in sorted) {
+          if (rowCount != cell.Key.y) {
+            rowCount = cell.Key.y;
+            blocked = false;
+          }
+          
+          var cellObj = GameManager.Instance.ChunkController.GetCell(cell.Key.x, cell.Key.y);
+          var special = GameManager.Instance.ChunkController.GetCell(playerCoords.Coords.X + GameManager.Instance.CurrPlayerController.GetFlip(), cell.Key.y);
+          if (cellObj != null && !cellObj.CanGetDamage || 
+              special != null && !special.CanGetDamage && playerCoords.Coords.X != cell.Key.x) {
+            blocked = true;
+          }
+          
+          if (blocked && rowCount == cell.Key.y) {
+            continue;
+          }
+          
+          if (!blocked) {
+            results.Add(cell.Value);
+          }
+        }
+        
+      return results;
+    }
     protected void Attack() {
-      SetTargetsFromHighlight();
+      //return to previous version, without check block 
+      //SetTargetsFromHighlight();
+      //targets = SetTargetsFromHighlight();
+      targets = LockByWall();
+      
+      if (targets == null || targets.Count == 0) {
+        return;
+      }
+      
       foreach (var target in targets) {
         if (target == null) continue;
         var damage = target.DamageableType == DamageableType.Enemy ? playerStats.EntityDamage : playerStats.BlockDamage;
@@ -159,6 +340,10 @@ namespace Player {
       }
 
       AfterTargetsTakenDamage(targets.Count);
+      
+      for (int i = 0; i < targets.Count; i++) {
+        targets[i]?.AfterDamageReceived();
+      }
     }
 
     protected virtual void RangeAttack() {
@@ -167,10 +352,12 @@ namespace Player {
     protected virtual void AfterTargetsTakenDamage(int targetsCount) {
     }
 
-    private void SetTargetsFromHighlight() {
+    private List<IDamageable> SetTargetsFromHighlight() {
+      List<IDamageable> tempTargets = new();
       foreach (var elem in objectHighlighter.Highlights) {
-        targets.Add(elem.damageableRef);
+        tempTargets.Add(elem.damageableRef);
       }
+      return tempTargets;
     }
 
     private void HandleAnimationStarted(AnimationEvent animationEvent, GameObject go) {
@@ -183,10 +370,6 @@ namespace Player {
       }
       else {
         Attack();
-
-        for (int i = 0; i < targets.Count; i++) {
-          targets[i]?.AfterDamageReceived();
-        }
       }
       
       DestroyTarget();
@@ -201,6 +384,10 @@ namespace Player {
     }
 
     protected void DestroyTarget() {
+      if (targets == null || targets.Count == 0) {
+        return;
+      }
+      
       foreach (var t in targets) {
         if (t == null) continue;
         var getHp = t.GetHealth();

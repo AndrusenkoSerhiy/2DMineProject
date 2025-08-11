@@ -154,10 +154,6 @@ namespace Siege {
     }
 
     private void Update() {
-      if(Input.GetKeyDown(KeyCode.P))
-        StartSieges();
-      
-      
       if (!siegesStarted || isPaused || currentSiege == null) {
         return;
       }

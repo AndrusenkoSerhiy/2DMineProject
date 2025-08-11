@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cacd837200b94044af166224d4b5f72c, type: 3}
+  m_Name: Tutorial
+  m_EditorClassIdentifier: 
+  id: e7f94944-b6a5-40e8-8517-396578065abd
+  titleIcon: {fileID: 21300000, guid: cf31ab2a54c259d43b18ea69b99d8f44, type: 3}
+  titleColor: {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
+  taskIconIncomplete: {fileID: 21300000, guid: a61131efd505f7c4397901ad2f1187ce, type: 3}
+  taskIconCompleted: {fileID: 21300000, guid: 92ace56c51fef6f48bc39f996ff10208, type: 3}
+  taskColorIncomplete: {r: 0.972549, g: 0.972549, b: 0.972549, a: 1}
+  taskColorCompleted: {r: 0.5254902, g: 0.3647059, b: 0, a: 1}
+  groups:
+  - id: debe2df1-edc5-41eb-8fb0-75fc98d81ec3
+    groupTitle: Start
+    objectives:
+    - id: 3404102e-3554-4d35-839f-7914ce39a72f
+      title: Collect 3 stones
+      taskData:
+        rid: 644878414488535152
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: 7b6dfd7f-0d11-4ce6-bef2-0b0761cdb920
+      title: Collect wood
+      taskData:
+        rid: 644878414488535153
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: cc41e4e6-3df1-4548-ae1f-901bf2a958b8
+      title: Crafh stonecutter
+      taskData:
+        rid: 644878414488535154
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    reward:
+      item: {fileID: 11400000, guid: 068053b2266a87046944a62e04851933, type: 2}
+      amount: 1
+  - id: 3b2a60c4-e928-43c5-9cf6-56134db65eb3
+    groupTitle: Mine
+    objectives:
+    - id: 4541c01e-e808-4652-aa64-76eea8408869
+      title: Craft pickaxe
+      taskData:
+        rid: 644878414488535155
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: 40df5035-59f7-45ec-bdd6-959a070d2e27
+      title: Mine 1 iron
+      taskData:
+        rid: 644878414488535156
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: b94f302e-c0ec-4386-8926-69f7d486e814
+      title: Mine 1 coal
+      taskData:
+        rid: 644878414488535157
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    reward:
+      item: {fileID: 0}
+      amount: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 644878414488535152
+      type: {class: PickupItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
+        amount: 3
+    - rid: 644878414488535153
+      type: {class: PickupItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+        amount: 1
+    - rid: 644878414488535154
+      type: {class: CraftItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: ed9ccb5b17204e642be25817d0a55a99, type: 2}
+        amount: 1
+    - rid: 644878414488535155
+      type: {class: CraftItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
+        amount: 1
+    - rid: 644878414488535156
+      type: {class: PickupItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
+        amount: 1
+    - rid: 644878414488535157
+      type: {class: PickupItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
+        amount: 1

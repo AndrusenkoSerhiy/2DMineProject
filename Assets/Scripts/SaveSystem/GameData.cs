@@ -20,6 +20,7 @@ namespace SaveSystem {
     public List<ZombiesData> Zombies;
     public List<LocatorPointData> LocatorPointsData;
     public QuestData QuestData;
+    public SerializedDictionary<string, ObjectivesData> Objectives;
   }
 
   [Serializable]

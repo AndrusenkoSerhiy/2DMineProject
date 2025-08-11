@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cacd837200b94044af166224d4b5f72c, type: 3}
+  m_Name: MainBlock
+  m_EditorClassIdentifier: 
+  id: 217c28f2-a118-458f-b9ff-0bb52336ca60
+  titleIcon: {fileID: 21300000, guid: 235f46fd28188dc429ba1d9b84a9e1e4, type: 3}
+  titleColor: {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
+  taskIconIncomplete: {fileID: 21300000, guid: a61131efd505f7c4397901ad2f1187ce, type: 3}
+  taskIconCompleted: {fileID: 21300000, guid: 92ace56c51fef6f48bc39f996ff10208, type: 3}
+  taskColorIncomplete: {r: 0.9725491, g: 0.9725491, b: 0.9725491, a: 1}
+  taskColorCompleted: {r: 0.5921569, g: 0.15686275, b: 0.15686275, a: 1}
+  groups:
+  - id: f935e0bf-d97a-4334-bed8-252181140c22
+    groupTitle: Stage 1
+    objectives:
+    - id: 0a01d9e2-fb20-47be-8f75-686baf181c20
+      title: Place workbench
+      taskData:
+        rid: 644878392731631733
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: 06dbd582-e440-4f26-892d-b74cedf404a0
+      title: Craft repair kits
+      taskData:
+        rid: 644878392731631734
+      reward:
+        item: {fileID: 11400000, guid: 4a9d2b1894bcf6d41a676cfbc89be5f6, type: 2}
+        amount: 1
+    - id: b284b2c7-8399-4afe-826b-d3e8e0cdd3d8
+      title: Equip hoodie of double breathe
+      taskData:
+        rid: 644878392731631735
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: d6d1148d-5c3d-4729-b4fd-08666b0c95cc
+      title: Repair robot
+      taskData:
+        rid: 644878392731631739
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    reward:
+      item: {fileID: 0}
+      amount: 0
+  - id: 5c6b3e03-c356-474c-bf8f-d784e0299b49
+    groupTitle: Stage 2
+    objectives:
+    - id: 66a0c921-1062-4fac-9854-061f01cfbcea
+      title: Repair pickaxe
+      taskData:
+        rid: 644878414488535158
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: b40f3747-2a07-4a98-9762-417e0e088558
+      title: Eat earthcake
+      taskData:
+        rid: 644878414488535159
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: 52b8974d-f110-48cc-aa4d-1f025435b9af
+      title: Survive siege
+      taskData:
+        rid: 644878414488535160
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    reward:
+      item: {fileID: 0}
+      amount: 0
+  - id: 3690abc0-4e28-4a70-a6d8-1bba45e8c80f
+    groupTitle: Stage 3
+    objectives:
+    - id: aeebedff-63a9-409f-8873-89275b8331e2
+      title: Repair robot
+      taskData:
+        rid: 644878371266756699
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: bc36801d-2434-4259-84d4-49095b3af051
+      title: Repair pickaxe
+      taskData:
+        rid: 644878371266756700
+      reward:
+        item: {fileID: 11400000, guid: 4a9d2b1894bcf6d41a676cfbc89be5f6, type: 2}
+        amount: 1
+    - id: 88e20723-bad0-43f8-b714-ff972844b6d3
+      title: Eat earth cake
+      taskData:
+        rid: 644878371266756701
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: 082797e4-7924-4947-b411-88d3a3027415
+      title: Equip hoodie of double breath
+      taskData:
+        rid: 644878371266756702
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: 47bd03be-30c4-4c27-aea1-632102185ae8
+      title: Survive siege
+      taskData:
+        rid: 644878371266756703
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    reward:
+      item: {fileID: 0}
+      amount: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 644878371266756699
+      type: {class: RobotRepairTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data: 
+    - rid: 644878371266756700
+      type: {class: ItemRepairTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
+        amount: 1
+    - rid: 644878371266756701
+      type: {class: ItemUseTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: 4a9d2b1894bcf6d41a676cfbc89be5f6, type: 2}
+        amount: 1
+    - rid: 644878371266756702
+      type: {class: ItemEquipTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: 730557473e5e752459580bfaa6544102, type: 2}
+        amount: 1
+    - rid: 644878371266756703
+      type: {class: SurviveSiegeTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data: 
+    - rid: 644878392731631733
+      type: {class: BuildTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        buildingBlock: {fileID: 11400000, guid: 04f03a73700b35a4da4840f9a2f14a71, type: 2}
+        amount: 1
+    - rid: 644878392731631734
+      type: {class: CraftItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
+        amount: 1
+    - rid: 644878392731631735
+      type: {class: ItemEquipTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: 730557473e5e752459580bfaa6544102, type: 2}
+        amount: 1
+    - rid: 644878392731631739
+      type: {class: RobotRepairTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data: 
+    - rid: 644878414488535158
+      type: {class: ItemRepairTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
+        amount: 1
+    - rid: 644878414488535159
+      type: {class: ItemUseTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: 4a9d2b1894bcf6d41a676cfbc89be5f6, type: 2}
+        amount: 1
+    - rid: 644878414488535160
+      type: {class: SurviveSiegeTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data: 

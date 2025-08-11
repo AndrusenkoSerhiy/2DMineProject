@@ -21,6 +21,7 @@ namespace SaveSystem {
     public const int SIEGE = 70;
     public const int ENEMIES = 80;
     public const int LOCATOR = 90;
+    public const int OBJECTIVES = 100;
   }
 
   [DefaultExecutionOrder(-10)]
@@ -262,6 +263,7 @@ namespace SaveSystem {
         SiegeData = new SiegeData(),
         Zombies = new List<ZombiesData>(),
         LocatorPointsData = new List<LocatorPointData>(),
+        Objectives = new SerializedDictionary<string, ObjectivesData>(),
       };
     }
 

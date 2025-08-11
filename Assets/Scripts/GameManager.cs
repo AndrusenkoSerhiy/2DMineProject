@@ -18,6 +18,7 @@ using Scriptables.CameraController;
 using Menu;
 using Messages;
 using Movement;
+using Objectives;
 using Pool;
 using PoolActors;
 using Quests;
@@ -77,6 +78,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private BulletsPool bulletsPool;
   [SerializeField] private Locator locator;
   [SerializeField] private QuestManager questManager;
+  [SerializeField] private ObjectivesSystem objectivesSystem;
 
   [SerializeField] private ActorBaseController actorBaseController;
   //TODO 
@@ -142,6 +144,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public Locator Locator => locator;
   public QuestManager QuestManager => questManager;
   public ActorBaseController ActorBaseController => actorBaseController;
+  public ObjectivesSystem ObjectivesSystem => objectivesSystem;
 
   public PlayerController PlayerController {
     set => playerController = value;

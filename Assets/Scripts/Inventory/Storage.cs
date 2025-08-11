@@ -16,6 +16,7 @@ namespace Inventory {
     [SerializeField] private ItemObject storageItemObject;
     [SerializeField] private bool hasHoldInteraction = true;
     [SerializeField] private Recipe storageRecipe;
+    [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
@@ -112,9 +113,18 @@ namespace Inventory {
         storageInventory.Clear();
       }
 
+      var psGo = GameManager.Instance.PoolEffects
+        .SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity)
+        .gameObject;
+      var ps = psGo.GetComponent<ParticleSystem>();
+
+      if (ps != null) {
+        var main = ps.main;
+        main.startColor = new ParticleSystem.MinMaxGradient(destroyEffectColor);
+      }
+
       gameManager.PlaceCell.RemoveBuilding(buildObject, storageItemObject);
       gameManager.MessagesManager.ShowSimpleMessage("Storage destroyed");
-      gameManager.PoolEffects.SpawnFromPool("PlaceCellEffect", transform.position, Quaternion.identity);
       gameManager.AudioController.PlayStorageDestroyed();
     }
   }

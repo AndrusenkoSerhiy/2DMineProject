@@ -646,8 +646,10 @@ namespace Craft {
       OnItemCrafted?.Invoke();
 
       if (WorkstationObject.ShowSuccessCraftMessages && !craftManager.IsWindowOpen(Id)) {
-        messageManager.ShowCraftMessage(inputRecipe.Result, 1);
+        messageManager.ShowCraftMessage(inputRecipe.Result, count);
       }
+      
+      gameManager.ObjectivesSystem.ReportCraft(inputRecipe.Result, count);
     }
 
     public bool CancelInput(Input inputData, int position) {

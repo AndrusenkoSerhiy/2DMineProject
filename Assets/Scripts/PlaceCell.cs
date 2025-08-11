@@ -241,6 +241,8 @@ public class PlaceCell : MonoBehaviour {
     else {
       PlaceBuildingBlock();
     }
+    
+    GameManager.Instance.ObjectivesSystem.ReportBuild(currentBuildingBlock, 1);
 
     GetSelectedSlot().RemoveAmount(1);
     ClearSLot();

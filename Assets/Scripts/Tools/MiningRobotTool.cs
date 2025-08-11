@@ -369,7 +369,11 @@ namespace Tools {
       var firstY = robotCoordsOutOfBounds.Y + 1;
 
       if (chunkController.ChunkData.GetCellFill(firstX, firstY).Equals(1)) {
-        if (state && chunkController.GetCell(firstX, firstY).CanGetDamage) {
+        //якщо плеєр далеко від робота, то при завантаженні гри вилітає нулл
+        //бо під роботом немає клітинки, необхідно додати умову що коли клітинки з'являються
+        //то під роботом вона блокувалась
+        var cell = chunkController.GetCell(firstX, firstY);
+        if (state && cell != null && cell.CanGetDamage) {
           chunkController.GetCell(firstX, firstY).CanGetDamage = false;
           lockedCells[0] = 1;
         }

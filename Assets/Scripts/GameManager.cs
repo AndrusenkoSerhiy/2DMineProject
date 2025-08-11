@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Windows;
+using Actors;
 using Audio;
 using Craft;
 using Craft.Recipes;
@@ -77,6 +78,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private Locator locator;
   [SerializeField] private QuestManager questManager;
 
+  [SerializeField] private ActorBaseController actorBaseController;
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
@@ -139,6 +141,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public BulletsPool BulletsPool => bulletsPool;
   public Locator Locator => locator;
   public QuestManager QuestManager => questManager;
+  public ActorBaseController ActorBaseController => actorBaseController;
 
   public PlayerController PlayerController {
     set => playerController = value;

@@ -176,7 +176,7 @@ namespace NPCMovement
     }
 
     private void MoveDown(Coords cellCoords, CellObject obstacle, Vector2 dir) {
-      Debug.LogError("MoveDown");
+      //Debug.LogError("MoveDown");
       var downCell = new Coords(cellCoords.X + (int)dir.x, cellCoords.Y + 1);
       //Debug.DrawRay(CoordsTransformer.GridToWorld(downCell.X, downCell.Y), Vector3.up, Color.yellow, 2f);
       //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
@@ -201,7 +201,7 @@ namespace NPCMovement
       return hit.collider != null;
     }
     
-    private bool CheckUp() => CheckDirection(new Vector3(0, 3.7f, 0), Vector3.up, upLayer);
+    private bool CheckUp() => CheckDirection(new Vector3(0, 4.1f, 0), Vector3.up, upLayer);
     private bool CheckDown() => CheckDirection(new Vector3(0, -0.5f, 0), -Vector3.up, downLayer);
 
     private CellObject GetCellObject(int x, int y) {
@@ -227,7 +227,7 @@ namespace NPCMovement
       if (target.Equals(Vector3.zero) || actor != null && actor.IsDead) {
         return;
       }
-      Debug.LogError("MoveTowardsTarget");
+      //Debug.LogError("MoveTowardsTarget");
       //Debug.LogError($"{Vector2.Distance(transform.position, target)} | {stopingDistance}");
       if (Vector2.Distance(currPosition, target) <= actor.GetStats().AttackRange) {
         //Debug.LogError("has arrived!!!!!!!!!!");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Actors;
 using Craft;
 using Inventory;
 using SaveSystem;
@@ -209,7 +210,18 @@ namespace World {
           }
         }
       }
-
+      //for zombies
+      var enemies = GameManager.Instance.ActorBaseController.Enemies;
+      foreach (var enemy in enemies) {
+        if(enemy.gameObject.activeInHierarchy) continue;
+        var enemyCoords = enemy.GetCoords;
+        //Debug.LogError($"{enemyCoords.X} | {enemyCoords.Y} enemy coord");
+        //Debug.LogError($"{playerCoords.Y} | {enemyCoords.Y} | {visionOffsetY}");
+        if(Mathf.Abs(playerCoords.X - enemyCoords.X) < visionOffsetX
+           && Mathf.Abs(playerCoords.Y - enemyCoords.Y) < visionOffsetY)
+        GameManager.Instance.ActorBaseController.ReturnZombieToScene(enemy);
+      }
+      
       isInited = true;
     }
 
@@ -267,6 +279,16 @@ namespace World {
 
       for (int i = 0; i < clearList.Count; i++) {
         _activeBuildObjects.Remove(clearList[i]);
+      }
+      //try remove zombies
+      foreach (var enemy in GameManager.Instance.ActorBaseController.Enemies) {
+        if (!enemy.gameObject.activeInHierarchy) continue;
+          
+        var enemyCoords = enemy.GetCoords;
+        if (Mathf.Abs(playerCoords.X - enemyCoords.X) > visionOffsetX ||
+            Mathf.Abs(playerCoords.Y - enemyCoords.Y) > visionOffsetY) {
+            GameManager.Instance.ActorBaseController.RemoveZombie(enemy);
+        }
       }
 
       clearList.Clear();

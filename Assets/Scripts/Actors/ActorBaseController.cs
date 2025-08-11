@@ -19,6 +19,7 @@ namespace Actors {
     private int areaHeight;
     private GameManager gameManager;
 
+    public List<ActorEnemy> Enemies => enemies;
     private void Start() {
       SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
@@ -42,6 +43,15 @@ namespace Actors {
       foreach (var enemy in enemies) {
         enemy.UnpauseBehaviour();
       }
+    }
+
+    //when zombie is out of visible range
+    public void RemoveZombie(ActorEnemy actor) {
+      actor.gameObject.SetActive(false);
+    }
+    //when zombie is in of visible range
+    public void ReturnZombieToScene(ActorEnemy actor) {
+      actor.gameObject.SetActive(true);
     }
 
     #region Save/Load
@@ -204,15 +214,15 @@ namespace Actors {
         }
       }
 
-      if (free != Vector3.zero) Debug.DrawRay(free, Vector3.up, Color.green, 3f);
-      else Debug.DrawRay(rndPos, Vector3.up, Color.red, 3f);
+      //if (free != Vector3.zero) Debug.DrawRay(free, Vector3.up, Color.green, 3f);
+      //else Debug.DrawRay(rndPos, Vector3.up, Color.red, 3f);
       return free;
     }
 
     private Vector3 FindAboveCell(Coords coords) {
       var chunkData = gameManager.ChunkController.ChunkData;
       for (int i = 1; i < 5; i++) {
-        Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X, coords.Y - i), Vector3.up * 2, Color.blue, 2f);
+        //Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X, coords.Y - i), Vector3.up * 2, Color.blue, 2f);
 
         if (chunkData.GetCellFill(coords.X, coords.Y - i) == 0) {
           return CoordsTransformer.GridToWorld(coords.X, coords.Y - i);
@@ -225,7 +235,7 @@ namespace Actors {
     private Vector3 FindUnderCell(Coords coords) {
       var chunkData = gameManager.ChunkController.ChunkData;
       for (int i = 1; i < 5; i++) {
-        Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X, coords.Y + i), Vector3.up * 2, Color.blue, 2f);
+        //Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X, coords.Y + i), Vector3.up * 2, Color.blue, 2f);
 
         if (chunkData.GetCellFill(coords.X, coords.Y + i) == 0) {
           return CoordsTransformer.GridToWorld(coords.X, coords.Y + i);
@@ -238,7 +248,7 @@ namespace Actors {
     private Vector3 FindLeftCell(Coords coords) {
       var chunkData = gameManager.ChunkController.ChunkData;
       for (int i = 1; i < 5; i++) {
-        Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X - i, coords.Y), Vector3.up * 2, Color.blue, 2f);
+        //Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X - i, coords.Y), Vector3.up * 2, Color.blue, 2f);
 
         if (chunkData.GetCellFill(coords.X - i, coords.Y) == 0) {
           return CoordsTransformer.GridToWorld(coords.X - i, coords.Y);
@@ -251,7 +261,7 @@ namespace Actors {
     private Vector3 FindRightCell(Coords coords) {
       var chunkData = gameManager.ChunkController.ChunkData;
       for (int i = 1; i < 5; i++) {
-        Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X + i, coords.Y), Vector3.up * 2, Color.blue, 2f);
+        //Debug.DrawRay(CoordsTransformer.GridToWorld(coords.X + i, coords.Y), Vector3.up * 2, Color.blue, 2f);
 
         if (chunkData.GetCellFill(coords.X + i, coords.Y) == 0) {
           return CoordsTransformer.GridToWorld(coords.X + i, coords.Y);

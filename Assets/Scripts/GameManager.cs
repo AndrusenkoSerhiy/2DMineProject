@@ -24,6 +24,7 @@ using PoolActors;
 using Quests;
 using ScriptableObjects;
 using Scriptables.DropZombieData;
+using Scriptables.POI;
 using Settings;
 using Siege;
 using Stats;
@@ -78,6 +79,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private BulletsPool bulletsPool;
   [SerializeField] private Locator locator;
   [SerializeField] private QuestManager questManager;
+  [SerializeField] private POIDataLibrary _poiDataLibrary;
   [SerializeField] private ObjectivesSystem objectivesSystem;
 
   [SerializeField] private ActorBaseController actorBaseController;
@@ -143,6 +145,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public BulletsPool BulletsPool => bulletsPool;
   public Locator Locator => locator;
   public QuestManager QuestManager => questManager;
+  public POIDataLibrary POIDataLibrary => _poiDataLibrary;
   public ActorBaseController ActorBaseController => actorBaseController;
   public ObjectivesSystem ObjectivesSystem => objectivesSystem;
 

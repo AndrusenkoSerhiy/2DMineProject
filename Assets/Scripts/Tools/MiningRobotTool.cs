@@ -82,6 +82,7 @@ namespace Tools {
       audioController = GameManager.Instance.AudioController;
     }
 
+    //todo init from gamemanager
     private void Start() {
       if (!GameManager.Instance.InitScriptsOnStart()) {
         return;

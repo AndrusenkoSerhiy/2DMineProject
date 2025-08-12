@@ -107,8 +107,8 @@ GameObject:
   - component: {fileID: 2012305784030239627}
   - component: {fileID: 9132120981317661040}
   - component: {fileID: 8313858894635390265}
-  - component: {fileID: 1085641901352883757}
   - component: {fileID: 6839382300747928590}
+  - component: {fileID: 1280697076672098749}
   m_Layer: 3
   m_Name: StorageBroken
   m_TagString: Untagged
@@ -124,7 +124,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6577857765918630368}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
@@ -186,25 +186,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 4.52, y: 2.78}
   m_EdgeRadius: 0
---- !u!114 &1085641901352883757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6577857765918630368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bd9654d3b2146a5beed6094fdb76b7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interfacePrefab: {fileID: 2952217949748886116, guid: 16e8601439269834fb42824ccd0e89ce, type: 3}
-  interactText: Open storage
-  holdInteractText: Take to inventory
-  inventoryType: 4
-  buildObject: {fileID: 6839382300747928590}
-  storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
-  hasHoldInteraction: 1
 --- !u!114 &6839382300747928590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,3 +200,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsActive: 0
   Building: {fileID: 11400000, guid: e532957c013640c48a9b81200947c6d4, type: 2}
+--- !u!114 &1280697076672098749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6577857765918630368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 298c86c1644d438f883b49c530b9597e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interfacePrefab: {fileID: 2952217949748886116, guid: 16e8601439269834fb42824ccd0e89ce, type: 3}
+  interactText: Open storage
+  holdInteractText: 
+  inventoryType: 4
+  buildObject: {fileID: 6839382300747928590}
+  storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
+  hasHoldInteraction: 0
+  storageRecipe: {fileID: 0}
+  bonusResources: []

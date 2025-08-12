@@ -30,6 +30,14 @@ namespace Scriptables {
       return null;
     }
 
+    public float GetPerlinValue(ResourceData data) {
+      for (int i = 0; i < Resources.Length; i++) {
+        if(Resources[i].Data == data) return (Resources[i].PerlinRange.x+Resources[i].PerlinRange.y)/2;
+      }
+
+      return -10000f;
+    }
+
     public Color GetColor(float perlinValue) {
       for (int i = 0; i < Resources.Length; i++) {
         if (Resources[i].PerlinRange.x > perlinValue) continue;

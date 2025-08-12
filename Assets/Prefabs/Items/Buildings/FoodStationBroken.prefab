@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6337743332098150645}
   - component: {fileID: 1274059696807988867}
   - component: {fileID: 3791110404348533901}
-  - component: {fileID: 8665510003506630450}
   - component: {fileID: 7313900017274488409}
+  - component: {fileID: 3547357494877543162}
   m_Layer: 3
   m_Name: FoodStationBroken
   m_TagString: Untagged
@@ -90,25 +90,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.57, y: 1.63}
   m_EdgeRadius: 0
---- !u!114 &8665510003506630450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403326635336079027}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bd9654d3b2146a5beed6094fdb76b7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interfacePrefab: {fileID: 2952217949748886116, guid: 16e8601439269834fb42824ccd0e89ce, type: 3}
-  interactText: Open storage
-  holdInteractText: Take to inventory
-  inventoryType: 4
-  buildObject: {fileID: 7313900017274488409}
-  storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
-  hasHoldInteraction: 1
 --- !u!114 &7313900017274488409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +104,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsActive: 0
   Building: {fileID: 11400000, guid: e532957c013640c48a9b81200947c6d4, type: 2}
+--- !u!114 &3547357494877543162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403326635336079027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 298c86c1644d438f883b49c530b9597e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interfacePrefab: {fileID: 2952217949748886116, guid: 16e8601439269834fb42824ccd0e89ce, type: 3}
+  interactText: Open storage
+  holdInteractText: 
+  inventoryType: 4
+  buildObject: {fileID: 7313900017274488409}
+  storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
+  hasHoldInteraction: 0
+  storageRecipe: {fileID: 0}
+  bonusResources: []
 --- !u!1 &5507656973377803446
 GameObject:
   m_ObjectHideFlags: 0

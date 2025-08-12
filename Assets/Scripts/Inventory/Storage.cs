@@ -11,7 +11,7 @@ namespace Inventory {
     [SerializeField] private GameObject interfacePrefab;
     [SerializeField] private string interactText;
     [SerializeField] private string holdInteractText;
-    [SerializeField] private InventoryType inventoryType;
+    [SerializeField] protected InventoryType inventoryType;
     [SerializeField] private BuildingDataObject buildObject;
     [SerializeField] private ItemObject storageItemObject;
     [SerializeField] private bool hasHoldInteraction = true;
@@ -23,7 +23,7 @@ namespace Inventory {
     public string HoldInteractionText => holdInteractText;
 
     private StorageWindow storageWindow;
-    private GameManager gameManager;
+    protected GameManager gameManager;
     private string id;
     private string entityId;
 
@@ -34,7 +34,7 @@ namespace Inventory {
       cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, storageRecipe, transform.position);
     }
 
-    public bool Interact(PlayerInteractor playerInteractor) {
+    public virtual bool Interact(PlayerInteractor playerInteractor) {
       Init();
 
       if (storageWindow.IsShow) {
@@ -51,9 +51,9 @@ namespace Inventory {
       if (!HasHoldInteraction) {
         return false;
       }
-
+      
       var storageInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, GetId());
-
+      
       if (!storageInventory.IsEmpty()) {
         gameManager.MessagesManager.ShowSimpleMessage("Storage is not empty.");
         return false;
@@ -77,7 +77,7 @@ namespace Inventory {
       storageWindow.InventoryUI.SetupFastDrop(inventoryType, GetId());
     }
 
-    private string GetId() {
+    protected string GetId() {
       if (string.IsNullOrEmpty(id)) {
         id = InventoryObject.GenerateId(inventoryType, GetEntityId());
       }

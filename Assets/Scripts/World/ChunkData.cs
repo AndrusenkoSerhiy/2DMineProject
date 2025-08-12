@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using SaveSystem;
 using Scriptables;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
 using Utils;
 using World.Jobs;
@@ -49,7 +51,7 @@ namespace World {
       smoothedNoiseMap.Dispose();
     }
 
-    void GenerateNoise() {
+    /*void GenerateNoise() {
       noiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
       var perlinJob = new PerlinNoiseParallelJob {
         width = width,
@@ -71,8 +73,121 @@ namespace World {
       };
       var caHandle = caSmoothingJob.Schedule(width * height, 64, perlinHandle);
       caHandle.Complete();
+    }*/
+
+    void GenerateNoise()
+{
+    // 1. Перлін шум
+    noiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
+    var perlinJob = new PerlinNoiseParallelJob
+    {
+        width = width,
+        height = height,
+        scale = GameManager.Instance.GameConfig.PerlinScale,
+        seed = GameManager.Instance.ChunkController.Seed,
+        noiseMap = noiseMap
+    };
+    var perlinHandle = perlinJob.Schedule(width * height, 64);
+
+    // 2. Згладжування (Cellular Automata)
+    smoothedNoiseMap = new NativeArray<float>(width * height, Allocator.TempJob);
+    var caSmoothingJob = new CellularAutomataSmoothingJob
+    {
+        width = width,
+        height = height,
+        noiseMap = noiseMap,
+        smoothedNoiseMap = smoothedNoiseMap
+    };
+    var caHandle = caSmoothingJob.Schedule(width * height, 64, perlinHandle);
+
+    // 3. Масиви для результатів та перевірки зайнятих клітинок
+    var cellFillNative = new NativeArray<int>(width * height, Allocator.TempJob);
+    var occupiedNative = new NativeArray<byte>(width * height, Allocator.TempJob);
+
+    // 4. Підготовка всіх POI клітинок у NativeArray
+    var poiLib = GameManager.Instance.POIDataLibrary;
+    var allPoiCellsList = new List<POICellData>();
+    var templateSizesList = new List<int2>();
+
+    for (int t = 0; t < poiLib.POIDataList.Count; t++)
+    {
+        var poi = poiLib.POIDataList[t];
+        templateSizesList.Add(new int2(poi.SizeX, poi.SizeY));
+
+        foreach (var src in poi.Cells)
+        {
+            allPoiCellsList.Add(new POICellData
+            {
+                localX = src.localX,
+                localY = src.localY,
+                perlin = GameManager.Instance.ChunkController.ResourceDataLibrary.GetPerlinValue(src.resourceData),
+                durability = src.resourceData.Durability,
+                templateIndex = t,
+                sizeX = poi.SizeX,
+                sizeY = poi.SizeY
+            });
+        }
     }
 
+    var allPoiCellsNative = new NativeArray<POICellData>(allPoiCellsList.Count, Allocator.TempJob);
+    for (int i = 0; i < allPoiCellsList.Count; i++)
+        allPoiCellsNative[i] = allPoiCellsList[i];
+
+    var templateSizesNative = new NativeArray<int2>(templateSizesList.Count, Allocator.TempJob);
+    for (int i = 0; i < templateSizesList.Count; i++)
+        templateSizesNative[i] = templateSizesList[i];
+    
+    //var placedInstancesNative = new NativeArray<POIInstanceData>(poiLib.POICountForGeneration, Allocator.TempJob);
+    // 5. Запуск джоба з перевіркою перекриття та розміщенням POI
+    var poiJob = new POIPlacementWithCheckJob
+    {
+        width = width,
+        height = height,
+        poiCount = poiLib.POICountForGeneration,
+        minBorder = 4,
+        radiusX = poiLib.RadiusX,
+        radiusY = poiLib.RadiusY,
+        smoothedNoiseMap = smoothedNoiseMap,
+        cellFillDatas = cellFillNative,
+        occupied = occupiedNative,
+        allPoiCells = allPoiCellsNative,
+        templateSizes = templateSizesNative,
+        randomSeed = (uint)UnityEngine.Random.Range(1, int.MaxValue),
+        //placedInstances = placedInstancesNative
+    };
+    var poiHandle = poiJob.Schedule(caHandle);
+    poiHandle.Complete();
+    
+    /*for (int i = 0; i < placedInstancesNative.Length; i++)
+    {
+      var inst = placedInstancesNative[i];
+      if (inst.templateIndex >= 0)
+      {
+        Debug.Log($"POI #{i} | Template: {inst.templateIndex} | Start: ({inst.startX}, {inst.startY})");
+      }
+      else
+      {
+        Debug.Log($"POI #{i} not placed");
+      }
+    }*/
+
+    // 6. Копіюємо cellFillNative у _cellFillDatas
+    for (int i = 0; i < width; i++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            _cellFillDatas[i, j] = cellFillNative[i + j * width];
+        }
+    }
+
+    // 7. Dispose усіх NativeArray
+    cellFillNative.Dispose();
+    occupiedNative.Dispose();
+    allPoiCellsNative.Dispose();
+    templateSizesNative.Dispose();
+}
+
+    
     void ApplyCells() {
       var chunkController = GameManager.Instance.ChunkController;
 

@@ -353,7 +353,7 @@ namespace World {
 
       SetFirstRow();
       //POI
-      GeneratePOI(chunkData);
+      //GeneratePOI(chunkData);
       SpawnChunk(0, 0);
       OnCreateChunk?.Invoke();
     }
@@ -398,67 +398,6 @@ namespace World {
       cellWood.perlin = -1f;
       cellWood.durability = dataWood.Durability;
       AfterCellChanged(cellWood);
-    }
-
-    private void GeneratePOI(ChunkData chunkData) {
-      if (!SaveLoadSystem.Instance.IsNewGame()) {
-        return;
-      }
-
-      //Get all empty points
-      var emptyCells = new List<CellData>();
-      for (int i = 30; i < chunkData.width - 30; i++) {
-        for (int j = 30; j < chunkData.width - 30; j++) {
-          if (IsRemoved(i, j)) {
-            continue;
-          }
-
-          if (chunkData.CellFillDatas[i, j] != 0) {
-            continue;
-          }
-
-          var data = chunkData.GetCellData(i, j);
-          if (data.x == 0 || data.y == 0 || data.x == chunkData.width - 1 || data.y == chunkData.height - 1) continue;
-          var cellData = chunkData.GetCellData(i, j);
-          if (!cellData.HasStandPoint) continue;
-          if (i == 258 && j == 0) Debug.LogError($"the same coord 258 0");
-          emptyCells.Add(chunkData.GetCellData(i, j));
-        }
-      }
-
-      //Get POI variants
-      for (int i = 0; i < _poiDataLibrary.POIDataList.Count; i++) {
-        for (int j = 0; j < _poiDataLibrary.POIDataList[i].minCount; j++) {
-          var randIndex = Random.Range(0, emptyCells.Count);
-          var startCell = emptyCells[randIndex];
-          for (int k = 0; k < _poiDataLibrary.POIDataList[i].SizeX; k++) {
-            for (int l = 0; l < _poiDataLibrary.POIDataList[i].SizeY; l++) {
-              var xCoord = startCell.x + k;
-              var yCoord = startCell.y + l;
-              var cell = chunkData.GetCellData(xCoord, yCoord);
-              if (cell == null) continue;
-              cell.Destroy();
-            }
-          }
-
-          for (int k = 0; k < _poiDataLibrary.POIDataList[i].Cells.Count; k++) {
-            var targetData = _poiDataLibrary.POIDataList[i].Cells[k];
-            if (targetData == null) continue;
-            var xCoord = startCell.x + targetData.localX;
-            var yCoord = startCell.y + targetData.localY;
-            if (xCoord == 258 && yCoord == 0) Debug.LogError($"the same coord 258 0");
-            var cell = chunkData.GetCellData(xCoord, yCoord);
-            if (cell == null) continue;
-            var cellFill = chunkData.ForceCellFill(targetData.resourceData, xCoord, yCoord);
-            if (cellFill == null) continue;
-
-            emptyCells.Remove(cell);
-            AfterCellChanged(cell);
-
-            if (emptyCells.Count == 0) return;
-          }
-        }
-      }
     }
 
     private CellObjectsPool CellObjectsPool => GameManager.Instance.CellObjectsPool;

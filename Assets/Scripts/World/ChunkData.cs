@@ -144,7 +144,7 @@ namespace World {
         width = width,
         height = height,
         poiCount = poiLib.POICountForGeneration,
-        minBorder = 4,
+        minBorder = 20,
         radiusX = poiLib.RadiusX,
         radiusY = poiLib.RadiusY,
         smoothedNoiseMap = smoothedNoiseMap,
@@ -157,8 +157,8 @@ namespace World {
     };
     var poiHandle = poiJob.Schedule(caHandle);
     poiHandle.Complete();
-    
-    /*for (int i = 0; i < placedInstancesNative.Length; i++)
+    /*Debug.Log("POI GENERATED : "+placedInstancesNative.Length);
+    for (int i = 0; i < placedInstancesNative.Length; i++)
     {
       var inst = placedInstancesNative[i];
       if (inst.templateIndex >= 0)

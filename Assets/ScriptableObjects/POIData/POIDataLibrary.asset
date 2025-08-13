@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbab9229c67e44c18457d8e5b3fb2834, type: 3}
   m_Name: POIDataLibrary
   m_EditorClassIdentifier: 
-  RadiusBetweenPoints: 50
+  POICountForGeneration: 380
+  RadiusX: 15
+  RadiusY: 10
   POIDataList:
   - {fileID: 11400000, guid: cc6b0ba308577fc4ab180ac0aa5e6807, type: 2}
   - {fileID: 11400000, guid: 2c59087a38647d84cb74e4f9dfcae62a, type: 2}

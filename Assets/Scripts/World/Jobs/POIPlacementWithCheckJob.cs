@@ -80,7 +80,23 @@ namespace World.Jobs
                             }
                         }
 
-                        // Малюємо POI
+                        // Очищаємо місце під весь прямокутник POI
+                        for (int dx = 0; dx < size.x; dx++)
+                        {
+                            for (int dy = 0; dy < size.y; dy++)
+                            {
+                                int x = startX + dx;
+                                int y = startY + dy;
+                                if (x < 0 || x >= width || y < 0 || y >= height)
+                                    continue;
+
+                                int idx = x + y * width;
+                                smoothedNoiseMap[idx] = -10000f; // позначаємо як пустоту
+                                cellFillDatas[idx] = 0;
+                            }
+                        }
+
+                        // Малюємо POI поверх очищеної області
                         for (int i = 0; i < allPoiCells.Length; i++)
                         {
                             var cell = allPoiCells[i];
@@ -97,7 +113,7 @@ namespace World.Jobs
                         }
 
                         placed = true;
-                        
+
                         /*placedInstances[instIndex] = new POIInstanceData
                         {
                           startX = startX,

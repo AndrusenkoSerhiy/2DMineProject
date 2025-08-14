@@ -182,7 +182,11 @@ namespace Player {
       var map = new Dictionary<Vector2Int, IDamageable>();
       foreach (var cell in tempList) {
         var coords = CoordsTransformer.WorldToGrid(cell.GetPosition());
-        map.Add(new Vector2Int(coords.X, coords.Y), cell);  
+        var key = new Vector2Int(coords.X, coords.Y);
+        //add only first IDamageable
+        if (!map.ContainsKey(key)) {
+          map.Add(new Vector2Int(coords.X, coords.Y), cell);
+        }  
       }
       return map;
     }

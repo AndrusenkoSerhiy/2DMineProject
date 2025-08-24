@@ -210,18 +210,19 @@ namespace World {
           }
         }
       }
+
       //for zombies
       var enemies = GameManager.Instance.ActorBaseController.Enemies;
       foreach (var enemy in enemies) {
-        if(enemy.gameObject.activeInHierarchy) continue;
+        if (enemy.gameObject.activeInHierarchy) continue;
         var enemyCoords = enemy.GetCoords;
         //Debug.LogError($"{enemyCoords.X} | {enemyCoords.Y} enemy coord");
         //Debug.LogError($"{playerCoords.Y} | {enemyCoords.Y} | {visionOffsetY}");
-        if(Mathf.Abs(playerCoords.X - enemyCoords.X) < visionOffsetX
-           && Mathf.Abs(playerCoords.Y - enemyCoords.Y) < visionOffsetY)
-        GameManager.Instance.ActorBaseController.ReturnZombieToScene(enemy);
+        if (Mathf.Abs(playerCoords.X - enemyCoords.X) < visionOffsetX
+            && Mathf.Abs(playerCoords.Y - enemyCoords.Y) < visionOffsetY)
+          GameManager.Instance.ActorBaseController.ReturnZombieToScene(enemy);
       }
-      
+
       isInited = true;
     }
 
@@ -280,19 +281,24 @@ namespace World {
       for (int i = 0; i < clearList.Count; i++) {
         _activeBuildObjects.Remove(clearList[i]);
       }
+
       //try remove zombies
       foreach (var enemy in GameManager.Instance.ActorBaseController.Enemies) {
         if (!enemy.gameObject.activeInHierarchy) continue;
-          
+
         var enemyCoords = enemy.GetCoords;
         if (Mathf.Abs(playerCoords.X - enemyCoords.X) > visionOffsetX ||
             Mathf.Abs(playerCoords.Y - enemyCoords.Y) > visionOffsetY) {
-            GameManager.Instance.ActorBaseController.RemoveZombie(enemy);
+          GameManager.Instance.ActorBaseController.RemoveZombie(enemy);
         }
       }
 
       clearList.Clear();
       SpawnNearbyCells();
+    }
+
+    public void OutsideBuildingPlacement(Coords proxyCoords, BuildingDataObject building) {
+      AfterBuildingGet(building, proxyCoords);
     }
 
     private void AfterBuildingGet(BuildingDataObject activeBuildObject, Coords coords) {
@@ -318,15 +324,15 @@ namespace World {
       _activeCellObjects[new Coords(x, y)] = cell;
     }
 
-    public void TriggerCellDestroyed(CellObject cellObject) {
+    public void TriggerCellDestroyed(CellObject cellObject, bool triggerAround = true) {
       cellObject.CellData.Destroy();
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
       var coords = new Coords(x, y);
       RemoveCellFromActives(coords);
-      UpdateCellAround(x, y);
       AddToRemoved(x, y);
       RemoveCellFromChanged(x, y);
+      if (triggerAround) UpdateCellAround(x, y);
     }
 
     public void UpdateCellAround(int x, int y) {

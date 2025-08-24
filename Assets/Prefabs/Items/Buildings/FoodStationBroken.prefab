@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6337743332098150645
 Transform:
   m_ObjectHideFlags: 0
@@ -78,7 +78,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.011153221, y: -0.5874088}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -88,7 +88,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.57, y: 1.63}
+  m_Size: {x: 2.202022, y: 2.0166488}
   m_EdgeRadius: 0
 --- !u!114 &7313900017274488409
 MonoBehaviour:
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsActive: 0
-  Building: {fileID: 11400000, guid: e532957c013640c48a9b81200947c6d4, type: 2}
+  Building: {fileID: 11400000, guid: d2eba089a259cee4c8167d479f50bf53, type: 2}
 --- !u!114 &3547357494877543162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,7 +124,33 @@ MonoBehaviour:
   storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
   hasHoldInteraction: 0
   storageRecipe: {fileID: 0}
-  bonusResources: []
+  destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
+  Indestructible: 1
+  bonusResources:
+  - item: {fileID: 11400000, guid: 17c91b937474e6345968eb301aa39aea, type: 2}
+    chance: 0.25
+    rndCount: {x: 1, y: 3}
+  - item: {fileID: 11400000, guid: 4a9d2b1894bcf6d41a676cfbc89be5f6, type: 2}
+    chance: 0.25
+    rndCount: {x: 1, y: 3}
+  - item: {fileID: 11400000, guid: 886daf464708ab845aed948eba870786, type: 2}
+    chance: 0.35
+    rndCount: {x: 5, y: 15}
+  - item: {fileID: 11400000, guid: 154e8ba0ea2911e40a9cf1f243c3d7ad, type: 2}
+    chance: 0.3
+    rndCount: {x: 5, y: 15}
+  - item: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    chance: 0.2
+    rndCount: {x: 2, y: 10}
+  - item: {fileID: 11400000, guid: a87e42a0ac2a7b645985034cbec41d23, type: 2}
+    chance: 0.4
+    rndCount: {x: 4, y: 10}
+  - item: {fileID: 11400000, guid: 8bba1794d06b92b48adc9626fe1bd275, type: 2}
+    chance: 0.4
+    rndCount: {x: 4, y: 10}
+  - item: {fileID: 11400000, guid: a03ba1c09a86eab4d9e124f7e5c034af, type: 2}
+    chance: 0.25
+    rndCount: {x: 1, y: 3}
 --- !u!1 &5507656973377803446
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +178,7 @@ Transform:
   m_GameObject: {fileID: 5507656973377803446}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.59, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

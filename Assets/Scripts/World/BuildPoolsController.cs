@@ -8,7 +8,10 @@ namespace World {
 
     public BuildingDataObject Get(Building type, Vector3 position) {
       var pool = FindPool(type);
-      if (!pool) return null;
+      if (!pool) {
+        return null;
+      }
+
       return pool.Get(position);
     }
 

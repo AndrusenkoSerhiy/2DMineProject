@@ -115,7 +115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2012305784030239627
 Transform:
   m_ObjectHideFlags: 0
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsActive: 0
-  Building: {fileID: 11400000, guid: e532957c013640c48a9b81200947c6d4, type: 2}
+  Building: {fileID: 11400000, guid: 5c2bdc0d5662eb14d8e6c329c014890c, type: 2}
 --- !u!114 &1280697076672098749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,4 +220,29 @@ MonoBehaviour:
   storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
   hasHoldInteraction: 0
   storageRecipe: {fileID: 0}
-  bonusResources: []
+  destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
+  bonusResources:
+  - item: {fileID: 11400000, guid: cb571e081ccbabd419c27b6d0c2660a1, type: 2}
+    chance: 0.3
+    rndCount: {x: 1, y: 3}
+  - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
+    chance: 0.3
+    rndCount: {x: 4, y: 8}
+  - item: {fileID: 11400000, guid: c4186f33ab9ebdd4fbc48c6d99586791, type: 2}
+    chance: 0.4
+    rndCount: {x: 5, y: 15}
+  - item: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
+    chance: 0.1
+    rndCount: {x: 1, y: 2}
+  - item: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
+    chance: 0.2
+    rndCount: {x: 10, y: 50}
+  - item: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    chance: 0.4
+    rndCount: {x: 10, y: 20}
+  - item: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
+    chance: 0.25
+    rndCount: {x: 10, y: 20}
+  - item: {fileID: 11400000, guid: a6ec05e23db0ff6459f4e4b32ceda697, type: 2}
+    chance: 0.2
+    rndCount: {x: 15, y: 30}

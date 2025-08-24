@@ -12,11 +12,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b23419512bd349d18debac7d35c1f6fe, type: 3}
   m_Name: LootPointSpawner
   m_EditorClassIdentifier: 
-  Durability: 0
-  DropCount: 0
-  tileDatas: []
-  sortingOrder: 0
-  itemData: {fileID: 0}
+  Durability: 15
+  DropCount: 1
+  tileDatas:
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  - sprite: {fileID: 21300000, guid: 1808abf9110ef314a874dc0cf83da1b6, type: 3}
+    offsetSorting: 0
+  sortingOrder: 500
+  itemData: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
   mapColor: {r: 0.49019608, g: 0.49019608, b: 0.49019608, a: 1}
   effectColor: {r: 0.8039216, g: 0.5803922, b: 0.47058824, a: 1}
   previewColor: {r: 0.32156864, g: 0.7529412, b: 1, a: 0.25490198}

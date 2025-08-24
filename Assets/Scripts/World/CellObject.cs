@@ -5,6 +5,7 @@ using Player;
 using Scriptables;
 using Pool;
 using UnityEngine.U2D;
+using Utils;
 
 namespace World {
   public class CellObject : PoolObjectBase, IDamageable {
@@ -52,6 +53,7 @@ namespace World {
 
       _cellData = cellData;
       resourceData = data;
+      if (GameManager.Instance.ChunkSpecialPointsSpawner.CheckData(data, new Coords(cellData.x, cellData.y), this)) return;
       CanGetDamage = resourceData.CanTakeDamage;
       InitUnitHealth();
     }
@@ -170,6 +172,12 @@ namespace World {
 
       highlight.SetHighlight(false);
 
+      OnDestroyed?.Invoke();
+    }
+
+    public void DestroySilent() {
+      GameManager.Instance.ChunkController.TriggerCellDestroyed(this, false);
+      GameManager.Instance.CellObjectsPool.ReturnObject(this);
       OnDestroyed?.Invoke();
     }
 

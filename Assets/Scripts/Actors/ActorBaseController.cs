@@ -20,6 +20,7 @@ namespace Actors {
     private GameManager gameManager;
 
     public List<ActorEnemy> Enemies => enemies;
+
     private void Start() {
       SaveLoadSystem.Instance.Register(this);
       gameManager = GameManager.Instance;
@@ -37,7 +38,7 @@ namespace Actors {
         enemy.PauseBehaviour();
       }
     }
-    
+
     private void UnpauseZombies() {
       //Debug.LogError("Unpause Zombies");
       foreach (var enemy in enemies) {
@@ -49,6 +50,7 @@ namespace Actors {
     public void RemoveZombie(ActorEnemy actor) {
       actor.gameObject.SetActive(false);
     }
+
     //when zombie is in of visible range
     public void ReturnZombieToScene(ActorEnemy actor) {
       actor.gameObject.SetActive(true);
@@ -85,7 +87,8 @@ namespace Actors {
           continue;
         }
 
-        var zombie = (ActorEnemy)gameManager.ActorsPooler.SpawnFromPool("Zombie_1", zombieData.Position, zombieData.Rotation);
+        var zombie =
+          (ActorEnemy)gameManager.ActorsPooler.SpawnFromPool("Zombie_1", zombieData.Position, zombieData.Rotation);
         //var zombie = (ActorEnemy)Instantiate(actor, zombieData.Position, zombieData.Rotation);
         zombie.transform.localScale = zombieData.Scale;
         zombie.SetBehaviour(siegeBehaviour);
@@ -109,17 +112,24 @@ namespace Actors {
 
       for (int i = 0; i < difficultyList.Count; i++) {
         var count = Mathf.RoundToInt(difficultyList[i].percentage * siege.ZombieCount / 100);
-        Spawn(difficultyList[i].profile, count);
+        Spawn(difficultyList[i].profile, count, siegeBehaviour, Vector3.zero);
       }
     }
 
-    private void Spawn(ZombieDifficultyProfile profile, int count) {
+    public void SpawnPatrolZombie(Vector3 pos) {
+      //Debug.LogError($"difficulty list {GetDifficultyList().Count}");
+      var difficultyList = GetDifficultyList();
+      Spawn(difficultyList[0].profile, 1, patrolBehaviour, pos, true);
+    }
+
+    private void Spawn(ZombieDifficultyProfile profile, int count, BehaviourTree behaviourTree, Vector3 targetPos,
+      bool setPos = false) {
       for (int i = 0; i < count; i++) {
         //Debug.LogError($"spawn {profile}");
-        var pos = GetPosition();
+        var pos = setPos ? targetPos : GetPosition();
         var zombie = (ActorEnemy)GameManager.Instance.ActorsPooler.SpawnFromPool("Zombie_1", pos, Quaternion.identity);
         //var zombie = (ActorEnemy)Instantiate(actor, pos, Quaternion.identity);
-        zombie.SetBehaviour(siegeBehaviour);
+        zombie.SetBehaviour(behaviourTree);
         zombie.SetDifficulty(profile);
         enemies.Add(zombie);
       }

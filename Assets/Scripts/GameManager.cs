@@ -81,6 +81,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private QuestManager questManager;
   [SerializeField] private POIDataLibrary _poiDataLibrary;
   [SerializeField] private ObjectivesSystem objectivesSystem;
+  [SerializeField] private ChunkSpecialPointsSpawner chunkSpecialPointsSpawner;
 
   [SerializeField] private ActorBaseController actorBaseController;
   //TODO 
@@ -148,6 +149,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public POIDataLibrary POIDataLibrary => _poiDataLibrary;
   public ActorBaseController ActorBaseController => actorBaseController;
   public ObjectivesSystem ObjectivesSystem => objectivesSystem;
+  public ChunkSpecialPointsSpawner ChunkSpecialPointsSpawner => chunkSpecialPointsSpawner;
 
   public PlayerController PlayerController {
     set => playerController = value;

@@ -17,6 +17,7 @@ namespace Inventory {
     [SerializeField] private bool hasHoldInteraction = true;
     [SerializeField] private Recipe storageRecipe;
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
+    public bool Indestructible = false;
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
@@ -31,6 +32,7 @@ namespace Inventory {
 
     private void Awake() {
       gameManager = GameManager.Instance;
+      if (Indestructible) return;
       cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, storageRecipe, transform.position);
     }
 
@@ -94,14 +96,17 @@ namespace Inventory {
     }
 
     public void SetBaseCells(List<CellObject> cells) {
+      if (Indestructible) return;
       cellHandler.SetBaseCells(cells, transform.position);
     }
 
     public void ClearBaseCells() {
+      if (Indestructible) return;
       cellHandler.ClearBaseCells();
     }
 
     private void OnAllBaseCellsDestroyed() {
+      if (Indestructible) return;
       var storageInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, GetId());
       if (storageInventory != null) {
         foreach (var slot in storageInventory.Slots) {

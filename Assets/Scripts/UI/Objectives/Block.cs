@@ -47,13 +47,15 @@ namespace UI.Objectives {
     }
 
     private void OnTaskRewardedHandler(ObjectiveData data) {
-      gameManager.PlayerInventory.AddItemToInventory(data.reward.item, data.reward.amount, transform.position);
+      var pos = gameManager.PlayerController.transform.position + new Vector3(5, 3, 0);
+      gameManager.PlayerInventory.AddItemToInventory(data.reward.item, data.reward.amount, pos);
       gameManager.MessagesManager.ShowSimpleMessage("You got " + data.reward.amount + " " + data.reward.item.name +
                                                     " for completing task");
     }
 
     private void OnGroupRewardedHandler(ObjectiveGroup data) {
-      gameManager.PlayerInventory.AddItemToInventory(data.reward.item, data.reward.amount, transform.position);
+      var pos = gameManager.PlayerController.transform.position + new Vector3(5, 3, 0);
+      gameManager.PlayerInventory.AddItemToInventory(data.reward.item, data.reward.amount, pos);
       gameManager.MessagesManager.ShowSimpleMessage("You got " + data.reward.amount + " " + data.reward.item.name +
                                                     " for completing group");
     }

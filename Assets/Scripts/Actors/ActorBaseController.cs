@@ -119,7 +119,7 @@ namespace Actors {
     public void SpawnPatrolZombie(Vector3 pos) {
       //Debug.LogError($"difficulty list {GetDifficultyList().Count}");
       var difficultyList = GetDifficultyList();
-      Spawn(difficultyList[0].profile, 1, patrolBehaviour, pos, true);
+      Spawn(difficultyList[Random.Range(0,difficultyList.Count)].profile, 1, patrolBehaviour, pos, true);
     }
 
     private void Spawn(ZombieDifficultyProfile profile, int count, BehaviourTree behaviourTree, Vector3 targetPos,

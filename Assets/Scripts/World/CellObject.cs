@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using DG.Tweening;
 using Player;
@@ -21,8 +20,6 @@ namespace World {
     public DamageableType DamageableType { get; set; }
     public AudioData OnTakeDamageAudioData { get; set; }
     public bool CanGetDamage { get; set; }
-
-    public event Action OnDestroyed;
 
     public ResourceData resourceData;
     private SpriteRenderer damageOverlayRenderer;
@@ -171,14 +168,11 @@ namespace World {
       }
 
       highlight.SetHighlight(false);
-
-      OnDestroyed?.Invoke();
     }
 
     public void DestroySilent() {
       GameManager.Instance.ChunkController.TriggerCellDestroyed(this, false);
       GameManager.Instance.CellObjectsPool.ReturnObject(this);
-      OnDestroyed?.Invoke();
     }
 
     public void AfterDamageReceived() {

@@ -6,27 +6,42 @@ using UnityEngine;
 
 namespace Inventory {
   public class RandomStorage : Storage {
-    private Inventory storageInventory;
     [SerializeField] private List<ResourceData.BonusResource> bonusResources;
+
+    private Inventory storageInventory;
+    private bool lootGenerated;
+
     public override bool Interact(PlayerInteractor playerInteractor) {
-      storageInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, GetId());
-      if (storageInventory.IsEmpty()) {
-        GenerateRandomLoot();
-      }
+      TryGenerateRandomLoot();
       return base.Interact(playerInteractor);
     }
 
-    private void GenerateRandomLoot() {
-      for (var i = 0; i < bonusResources.Count; i++) {
-        var currentResource = bonusResources[i];
-        var rand = Random.value;
-        if (rand > currentResource.chance) {
-          continue;
-        }
-
-        var count = Random.Range((int)currentResource.rndCount.x, (int)currentResource.rndCount.y);
-        storageInventory.AddItem(new Item(currentResource.item), count);
+    private void TryGenerateRandomLoot() {
+      if (lootGenerated || bonusResources == null || bonusResources.Count == 0) {
+        return;
       }
+
+      storageInventory ??= gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, GetId());
+
+      foreach (var resource in bonusResources) {
+        TryAddRandomResource(resource);
+      }
+
+      lootGenerated = true;
+    }
+
+    private void TryAddRandomResource(ResourceData.BonusResource resource) {
+      if (!(Random.value <= resource.chance)) {
+        return;
+      }
+
+      var count = Random.Range((int)resource.rndCount.x, (int)resource.rndCount.y);
+      storageInventory.AddItem(new Item(resource.item), count);
+    }
+
+    protected override void OnAllBaseCellsDestroyed() {
+      TryGenerateRandomLoot();
+      base.OnAllBaseCellsDestroyed();
     }
   }
 }

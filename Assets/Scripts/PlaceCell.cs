@@ -241,7 +241,7 @@ public class PlaceCell : MonoBehaviour {
     else {
       PlaceBuildingBlock();
     }
-    
+
     GameManager.Instance.ObjectivesSystem.ReportBuild(currentBuildingBlock, 1);
 
     GetSelectedSlot().RemoveAmount(1);
@@ -339,13 +339,17 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void AfterPlaceCellWithBaseCells(IBaseCellHolder baseCellHolder, Coords coords, int sizeX) {
-    var cells = new List<CellObject>();
+    SetBaseCells(baseCellHolder, chunkController, coords, sizeX);
+  }
+
+  public static void SetBaseCells(IBaseCellHolder baseCellHolder, ChunkController chunkController, Coords coords,
+    int sizeX) {
+    var cells = new List<CellData>();
     var coordY = coords.Y + 1;
     for (var x = 0; x < sizeX; x++) {
       var coordX = coords.X + x;
-      var cell = chunkController.GetCell(coordX, coordY);
+      var cell = chunkController.ChunkData.GetCellData(coordX, coordY);
       cells.Add(cell);
-      // Debug.DrawRay(CoordsTransformer.GridToWorld(coordX, coordY), Vector3.up, Color.green, 100f);
     }
 
     baseCellHolder.SetBaseCells(cells);

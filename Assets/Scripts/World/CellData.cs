@@ -1,6 +1,5 @@
 using System;
 using Scriptables;
-using UnityEngine;
 
 namespace World {
   [Serializable]
@@ -19,6 +18,7 @@ namespace World {
     public int NeighboursIndex => neighboursIndex();
     public bool HasAnyNeighbours => hasAnyNeighbours();
     public bool HasStandPoint => hasStandPoint();
+    public event Action OnDestroyed;
 
     public CellData(int x, int y, float perlin, float durability, ChunkData chunk) {
       this.x = x;
@@ -174,6 +174,8 @@ namespace World {
     public void Destroy() {
       _chunk.SetCellFill(x, y, 0);
       perlin = -10000f;
+      
+      OnDestroyed?.Invoke();
     }
   }
 }

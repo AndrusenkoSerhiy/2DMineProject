@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace World {
   public class CellHolderHandler {
-    private List<CellObject> baseCells = new();
-    private readonly Dictionary<CellObject, Action> cellDestroyedHandlers = new();
+    private List<CellData> baseCells = new();
+    private readonly Dictionary<CellData, Action> cellDestroyedHandlers = new();
     private readonly Action onAllDestroyed;
     private readonly Recipe recipe;
     private Vector3 spawnPosition;
@@ -18,8 +18,8 @@ namespace World {
       this.spawnPosition = spawnPosition;
     }
 
-    public void SetBaseCells(List<CellObject> cells, Vector3 position) {
-      this.spawnPosition = position;
+    public void SetBaseCells(List<CellData> cells, Vector3 position) {
+      spawnPosition = position;
 
       ClearBaseCells();
 
@@ -41,7 +41,7 @@ namespace World {
       baseCells.Clear();
     }
 
-    private void OnBaseCellDestroyedHandler(CellObject cell) {
+    private void OnBaseCellDestroyedHandler(CellData cell) {
       if (baseCells == null || baseCells.Count == 0) return;
 
       if (cellDestroyedHandlers.TryGetValue(cell, out var handler)) {

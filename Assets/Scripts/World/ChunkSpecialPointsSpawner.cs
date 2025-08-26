@@ -11,15 +11,25 @@ namespace World {
     private ChunkController chunkController;
 
     public bool CheckData(ResourceData data, Coords coords, CellObject cellObject) {
-      if (!chunkController) chunkController = GameManager.Instance.ChunkController;
+      if (!chunkController) {
+        chunkController = GameManager.Instance.ChunkController;
+      }
+
       var loot = data == LootPointSpawnerData;
       var zombie = data == ZombieSpawnerData;
-      if (!loot && !zombie) return false;
+      if (!loot && !zombie) {
+        return false;
+      }
+
       cellObject.DestroySilent();
-      if (loot)
+      if (loot) {
         SpawnChest(coords);
-      if (zombie)
+      }
+
+      if (zombie) {
         SpawnZombie(coords);
+      }
+
       return true;
     }
 
@@ -27,6 +37,13 @@ namespace World {
       var randBuilding = possibleBuildings[Random.Range(0, possibleBuildings.Count)];
       var convertedCoords = CoordsTransformer.GridToBuildingsGrid(coords);
       var build = chunkController.SpawnBuild(convertedCoords, randBuilding);
+
+      if (!build.TryGetComponent<IBaseCellHolder>(out var baseCellHolder)) {
+        Debug.LogError("No base cell holder");
+        return;
+      }
+      
+      PlaceCell.SetBaseCells(baseCellHolder, chunkController, coords, build.Building.SizeX);
     }
 
     private void SpawnZombie(Coords coords) {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Interaction;
 using Scriptables.Craft;
@@ -40,7 +39,7 @@ namespace Craft {
       cellHandler.ClearBaseCells();
     }
 
-    public void SetBaseCells(List<CellObject> cells) {
+    public void SetBaseCells(List<CellData> cells) {
       cellHandler.SetBaseCells(cells, transform.position);
     }
 

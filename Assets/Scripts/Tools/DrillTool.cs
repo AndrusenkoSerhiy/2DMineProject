@@ -49,6 +49,7 @@ namespace Tools {
     }
 
     private void OnDestroy() {
+      StopDrilling(null, null);
       if (!GameManager.HasInstance) {
         return;
       }

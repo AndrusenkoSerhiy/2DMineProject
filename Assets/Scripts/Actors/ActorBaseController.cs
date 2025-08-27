@@ -10,7 +10,6 @@ using World;
 
 namespace Actors {
   public class ActorBaseController : MonoBehaviour, ISaveLoad {
-    //[SerializeField] private ActorBase actor;
     [SerializeField] private BehaviourTree patrolBehaviour;
     [SerializeField] private BehaviourTree siegeBehaviour;
     [SerializeField] private List<ActorEnemy> enemies = new();
@@ -106,6 +105,10 @@ namespace Actors {
 
     #endregion
 
+    //when zombie die
+    public void RemoveFromList(ActorEnemy zombie) {
+      enemies.Remove(zombie);
+    }
     private void SpawnSiegeZombie(ActiveSiegeTemplate siege) {
       //Debug.LogError($"difficulty list {GetDifficultyList().Count}");
       var difficultyList = GetDifficultyList();

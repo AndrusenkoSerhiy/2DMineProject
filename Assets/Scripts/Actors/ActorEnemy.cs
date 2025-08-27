@@ -283,6 +283,7 @@ namespace Actors {
     }
 
     private IEnumerator WaitDestroy() {
+      GameManager.Instance.ActorBaseController.RemoveFromList(this);
       yield return new WaitForSeconds(destroyAfter);
       //return to pool
       Respawn();

@@ -137,9 +137,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 1
   interactName: 
-  interactHeader: 
+  holdInteractText: 
   item: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
   isPicked: 0
+  spriteRenderer: {fileID: 6389204545028509238}
 --- !u!50 &2959172694575983499
 Rigidbody2D:
   serializedVersion: 5

@@ -8,6 +8,7 @@ using Slider = UnityEngine.UI.Slider;
 
 namespace Interaction {
   public class PlayerInteractor : MonoBehaviour {
+    [SerializeField] private ObjectInteractionPrompts objectInteractionPrompts;
     [SerializeField] private Transform interactionPoint;
     [SerializeField] private float radius = .5f;
     [SerializeField] private LayerMask interactableMask;
@@ -44,13 +45,20 @@ namespace Interaction {
       actionName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.GamePlay.Interact);
       interactionPromtUI.UpdateSpriteAsset();
       holdInteractionPromtUI.UpdateSpriteAsset();
+      
+      objectInteractionPrompts.UpdateSpriteAsset();
     }
 
     private void Update() {
       //if any window is open don't allow to find items and show interaction message
       if (GameManager.Instance.WindowsController.IsAnyWindowOpen) {
         interactionPromtUI.ShowPrompt(false);
+        
+        objectInteractionPrompts.HideInteractionPrompt();
+        
         holdInteractionPromtUI.ShowPrompt(false);
+        
+        objectInteractionPrompts.HideHoldInteractionPrompt();
         return;
       }
 
@@ -65,12 +73,17 @@ namespace Interaction {
       if (numFound <= 0) {
         interactable = null;
         interactionPromtUI.ShowPrompt(false);
+        
+        objectInteractionPrompts.HideInteractionPrompt();
+        objectInteractionPrompts.HideHoldInteractionPrompt();
+        
         ShowEquipmentHoldActionPrompt();
         return;
       }
 
       foreach (var col in colliders) {
         interactable = col.GetComponent<IInteractable>();
+
         if (interactable != null) {
           break;
         }
@@ -80,15 +93,16 @@ namespace Interaction {
         return;
       }
 
-      interactionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName));
+      // interactionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName));
+      objectInteractionPrompts.ShowInteractionPrompt(interactable, ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName, true));
 
       if (!interactable.HasHoldInteraction) {
         ShowEquipmentHoldActionPrompt();
         return;
       }
 
-      holdInteractionPromtUI.ShowPrompt(true,
-        ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName));
+      // holdInteractionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName));
+      objectInteractionPrompts.ShowHoldInteractionPrompt(interactable, ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true));
     }
 
     private void ShowEquipmentHoldActionPrompt() {
@@ -133,7 +147,7 @@ namespace Interaction {
       if (!isHolding) {
         return;
       }
-      
+
       //skip hold progress if we don't have equipped item
       if (interactable == null && (playerEquipment.EquippedItem == null ||
                                    playerEquipment.EquippedItem.Durability.Equals(playerEquipment.EquippedItem

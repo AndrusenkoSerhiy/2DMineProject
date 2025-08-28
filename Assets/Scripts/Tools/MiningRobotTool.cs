@@ -24,6 +24,7 @@ namespace Tools {
     [SerializeField] private Vector3 positionForPlayer;
     [SerializeField] private List<Transform> exitTransforms;
     [SerializeField] private string holdInteractText;
+    [SerializeField] private MeshRenderer meshRenderer;
 
     [SerializeField] private RobotObject robotObject;
     [SerializeField] private Animator animator;
@@ -42,7 +43,7 @@ namespace Tools {
     [SerializeField] private AudioData robotBreak;
     [SerializeField] private AudioData robotRepair;
     private AudioController audioController;
-    
+
     private bool isAttackMode = true;
     private string buttonName;
     private string changeBlockButtonName;
@@ -55,12 +56,14 @@ namespace Tools {
     private string id;
 
     private bool broken;
+
     //set param true after first lock
     private bool lockedOnStart;
+
     //use after save load and we in the robot
     private bool needActivateItem = true;
     private int repairValue;
-    
+
     [SerializeField] private bool playerInRobot;
     private ChunkController chunkController;
 
@@ -74,6 +77,10 @@ namespace Tools {
 
     public bool HasHoldInteraction => !playerInRobot && CanRepair();
     public string HoldInteractionText => holdInteractText;
+
+    public Bounds GetBounds() {
+      return meshRenderer ? meshRenderer.bounds : new Bounds(transform.position, Vector3.zero);
+    }
 
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
@@ -101,6 +108,7 @@ namespace Tools {
       if (broken) {
         animator.SetTrigger("Die");
       }
+
       stats.OnAddHealth += OnAddHealthHandler;
 
       UpdateRobotPosition();
@@ -197,7 +205,7 @@ namespace Tools {
       }
 
       animator.SetBool("IsBroken", broken);
-      if(broken) audioController.PlayAudio(robotBreak, transform.position);
+      if (broken) audioController.PlayAudio(robotBreak, transform.position);
     }
 
     public bool Interact(PlayerInteractor playerInteractor) {
@@ -206,7 +214,7 @@ namespace Tools {
         GameManager.Instance.MessagesManager.ShowSimpleMessage("Robot is broken. Get repair kit!");
         return true;
       }
-      
+
       if (!playerInRobot) {
         SitOnRobot();
         ResetPlayerAnim();
@@ -237,7 +245,7 @@ namespace Tools {
       playerController.EnableCollider(false);
       playerController.SetLockHighlight(true);
       playerController.Stamina.EnableSprintScript(false);
-      
+
       miningRobotController.Stamina.EnableSprintScript(true);
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);

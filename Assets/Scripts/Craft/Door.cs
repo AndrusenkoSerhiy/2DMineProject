@@ -19,17 +19,23 @@ namespace Craft {
     [SerializeField] private int startHealth;
     [SerializeField] private AudioData openDoorAudioData;
     [SerializeField] private AudioData closeDoorAudioData;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     public string InteractionText => IsOpened ? interactCloseText : interactOpenText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
+
+    public Bounds GetBounds() {
+      return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);
+    }
+
     public bool IsOpen => IsOpened;
-    
+
     private void Start() {
       DamageableType = DamageableType.Door;
       CanGetDamage = true;
       InitUnitHealth();
     }
-    
+
     private void InitUnitHealth() {
       unitHealth = new UnitHealth(startHealth);
     }
@@ -86,11 +92,9 @@ namespace Craft {
     }
 
     public void AfterDamageReceived() {
-      
     }
 
     public void DestroyObject() {
-      
     }
   }
 }

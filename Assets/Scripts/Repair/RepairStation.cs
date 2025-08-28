@@ -11,6 +11,7 @@ namespace Repair {
     [SerializeField] private CellObject cellObject;
     [SerializeField] private string interactText;
     [SerializeField] private string holdInteractText;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private WindowBase window;
     private RepairWindow repairWindow;
@@ -18,6 +19,10 @@ namespace Repair {
     public string InteractionText => interactText;
     public bool HasHoldInteraction { get; }
     public string HoldInteractionText => holdInteractText;
+
+    public Bounds GetBounds() {
+      return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);
+    }
 
     public bool Interact(PlayerInteractor playerInteractor) {
       Init();

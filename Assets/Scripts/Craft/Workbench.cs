@@ -11,12 +11,17 @@ namespace Craft {
     [SerializeField] private bool hasHoldInteraction = true;
     [SerializeField] private Recipe stationRecipe;
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private CellHolderHandler cellHandler;
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
+
+    public Bounds GetBounds() {
+      return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);
+    }
 
     protected override void Awake() {
       base.Awake();

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine.InputSystem;
 
 public static class ButtonPromptSprite {
@@ -14,7 +13,11 @@ public static class ButtonPromptSprite {
     return buttonName;
   }
 
-  public static string GetFullPrompt(string actionName, string buttonName) {
+  public static string GetFullPrompt(string actionName, string buttonName, bool isLeft = false) {
+    if (isLeft) {
+      return "<sprite name=" + buttonName + ">" + " " + actionName;
+    }
+
     return actionName + " " + "<sprite name=" + buttonName + ">";
   }
 

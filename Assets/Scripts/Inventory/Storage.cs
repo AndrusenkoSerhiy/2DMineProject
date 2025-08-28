@@ -17,11 +17,16 @@ namespace Inventory {
     [SerializeField] private bool hasHoldInteraction = true;
     [SerializeField] private Recipe storageRecipe;
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
+    [SerializeField] private SpriteRenderer spriteRenderer;
     // public bool Indestructible = false;
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
+
+    public Bounds GetBounds() {
+      return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);
+    }
 
     private StorageWindow storageWindow;
     protected GameManager gameManager;
@@ -53,9 +58,9 @@ namespace Inventory {
       if (!HasHoldInteraction) {
         return false;
       }
-      
+
       var storageInventory = gameManager.PlayerInventory.GetInventoryByTypeAndId(inventoryType, GetId());
-      
+
       if (!storageInventory.IsEmpty()) {
         gameManager.MessagesManager.ShowSimpleMessage("Storage is not empty.");
         return false;

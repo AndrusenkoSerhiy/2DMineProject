@@ -109,6 +109,8 @@ MonoBehaviour:
   holdInteractText: Take to inventory
   hasHoldInteraction: 1
   stationRecipe: {fileID: 11400000, guid: 4b1241e4c1fe3324d8c7b09ca7b33d69, type: 2}
+  destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
+  spriteRenderer: {fileID: 4423727987069519656}
 --- !u!114 &5100434093915601852
 MonoBehaviour:
   m_ObjectHideFlags: 0

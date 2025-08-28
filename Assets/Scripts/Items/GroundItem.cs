@@ -12,6 +12,7 @@ namespace Items {
     [SerializeField] private string holdInteractText;
     [SerializeField] private ItemObject item;
     [SerializeField] private bool isPicked;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private Rigidbody2D rb;
     private bool startMerging;
@@ -32,6 +33,10 @@ namespace Items {
     public string InteractionText => $"Pickup {item.name}";
     public bool HasHoldInteraction { get; }
     public string HoldInteractionText => holdInteractText;
+
+    public Bounds GetBounds() {
+      return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);
+    }
 
     public ItemObject Item => item;
 

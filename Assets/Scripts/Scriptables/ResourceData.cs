@@ -6,7 +6,7 @@ using World;
 
 namespace Scriptables {
   [CreateAssetMenu(menuName = "Create ResourceData", fileName = "ResourceData", order = 0)]
-  public class ResourceData : ScriptableObject {
+  public class ResourceData : BaseScriptableObject {
     public int Durability;
     public int DropCount;
     [SerializeField] private List<TileData> tileDatas;

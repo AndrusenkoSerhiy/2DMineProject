@@ -18,7 +18,7 @@ namespace Inventory {
     [SerializeField] private Recipe storageRecipe;
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
     [SerializeField] private SpriteRenderer spriteRenderer;
-    // public bool Indestructible = false;
+    [SerializeField] protected bool PlayerOwner = true;
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
@@ -134,7 +134,7 @@ namespace Inventory {
       }
 
       gameManager.PlaceCell.RemoveBuilding(buildObject, storageItemObject);
-      gameManager.MessagesManager.ShowSimpleMessage("Storage destroyed");
+      if(PlayerOwner) gameManager.MessagesManager.ShowSimpleMessage("Storage destroyed");
       gameManager.AudioController.PlayStorageDestroyed();
     }
   }

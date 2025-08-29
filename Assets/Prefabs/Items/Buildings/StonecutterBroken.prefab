@@ -126,6 +126,7 @@ MonoBehaviour:
   storageRecipe: {fileID: 0}
   destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
   spriteRenderer: {fileID: 5647842435097607742}
+  PlayerOwner: 0
   bonusResources:
   - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
     chance: 0.3

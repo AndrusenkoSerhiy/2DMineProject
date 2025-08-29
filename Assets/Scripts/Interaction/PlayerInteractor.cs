@@ -102,7 +102,7 @@ namespace Interaction {
       }
 
       // holdInteractionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName));
-      objectInteractionPrompts.ShowHoldInteractionPrompt(interactable, ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true));
+      objectInteractionPrompts.ShowHoldInteractionPrompt(interactable, ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true,true));
     }
 
     private void ShowEquipmentHoldActionPrompt() {

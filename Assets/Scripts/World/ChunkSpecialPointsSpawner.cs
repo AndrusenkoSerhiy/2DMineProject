@@ -20,7 +20,6 @@ namespace World {
       if (!loot && !zombie) {
         return false;
       }
-
       cellObject.DestroySilent();
       if (loot) {
         SpawnChest(coords);

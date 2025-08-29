@@ -119,7 +119,7 @@ namespace Objectives {
       completedGroups.Add(group.id);
       OnGroupCompleted?.Invoke(group);
 
-      gameManager.MessagesManager.ShowSimpleMessage("You completed a group");
+      gameManager.MessagesManager.ShowSimpleMessage("Quest completed");
 
       if (group.reward?.item != null) {
         OnGroupRewarded?.Invoke(group);

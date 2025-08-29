@@ -13,9 +13,10 @@ public static class ButtonPromptSprite {
     return buttonName;
   }
 
-  public static string GetFullPrompt(string actionName, string buttonName, bool isLeft = false) {
+  public static string GetFullPrompt(string actionName, string buttonName, bool isLeft = false, bool hold = false ) {
     if (isLeft) {
-      return "<sprite name=" + buttonName + ">" + " " + actionName;
+      var holdStr = hold ? "_hold" : "";
+      return "<sprite name=" + buttonName+holdStr + ">" + " " + actionName;
     }
 
     return actionName + " " + "<sprite name=" + buttonName + ">";

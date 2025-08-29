@@ -119,14 +119,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1c8b1f79ad74db88ffad8bf8fb00b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactEnterName: sit in robot
-  interactExitName: exit from robot
+  interactEnterName: Jump in
+  interactExitName: Jump out
   playerTransform: {fileID: 2018962168670391672}
   positionForPlayer: {x: -0.06, y: 0.16, z: 0}
   exitTransforms:
   - {fileID: 4071054159070599446}
   - {fileID: 5602485324963326271}
-  holdInteractText: Repair (hold)
+  holdInteractText: Repair (HOLD)
+  meshRenderer: {fileID: 8186438463091136168}
   robotObject: {fileID: 11400000, guid: 20225897ed2c2124989043907a9eb6c9, type: 2}
   animator: {fileID: 8612669857292059665}
   stats: {fileID: 3768578396950336233}

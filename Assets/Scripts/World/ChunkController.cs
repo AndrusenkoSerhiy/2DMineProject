@@ -324,7 +324,7 @@ namespace World {
       _activeCellObjects[new Coords(x, y)] = cell;
     }
 
-    public void TriggerCellDestroyed(CellObject cellObject, bool triggerAround = true) {
+    public void TriggerCellDestroyed(CellObject cellObject, bool silent = false) {
       cellObject.CellData.Destroy();
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
@@ -332,7 +332,7 @@ namespace World {
       RemoveCellFromActives(coords);
       AddToRemoved(x, y);
       RemoveCellFromChanged(x, y);
-      if (triggerAround) UpdateCellAround(x, y);
+      if (!silent) UpdateCellAround(x, y);
     }
 
     public void UpdateCellAround(int x, int y) {

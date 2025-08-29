@@ -306,6 +306,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -313,10 +326,10 @@ TextureImporter:
       name: TestKeyboardSprites_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 564
-        width: 78
-        height: 74
+        x: 5
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -335,10 +348,10 @@ TextureImporter:
       name: TestKeyboardSprites_1
       rect:
         serializedVersion: 2
-        x: 88
-        y: 564
-        width: 78
-        height: 74
+        x: 89
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -357,10 +370,10 @@ TextureImporter:
       name: TestKeyboardSprites_2
       rect:
         serializedVersion: 2
-        x: 172
-        y: 564
-        width: 78
-        height: 74
+        x: 173
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -379,10 +392,10 @@ TextureImporter:
       name: TestKeyboardSprites_3
       rect:
         serializedVersion: 2
-        x: 256
-        y: 564
-        width: 78
-        height: 74
+        x: 257
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -401,10 +414,10 @@ TextureImporter:
       name: TestKeyboardSprites_4
       rect:
         serializedVersion: 2
-        x: 340
-        y: 564
-        width: 78
-        height: 74
+        x: 341
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -423,10 +436,10 @@ TextureImporter:
       name: TestKeyboardSprites_5
       rect:
         serializedVersion: 2
-        x: 424
-        y: 564
-        width: 78
-        height: 74
+        x: 425
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -445,10 +458,10 @@ TextureImporter:
       name: TestKeyboardSprites_6
       rect:
         serializedVersion: 2
-        x: 508
-        y: 564
-        width: 78
-        height: 74
+        x: 509
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -467,10 +480,10 @@ TextureImporter:
       name: TestKeyboardSprites_7
       rect:
         serializedVersion: 2
-        x: 592
-        y: 564
-        width: 78
-        height: 74
+        x: 593
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -489,10 +502,10 @@ TextureImporter:
       name: TestKeyboardSprites_8
       rect:
         serializedVersion: 2
-        x: 676
-        y: 564
-        width: 78
-        height: 74
+        x: 677
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -511,10 +524,10 @@ TextureImporter:
       name: TestKeyboardSprites_9
       rect:
         serializedVersion: 2
-        x: 760
-        y: 564
-        width: 78
-        height: 74
+        x: 761
+        y: 565
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -533,10 +546,10 @@ TextureImporter:
       name: TestKeyboardSprites_10
       rect:
         serializedVersion: 2
-        x: 4
-        y: 484
-        width: 78
-        height: 74
+        x: 5
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -555,10 +568,10 @@ TextureImporter:
       name: TestKeyboardSprites_11
       rect:
         serializedVersion: 2
-        x: 88
-        y: 484
-        width: 78
-        height: 74
+        x: 89
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -577,10 +590,10 @@ TextureImporter:
       name: TestKeyboardSprites_12
       rect:
         serializedVersion: 2
-        x: 172
-        y: 484
-        width: 78
-        height: 74
+        x: 173
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -599,10 +612,10 @@ TextureImporter:
       name: TestKeyboardSprites_13
       rect:
         serializedVersion: 2
-        x: 256
-        y: 484
-        width: 78
-        height: 74
+        x: 257
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -621,10 +634,10 @@ TextureImporter:
       name: TestKeyboardSprites_14
       rect:
         serializedVersion: 2
-        x: 340
-        y: 484
-        width: 78
-        height: 74
+        x: 341
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -643,10 +656,10 @@ TextureImporter:
       name: TestKeyboardSprites_15
       rect:
         serializedVersion: 2
-        x: 424
-        y: 484
-        width: 78
-        height: 74
+        x: 425
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -665,10 +678,10 @@ TextureImporter:
       name: TestKeyboardSprites_16
       rect:
         serializedVersion: 2
-        x: 508
-        y: 484
-        width: 78
-        height: 74
+        x: 509
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -687,10 +700,10 @@ TextureImporter:
       name: TestKeyboardSprites_17
       rect:
         serializedVersion: 2
-        x: 592
-        y: 484
-        width: 78
-        height: 74
+        x: 593
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -709,10 +722,10 @@ TextureImporter:
       name: TestKeyboardSprites_18
       rect:
         serializedVersion: 2
-        x: 676
-        y: 484
-        width: 78
-        height: 74
+        x: 677
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -731,10 +744,10 @@ TextureImporter:
       name: TestKeyboardSprites_19
       rect:
         serializedVersion: 2
-        x: 760
-        y: 484
-        width: 78
-        height: 74
+        x: 761
+        y: 485
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -753,10 +766,10 @@ TextureImporter:
       name: TestKeyboardSprites_20
       rect:
         serializedVersion: 2
-        x: 4
-        y: 404
-        width: 78
-        height: 74
+        x: 5
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -775,10 +788,10 @@ TextureImporter:
       name: TestKeyboardSprites_21
       rect:
         serializedVersion: 2
-        x: 88
-        y: 404
-        width: 78
-        height: 74
+        x: 89
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -797,10 +810,10 @@ TextureImporter:
       name: TestKeyboardSprites_22
       rect:
         serializedVersion: 2
-        x: 172
-        y: 404
-        width: 78
-        height: 74
+        x: 173
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -819,10 +832,10 @@ TextureImporter:
       name: TestKeyboardSprites_23
       rect:
         serializedVersion: 2
-        x: 256
-        y: 404
-        width: 78
-        height: 74
+        x: 257
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -841,10 +854,10 @@ TextureImporter:
       name: TestKeyboardSprites_24
       rect:
         serializedVersion: 2
-        x: 340
-        y: 404
-        width: 78
-        height: 74
+        x: 341
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -863,10 +876,10 @@ TextureImporter:
       name: TestKeyboardSprites_25
       rect:
         serializedVersion: 2
-        x: 424
-        y: 404
-        width: 78
-        height: 74
+        x: 425
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -885,10 +898,10 @@ TextureImporter:
       name: TestKeyboardSprites_26
       rect:
         serializedVersion: 2
-        x: 508
-        y: 404
-        width: 78
-        height: 74
+        x: 509
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -907,10 +920,10 @@ TextureImporter:
       name: TestKeyboardSprites_27
       rect:
         serializedVersion: 2
-        x: 592
-        y: 404
-        width: 78
-        height: 74
+        x: 593
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -929,10 +942,10 @@ TextureImporter:
       name: TestKeyboardSprites_28
       rect:
         serializedVersion: 2
-        x: 676
-        y: 404
-        width: 78
-        height: 74
+        x: 677
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -951,10 +964,10 @@ TextureImporter:
       name: TestKeyboardSprites_29
       rect:
         serializedVersion: 2
-        x: 760
-        y: 404
-        width: 78
-        height: 74
+        x: 761
+        y: 405
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -973,10 +986,10 @@ TextureImporter:
       name: TestKeyboardSprites_30
       rect:
         serializedVersion: 2
-        x: 4
-        y: 324
-        width: 78
-        height: 74
+        x: 5
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -995,10 +1008,10 @@ TextureImporter:
       name: TestKeyboardSprites_31
       rect:
         serializedVersion: 2
-        x: 88
-        y: 324
-        width: 78
-        height: 74
+        x: 89
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1017,10 +1030,10 @@ TextureImporter:
       name: TestKeyboardSprites_32
       rect:
         serializedVersion: 2
-        x: 172
-        y: 324
-        width: 78
-        height: 74
+        x: 173
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1039,10 +1052,10 @@ TextureImporter:
       name: TestKeyboardSprites_33
       rect:
         serializedVersion: 2
-        x: 256
-        y: 324
-        width: 78
-        height: 74
+        x: 257
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1061,10 +1074,10 @@ TextureImporter:
       name: TestKeyboardSprites_34
       rect:
         serializedVersion: 2
-        x: 340
-        y: 324
-        width: 78
-        height: 74
+        x: 341
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1083,10 +1096,10 @@ TextureImporter:
       name: TestKeyboardSprites_35
       rect:
         serializedVersion: 2
-        x: 424
-        y: 324
-        width: 78
-        height: 74
+        x: 425
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1105,10 +1118,10 @@ TextureImporter:
       name: TestKeyboardSprites_36
       rect:
         serializedVersion: 2
-        x: 508
-        y: 324
-        width: 78
-        height: 74
+        x: 509
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1127,10 +1140,10 @@ TextureImporter:
       name: TestKeyboardSprites_37
       rect:
         serializedVersion: 2
-        x: 592
-        y: 324
-        width: 78
-        height: 74
+        x: 593
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1149,10 +1162,10 @@ TextureImporter:
       name: TestKeyboardSprites_38
       rect:
         serializedVersion: 2
-        x: 676
-        y: 324
-        width: 78
-        height: 74
+        x: 677
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1171,10 +1184,10 @@ TextureImporter:
       name: TestKeyboardSprites_39
       rect:
         serializedVersion: 2
-        x: 760
-        y: 324
-        width: 78
-        height: 74
+        x: 761
+        y: 325
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1193,10 +1206,10 @@ TextureImporter:
       name: TestKeyboardSprites_40
       rect:
         serializedVersion: 2
-        x: 4
-        y: 244
-        width: 78
-        height: 74
+        x: 5
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1215,10 +1228,10 @@ TextureImporter:
       name: TestKeyboardSprites_41
       rect:
         serializedVersion: 2
-        x: 88
-        y: 244
-        width: 78
-        height: 74
+        x: 89
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1237,10 +1250,10 @@ TextureImporter:
       name: TestKeyboardSprites_42
       rect:
         serializedVersion: 2
-        x: 172
-        y: 244
-        width: 78
-        height: 74
+        x: 173
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1259,10 +1272,10 @@ TextureImporter:
       name: TestKeyboardSprites_43
       rect:
         serializedVersion: 2
-        x: 256
-        y: 244
-        width: 78
-        height: 74
+        x: 257
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1281,10 +1294,10 @@ TextureImporter:
       name: TestKeyboardSprites_44
       rect:
         serializedVersion: 2
-        x: 340
-        y: 244
-        width: 78
-        height: 74
+        x: 341
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1303,10 +1316,10 @@ TextureImporter:
       name: TestKeyboardSprites_45
       rect:
         serializedVersion: 2
-        x: 424
-        y: 244
-        width: 78
-        height: 74
+        x: 425
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1325,10 +1338,10 @@ TextureImporter:
       name: TestKeyboardSprites_46
       rect:
         serializedVersion: 2
-        x: 508
-        y: 244
-        width: 78
-        height: 74
+        x: 509
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1347,10 +1360,10 @@ TextureImporter:
       name: TestKeyboardSprites_47
       rect:
         serializedVersion: 2
-        x: 592
-        y: 244
-        width: 78
-        height: 74
+        x: 593
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1369,10 +1382,10 @@ TextureImporter:
       name: TestKeyboardSprites_48
       rect:
         serializedVersion: 2
-        x: 676
-        y: 244
-        width: 78
-        height: 74
+        x: 677
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1391,10 +1404,10 @@ TextureImporter:
       name: TestKeyboardSprites_49
       rect:
         serializedVersion: 2
-        x: 760
-        y: 244
-        width: 78
-        height: 74
+        x: 761
+        y: 245
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1413,10 +1426,10 @@ TextureImporter:
       name: TestKeyboardSprites_50
       rect:
         serializedVersion: 2
-        x: 4
-        y: 164
-        width: 78
-        height: 74
+        x: 5
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1435,10 +1448,10 @@ TextureImporter:
       name: TestKeyboardSprites_51
       rect:
         serializedVersion: 2
-        x: 88
-        y: 164
-        width: 78
-        height: 74
+        x: 89
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1457,10 +1470,10 @@ TextureImporter:
       name: TestKeyboardSprites_52
       rect:
         serializedVersion: 2
-        x: 172
-        y: 164
-        width: 78
-        height: 74
+        x: 173
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1479,10 +1492,10 @@ TextureImporter:
       name: TestKeyboardSprites_53
       rect:
         serializedVersion: 2
-        x: 256
-        y: 164
-        width: 78
-        height: 74
+        x: 257
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1501,10 +1514,10 @@ TextureImporter:
       name: TestKeyboardSprites_54
       rect:
         serializedVersion: 2
-        x: 340
-        y: 164
-        width: 78
-        height: 74
+        x: 341
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1523,10 +1536,10 @@ TextureImporter:
       name: TestKeyboardSprites_55
       rect:
         serializedVersion: 2
-        x: 424
-        y: 164
-        width: 78
-        height: 74
+        x: 425
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1545,10 +1558,10 @@ TextureImporter:
       name: TestKeyboardSprites_56
       rect:
         serializedVersion: 2
-        x: 508
-        y: 164
-        width: 78
-        height: 74
+        x: 509
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1567,10 +1580,10 @@ TextureImporter:
       name: TestKeyboardSprites_57
       rect:
         serializedVersion: 2
-        x: 592
-        y: 164
-        width: 78
-        height: 74
+        x: 593
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1589,10 +1602,10 @@ TextureImporter:
       name: TestKeyboardSprites_58
       rect:
         serializedVersion: 2
-        x: 676
-        y: 164
-        width: 78
-        height: 74
+        x: 677
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1611,10 +1624,10 @@ TextureImporter:
       name: TestKeyboardSprites_59
       rect:
         serializedVersion: 2
-        x: 760
-        y: 164
-        width: 78
-        height: 74
+        x: 761
+        y: 165
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1633,10 +1646,10 @@ TextureImporter:
       name: TestKeyboardSprites_60
       rect:
         serializedVersion: 2
-        x: 4
-        y: 84
-        width: 78
-        height: 74
+        x: 5
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1655,10 +1668,10 @@ TextureImporter:
       name: TestKeyboardSprites_61
       rect:
         serializedVersion: 2
-        x: 88
-        y: 84
-        width: 78
-        height: 74
+        x: 89
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1677,10 +1690,10 @@ TextureImporter:
       name: TestKeyboardSprites_62
       rect:
         serializedVersion: 2
-        x: 172
-        y: 84
-        width: 78
-        height: 74
+        x: 173
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1699,10 +1712,10 @@ TextureImporter:
       name: TestKeyboardSprites_63
       rect:
         serializedVersion: 2
-        x: 256
-        y: 84
-        width: 78
-        height: 74
+        x: 257
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1721,10 +1734,10 @@ TextureImporter:
       name: TestKeyboardSprites_64
       rect:
         serializedVersion: 2
-        x: 340
-        y: 84
-        width: 78
-        height: 74
+        x: 341
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1743,10 +1756,10 @@ TextureImporter:
       name: TestKeyboardSprites_65
       rect:
         serializedVersion: 2
-        x: 424
-        y: 84
-        width: 78
-        height: 74
+        x: 425
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1765,10 +1778,10 @@ TextureImporter:
       name: TestKeyboardSprites_66
       rect:
         serializedVersion: 2
-        x: 508
-        y: 84
-        width: 78
-        height: 74
+        x: 509
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1787,10 +1800,10 @@ TextureImporter:
       name: TestKeyboardSprites_67
       rect:
         serializedVersion: 2
-        x: 592
-        y: 84
-        width: 78
-        height: 74
+        x: 593
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1809,10 +1822,10 @@ TextureImporter:
       name: TestKeyboardSprites_68
       rect:
         serializedVersion: 2
-        x: 676
-        y: 84
-        width: 78
-        height: 74
+        x: 677
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1831,10 +1844,10 @@ TextureImporter:
       name: TestKeyboardSprites_69
       rect:
         serializedVersion: 2
-        x: 760
-        y: 84
-        width: 78
-        height: 74
+        x: 761
+        y: 85
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1853,10 +1866,10 @@ TextureImporter:
       name: TestKeyboardSprites_70
       rect:
         serializedVersion: 2
-        x: 4
-        y: 4
-        width: 78
-        height: 74
+        x: 5
+        y: 5
+        width: 76
+        height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1871,11 +1884,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: TestKeyboardSprites_71
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 5
+        width: 76
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b715b36ea1f3bd2418bdc25819c40d98
+      internalID: -864751503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: c63be720803b6c142977a2f9371e4e74
     internalID: 0
     vertices: []
     indices: 
@@ -1883,7 +1918,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       TestKeyboardSprites_0: -228098722488670794
       TestKeyboardSprites_1: -3288904372267055006
@@ -1954,6 +1991,7 @@ TextureImporter:
       TestKeyboardSprites_69: 6660302708152761132
       TestKeyboardSprites_7: 3886908517760359802
       TestKeyboardSprites_70: 3400618280445068967
+      TestKeyboardSprites_71: -864751503
       TestKeyboardSprites_8: 1257846146055044098
       TestKeyboardSprites_9: -7584869470118717681
   mipmapLimitGroupName: 

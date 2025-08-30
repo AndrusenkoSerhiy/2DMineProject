@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace World {
   public class POIBuilder : MonoBehaviour {
+#if UNITY_EDITOR
     [Header("References")] public POIBuilderConfig config;
     public Texture2D texture;
     public POISaver saver;
@@ -63,5 +64,6 @@ namespace World {
              Mathf.Abs(a.g - b.g) < tolerance &&
              Mathf.Abs(a.b - b.b) < tolerance;
     }
+#endif
   }
 }

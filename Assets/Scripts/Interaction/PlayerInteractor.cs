@@ -108,7 +108,8 @@ namespace Interaction {
     private void ShowEquipmentHoldActionPrompt() {
       if (playerEquipment.ShowEquippedItemHoldAction()) {
         holdInteractionPromtUI.ShowPrompt(true,
-          ButtonPromptSprite.GetFullPrompt(playerEquipment.EquippedItemHoldActionText(), actionName));
+          ButtonPromptSprite.GetFullPrompt(playerEquipment.EquippedItemHoldActionText(), 
+            actionName + "_hold"));
       }
       else {
         holdInteractionPromtUI.ShowPrompt(false);

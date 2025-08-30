@@ -169,7 +169,7 @@ namespace NPCMovement
       if (!CheckUp() && gameManager.ChunkController.ChunkData.GetCellFill(upCellCoords.X, upCellCoords.Y) == 0) {
         Jump();
       }
-      else if (obstacle != null) {
+      else if (obstacle != null && obstacle.CanGetDamage) {
         //Destroy cell under
         AttackCell(GetCellObject(forwardCell.X, forwardCell.Y));
       }
@@ -180,7 +180,7 @@ namespace NPCMovement
       var downCell = new Coords(cellCoords.X + (int)dir.x, cellCoords.Y + 1);
       //Debug.DrawRay(CoordsTransformer.GridToWorld(downCell.X, downCell.Y), Vector3.up, Color.yellow, 2f);
       //Debug.DrawRay(transform.position + new Vector3(dir.x * -1, 1, 0), dir, Color.blue);
-      if (obstacle != null) {
+      if (obstacle != null && obstacle.CanGetDamage) {
         //Destroy cell under
         AttackCell(GetCellObject(downCell.X, downCell.Y));
       }

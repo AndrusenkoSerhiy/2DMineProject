@@ -17,6 +17,7 @@ namespace Inventory {
     [SerializeField] private Transform leftHandTransform;
     [SerializeField] private Transform rightHandTransform;
     [SerializeField] private string repairItemText;
+    [SerializeField] private string repairingText;
     [SerializeField] private InteractionPrompt reloadInteractionPromtUI;
     [SerializeField] private string reloadText;
     [SerializeField] private Ammo ammoUI;
@@ -270,6 +271,9 @@ namespace Inventory {
 
     public string EquippedItemHoldActionText() {
       return repairItemText;
+    } 
+    public string EquippedItemRepairingActionText() {
+      return repairingText;
     }
 
     public void ConsumeAmmo() {

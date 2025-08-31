@@ -18,6 +18,7 @@ namespace Craft {
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
+    public string HoldProcessText => holdInteractText;
 
     public Bounds GetBounds() {
       return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);

@@ -233,6 +233,7 @@ MonoBehaviour:
   leftHandTransform: {fileID: 4035622805259001127}
   rightHandTransform: {fileID: 1739819385077777237}
   repairItemText: Repair item (hold)
+  repairingText: Repairing...
   reloadInteractionPromtUI: {fileID: 0}
   reloadText: Reload
   ammoUI: {fileID: 0}
@@ -331,6 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fb1513e6cc0a374097dde7a0d061a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectInteractionPrompts: {fileID: 0}
   interactionPoint: {fileID: 6268921245571787948}
   radius: 1.5
   interactableMask:

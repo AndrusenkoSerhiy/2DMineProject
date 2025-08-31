@@ -6,6 +6,7 @@ using UnityEngine.UI;
 namespace Craft {
   public class RecipeListItem : MonoBehaviour {
     [SerializeField] private Image background;
+    [SerializeField] private Image backgroundSelected;
     [SerializeField] private Image recipeIcon;
     [SerializeField] private Image isNewIcon;
     [SerializeField] private TextMeshProUGUI recipeNameText;
@@ -30,12 +31,14 @@ namespace Craft {
 
     public void SetActiveStyles() {
       background.color = activeBgColor;
+      backgroundSelected.gameObject.SetActive(true);
       recipeNameText.color = activeTextColor;
     }
 
     public void ResetStyles() {
       recipeNameText.color = textColor;
       background.color = bgColor;
+      backgroundSelected.gameObject.SetActive(false);
 
       if (isNew) {
         MarkAsSeen();

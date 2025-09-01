@@ -85,6 +85,10 @@ namespace Player {
       miningRobotAttack.LockAttack(!state);
     }
     
+    public bool GetIsAttacking() {
+      return miningRobotAttack.GetIsAttacking();
+    }
+    
     public void SetMaxTargets(int value) {
       miningRobotAttack.SetMaxTargets(value);
       miningRobotAttack.LockHighlight(value == 0, "ChangeMode",false);
@@ -105,6 +109,12 @@ namespace Player {
 
     protected override void JumpLandSound() {
       GameManager.Instance.AudioController.PlayAudio(robotObject?.jumpLandingAudioData);
+    }
+    
+    //hide exit interaction when player inside the robot and moving or digging/attacking
+    public bool GetExitInteract() {
+      return !GetVelocity().Equals(Vector2.zero) ||
+             GetIsAttacking();
     }
   }
 }

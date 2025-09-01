@@ -98,11 +98,13 @@ namespace Interaction {
 
       if (!interactable.HasHoldInteraction) {
         ShowEquipmentHoldActionPrompt();
-        return;
+        //return;
       }
-
-      // holdInteractionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName));
-      objectInteractionPrompts.ShowHoldInteractionPrompt(interactable, ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true,true));
+      
+      //when you repair robot the prompt is hided
+      var str = interactable.HasHoldInteraction ? ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true,true)
+        : string.Empty;
+      objectInteractionPrompts.ShowHoldInteractionPrompt(interactable, str);
     }
 
     private void ShowEquipmentHoldActionPrompt() {
@@ -152,7 +154,9 @@ namespace Interaction {
       //skip hold progress if we don't have equipped item
       if (interactable == null && (playerEquipment.EquippedItem == null ||
                                    playerEquipment.EquippedItem.Durability.Equals(playerEquipment.EquippedItem
-                                     .MaxDurability))) {
+                                     .MaxDurability)) ||
+          //when robot is repaired to max health
+          interactable is { HasHoldInteraction: false }) {
         CancelHoldProgress();
         return;
       }

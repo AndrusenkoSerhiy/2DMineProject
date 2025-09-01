@@ -63,12 +63,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1970713774069286338}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.767389, w: 0.6411818}
+  m_LocalPosition: {x: 0.30012807, y: -0.01032874, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8784970698859031047}
+  m_Father: {fileID: 8614560489389302806}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &2574051324497051434
 CapsuleCollider2D:
@@ -677,6 +677,61 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &7920418297772961303
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8614560489389302806}
+  - component: {fileID: 3506375580835333207}
+  m_Layer: 6
+  m_Name: Follow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8614560489389302806
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7920418297772961303}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0.767389, w: 0.6411818}
+  m_LocalPosition: {x: 0.063518524, y: 2.2935116, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1851991944381334848}
+  m_Father: {fileID: 8784970698859031047}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3506375580835333207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7920418297772961303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1fd8daaed7b64148a34acb96ba14ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonRenderer: {fileID: 7099317164211854518}
+  boneName: Robot9
+  followXYPosition: 1
+  followZPosition: 0
+  followBoneRotation: 0
+  followSkeletonFlip: 1
+  followLocalScale: 0
+  followParentWorldScale: 0
+  maintainedAxisOrientation: 1
+  initializeOnAwake: 1
 --- !u!1 &8299954890877120637
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,13 +771,13 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1706817066457549848}
-  - {fileID: 1851991944381334848}
   - {fileID: 2018962168670391672}
   - {fileID: 7729899434619054153}
   - {fileID: 3828744221353937795}
   - {fileID: 8693525456019494876}
   - {fileID: 8749775555857575185}
   - {fileID: 9015435985106389880}
+  - {fileID: 8614560489389302806}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3768578396950336233

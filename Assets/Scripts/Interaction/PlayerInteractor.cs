@@ -51,7 +51,8 @@ namespace Interaction {
 
     private void Update() {
       //if any window is open don't allow to find items and show interaction message
-      if (GameManager.Instance.WindowsController.IsAnyWindowOpen) {
+      if (GameManager.Instance.WindowsController.IsAnyWindowOpen ||
+          gameManager.MiningRobotController.GetExitInteract()) {
         interactionPromtUI.ShowPrompt(false);
         
         objectInteractionPrompts.HideInteractionPrompt();

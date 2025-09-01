@@ -66,6 +66,9 @@ namespace Player {
       firstAttack = false;
     }
 
+    public bool GetIsAttacking() {
+      return animator.GetBool(animParam.IsAttacking);
+    }
     //reason use for block action when you lock hightlight in build mode and open/closed inventory
     public void LockHighlight(bool state, string reason = "", bool lockPos = true) {
       if (state && !string.IsNullOrEmpty(reason) && !lockReasons.Contains(reason)) {

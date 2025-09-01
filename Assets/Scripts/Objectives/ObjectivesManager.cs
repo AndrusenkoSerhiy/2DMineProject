@@ -63,7 +63,8 @@ namespace Objectives {
       return state.IsCompleted(data.id);
     }
 
-    public void Report(ObjectiveTaskType type, object context) {
+    //only for active groups
+    /*public void Report(ObjectiveTaskType type, object context) {
       if (!handlers.TryGetValue(type, out var handler)) {
         Debug.LogWarning($"No handler registered for type {type}");
         return;
@@ -126,6 +127,86 @@ namespace Objectives {
       }
 
       // Debug.Log($"🏁 Objective Group completed: {group.groupTitle}");
+    }*/
+
+    public void Report(ObjectiveTaskType type, object context) {
+      if (completedGroups.Count == config.groups.Count) {
+        return;
+      }
+
+      if (!handlers.TryGetValue(type, out var handler)) {
+        Debug.LogWarning($"No handler registered for type {type}");
+        return;
+      }
+
+      foreach (var group in config.groups) {
+        if (IsGroupCompleted(group)) {
+          continue;
+        }
+
+        var groupNowCompleted = true;
+        var groupHadRelevantTasks = false;
+
+        foreach (var obj in group.objectives) {
+          if (state.IsCompleted(obj.id)) {
+            continue;
+          }
+
+          if (obj.taskData.TaskType != type) {
+            groupNowCompleted = false;
+            continue;
+          }
+
+          groupHadRelevantTasks = true;
+          var current = state.GetAccumulated(obj.id);
+
+          if (handler.IsTaskSatisfied(obj.taskData, context, current, out var toAdd)) {
+            state.MarkCompleted(obj.id);
+            OnTaskCompleted?.Invoke(obj);
+
+            // Видаємо нагороду тільки для активної групи
+            if (group != GetCurrentGroup()) {
+              continue;
+            }
+
+            gameManager.MessagesManager.ShowSimpleMessage("You completed a task");
+            if (obj.reward?.item != null) {
+              OnTaskRewarded?.Invoke(obj);
+            }
+          }
+          else {
+            if (toAdd > 0) {
+              var newCurrent = current + toAdd;
+              state.AddAmount(obj.id, toAdd);
+              OnTaskProgress?.Invoke(obj, newCurrent);
+            }
+
+            groupNowCompleted = false;
+          }
+        }
+
+        // Якщо в групі не було завдань цього типу — навіть не чіпаємо її
+        if (!groupHadRelevantTasks) {
+          continue;
+        }
+
+        // Якщо група тепер завершена — завершуємо її
+        if (!groupNowCompleted || completedGroups.Contains(group.id)) {
+          continue;
+        }
+
+        completedGroups.Add(group.id);
+        OnGroupCompleted?.Invoke(group);
+
+        if (group != GetCurrentGroup()) {
+          continue;
+        }
+
+        gameManager.MessagesManager.ShowSimpleMessage("Quest completed");
+        if (group.reward?.item != null) {
+          OnGroupRewarded?.Invoke(group);
+        }
+      }
     }
 
     public int GetTargetAmount(ObjectiveTaskData data) {

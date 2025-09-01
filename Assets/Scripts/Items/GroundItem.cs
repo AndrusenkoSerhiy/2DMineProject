@@ -33,6 +33,7 @@ namespace Items {
     public string InteractionText => $"Pickup {item.name}";
     public bool HasHoldInteraction { get; }
     public string HoldInteractionText => holdInteractText;
+    public string HoldProcessText => holdInteractText;
 
     public Bounds GetBounds() {
       return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);

@@ -140,8 +140,8 @@ namespace Interaction {
 
     private string HoldText() {
       return interactable is { HasHoldInteraction: true }
-        ? interactable.HoldInteractionText
-        : playerEquipment.EquippedItemHoldActionText();
+        ? interactable.HoldProcessText
+        : playerEquipment.EquippedItemRepairingActionText();
     }
 
     private void HandleHoldProgress() {

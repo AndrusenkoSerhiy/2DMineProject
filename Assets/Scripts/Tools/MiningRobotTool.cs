@@ -24,6 +24,7 @@ namespace Tools {
     [SerializeField] private Vector3 positionForPlayer;
     [SerializeField] private List<Transform> exitTransforms;
     [SerializeField] private string holdInteractText;
+    [SerializeField] private string holdProcessText;
     [SerializeField] private MeshRenderer meshRenderer;
 
     [SerializeField] private RobotObject robotObject;
@@ -77,6 +78,7 @@ namespace Tools {
 
     public bool HasHoldInteraction => !playerInRobot && CanRepair();
     public string HoldInteractionText => holdInteractText;
+    public string HoldProcessText => holdProcessText;
 
     public Bounds GetBounds() {
       return meshRenderer ? meshRenderer.bounds : new Bounds(transform.position, Vector3.zero);

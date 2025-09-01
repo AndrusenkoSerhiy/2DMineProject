@@ -8,6 +8,7 @@ namespace Interaction {
     public bool HasHoldInteraction { get; }
 
     public string HoldInteractionText { get; }
+    public string HoldProcessText { get; }
 
     // public string HoldInteractionHeader { get; }
     public bool Interact(PlayerInteractor playerInteractor);

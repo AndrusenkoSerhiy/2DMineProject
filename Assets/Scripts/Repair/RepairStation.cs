@@ -19,6 +19,7 @@ namespace Repair {
     public string InteractionText => interactText;
     public bool HasHoldInteraction { get; }
     public string HoldInteractionText => holdInteractText;
+    public string HoldProcessText => holdInteractText;
 
     public Bounds GetBounds() {
       return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);

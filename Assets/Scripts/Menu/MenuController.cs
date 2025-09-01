@@ -148,7 +148,7 @@ namespace Menu {
     }
 
     private async Task ExitGame() {
-      await AnalyticsManager.Instance.SendBasicStatsAsync();
+      //await AnalyticsManager.Instance.SendBasicStatsAsync();
       if (Application.isEditor) {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -404,7 +404,7 @@ namespace Menu {
       StartNewGame();
 
       var profileName = saveLoadSystem.profilesData.CurrentProfile.Name;
-      AnalyticsManager.Instance.LogProfileNewGame(profileName);
+      //AnalyticsManager.Instance.LogProfileNewGame(profileName);
     }
 
     private void ExitGameClickHandler() {
@@ -437,7 +437,7 @@ namespace Menu {
       ContinueGame();
 
       var profileName = saveLoadSystem.profilesData.CurrentProfile.Name;
-      AnalyticsManager.Instance.LogProfileContinueGame(profileName);
+      //AnalyticsManager.Instance.LogProfileContinueGame(profileName);
     }
   }
 }

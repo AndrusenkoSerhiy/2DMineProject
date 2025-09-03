@@ -448,11 +448,11 @@ namespace Tools {
         AnimationEventManager.onRobotRepaired += RobotRepaired;
         animator.SetBool("IsBroken", false);
         animator.SetTrigger("Repair");
-        audioController.PlayAudio(robotRepair, transform.position);
       }
       else {
         stats.AddHealth(repairValue);
       }
+      audioController.PlayAudio(robotRepair, transform.position);
     }
 
     private void RobotRepaired() {

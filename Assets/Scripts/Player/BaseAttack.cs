@@ -280,15 +280,17 @@ namespace Player {
         }
         var cellObj = GameManager.Instance.ChunkController.GetCell(cell.Key.x, cell.Key.y);
         var special = GameManager.Instance.ChunkController.GetCell(cell.Key.x, playerCoords.Coords.Y + lookDirection);
-        if (cellObj != null && !cellObj.CanGetDamage || 
-            special != null && !special.CanGetDamage && playerCoords.Coords.X != cell.Key.x) {
-          blocked = true;
+        if (objectHighlighter.MaxHighlights != 1) {
+          if (cellObj != null && !cellObj.CanGetDamage ||
+              special != null && !special.CanGetDamage && playerCoords.Coords.X != cell.Key.x) {
+            blocked = true;
+          }
+
+          if (blocked && colCount == cell.Key.x) {
+            continue;
+          }
         }
-          
-        if (blocked && colCount == cell.Key.x) {
-          continue;
-        }
-        
+
         if (!blocked) {
           results.Add(cell.Value);
         }
@@ -314,15 +316,18 @@ namespace Player {
           
           var cellObj = GameManager.Instance.ChunkController.GetCell(cell.Key.x, cell.Key.y);
           var special = GameManager.Instance.ChunkController.GetCell(playerCoords.Coords.X + GameManager.Instance.CurrPlayerController.GetFlip(), cell.Key.y);
-          if (cellObj != null && !cellObj.CanGetDamage || 
-              special != null && !special.CanGetDamage && playerCoords.Coords.X != cell.Key.x) {
-            blocked = true;
+          //check if player damage
+          if (objectHighlighter.MaxHighlights != 1) {
+            if (cellObj != null && !cellObj.CanGetDamage ||
+                special != null && !special.CanGetDamage && playerCoords.Coords.X != cell.Key.x) {
+              blocked = true;
+            }
+
+            if (blocked && rowCount == cell.Key.y) {
+              continue;
+            }
           }
-          
-          if (blocked && rowCount == cell.Key.y) {
-            continue;
-          }
-          
+
           if (!blocked) {
             results.Add(cell.Value);
           }

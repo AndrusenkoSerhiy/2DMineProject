@@ -16,6 +16,7 @@ namespace Player {
     public List<ObjectHighlight> Highlights => highlights;
     private GameObject currentCrosshair;
 
+    public int MaxHighlights => maxHighlights;
     public void SetMaxHighlights(int highlightCount) {
       maxHighlights = highlightCount;
     }

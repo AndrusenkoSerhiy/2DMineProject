@@ -7,6 +7,7 @@ using Inventory;
 using SaveSystem;
 using Scriptables;
 using Scriptables.POI;
+using Tools;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Utils;
@@ -172,6 +173,10 @@ namespace World {
 
           cell.Init(cellData, data);
           cell.InitSprite();
+          //lock cell under robot
+          if (MiningRobotTool.IsRobotHere(i,j)) {
+            cell.CanGetDamage = false;
+          }
           _activeCellObjects[_proxyCoords] = cell;
         }
       }

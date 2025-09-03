@@ -32,6 +32,8 @@ namespace Menu {
     private Button igmContinueGameButton, igmExitToMainMenuButton, igmExitButton;
 
     [Header("Profiles")] [SerializeField] private Button backButton;
+    [SerializeField] private Button startProfileButton;
+    [SerializeField] private Button continueProfileButton;
     [SerializeField] private List<Profile> profiles;
 
     [Header("Profiles")] [SerializeField] private TextMeshProUGUI profileNameText;
@@ -148,7 +150,7 @@ namespace Menu {
     }
 
     private async Task ExitGame() {
-      await AnalyticsManager.Instance.SendBasicStatsAsync();
+      //await AnalyticsManager.Instance.SendBasicStatsAsync();
       if (Application.isEditor) {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -307,6 +309,8 @@ namespace Menu {
       }
 
       ShowHideProfileBackButton();
+      ShowHideProfileStartButton();
+      ShowHideProfileContinueButton();
 
       HideMainMenu();
       HideInGameMenu();
@@ -324,10 +328,14 @@ namespace Menu {
       }
 
       backButton.onClick.RemoveAllListeners();
+      startProfileButton.onClick.RemoveAllListeners();
+      continueProfileButton.onClick.RemoveAllListeners();
     }
 
     private void OnProfileDeletedHandler() {
       ShowHideProfileBackButton();
+      ShowHideProfileStartButton();
+      ShowHideProfileContinueButton();
     }
 
     private void OnProfileSelectedHandler(int profileId) {
@@ -341,6 +349,8 @@ namespace Menu {
       }
 
       ShowHideProfileBackButton();
+      ShowHideProfileStartButton();
+      ShowHideProfileContinueButton();
     }
 
     private void ShowSwitchProfiles() {
@@ -376,6 +386,28 @@ namespace Menu {
         backButton.onClick.AddListener(ShowMainMenuClickHandler);
       }
     }
+    
+    private void ShowHideProfileStartButton() {
+      var show = saveLoadSystem.IsProfileSet();
+
+      startProfileButton.gameObject.SetActive(show);
+      startProfileButton.onClick.RemoveAllListeners();
+
+      if (show) {
+        startProfileButton.onClick.AddListener(StartNewGameClickHandler);
+      }
+    }
+    
+    private void ShowHideProfileContinueButton() {
+      var show = saveLoadSystem.CanContinueGame();
+
+      continueProfileButton.gameObject.SetActive(show);
+      continueProfileButton.onClick.RemoveAllListeners();
+
+      if (show) {
+        continueProfileButton.onClick.AddListener(ContinueGameClickHandler);
+      }
+    }
 
     private void ShowHideContinueButton() {
       var show = saveLoadSystem.CanContinueGame();
@@ -392,6 +424,7 @@ namespace Menu {
       loadingGameObject.SetActive(true);
       HideMainMenu();
       HideSwitchProfiles();
+      HideProfiles();
     }
 
     private void HideLoading() {
@@ -404,7 +437,7 @@ namespace Menu {
       StartNewGame();
 
       var profileName = saveLoadSystem.profilesData.CurrentProfile.Name;
-      AnalyticsManager.Instance.LogProfileNewGame(profileName);
+      //AnalyticsManager.Instance.LogProfileNewGame(profileName);
     }
 
     private void ExitGameClickHandler() {
@@ -437,7 +470,7 @@ namespace Menu {
       ContinueGame();
 
       var profileName = saveLoadSystem.profilesData.CurrentProfile.Name;
-      AnalyticsManager.Instance.LogProfileContinueGame(profileName);
+      //AnalyticsManager.Instance.LogProfileContinueGame(profileName);
     }
   }
 }

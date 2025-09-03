@@ -274,7 +274,7 @@ public class PlaceCell : MonoBehaviour {
     GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position,
       Quaternion.identity);
 
-    AnalyticsManager.Instance.LogStationPlaced(item.name);
+    //AnalyticsManager.Instance.LogStationPlaced(item.name);
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject, ItemObject itemObject) {
@@ -287,7 +287,7 @@ public class PlaceCell : MonoBehaviour {
 
     AfterBuildingRemoved(buildObject);
 
-    AnalyticsManager.Instance.LogStationRemoved(itemObject.name);
+    //AnalyticsManager.Instance.LogStationRemoved(itemObject.name);
 
     return true;
   }

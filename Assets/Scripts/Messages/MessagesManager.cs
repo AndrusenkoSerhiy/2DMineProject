@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Scriptables.Craft;
@@ -64,13 +66,27 @@ namespace Messages {
 
     private Dictionary<Transform, List<MessageUI>> activeMessages = new();
 
+    private Dictionary<Transform, Queue<Action>> messageQueues = new();
+    private Dictionary<Transform, bool> queueProcessing = new();
+
     private void Awake() {
       activeMessages[topContainer] = new List<MessageUI>();
       activeMessages[bottomContainer] = new List<MessageUI>();
       activeMessages[leftContainer] = new List<MessageUI>();
       activeMessages[rightContainer] = new List<MessageUI>();
+
       messageTemplates = GetDefaultMessageTemplates();
       messagePositions = GetDefaultMessagePositions();
+
+      messageQueues[topContainer] = new Queue<Action>();
+      messageQueues[bottomContainer] = new Queue<Action>();
+      messageQueues[leftContainer] = new Queue<Action>();
+      messageQueues[rightContainer] = new Queue<Action>();
+
+      queueProcessing[topContainer] = false;
+      queueProcessing[bottomContainer] = false;
+      queueProcessing[leftContainer] = false;
+      queueProcessing[rightContainer] = false;
 
       GameManager.Instance.OnGamePaused += OnGamePausedHandler;
     }
@@ -150,24 +166,55 @@ namespace Messages {
         return;
       }
 
-      // var message = type == MessageType.NewRecipe ? GetRecipeMessageFromPool() : GetMessageFromPool();
-      var message = GetMessageFromPool(position != Position.Top);
-      message.transform.SetParent(container, false);
-      message.gameObject.SetActive(true);
+      void CreateMessage() {
+        var template = messageTemplates[type];
+        var message = GetMessageFromPool(position != Position.Top);
+        message.transform.SetParent(container, false);
+        message.transform.SetSiblingIndex(container.childCount - 1);
+        message.gameObject.SetActive(true);
 
-      message.SetTemplate(template)
-        .SetDuration(messageDuration)
-        .SetEntityId(entityId)
-        .SetName(msgName)
-        .SetAdditionalMessage(additionalMessage)
-        .SetAmount(amount)
-        .SetIcon(icon)
-        .SetHideCallback(msg => ReturnMessage(container, msg))
-        .Setup();
+        message.SetTemplate(template)
+          .SetDuration(messageDuration)
+          .SetEntityId(entityId)
+          .SetName(msgName)
+          .SetAdditionalMessage(additionalMessage)
+          .SetAmount(amount)
+          .SetIcon(icon)
+          .SetHideCallback(msg => {
+            ReturnMessage(container, msg);
+            ProcessQueue(container);
+          })
+          .Setup();
 
-      activeMessages[container].Add(message);
+        activeMessages[container].Add(message);
+        TrimMessages(container);
+      }
 
-      TrimMessages(container);
+      messageQueues[container].Enqueue(CreateMessage);
+      ProcessQueue(container);
+    }
+
+    private void ProcessQueue(Transform container) {
+      if (queueProcessing[container]) return;
+      StartCoroutine(ProcessQueueRoutine(container));
+    }
+
+    private IEnumerator ProcessQueueRoutine(Transform container) {
+      queueProcessing[container] = true;
+
+      while (messageQueues[container].Count > 0 &&
+             activeMessages[container].Count < maxMessagesPerZone) {
+        var next = messageQueues[container].Dequeue();
+        next();
+        yield return new WaitForSeconds(0.05f);
+      }
+
+      queueProcessing[container] = false;
+    }
+
+    private IEnumerator DelayedShow(Action showAction, float delay) {
+      yield return new WaitForSeconds(delay);
+      showAction();
     }
 
     private bool UpdateExistingMessage(Transform container, [CanBeNull] string entityId, int? amount) {
@@ -176,10 +223,12 @@ namespace Messages {
       }
 
       foreach (var msg in activeMessages[container]) {
-        if (msg.MatchesResource(entityId)) {
-          msg.TryUpdateAmount((int)amount);
-          return true;
+        if (!msg.MatchesResource(entityId)) {
+          continue;
         }
+
+        msg.TryUpdateAmount((int)amount);
+        return true;
       }
 
       return false;
@@ -198,9 +247,6 @@ namespace Messages {
 
       var pool = container != topContainer ? messagePool : messageRecipePool;
       pool.Add(message);
-      /*Debug.LogError("Return :" + container.name, container.gameObject);
-      if (container == topContainer) messageRecipePool.Add(message);
-      else messagePool.Add(message);*/
     }
 
     private void OnGamePausedHandler() {

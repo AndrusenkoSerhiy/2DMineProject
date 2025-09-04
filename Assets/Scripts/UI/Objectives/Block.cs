@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Objectives;
 using Objectives.Data;
 using SaveSystem;
@@ -13,20 +14,19 @@ namespace UI.Objectives {
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private Image icon;
     [SerializeField] private List<Task> tasks;
+    [SerializeField] private float completedGroupShowDelay = 7f;
 
-    private Dictionary<string, Task> taskMap = new();
+    private readonly Dictionary<string, Task> taskMap = new();
     private ObjectivesManager manager;
-
-    private bool isInitialized;
     private GameManager gameManager;
+    private Coroutine showCompletedGroupCoroutine;
+    private bool isInitialized;
 
     private void Awake() {
       gameManager = GameManager.Instance;
     }
 
-    public string GetConfigId() {
-      return config.id;
-    }
+    public string GetConfigId() => config.id;
 
     public ObjectivesManager Init(ObjectivesData data = null) {
       manager = new ObjectivesManager(config);
@@ -35,8 +35,6 @@ namespace UI.Objectives {
         manager.LoadData(data);
       }
 
-      manager.OnTaskCompleted += OnTaskCompletedHandler;
-      manager.OnGroupCompleted += OnGroupCompletedHandler;
       manager.OnTaskProgress += OnTaskProgressHandler;
       manager.OnTaskRewarded += OnTaskRewardedHandler;
       manager.OnGroupRewarded += OnGroupRewardedHandler;
@@ -47,34 +45,24 @@ namespace UI.Objectives {
     }
 
     private void OnTaskRewardedHandler(ObjectiveData data) {
-      var pos = gameManager.PlayerController.transform.position + new Vector3(5, 3, 0);
-      gameManager.PlayerInventory.AddItemToInventory(data.reward.item, data.reward.amount, pos);
-      gameManager.MessagesManager.ShowSimpleMessage("You got " + data.reward.amount + " " + data.reward.item.name +
-                                                    " for completing task");
+      if (taskMap.TryGetValue(data.id, out var taskUI)) {
+        taskUI.ShowCompleted();
+        gameManager.MessagesManager.ShowSimpleMessage("Task completed!");
+      }
+
+      GrantReward(data.reward, "for completing task");
     }
 
     private void OnGroupRewardedHandler(ObjectiveGroup data) {
-      var pos = gameManager.PlayerController.transform.position + new Vector3(5, 3, 0);
-      gameManager.PlayerInventory.AddItemToInventory(data.reward.item, data.reward.amount, pos);
-      gameManager.MessagesManager.ShowSimpleMessage("You got " + data.reward.amount + " " + data.reward.item.name +
-                                                    " for completing group");
+      GrantReward(data.reward, "for completing group");
+      gameManager.MessagesManager.ShowSimpleMessage("Quest completed!");
+      DelayShowNextGroup();
     }
 
     private void OnTaskProgressHandler(ObjectiveData data, int current) {
       if (taskMap.TryGetValue(data.id, out var taskUI)) {
         taskUI.UpdateProgress(current);
       }
-    }
-
-    private void OnTaskCompletedHandler(ObjectiveData task) {
-      if (taskMap.TryGetValue(task.id, out var taskUI)) {
-        taskUI.ShowCompleted();
-      }
-    }
-
-    private void OnGroupCompletedHandler(ObjectiveGroup group) {
-      HideCurrentGroup();
-      ShowGroup();
     }
 
     private void ShowGroup() {
@@ -84,6 +72,16 @@ namespace UI.Objectives {
         return;
       }
 
+      manager.SetCurrentGroupDisplay(currentGroup);
+      SetupGroupHeader(currentGroup);
+      SetupTasks(currentGroup);
+
+      Show();
+
+      manager.CheckRewards();
+    }
+
+    private void SetupGroupHeader(ObjectiveGroup currentGroup) {
       title.text = currentGroup.groupTitle;
       title.color = config.titleColor;
 
@@ -95,7 +93,9 @@ namespace UI.Objectives {
       else {
         icon.gameObject.SetActive(false);
       }
+    }
 
+    private void SetupTasks(ObjectiveGroup currentGroup) {
       for (var i = 0; i < currentGroup.objectives.Count; i++) {
         var objective = currentGroup.objectives[i];
         var task = tasks[i];
@@ -112,13 +112,41 @@ namespace UI.Objectives {
           task.SetProgress(current, target);
         }
       }
+    }
 
-      Show();
+    private void GrantReward(ObjectiveRewardData reward, string messageSuffix) {
+      if (reward?.item == null) {
+        return;
+      }
+
+      var pos = gameManager.PlayerController.transform.position + new Vector3(5, 3, 0);
+      gameManager.PlayerInventory.AddItemToInventory(reward.item, reward.amount, pos);
+      gameManager.MessagesManager.ShowSimpleMessage(
+        $"You got {reward.amount} {reward.item.name} {messageSuffix}"
+      );
+    }
+
+    private void DelayShowNextGroup() {
+      if (showCompletedGroupCoroutine != null) {
+        StopCoroutine(showCompletedGroupCoroutine);
+      }
+
+      showCompletedGroupCoroutine = StartCoroutine(ShowNextGroupAfterSeconds(completedGroupShowDelay));
+    }
+
+    private IEnumerator ShowNextGroupAfterSeconds(float seconds) {
+      yield return new WaitForSeconds(seconds);
+      SwitchToNextGroup();
+    }
+
+    private void SwitchToNextGroup() {
+      HideCurrentGroup();
+      ShowGroup();
     }
 
     private void HideCurrentGroup() {
+      manager.ClearCurrentGroupDisplay();
       title.text = "";
-
       foreach (var task in taskMap.Values) {
         task.Hide();
       }
@@ -127,12 +155,7 @@ namespace UI.Objectives {
       Hide();
     }
 
-    private void Show() {
-      gameObject.SetActive(true);
-    }
-
-    private void Hide() {
-      gameObject.SetActive(false);
-    }
+    private void Show() => gameObject.SetActive(true);
+    private void Hide() => gameObject.SetActive(false);
   }
 }

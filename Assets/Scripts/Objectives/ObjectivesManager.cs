@@ -11,14 +11,15 @@ namespace Objectives {
     private readonly ObjectivesConfig config;
     private readonly ObjectiveProgressState state = new();
     private readonly Dictionary<ObjectiveTaskType, IObjectiveTaskHandler> handlers = new();
-    private readonly HashSet<string> completedGroups = new();
-    private GameManager gameManager;
 
-    public event Action<ObjectiveData> OnTaskCompleted;
+    private GameManager gameManager;
+    private ObjectiveGroup currentGroupDisplay;
+
+    // public event Action<ObjectiveData> OnTaskCompleted;
+    // public event Action<ObjectiveGroup> OnGroupCompleted;
     public event Action<ObjectiveData> OnTaskRewarded;
     public event Action<ObjectiveGroup> OnGroupRewarded;
     public event Action<ObjectiveData, int> OnTaskProgress;
-    public event Action<ObjectiveGroup> OnGroupCompleted;
 
     public ObjectivesManager(ObjectivesConfig config) {
       this.config = config;
@@ -28,6 +29,14 @@ namespace Objectives {
 
     public string GetConfigId() {
       return config.id;
+    }
+
+    public void SetCurrentGroupDisplay(ObjectiveGroup group) {
+      currentGroupDisplay = group;
+    }
+
+    public void ClearCurrentGroupDisplay() {
+      currentGroupDisplay = null;
     }
 
     private void RegisterDefaultHandlers() {
@@ -47,7 +56,7 @@ namespace Objectives {
 
     public ObjectiveGroup GetCurrentGroup() {
       foreach (var group in config.groups) {
-        if (!IsGroupCompleted(group)) {
+        if (!state.IsGroupRewarded(group.id)) {
           return group;
         }
       }
@@ -55,82 +64,24 @@ namespace Objectives {
       return null;
     }
 
-    private bool IsGroupCompleted(ObjectiveGroup group) {
-      return completedGroups.Contains(group.id);
-    }
-
     public bool IsTaskCompleted(ObjectiveData data) {
-      return state.IsCompleted(data.id);
+      return state.IsTaskCompleted(data.id);
     }
 
-    //only for active groups
-    /*public void Report(ObjectiveTaskType type, object context) {
-      if (!handlers.TryGetValue(type, out var handler)) {
-        Debug.LogWarning($"No handler registered for type {type}");
-        return;
-      }
+    public bool IsTaskRewarded(ObjectiveData data) {
+      return state.IsTaskRewarded(data.id);
+    }
 
-      var group = GetCurrentGroup();
-      if (group == null) {
-        return;
-      }
+    public bool IsGroupCompleted(ObjectiveGroup group) {
+      return state.IsGroupCompleted(group.id);
+    }
 
-      var groupNowCompleted = true;
-
-      foreach (var obj in group.objectives) {
-        if (state.IsCompleted(obj.id)) {
-          continue;
-        }
-
-        if (obj.taskData.TaskType != type) {
-          groupNowCompleted = false;
-          continue;
-        }
-
-        var current = state.GetAccumulated(obj.id);
-
-        if (handler.IsTaskSatisfied(obj.taskData, context, current, out int toAdd)) {
-          state.MarkCompleted(obj.id);
-          OnTaskCompleted?.Invoke(obj);
-
-          gameManager.MessagesManager.ShowSimpleMessage("You completed a task");
-
-          if (obj.reward?.item != null) {
-            OnTaskRewarded?.Invoke(obj);
-          }
-
-          // Debug.Log($"✅ Objective completed: {obj.title}");
-        }
-        else {
-          if (toAdd > 0) {
-            var newCurrent = current + toAdd;
-            state.AddAmount(obj.id, toAdd);
-            OnTaskProgress?.Invoke(obj, newCurrent);
-            // Debug.Log($"Progress: {newCurrent}/{GetTargetAmount(obj.taskData)} for {obj.title}");
-          }
-
-          groupNowCompleted = false;
-        }
-      }
-
-      if (!groupNowCompleted || completedGroups.Contains(group.id)) {
-        return;
-      }
-
-      completedGroups.Add(group.id);
-      OnGroupCompleted?.Invoke(group);
-
-      gameManager.MessagesManager.ShowSimpleMessage("Quest completed");
-
-      if (group.reward?.item != null) {
-        OnGroupRewarded?.Invoke(group);
-      }
-
-      // Debug.Log($"🏁 Objective Group completed: {group.groupTitle}");
-    }*/
+    public bool IsGroupRewarded(ObjectiveGroup group) {
+      return state.IsGroupRewarded(group.id);
+    }
 
     public void Report(ObjectiveTaskType type, object context) {
-      if (completedGroups.Count == config.groups.Count) {
+      if (state.GetRewardedGroups().Count == config.groups.Count) {
         return;
       }
 
@@ -139,74 +90,79 @@ namespace Objectives {
         return;
       }
 
+      //update progress without rewards
       foreach (var group in config.groups) {
-        if (IsGroupCompleted(group)) {
+        if (state.IsGroupCompleted(group.id)) {
           continue;
         }
 
-        var groupNowCompleted = true;
-        var groupHadRelevantTasks = false;
-
         foreach (var obj in group.objectives) {
-          if (state.IsCompleted(obj.id)) {
+          if (state.IsTaskCompleted(obj.id)) {
             continue;
           }
 
           if (obj.taskData.TaskType != type) {
-            groupNowCompleted = false;
             continue;
           }
 
-          groupHadRelevantTasks = true;
           var current = state.GetAccumulated(obj.id);
-
           if (handler.IsTaskSatisfied(obj.taskData, context, current, out var toAdd)) {
-            state.MarkCompleted(obj.id);
-            OnTaskCompleted?.Invoke(obj);
-
-            // Видаємо нагороду тільки для активної групи
-            if (group != GetCurrentGroup()) {
-              continue;
-            }
-
-            gameManager.MessagesManager.ShowSimpleMessage("You completed a task");
-            if (obj.reward?.item != null) {
-              OnTaskRewarded?.Invoke(obj);
-            }
+            state.MarkTaskCompleted(obj.id);
+            // OnTaskCompleted?.Invoke(obj);
           }
-          else {
-            if (toAdd > 0) {
-              var newCurrent = current + toAdd;
-              state.AddAmount(obj.id, toAdd);
-              OnTaskProgress?.Invoke(obj, newCurrent);
-            }
-
-            groupNowCompleted = false;
+          else if (toAdd > 0) {
+            var newCurrent = current + toAdd;
+            state.AddAmount(obj.id, toAdd);
+            OnTaskProgress?.Invoke(obj, newCurrent);
           }
         }
 
-        // Якщо в групі не було завдань цього типу — навіть не чіпаємо її
-        if (!groupHadRelevantTasks) {
+        // check if group is completed but not marked as completed
+        if (state.IsGroupCompleted(group.id) ||
+            !group.objectives.TrueForAll(o => state.IsTaskCompleted(o.id))) {
           continue;
         }
 
-        // Якщо група тепер завершена — завершуємо її
-        if (!groupNowCompleted || completedGroups.Contains(group.id)) {
-          continue;
-        }
-
-        completedGroups.Add(group.id);
-        OnGroupCompleted?.Invoke(group);
-
-        if (group != GetCurrentGroup()) {
-          continue;
-        }
-
-        gameManager.MessagesManager.ShowSimpleMessage("Quest completed");
-        if (group.reward?.item != null) {
-          OnGroupRewarded?.Invoke(group);
-        }
+        state.MarkGroupCompleted(group.id);
+        // OnGroupCompleted?.Invoke(group);
       }
+
+      CheckRewards();
+    }
+
+    public void CheckRewards() {
+      // reward tasks and groups for current group
+      var activeGroup = GetCurrentGroup();
+
+      if (activeGroup == null || activeGroup != currentGroupDisplay || state.IsGroupRewarded(activeGroup.id)) {
+        return;
+      }
+
+      // completed tasks that are not rewarded
+      foreach (var obj in activeGroup.objectives) {
+        if (!state.IsTaskCompleted(obj.id) || state.IsTaskRewarded(obj.id)) {
+          continue;
+        }
+
+        state.MarkTaskRewarded(obj.id);
+        OnTaskRewarded?.Invoke(obj);
+      }
+
+      // group rewards
+      if (!state.IsGroupCompleted(activeGroup.id) || state.IsGroupRewarded(activeGroup.id)) {
+        return;
+      }
+
+      state.MarkGroupRewarded(activeGroup.id);
+      OnGroupRewarded?.Invoke(activeGroup);
+    }
+
+    public void MarkTaskRewarded(ObjectiveData task) {
+      state.MarkTaskRewarded(task.id);
+    }
+
+    public void MarkGroupRewarded(ObjectiveGroup group) {
+      state.MarkGroupRewarded(group.id);
     }
 
     public int GetTargetAmount(ObjectiveTaskData data) {
@@ -228,19 +184,19 @@ namespace Objectives {
     public ObjectivesData GetSaveData() {
       return new ObjectivesData {
         Progress = state.GetAllProgress(),
-        CompletedTasks = state.GetCompletedTasks(),
-        CompletedGroups = new List<string>(completedGroups)
+        CompletedTasks = new List<string>(state.GetCompletedTasks()),
+        CompletedGroups = new List<string>(state.GetCompletedGroups()),
+        RewardedTasks = new List<string>(state.GetRewardedTasks()),
+        RewardedGroups = new List<string>(state.GetRewardedGroups())
       };
     }
 
     public void LoadData(ObjectivesData data) {
       state.SetProgress(data.Progress);
       state.SetCompletedTasks(data.CompletedTasks);
-
-      completedGroups.Clear();
-      foreach (var groupId in data.CompletedGroups) {
-        completedGroups.Add(groupId);
-      }
+      state.SetRewardedTasks(data.RewardedTasks);
+      state.SetCompletedGroups(data.CompletedGroups);
+      state.SetRewardedGroups(data.RewardedGroups);
     }
   }
 }

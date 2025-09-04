@@ -87,10 +87,8 @@ namespace Objectives {
       }
     }
 
-    public void ReportSurviveSiege(bool survived) {
-      if (survived) {
-        Report(ObjectiveTaskType.SurviveSiege, null);
-      }
+    public void ReportSurviveSiege() {
+      Report(ObjectiveTaskType.SurviveSiege, null);
     }
 
     #region Save/Load

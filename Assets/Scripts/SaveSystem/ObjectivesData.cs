@@ -8,5 +8,7 @@ namespace SaveSystem {
     public SerializedDictionary<string, int> Progress = new();
     public List<string> CompletedTasks = new();
     public List<string> CompletedGroups = new();
+    public List<string> RewardedTasks = new();
+    public List<string> RewardedGroups = new();
   }
 }

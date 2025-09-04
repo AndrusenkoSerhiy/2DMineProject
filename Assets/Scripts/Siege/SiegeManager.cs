@@ -302,8 +302,9 @@ namespace Siege {
       OnSiegeEnded?.Invoke(currentSiege);
       gameManager.MessagesManager.ShowSimpleMessage("Siege ended!");
 
-      if (!playedDied && currentSiegeIndex == siegeQueue.Count - 1) {
-        gameManager.ObjectivesSystem.ReportSurviveSiege(true);
+      // if (!playedDied && currentSiegeIndex == siegeQueue.Count - 1) {
+      if (!playedDied) {
+        gameManager.ObjectivesSystem.ReportSurviveSiege();
       }
 
       currentSiegeIndex++;

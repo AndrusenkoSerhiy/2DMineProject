@@ -120,32 +120,32 @@ MonoBehaviour:
   interactText: Open storage
   holdInteractText: 
   inventoryType: 4
-  buildObject: {fileID: 4429893759335377319}
+  buildObject: {fileID: 0}
   storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
   hasHoldInteraction: 0
   storageRecipe: {fileID: 0}
   destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
-  spriteRenderer: {fileID: 5647842435097607742}
+  spriteRenderer: {fileID: 0}
   PlayerOwner: 0
   bonusResources:
   - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
-    chance: 0.3
-    rndCount: {x: 1, y: 5}
+    chance: 0.5
+    rndCount: {x: 1, y: 2}
   - item: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
-    chance: 0.2
-    rndCount: {x: 1, y: 5}
-  - item: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
-    chance: 0.1
+    chance: 0.4
     rndCount: {x: 1, y: 3}
-  - item: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
+  - item: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
     chance: 0.3
+    rndCount: {x: 1, y: 1}
+  - item: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
+    chance: 0.5
     rndCount: {x: 10, y: 15}
   - item: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
-    chance: 0.4
+    chance: 0.6
     rndCount: {x: 30, y: 50}
   - item: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
-    chance: 0.35
-    rndCount: {x: 10, y: 15}
+    chance: 0.5
+    rndCount: {x: 5, y: 10}
 --- !u!1 &6338898737590988923
 GameObject:
   m_ObjectHideFlags: 0

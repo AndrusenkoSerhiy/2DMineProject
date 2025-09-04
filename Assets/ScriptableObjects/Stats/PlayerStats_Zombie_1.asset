@@ -26,7 +26,7 @@ MonoBehaviour:
   attackLayer:
     serializedVersion: 2
     m_Bits: 0
-  attackRange: 1.4
+  attackRange: 2
   blockDamage: 1
   entityDamage: 3
   timeBtwAttacks: 0.4
@@ -48,7 +48,7 @@ MonoBehaviour:
   airDeceleration: 30
   groundingForce: -1.5
   grounderDistance: 0.05
-  minJumpHeight: 3
+  minJumpHeight: 5
   jumpPower: 9
   maxFallSpeed: 40
   fallAcceleration: 110

@@ -68,6 +68,7 @@ namespace Tools {
     [SerializeField] private bool playerInRobot;
     private ChunkController chunkController;
 
+    public static Vector2Int lockedCell = new();
     public static event Action OnPlayerEnteredRobot;
     public static event Action OnPlayerSitOnRobot;
     public static event Action OnPlayerExitFromRobot;
@@ -368,7 +369,7 @@ namespace Tools {
       LockCells(true);
     }
 
-    [SerializeField] private List<int> lockedCells = new() { 0 };
+    //[SerializeField] private List<int> lockedCells = new() { 0 };
 
     private void LockCells(bool state) {
       if (playerInRobot || !lockedOnStart) {
@@ -386,13 +387,20 @@ namespace Tools {
         var cell = chunkController.GetCell(firstX, firstY);
         if (state && cell != null && cell.CanGetDamage) {
           chunkController.GetCell(firstX, firstY).CanGetDamage = false;
-          lockedCells[0] = 1;
+          //lockedCells[0] = 1;
+          lockedCell = new Vector2Int(firstX, firstY);
         }
-        else if (!state && lockedCells[0] == 1) {
-          lockedCells[0] = 0;
+        else if (!state /*&& lockedCells[0] == 1*/) {
+          //lockedCells[0] = 0;
+          lockedCell = new Vector2Int(-500, -500);
           chunkController.GetCell(firstX, firstY).CanGetDamage = true;
         }
       }
+    }
+
+    //Check if we need to lock cell under robot from chunkController
+    public static bool IsRobotHere(int x, int y) {
+      return lockedCell.x == x && lockedCell.y == y;
     }
 
     private void EnablePhysics(bool state) {
@@ -440,11 +448,11 @@ namespace Tools {
         AnimationEventManager.onRobotRepaired += RobotRepaired;
         animator.SetBool("IsBroken", false);
         animator.SetTrigger("Repair");
-        audioController.PlayAudio(robotRepair, transform.position);
       }
       else {
         stats.AddHealth(repairValue);
       }
+      audioController.PlayAudio(robotRepair, transform.position);
     }
 
     private void RobotRepaired() {

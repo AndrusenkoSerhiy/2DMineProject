@@ -24,21 +24,21 @@ MonoBehaviour:
     groupTitle: Hit the rocks!
     objectives:
     - id: 3404102e-3554-4d35-839f-7914ce39a72f
-      title: Collect 5 Stone
+      title: Collect Stone
       taskData:
         rid: 644878414488535152
       reward:
         item: {fileID: 0}
         amount: 0
     - id: 7b6dfd7f-0d11-4ce6-bef2-0b0761cdb920
-      title: Collect 5 Wood
+      title: Collect Wood
       taskData:
         rid: 644878414488535153
       reward:
         item: {fileID: 0}
         amount: 0
     - id: b7fce1b4-3327-417c-944c-be36bf20b42d
-      title: Collect 5 Dirt
+      title: Collect Dirt
       taskData:
         rid: 6898645522660982784
       reward:
@@ -71,7 +71,7 @@ MonoBehaviour:
     groupTitle: Get some tools!
     objectives:
     - id: 6628ff31-2a1c-4745-b3ce-d1ac8e8b2851
-      title: Craft 10 Building Stone
+      title: Craft Building Stone
       taskData:
         rid: 6898645522660982786
       reward:

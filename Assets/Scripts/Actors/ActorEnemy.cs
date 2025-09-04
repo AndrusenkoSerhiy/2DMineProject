@@ -50,6 +50,19 @@ namespace Actors {
     private Vector3 currPosition;
     private void Update() {
       PlayGroan();
+      ActivateZombieByDistance();
+    }
+
+    //zombie cant fall if chunk under them don't load
+    private void ActivateZombieByDistance() {
+      var playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
+      var upDownY = Mathf.Abs(playerCoords.Y - GetCoords.Y);
+      if (upDownY < GameManager.Instance.GameConfig.PlayerAreaHeight / 3) {
+        rigidbody.simulated = true;
+      }
+      else {
+        rigidbody.simulated = false;
+      }
     }
 
     private void PlayGroan() {

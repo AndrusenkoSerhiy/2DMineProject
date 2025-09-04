@@ -229,7 +229,8 @@ namespace NPCMovement
       }
       //Debug.LogError("MoveTowardsTarget");
       //Debug.LogError($"{Vector2.Distance(transform.position, target)} | {stopingDistance}");
-      if (Vector2.Distance(currPosition, target) <= actor.GetStats().AttackRange) {
+      //if (Vector2.Distance(currPosition, target) <= actor.GetStats().AttackRange) {
+      if (Mathf.Abs(currPosition.x - target.x) <= actor.GetStats().AttackRange) {
         //Debug.LogError("has arrived!!!!!!!!!!");
         target = Vector3.zero;
         hasArrived = true;

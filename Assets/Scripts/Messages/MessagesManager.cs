@@ -154,7 +154,6 @@ namespace Messages {
       int? amount = null,
       [CanBeNull] Sprite icon = null,
       [CanBeNull] string additionalMessage = null) {
-      //check if right container is free to show messages
       position = position == Position.Right && !GameManager.Instance.ObjectivesSystem.HasActiveGroups()
         ? Position.Left
         : position;
@@ -167,7 +166,6 @@ namespace Messages {
       }
 
       void CreateMessage() {
-        var template = messageTemplates[type];
         var message = GetMessageFromPool(position != Position.Top);
         message.transform.SetParent(container, false);
         message.transform.SetSiblingIndex(container.childCount - 1);
@@ -182,16 +180,23 @@ namespace Messages {
           .SetIcon(icon)
           .SetHideCallback(msg => {
             ReturnMessage(container, msg);
-            ProcessQueue(container);
+            if (position == Position.Top || position == Position.Bottom)
+              ProcessQueue(container);
           })
           .Setup();
 
         activeMessages[container].Add(message);
+        
         TrimMessages(container);
       }
-
-      messageQueues[container].Enqueue(CreateMessage);
-      ProcessQueue(container);
+      
+      if (position == Position.Left || position == Position.Right) {
+        CreateMessage();
+      }
+      else {
+        messageQueues[container].Enqueue(CreateMessage);
+        ProcessQueue(container);
+      }
     }
 
     private void ProcessQueue(Transform container) {

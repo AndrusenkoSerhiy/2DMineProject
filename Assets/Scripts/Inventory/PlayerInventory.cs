@@ -244,7 +244,7 @@ namespace Inventory {
       return inventoriesPool.CanAddItem(item);
     }
 
-    public bool SpawnItem(Item item, int amount, Vector3? spawnPosition = null) {
+    public bool SpawnItem(Item item, int amount, Vector3? spawnPosition = null, bool withMessage = true) {
       if (item.isEmpty || item.info.spawnPrefab == null) {
         return false;
       }
@@ -263,7 +263,10 @@ namespace Inventory {
       groundObj.Count = amount;
       groundObj.Durability = item.Durability;
 
-      gameManager.MessagesManager.ShowDroppedResourceMessage(item.info, amount);
+      if (withMessage) {
+        gameManager.MessagesManager.ShowDroppedResourceMessage(item.info, amount);
+      }
+
       return true;
     }
 

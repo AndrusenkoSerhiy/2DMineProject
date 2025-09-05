@@ -112,7 +112,7 @@ namespace Craft {
         foreach (var material in input.Recipe.RequiredMaterials) {
           var totalCount = input.Count * material.Amount;
           var item = new Item(material.Material);
-          playerInventory.SpawnItem(item, totalCount, spawnPosition);
+          playerInventory.SpawnItem(item, totalCount, spawnPosition, false);
         }
       }
 
@@ -126,7 +126,7 @@ namespace Craft {
             continue;
           }
 
-          playerInventory.SpawnItem(slot.Item, slot.amount, spawnPosition);
+          playerInventory.SpawnItem(slot.Item, slot.amount, spawnPosition, false);
         }
 
         outputInventory.Clear();
@@ -140,7 +140,7 @@ namespace Craft {
             continue;
           }
 
-          playerInventory.SpawnItem(slot.Item, slot.amount, spawnPosition);
+          playerInventory.SpawnItem(slot.Item, slot.amount, spawnPosition, false);
         }
 
         fuelInventoryTmp.Clear();

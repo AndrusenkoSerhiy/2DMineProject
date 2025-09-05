@@ -117,7 +117,7 @@ namespace Inventory {
       if (storageInventory != null) {
         foreach (var slot in storageInventory.Slots) {
           if (!slot.isEmpty) {
-            gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount, transform.position);
+            gameManager.PlayerInventory.SpawnItem(slot.Item, slot.amount, transform.position, false);
           }
         }
 
@@ -135,7 +135,10 @@ namespace Inventory {
       }
 
       gameManager.PlaceCell.RemoveBuilding(buildObject, storageItemObject);
-      if(PlayerOwner) gameManager.MessagesManager.ShowSimpleMessage("Storage destroyed");
+      if (PlayerOwner) {
+        gameManager.MessagesManager.ShowSimpleMessage("Storage destroyed");
+      }
+
       gameManager.AudioController.PlayStorageDestroyed();
     }
   }

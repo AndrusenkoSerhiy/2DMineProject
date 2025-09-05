@@ -216,35 +216,29 @@ MonoBehaviour:
   interactText: Open storage
   holdInteractText: 
   inventoryType: 4
-  buildObject: {fileID: 6839382300747928590}
+  buildObject: {fileID: 0}
   storageItemObject: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
   hasHoldInteraction: 0
   storageRecipe: {fileID: 0}
   destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
-  spriteRenderer: {fileID: 6466998941065790958}
+  spriteRenderer: {fileID: 0}
   PlayerOwner: 0
   bonusResources:
-  - item: {fileID: 11400000, guid: cb571e081ccbabd419c27b6d0c2660a1, type: 2}
-    chance: 0.3
-    rndCount: {x: 1, y: 3}
   - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
-    chance: 0.3
-    rndCount: {x: 4, y: 8}
-  - item: {fileID: 11400000, guid: c4186f33ab9ebdd4fbc48c6d99586791, type: 2}
-    chance: 0.4
-    rndCount: {x: 5, y: 15}
-  - item: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
-    chance: 0.1
+    chance: 0.5
     rndCount: {x: 1, y: 2}
-  - item: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
-    chance: 0.2
-    rndCount: {x: 10, y: 50}
-  - item: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+  - item: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
     chance: 0.4
-    rndCount: {x: 10, y: 20}
-  - item: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
-    chance: 0.25
-    rndCount: {x: 10, y: 20}
-  - item: {fileID: 11400000, guid: a6ec05e23db0ff6459f4e4b32ceda697, type: 2}
-    chance: 0.2
-    rndCount: {x: 15, y: 30}
+    rndCount: {x: 1, y: 3}
+  - item: {fileID: 11400000, guid: 33e956431ccb88a46a54a1eef1afb36f, type: 2}
+    chance: 0.3
+    rndCount: {x: 1, y: 1}
+  - item: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
+    chance: 0.5
+    rndCount: {x: 10, y: 15}
+  - item: {fileID: 11400000, guid: c6756fd20d0189c40b535ea0edeac1d4, type: 2}
+    chance: 0.6
+    rndCount: {x: 30, y: 50}
+  - item: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    chance: 0.5
+    rndCount: {x: 5, y: 10}

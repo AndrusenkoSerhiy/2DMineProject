@@ -8,7 +8,9 @@ using DG.Tweening;
 using Inventory;
 using Player;
 using Scriptables;
+using Scriptables.Craft;
 using Scriptables.Items;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 using World;
@@ -330,12 +332,19 @@ public class PlaceCell : MonoBehaviour {
         return;
       }
 
+      if (station.RecipeType == RecipeType.Stonecutter) {
+        SetRespawnPoint(build);
+      }
       GameManager.Instance.RecipesManager.UnlockStation(station.RecipeType);
       AfterPlaceCellWithBaseCells(workbench, coords, build.Building.SizeX);
     }
     else if (build.TryGetComponent<Storage>(out var storage)) {
       AfterPlaceCellWithBaseCells(storage, coords, build.Building.SizeX);
     }
+  }
+
+  private void SetRespawnPoint(BuildingDataObject build) {
+    GameManager.Instance.RespawnManager.SetRespawnPoint(build.gameObject.transform.position);
   }
 
   private void AfterPlaceCellWithBaseCells(IBaseCellHolder baseCellHolder, Coords coords, int sizeX) {

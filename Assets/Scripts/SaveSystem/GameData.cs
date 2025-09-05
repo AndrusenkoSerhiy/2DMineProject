@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace SaveSystem {
@@ -21,6 +22,7 @@ namespace SaveSystem {
     public List<LocatorPointData> LocatorPointsData;
     public QuestData QuestData;
     public SerializedDictionary<string, ObjectivesData> Objectives;
+    public Vector3 RespawnPosition;
   }
 
   [Serializable]

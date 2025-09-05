@@ -70,6 +70,10 @@ namespace UI {
     }
 
     private void UpdateUI() {
+      if (!gameObject.activeInHierarchy) {
+        return;
+      }
+      
       StartCoroutine(UpdateBarHeight());
       UpdateMaxValue();
       UpdateValue();

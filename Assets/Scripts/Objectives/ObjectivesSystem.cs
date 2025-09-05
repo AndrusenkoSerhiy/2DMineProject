@@ -111,6 +111,8 @@ namespace Objectives {
     }
 
     public void Clear() {
+      managers.Clear();
+
       SaveLoadSystem.Instance.gameData.Objectives = new SerializedDictionary<string, ObjectivesData>();
     }
 

@@ -30,6 +30,7 @@ namespace UI.Objectives {
 
     public ObjectivesManager Init(ObjectivesData data = null) {
       manager = new ObjectivesManager(config);
+      HideCurrentGroup();
 
       if (data != null) {
         manager.LoadData(data);

@@ -275,8 +275,6 @@ public class PlaceCell : MonoBehaviour {
     childObject.transform.DOScale(Vector3.one, 0.5f).SetEase(spawnScaleCurve);
     GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", childObject.transform.position,
       Quaternion.identity);
-
-    //AnalyticsManager.Instance.LogStationPlaced(item.name);
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject, ItemObject itemObject) {
@@ -288,8 +286,6 @@ public class PlaceCell : MonoBehaviour {
     audioController.PlayTakeBuilding();
 
     AfterBuildingRemoved(buildObject);
-
-    //AnalyticsManager.Instance.LogStationRemoved(itemObject.name);
 
     return true;
   }

@@ -460,7 +460,6 @@ namespace Tools {
       //ShowNormalTexture();
       AnimationEventManager.onRobotRepaired -= RobotRepaired;
       miningRobotController.Actor.Respawn();
-      //AnalyticsManager.Instance.LogRobotRepaired(robotObject.name, repairValue);
     }
 
     private bool CanRepair() {

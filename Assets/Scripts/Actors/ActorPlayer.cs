@@ -51,7 +51,6 @@ namespace Actors {
 
       if (stats.Health <= 0 && !IsDead) {
         OnPlayerDeath?.Invoke();
-        //AnalyticsManager.Instance.LogPlayerDied();
       }
     }
 

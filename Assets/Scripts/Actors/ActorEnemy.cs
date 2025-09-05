@@ -309,6 +309,7 @@ namespace Actors {
       _animator.Rebind();
       _animator.Update(0f);
       rigidbody.excludeLayers = excludeLayerOnAlive;
+      InitHealth();
     }
 
     private void SpawnDrop() {

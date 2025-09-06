@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Player;
+using SaveSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -59,6 +60,7 @@ public class StartGameCameraController : MonoBehaviour {
     robotController.SetLockPlayer(false);
     robotController.ResetRobotToDefault();
   }
+
   public void Init() {
     ResetBeforeNewGame();
     SetPlayerToStartPosition();
@@ -77,7 +79,7 @@ public class StartGameCameraController : MonoBehaviour {
     playerRb.gravityScale = 200f;
     player.transform.position = playerStartPosition;
   }
-  
+
   private void SetRobotToStartPosition() {
     robot.transform.localPosition = robotStartPosition;
   }
@@ -99,8 +101,10 @@ public class StartGameCameraController : MonoBehaviour {
     GameManager.Instance.CameraConfigManager.SetCameraHigh();
     playerRb.simulated = true;
     yield return new WaitForSeconds(waitOnStart);
-    while (playerRb.linearVelocity.magnitude > 0.1f) {
-      yield return null;
+    if (SaveLoadSystem.Instance.IsNewGame()) {
+      while (playerRb.linearVelocity.magnitude > 0.1f) {
+        yield return null;
+      }
     }
 
     GameManager.Instance.CameraConfigManager.SetCameraLow();

@@ -83,10 +83,10 @@ namespace World {
     }
 
     public void Damage(float damage, bool isPlayer) {
+      DamageAudio();
       if (!CanGetDamage)
         return;
       unitHealth.TakeDamage(damage, isPlayer);
-      DamageAudio();
       UpdateDamageOverlay(damage);
     }
 

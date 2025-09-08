@@ -2,6 +2,7 @@ using Audio;
 using SaveSystem;
 using Scriptables;
 using UI;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,8 @@ namespace Quests {
   public class QuestManager : MonoBehaviour, ISaveLoad {
     [SerializeField] private DialoguePanel dialoguePanel;
     [SerializeField] private GameObject catPrefab;
+    [SerializeField] private AnimationCurve spawnCurve;
+    [SerializeField] private AnimationCurve hideCurve;
     [SerializeField] private AudioData appearSound;
     [SerializeField] private AudioData loopedSound;
     
@@ -37,6 +40,15 @@ namespace Quests {
       audioController.PlayAudio(loopedSound, pos);
       
       catPrefab.SetActive(true);
+      //Tween for spawn effect
+      var spriteRenderer = catPrefab.GetComponentInChildren<SpriteRenderer>();
+      var material = spriteRenderer.material;
+      material.SetFloat("_Scale", 0f);
+      material.SetFloat("_Twirl", -1f);
+      DOTween.To(() => material.GetFloat("_Scale"), x => material.SetFloat("_Scale", x), 1f, 1.2f);
+      DOTween.To(() => material.GetFloat("_Twirl"), x => material.SetFloat("_Twirl", x), 0f, 1.2f).SetEase(spawnCurve);
+      GameManager.Instance.PoolEffects.SpawnFromPool("CatSpawnParticleEffect", catPrefab.transform.position, Quaternion.identity);
+
       TriggerDialogue(index);
       SaveID(index);
     }
@@ -57,7 +69,15 @@ namespace Quests {
     private void StopQuest(InputAction.CallbackContext callbackContext) {
       GameManager.Instance.UserInput.EnableUIControls(true);
       GameManager.Instance.UserInput.controls.GamePlay.Interact.performed -= StopQuest;
-      catPrefab.SetActive(false);
+      //Tween for hide effect
+      var spriteRenderer = catPrefab.GetComponentInChildren<SpriteRenderer>();
+      var material = spriteRenderer.material;
+      material.SetFloat("_Scale", 1f);
+      material.SetFloat("_Twirl", 0f);
+      DOTween.To(() => material.GetFloat("_Scale"), x => material.SetFloat("_Scale", x), 0f, 0.6f).SetEase(hideCurve);
+      DOTween.To(() => material.GetFloat("_Twirl"), x => material.SetFloat("_Twirl", x), 1f, 0.6f).SetEase(hideCurve).OnComplete(() => catPrefab.SetActive(false));
+      GameManager.Instance.PoolEffects.SpawnFromPool("CatSpawnParticleEffect", catPrefab.transform.position, Quaternion.identity);
+
       dialoguePanel.HideDialogue();
       audioController.StopAudio(loopedSound);
     }

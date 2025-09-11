@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BakedWorm
   m_EditorClassIdentifier: 
   id: a9cdc917-f618-4f58-900a-c9f01796533c
-  RecipeName: Baked worm
+  RecipeName: Baked worms
   RecipeTypes: 04000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: a87e42a0ac2a7b645985034cbec41d23, type: 2}
@@ -24,3 +24,7 @@ MonoBehaviour:
   Result: {fileID: 11400000, guid: 17c91b937474e6345968eb301aa39aea, type: 2}
   CraftingTime: 10
   detailImg: {fileID: 0}
+  Description: 'Baked Worms
+
+
+    A crunchy baked delicacy. Increases maximum health.'

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: f5c2f66e-6c61-4a18-b779-32b49152f75d
   RecipeName: Stonecutter
-  RecipeType: 0
   RecipeTypes: 0000000002000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: 878839adfa0ca9e4fb8393abbc2df044, type: 2}
@@ -29,3 +28,8 @@ MonoBehaviour:
   Result: {fileID: 11400000, guid: ed9ccb5b17204e642be25817d0a55a99, type: 2}
   CraftingTime: 20
   detailImg: {fileID: 0}
+  Description: 'Stonecutter
+
+
+    A station for shaping stone, soil, and heavy building
+    materials.'

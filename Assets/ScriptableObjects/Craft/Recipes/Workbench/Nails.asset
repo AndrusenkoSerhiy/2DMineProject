@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3f409518-7db3-46aa-90fd-7862f4f126f5
   RecipeName: Nails
-  RecipeType: 2
   RecipeTypes: 02000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: fb3dcc127e8f25747ae8ba5d64aeee7b, type: 2}
@@ -25,3 +24,8 @@ MonoBehaviour:
   Result: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
   CraftingTime: 5
   detailImg: {fileID: 0}
+  Description: 'Nails
+
+
+    Small but essential fasteners. Required for wooden and
+    stone constructions.'

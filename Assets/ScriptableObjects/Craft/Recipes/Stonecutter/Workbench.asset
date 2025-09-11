@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 990ac55f-3d73-4dcc-882f-284026f76c76
   RecipeName: Workbench
-  RecipeType: 1
   RecipeTypes: 01000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: 154e8ba0ea2911e40a9cf1f243c3d7ad, type: 2}
@@ -29,3 +28,8 @@ MonoBehaviour:
   Result: {fileID: 11400000, guid: 04f03a73700b35a4da4840f9a2f14a71, type: 2}
   CraftingTime: 20
   detailImg: {fileID: 0}
+  Description: 'Workbench
+
+
+    A sturdy bench for crafting tools, weapons, and crafting
+    parts.'

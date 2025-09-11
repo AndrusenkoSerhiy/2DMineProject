@@ -13,6 +13,7 @@ namespace Scriptables.Craft {
     public ItemObject Result;
     [Tooltip("In seconds")] public int CraftingTime;
     public Sprite detailImg;
+    [TextArea(15, 20)] public string Description;
 
     [Serializable]
     public class CraftingMaterial {

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 123fa6da-2ba4-491a-b65f-1b9498e07fa4
   RecipeName: Food station
-  RecipeType: 1
   RecipeTypes: 01000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
@@ -29,3 +28,8 @@ MonoBehaviour:
   Result: {fileID: 11400000, guid: a377d8219d82555468a6ecbd4b5d0de6, type: 2}
   CraftingTime: 20
   detailImg: {fileID: 0}
+  Description: 'Food Station
+
+
+    A cooking setup where ingredients turn into meals
+    that restore and grant buffs.'

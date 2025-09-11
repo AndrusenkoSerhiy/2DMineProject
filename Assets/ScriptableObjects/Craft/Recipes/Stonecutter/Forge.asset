@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 54755efb-6606-46b8-9546-a1ad1a15d576
   RecipeName: Forge
-  RecipeType: 1
   RecipeTypes: 01000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
@@ -29,3 +28,8 @@ MonoBehaviour:
   Result: {fileID: 11400000, guid: f1bef750166edcf41b0864c062106763, type: 2}
   CraftingTime: 20
   detailImg: {fileID: 0}
+  Description: 'Forge
+
+
+    A blazing hearth fueled by coal. Smelts raw resources
+    into strong metals and alloys.'

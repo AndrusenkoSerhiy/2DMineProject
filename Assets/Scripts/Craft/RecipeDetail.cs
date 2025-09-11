@@ -14,6 +14,7 @@ namespace Craft {
     [SerializeField] private TextMeshProUGUI craftTime;
     [SerializeField] private GameObject listContainer;
     [SerializeField] private List<RecipeDetailRow> rows;
+    [SerializeField] private TextMeshProUGUI description;
 
     private Workstation station;
     private InventoriesPool inventoriesPool;
@@ -53,6 +54,7 @@ namespace Craft {
       var img = currentRecipe.detailImg != null ? currentRecipe.detailImg : currentRecipe.Result.UiDisplay;
 
       title.text = currentRecipe.RecipeName;
+      description.text = currentRecipe.Description;
       icon.sprite = img;
       craftTime.text = Helper.SecondsToTimeString(currentRecipe.CraftingTime);
     }

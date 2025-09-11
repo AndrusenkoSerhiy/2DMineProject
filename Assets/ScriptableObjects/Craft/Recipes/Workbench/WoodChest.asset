@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 86808b81-2868-4bf1-8904-3d0b2d25b028
   RecipeName: Wood chest
-  RecipeType: 2
   RecipeTypes: 02000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
@@ -27,3 +26,7 @@ MonoBehaviour:
   Result: {fileID: 11400000, guid: 24c5eddb667ebe046a2d1cac673008df, type: 2}
   CraftingTime: 40
   detailImg: {fileID: 0}
+  Description: 'Wood chest
+
+
+    A sturdy chest for storing items and resources safely.'

@@ -335,6 +335,7 @@ namespace Inventory {
 
       //split
       if (gameManager.UserInput.controls.UI.Shift.IsPressed() && !preventSplit) {
+        splitItem.transform.SetAsLastSibling();
         splitItem.Show(slot, obj, tempDragParent);
         HideTooltip();
       }

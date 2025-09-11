@@ -53,7 +53,7 @@ namespace Craft {
       window = craftWindowObj.GetComponent<Window>();
       window.Setup(station);
 
-      craftWindowObj.transform.SetSiblingIndex(0);
+      //craftWindowObj.transform.SetSiblingIndex(0);
 
       craftWindow = craftWindowObj.GetComponent<CraftWindow>();
       gameManager.WindowsController.AddWindow(craftWindow);

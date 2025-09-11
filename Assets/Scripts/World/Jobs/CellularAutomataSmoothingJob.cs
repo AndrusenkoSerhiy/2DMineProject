@@ -12,31 +12,24 @@ namespace World.Jobs {
 
     public void Execute(int index) {
       int x = index % width;
-      int y = index / height;
-      // Get the average of the current cell and its 8 neighbors
+      int y = index / width;
+
+      // 1. усереднюємо сусідів
       float sum = 0;
       int count = 0;
-      
-      // Iterate through the 3x3 grid around the cell (itself and its neighbors)
+
       for (int offsetX = -1; offsetX <= 1; offsetX++) {
         for (int offsetY = -1; offsetY <= 1; offsetY++) {
           int nx = x + offsetX;
           int ny = y + offsetY;
-          // Ensure the neighbor is within bounds
-          
+
           if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
             sum += noiseMap[nx + ny * width];
             count++;
           }
-          
-          /*if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-            sum += noiseMap[nx + ny * height];
-            count++;
-          }*/
         }
       }
 
-      // Calculate the average and assign it to the smoothed map
       smoothedNoiseMap[index] = sum / count;
     }
   }

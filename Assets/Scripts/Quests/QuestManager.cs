@@ -29,7 +29,9 @@ namespace Quests {
       audioController = GameManager.Instance.AudioController;
     }
     public void StartQuest(int index) {
+      Debug.Log("Starting Quest : " +index);
       if (!CanStartQuest(index)) return;
+      Debug.Log("Starting Quest TRUE : " +index);
       GameManager.Instance.UserInput.EnableUIControls(false);
       GameManager.Instance.UserInput.controls.GamePlay.Interact.performed += StopQuest;
       var pos = GameManager.Instance.PlayerController.transform.position;
@@ -58,7 +60,7 @@ namespace Quests {
         0 => !firstQuestCompleted,
         1 => !secondQuestCompleted,
         2 => !thirdQuestCompleted,
-        _ => true
+        _ => false
       };
     }
 

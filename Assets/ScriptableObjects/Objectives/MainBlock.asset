@@ -33,6 +33,7 @@ MonoBehaviour:
     reward:
       item: {fileID: 0}
       amount: 0
+    questId: -1
   - id: 5c6b3e03-c356-474c-bf8f-d784e0299b49
     groupTitle: Meet the Horde!
     objectives:
@@ -46,6 +47,7 @@ MonoBehaviour:
     reward:
       item: {fileID: 0}
       amount: 0
+    questId: -1
   references:
     version: 2
     RefIds:

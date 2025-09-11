@@ -9,5 +9,6 @@ namespace Objectives {
     public string groupTitle;
     public List<ObjectiveData> objectives = new();
     public ObjectiveRewardData reward;
+    public int questId;
   }
 }

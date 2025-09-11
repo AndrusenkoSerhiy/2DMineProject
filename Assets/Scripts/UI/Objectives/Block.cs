@@ -39,6 +39,7 @@ namespace UI.Objectives {
       manager.OnTaskProgress += OnTaskProgressHandler;
       manager.OnTaskRewarded += OnTaskRewardedHandler;
       manager.OnGroupRewarded += OnGroupRewardedHandler;
+      manager.OnGroupRewarded += TriggerQuestHandler;
 
       ShowGroup();
       isInitialized = true;
@@ -64,6 +65,10 @@ namespace UI.Objectives {
       if (taskMap.TryGetValue(data.id, out var taskUI)) {
         taskUI.UpdateProgress(current);
       }
+    }
+    
+    private void TriggerQuestHandler(ObjectiveGroup data) {
+      GameManager.Instance.QuestManager.StartQuest(data.questId);
     }
 
     private void ShowGroup() {

@@ -47,6 +47,7 @@ MonoBehaviour:
     reward:
       item: {fileID: 0}
       amount: 0
+    questId: -1
   - id: 3b2a60c4-e928-43c5-9cf6-56134db65eb3
     groupTitle: Create workspace!
     objectives:
@@ -67,6 +68,7 @@ MonoBehaviour:
     reward:
       item: {fileID: 0}
       amount: 0
+    questId: -1
   - id: 39f79176-9553-42ab-90fa-a5fdf6f1e415
     groupTitle: Get some tools!
     objectives:
@@ -87,6 +89,7 @@ MonoBehaviour:
     reward:
       item: {fileID: 0}
       amount: 0
+    questId: -1
   - id: 9e8ade82-0236-4626-beb0-02bdfa145637
     groupTitle: Expand the base!
     objectives:
@@ -107,6 +110,7 @@ MonoBehaviour:
     reward:
       item: {fileID: 0}
       amount: 0
+    questId: -1
   - id: 0c284a84-9537-4528-ae1e-837478bc4a1a
     groupTitle: "Engineer\u2019s Touch!"
     objectives:
@@ -120,6 +124,7 @@ MonoBehaviour:
     reward:
       item: {fileID: 11400000, guid: cc89f015b1bc4b9468c11bdd7d40ab11, type: 2}
       amount: 50
+    questId: 1
   references:
     version: 2
     RefIds:

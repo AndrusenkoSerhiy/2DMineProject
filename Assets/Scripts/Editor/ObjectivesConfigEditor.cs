@@ -71,6 +71,7 @@ public class ObjectivesConfigEditor : Editor {
 
       group.groupTitle = EditorGUILayout.TextField("Title", group.groupTitle);
       group.id = EditorGUILayout.TextField("ID", group.id);
+      group.questId = EditorGUILayout.IntField("QuestID", group.questId);
 
       if (GUILayout.Button("Generate Group ID")) {
         group.id = Guid.NewGuid().ToString();

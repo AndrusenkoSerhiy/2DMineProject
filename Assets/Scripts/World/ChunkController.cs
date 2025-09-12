@@ -371,12 +371,12 @@ namespace World {
 
     //Use only on new game fill 10 cells with dirt and 1 wood block
     private void SetFirstRow() {
-      //fill bottom edge with stone
+      //fill bottom edge with obsidian
       var data = ResourceDataLibrary.GetData(0.75f);
       for (int i = 0; i < 999; i++) {
-        for (int j = 989; j < 999; j++) {
+        for (int j = 994; j < 999; j++) {
           var cell = chunkData.GetCellData(i, j);
-          cell.perlin = 0.75f;
+          cell.perlin = 0.346f;
           cell.durability = data.Durability;
           //cell.canTakeDamage = false;
           chunkData.SetCellFill(i, j);

@@ -328,6 +328,8 @@ MonoBehaviour:
   openDoorAudioData: {fileID: 11400000, guid: 8db9023c9d330d24b8ddf5fb866ab048, type: 2}
   closeDoorAudioData: {fileID: 11400000, guid: 87437eba1680c1a42873b716ba3274de, type: 2}
   spriteRenderer: {fileID: 2329576825058850560}
+  destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
+  stationRecipe: {fileID: 11400000, guid: 1673d1e3a4f87ea42b22ded515f7a2dc, type: 2}
 --- !u!114 &902977277039852723
 MonoBehaviour:
   m_ObjectHideFlags: 0

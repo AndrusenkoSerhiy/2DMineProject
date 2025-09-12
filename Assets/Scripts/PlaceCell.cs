@@ -337,6 +337,9 @@ public class PlaceCell : MonoBehaviour {
     else if (build.TryGetComponent<Storage>(out var storage)) {
       AfterPlaceCellWithBaseCells(storage, coords, build.Building.SizeX);
     }
+    else if (build.TryGetComponent<Door>(out var door)) {
+      AfterPlaceCellWithBaseCells(door, coords, build.Building.SizeX);
+    }
   }
 
   private void SetRespawnPoint(BuildingDataObject build) {

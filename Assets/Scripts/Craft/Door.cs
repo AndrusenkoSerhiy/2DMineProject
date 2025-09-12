@@ -1,11 +1,13 @@
+using System.Collections.Generic;
 using Interaction;
 using Scriptables;
+using Scriptables.Craft;
 using Scriptables.Items;
 using UnityEngine;
 using World;
 
 namespace Craft {
-  public class Door : MonoBehaviour, IInteractable, IDamageable {
+  public class Door : MonoBehaviour, IInteractable, IDamageable, IBaseCellHolder {
     [SerializeField] private string interactOpenText;
     [SerializeField] private string interactCloseText;
     [SerializeField] private string holdInteractText;
@@ -20,6 +22,8 @@ namespace Craft {
     [SerializeField] private AudioData openDoorAudioData;
     [SerializeField] private AudioData closeDoorAudioData;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
+    [SerializeField] private Recipe stationRecipe;
     public string InteractionText => IsOpened ? interactCloseText : interactOpenText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
@@ -29,8 +33,14 @@ namespace Craft {
       return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);
     }
 
+    private CellHolderHandler cellHandler;
     public bool IsOpen => IsOpened;
-
+    protected GameManager gameManager;
+    
+    private void Awake() {
+      gameManager = GameManager.Instance;
+      cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, stationRecipe, transform.position);
+    }
     private void Start() {
       DamageableType = DamageableType.Door;
       CanGetDamage = true;
@@ -96,6 +106,30 @@ namespace Craft {
     }
 
     public void DestroyObject() {
+    }
+
+    public void SetBaseCells(List<CellData> cells) {
+      cellHandler.SetBaseCells(cells, transform.position);
+    }
+    
+    private void OnAllBaseCellsDestroyed() {
+      var psGo = GameManager.Instance.PoolEffects
+        .SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity)
+        .gameObject;
+      var ps = psGo.GetComponent<ParticleSystem>();
+
+      if (ps != null) {
+        var main = ps.main;
+        main.startColor = new ParticleSystem.MinMaxGradient(destroyEffectColor);
+      }
+
+      gameManager.PlaceCell.RemoveBuilding(buildObject, itemObject);
+      gameManager.MessagesManager.ShowSimpleMessage("Door destroyed");
+      gameManager.AudioController.PlayWorkstationDestroyed();
+    }
+
+    public void ClearBaseCells() {
+      cellHandler.ClearBaseCells();
     }
   }
 }

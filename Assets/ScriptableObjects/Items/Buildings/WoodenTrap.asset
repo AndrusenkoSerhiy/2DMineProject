@@ -20,10 +20,10 @@ MonoBehaviour:
   UiDisplay: {fileID: 21300000, guid: d17108a347c593f4aa8d756a7e4dc360, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: abb99e592cb36464e8dfeb65506df083, type: 3}
   Stackable: 1
-  MaxStackSize: 1
+  MaxStackSize: 20
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
-  spawnPrefab: {fileID: 7576532664203053056, guid: a2f7e491dc6691142a3b9b4017085830, type: 3}
+  spawnPrefab: {fileID: 7576532664203053056, guid: 6b14e44829655b74c949c780617619be, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
   Description: Spike trap

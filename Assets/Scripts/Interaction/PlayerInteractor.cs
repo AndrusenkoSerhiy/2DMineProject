@@ -45,7 +45,7 @@ namespace Interaction {
       actionName = ButtonPromptSprite.GetSpriteName(gameManager.UserInput.controls.GamePlay.Interact);
       interactionPromtUI.UpdateSpriteAsset();
       holdInteractionPromtUI.UpdateSpriteAsset();
-      
+
       objectInteractionPrompts.UpdateSpriteAsset();
     }
 
@@ -54,11 +54,11 @@ namespace Interaction {
       if (GameManager.Instance.WindowsController.IsAnyWindowOpen ||
           gameManager.MiningRobotController.GetExitInteract()) {
         interactionPromtUI.ShowPrompt(false);
-        
+
         objectInteractionPrompts.HideInteractionPrompt();
-        
+
         holdInteractionPromtUI.ShowPrompt(false);
-        
+
         objectInteractionPrompts.HideHoldInteractionPrompt();
         return;
       }
@@ -74,10 +74,10 @@ namespace Interaction {
       if (numFound <= 0) {
         interactable = null;
         interactionPromtUI.ShowPrompt(false);
-        
+
         objectInteractionPrompts.HideInteractionPrompt();
         objectInteractionPrompts.HideHoldInteractionPrompt();
-        
+
         ShowEquipmentHoldActionPrompt();
         return;
       }
@@ -95,15 +95,18 @@ namespace Interaction {
       }
 
       // interactionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName));
-      objectInteractionPrompts.ShowInteractionPrompt(interactable, ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName, true));
+      if (!String.IsNullOrEmpty(interactable.InteractionText))
+        objectInteractionPrompts.ShowInteractionPrompt(interactable,
+          ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName, true));
 
       if (!interactable.HasHoldInteraction) {
         ShowEquipmentHoldActionPrompt();
         //return;
       }
-      
+
       //when you repair robot the prompt is hided
-      var str = interactable.HasHoldInteraction ? ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true,true)
+      var str = interactable.HasHoldInteraction
+        ? ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true, true)
         : string.Empty;
       objectInteractionPrompts.ShowHoldInteractionPrompt(interactable, str);
     }
@@ -111,7 +114,7 @@ namespace Interaction {
     private void ShowEquipmentHoldActionPrompt() {
       if (playerEquipment.ShowEquippedItemHoldAction()) {
         holdInteractionPromtUI.ShowPrompt(true,
-          ButtonPromptSprite.GetFullPrompt(playerEquipment.EquippedItemHoldActionText(), 
+          ButtonPromptSprite.GetFullPrompt(playerEquipment.EquippedItemHoldActionText(),
             actionName + "_hold"));
       }
       else {

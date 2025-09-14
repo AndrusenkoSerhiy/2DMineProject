@@ -36,6 +36,11 @@ namespace Tools {
       bullet.Launch(shootDirection, tool, bulletsPool);
       audioController.PlayAudio(tool.useSound);
       playerEquipment.ConsumeAmmo();
+
+      var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("NailgunShotParticleEffect", firePos, Quaternion.identity)
+        .gameObject;
+      psGo.transform.up = shootDirection;
+
     }
   }
 }

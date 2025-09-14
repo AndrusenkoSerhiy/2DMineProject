@@ -72,3 +72,12 @@ MonoBehaviour:
   - tag: CatSpawnParticleEffect
     prefab: {fileID: 1062751895791594999, guid: 9830cea2bee112b439a913437a9f1f67, type: 3}
     size: 1
+  - tag: NailgunShotParticleEffect
+    prefab: {fileID: 7364402926402224405, guid: 39a19344df290a14d9b8b9432cd00b9e, type: 3}
+    size: 1
+  - tag: NailBulletDestroyParticleEffect
+    prefab: {fileID: 3444944571067158703, guid: 715fb3a839e24d346b062fb3abfe2651, type: 3}
+    size: 1
+  - tag: BulletTrailParticleEffect
+    prefab: {fileID: 2003477454485991145, guid: 32209411fe1cd4e458641a1cb719b572, type: 3}
+    size: 1

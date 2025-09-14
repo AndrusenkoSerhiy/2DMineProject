@@ -16,6 +16,7 @@ namespace Tools {
     private int visionOffsetY;
     private PlayerStats playerStats;
     private string id;
+    private GameObject trail; 
 
     public string Id => id;
 
@@ -40,6 +41,9 @@ namespace Tools {
       transform.SetParent(null);
       gameObject.SetActive(true);
       transform.localScale = Vector3.one;
+
+      trail = GameManager.Instance.PoolEffects.SpawnFromPool("BulletTrailParticleEffect", transform.position, Quaternion.identity)
+        .gameObject;
     }
 
     private void Update() {
@@ -48,6 +52,7 @@ namespace Tools {
       }
 
       transform.position += bulletDirection * bulletSpeed * Time.deltaTime;
+      if(trail!=null && trail.activeSelf) trail.transform.position = transform.position;
 
       CheckArea();
     }
@@ -99,6 +104,8 @@ namespace Tools {
     }
 
     private void Deactivate() {
+      trail = null;
+      GameManager.Instance.PoolEffects.SpawnFromPool("NailBulletDestroyParticleEffect", transform.position, Quaternion.identity);
       active = false;
       bulletsPool.ReturnBullet(this);
     }

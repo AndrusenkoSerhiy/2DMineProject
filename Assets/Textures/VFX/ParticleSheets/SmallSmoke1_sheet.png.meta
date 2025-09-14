@@ -1,0 +1,507 @@
+fileFormatVersion: 2
+guid: f848d993b6f84034ca08014182d6d893
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7333980698692435437
+    second: SmallSmokeSplash1_sheet_0
+  - first:
+      213: 2013627767316760215
+    second: SmallSmokeSplash1_sheet_1
+  - first:
+      213: -4041122947685022929
+    second: SmallSmokeSplash1_sheet_2
+  - first:
+      213: 738808424107136930
+    second: SmallSmokeSplash1_sheet_3
+  - first:
+      213: 6687391646283647404
+    second: SmallSmokeSplash1_sheet_4
+  - first:
+      213: 1119363393356457849
+    second: SmallSmokeSplash1_sheet_5
+  - first:
+      213: -6448360823223223305
+    second: SmallSmokeSplash1_sheet_6
+  - first:
+      213: -6192340494454577899
+    second: SmallSmokeSplash1_sheet_7
+  - first:
+      213: -3445747020942939502
+    second: SmallSmokeSplash1_sheet_8
+  - first:
+      213: -5971871542351618497
+    second: SmallSmokeSplash1_sheet_9
+  - first:
+      213: -2313352256716330909
+    second: SmallSmokeSplash1_sheet_10
+  - first:
+      213: -3673952848511177027
+    second: SmallSmokeSplash1_sheet_11
+  - first:
+      213: 5741141962093476811
+    second: SmallSmokeSplash1_sheet_12
+  - first:
+      213: 3537349987880845247
+    second: SmallSmokeSplash1_sheet_13
+  - first:
+      213: -7956248171663311456
+    second: SmallSmokeSplash1_sheet_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 0
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_0
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 295
+        width: 27
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 312cdd06967783a90800000000000000
+      internalID: -7333980698692435437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_1
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 300
+        width: 86
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79647c429c7d1fb10800000000000000
+      internalID: 2013627767316760215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_2
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 304
+        width: 112
+        height: 125
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f230e81071c0be7c0800000000000000
+      internalID: -4041122947685022929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_3
+      rect:
+        serializedVersion: 2
+        x: 830
+        y: 307
+        width: 138
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a7d8fbe856c04a00800000000000000
+      internalID: 738808424107136930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_4
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 81
+        width: 171
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca9c6ae55436ecc50800000000000000
+      internalID: 6687391646283647404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_5
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 125
+        width: 183
+        height: 108
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 977669b5317c88f00800000000000000
+      internalID: 1119363393356457849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_6
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 146
+        width: 74
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fbfb340ff1d286a0800000000000000
+      internalID: -6448360823223223305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_7
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 179
+        width: 82
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 515a4c3f023601aa0800000000000000
+      internalID: -6192340494454577899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_8
+      rect:
+        serializedVersion: 2
+        x: 695
+        y: 157
+        width: 51
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29ae5de375f3e20d0800000000000000
+      internalID: -3445747020942939502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_9
+      rect:
+        serializedVersion: 2
+        x: 795
+        y: 171
+        width: 44
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3e1ed9f876af1da0800000000000000
+      internalID: -5971871542351618497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_10
+      rect:
+        serializedVersion: 2
+        x: 858
+        y: 205
+        width: 49
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3682312116255efd0800000000000000
+      internalID: -2313352256716330909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_11
+      rect:
+        serializedVersion: 2
+        x: 962
+        y: 179
+        width: 43
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbee4f6895f730dc0800000000000000
+      internalID: -3673952848511177027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_12
+      rect:
+        serializedVersion: 2
+        x: 684
+        y: 173
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcbbba75232acaf40800000000000000
+      internalID: 5741141962093476811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_13
+      rect:
+        serializedVersion: 2
+        x: 845
+        y: 181
+        width: 22
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbfbed18211371130800000000000000
+      internalID: 3537349987880845247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallSmokeSplash1_sheet_14
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 63
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ad382f117ab59190800000000000000
+      internalID: -7956248171663311456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SmallSmokeSplash1_sheet_0: -7333980698692435437
+      SmallSmokeSplash1_sheet_1: 2013627767316760215
+      SmallSmokeSplash1_sheet_10: -2313352256716330909
+      SmallSmokeSplash1_sheet_11: -3673952848511177027
+      SmallSmokeSplash1_sheet_12: 5741141962093476811
+      SmallSmokeSplash1_sheet_13: 3537349987880845247
+      SmallSmokeSplash1_sheet_14: -7956248171663311456
+      SmallSmokeSplash1_sheet_2: -4041122947685022929
+      SmallSmokeSplash1_sheet_3: 738808424107136930
+      SmallSmokeSplash1_sheet_4: 6687391646283647404
+      SmallSmokeSplash1_sheet_5: 1119363393356457849
+      SmallSmokeSplash1_sheet_6: -6448360823223223305
+      SmallSmokeSplash1_sheet_7: -6192340494454577899
+      SmallSmokeSplash1_sheet_8: -3445747020942939502
+      SmallSmokeSplash1_sheet_9: -5971871542351618497
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

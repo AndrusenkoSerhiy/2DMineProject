@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Actors;
 using Interaction;
 using Scriptables;
 using Scriptables.Craft;
@@ -20,7 +18,6 @@ namespace Craft {
     [SerializeField] private AudioData damageAudioData;
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
     [SerializeField] private Recipe trapRecipe;
-    private List<ActorBase> zombiesTraped = new List<ActorBase>();
 
     public string InteractionText { get; }
     public bool HasHoldInteraction => hasHoldInteraction;
@@ -39,7 +36,7 @@ namespace Craft {
     void Start() {
       InitUnitHealth();
     }
-    
+
     private void InitUnitHealth() {
       unitHealth = new UnitHealth(startHealth);
     }
@@ -62,6 +59,19 @@ namespace Craft {
       gameManager.PlaceCell.RemoveBuilding(buildObject, itemObject);
       gameManager.AudioController.PlayWorkstationDestroyed();
     }
+    
+    public void Damage(int damage, bool isPlayer) {
+      unitHealth.TakeDamage(damage, isPlayer);
+      gameManager.AudioController.PlayAudio(damageAudioData);
+      if (GetHealth() <= 0) {
+        Destroy();
+      }
+    }
+    
+    public float GetHealth() {
+      return unitHealth.health;
+    }
+
 
     public bool Interact(PlayerInteractor playerInteractor) {
       return false;
@@ -82,20 +92,6 @@ namespace Craft {
 
     public void ClearBaseCells() {
       cellHandler.ClearBaseCells();
-    }
-
-    public void OnTriggerEnter2D(Collider2D other) {
-      var actor = other.GetComponent<ActorBase>();
-      if (actor) {
-        zombiesTraped.Add(actor);
-      }
-    }
-    
-    public void OnTriggerExit2D(Collider2D other) {
-      var actor = other.GetComponent<ActorBase>();
-      if (actor) {
-        zombiesTraped.Remove(actor);
-      }
     }
   }
 }

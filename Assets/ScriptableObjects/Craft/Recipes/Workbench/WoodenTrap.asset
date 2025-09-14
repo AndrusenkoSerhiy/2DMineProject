@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: WoodenTrap
+  m_EditorClassIdentifier: 
+  id: 77143cf8-fa9f-4159-a902-115b94c2a9e3
+  RecipeName: Spikes
+  RecipeTypes: 02000000
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    Amount: 3
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
+  Result: {fileID: 11400000, guid: c0c6cbe127161194d9716701254ec0d6, type: 2}
+  CraftingTime: 40
+  detailImg: {fileID: 0}
+  Description: 'Spikes
+
+
+    Best way to defend your base - place a trap nearby.'

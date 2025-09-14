@@ -340,6 +340,9 @@ public class PlaceCell : MonoBehaviour {
     else if (build.TryGetComponent<Door>(out var door)) {
       AfterPlaceCellWithBaseCells(door, coords, build.Building.SizeX);
     }
+    else if (build.TryGetComponent<Trap>(out var trap)) {
+      AfterPlaceCellWithBaseCells(trap, coords, build.Building.SizeX);
+    }
   }
 
   private void SetRespawnPoint(BuildingDataObject build) {

@@ -72,7 +72,7 @@ namespace Craft {
         recipeDetailRow.SetRow(resource, totalAmountValue);
       }
 
-      while (rowIndex + 1 < rows.Count) {
+      while (rowIndex < rows.Count) {
         var recipeDetailRow = rows[rowIndex++];
         recipeDetailRow.ClearRow();
       }

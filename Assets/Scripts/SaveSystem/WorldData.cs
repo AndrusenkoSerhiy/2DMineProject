@@ -25,7 +25,7 @@ namespace SaveSystem {
 
   [Serializable]
   public class WorldData {
-    public float Seed = -1f;
+    public int Seed = -1;
     public List<BuildingData> BuildDatas = new();
     public List<CellFill> BuildFillDatas = new();
     public List<string> RemovedCells = new(); //x_y format

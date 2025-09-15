@@ -34,7 +34,7 @@ namespace World {
 
     private List<string> removedCells = new();
     private Dictionary<string, ChangedCellData> changedCells = new();
-    public float Seed;
+    public int Seed;
 
     private bool isInited = false;
 
@@ -415,8 +415,8 @@ namespace World {
     private BuildPoolsController BuildPoolsController => GameManager.Instance.BuildPoolsController;
     private BuildingsDataController BuildingsDataController => GameManager.Instance.BuildingsDataController;
 
-    private float GenerateSeed() {
-      return Random.Range(0f, 10000f);
+    private int GenerateSeed() {
+      return Random.Range(0, 10000);
     }
 
     private void AddToRemoved(int x, int y) {

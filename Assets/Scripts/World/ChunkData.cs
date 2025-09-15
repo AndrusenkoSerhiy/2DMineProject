@@ -151,7 +151,7 @@ namespace World {
         occupied = occupiedNative,
         allPoiCells = allPoiCellsNative,
         templateSizes = templateSizesNative,
-        randomSeed = (uint)GameManager.Instance.ChunkController.Seed,
+        randomSeed = (uint)(GameManager.Instance.ChunkController.Seed ^ (id.X * 73856093) ^ (id.Y * 19349663)),
         //placedInstances = placedInstancesNative
     };
     var poiHandle = poiJob.Schedule(caHandle);

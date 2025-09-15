@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Interaction;
 using Scriptables;
@@ -83,6 +84,7 @@ namespace Craft {
       unitHealth.TakeDamage(damage, isPlayer);
       if (GetHealth() <= 0) {
         GameManager.Instance.ChunkController.RemoveBuild(buildObject);
+        unitHealth.SetCurrentHealth(startHealth);
       }
     }
 

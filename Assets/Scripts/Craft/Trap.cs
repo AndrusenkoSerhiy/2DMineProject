@@ -58,6 +58,7 @@ namespace Craft {
 
       gameManager.PlaceCell.RemoveBuilding(buildObject, itemObject);
       gameManager.AudioController.PlayWorkstationDestroyed();
+      unitHealth.SetCurrentHealth(startHealth);
     }
     
     public void Damage(int damage, bool isPlayer) {

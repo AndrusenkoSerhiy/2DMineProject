@@ -137,7 +137,6 @@ namespace World {
     for (int i = 0; i < templateSizesList.Count; i++)
         templateSizesNative[i] = templateSizesList[i];
     
-    //var placedInstancesNative = new NativeArray<POIInstanceData>(poiLib.POICountForGeneration, Allocator.TempJob);
     // 5. Запуск джоба з перевіркою перекриття та розміщенням POI
     var poiJob = new POIPlacementWithCheckJob
     {
@@ -152,24 +151,11 @@ namespace World {
         occupied = occupiedNative,
         allPoiCells = allPoiCellsNative,
         templateSizes = templateSizesNative,
-        randomSeed = (uint)UnityEngine.Random.Range(1, int.MaxValue),
+        randomSeed = (uint)GameManager.Instance.ChunkController.Seed,
         //placedInstances = placedInstancesNative
     };
     var poiHandle = poiJob.Schedule(caHandle);
     poiHandle.Complete();
-    /*Debug.Log("POI GENERATED : "+placedInstancesNative.Length);
-    for (int i = 0; i < placedInstancesNative.Length; i++)
-    {
-      var inst = placedInstancesNative[i];
-      if (inst.templateIndex >= 0)
-      {
-        Debug.Log($"POI #{i} | Template: {inst.templateIndex} | Start: ({inst.startX}, {inst.startY})");
-      }
-      else
-      {
-        Debug.Log($"POI #{i} not placed");
-      }
-    }*/
 
     // 6. Копіюємо cellFillNative у _cellFillDatas
     for (int i = 0; i < width; i++)

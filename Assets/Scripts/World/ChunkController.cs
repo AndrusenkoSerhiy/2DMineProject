@@ -329,15 +329,15 @@ namespace World {
       _activeCellObjects[new Coords(x, y)] = cell;
     }
 
-    public void TriggerCellDestroyed(CellObject cellObject, bool silent = false) {
-      cellObject.CellData.Destroy();
+    public void TriggerCellDestroyed(CellObject cellObject) {
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
+      cellObject.CellData.Destroy();
       var coords = new Coords(x, y);
       RemoveCellFromActives(coords);
       AddToRemoved(x, y);
       RemoveCellFromChanged(x, y);
-      if (!silent) UpdateCellAround(x, y);
+      UpdateCellAround(x, y);
     }
 
     public void UpdateCellAround(int x, int y) {

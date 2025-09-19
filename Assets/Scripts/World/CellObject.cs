@@ -171,8 +171,7 @@ namespace World {
     }
 
     public void DestroySilent() {
-      GameManager.Instance.ChunkController.TriggerCellDestroyed(this,true);
-      GameManager.Instance.CellObjectsPool.ReturnObject(this);
+      GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
     }
 
     public void AfterDamageReceived() {

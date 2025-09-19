@@ -36,7 +36,7 @@ namespace Inventory {
       }
 
       var count = Random.Range((int)resource.rndCount.x, (int)resource.rndCount.y);
-      storageInventory.AddItem(new Item(resource.item), count);
+      storageInventory.AddItem(new Item(resource.item), count, unlockRecipes: false);
     }
 
     protected override void OnAllBaseCellsDestroyed() {

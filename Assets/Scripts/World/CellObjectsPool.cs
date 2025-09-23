@@ -61,9 +61,10 @@ namespace World {
 
     // Method called when an object is returned to the pool
     private void OnReturnedToPool(CellObject obj) {
+      obj.ResetAll();
       obj.transform.position = initialPos;
-      obj.IsActive = false;
       obj.gameObject.SetActive(false);
+      obj.IsActive = false;
     }
 
     // Method to return an object to the pool

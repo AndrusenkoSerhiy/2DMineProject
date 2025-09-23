@@ -50,7 +50,7 @@ namespace World {
 
       _cellData = cellData;
       resourceData = data;
-      if (GameManager.Instance.ChunkSpecialPointsSpawner.CheckData(data, new Coords(cellData.x, cellData.y), this)) return;
+      if (GameManager.Instance.ChunkSpecialPointsSpawner.CheckData(data, this)) return;
       CanGetDamage = resourceData.CanTakeDamage;
       InitUnitHealth();
     }
@@ -171,7 +171,8 @@ namespace World {
     }
 
     public void DestroySilent() {
-      GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
+      GameManager.Instance.ChunkController.TriggerCellDestroyed(this, true);
+      GameManager.Instance.CellObjectsPool.ReturnObject(this);
     }
 
     public void AfterDamageReceived() {
@@ -186,6 +187,9 @@ namespace World {
     }
 
     public void ResetAll() {
+      _cellData = null;
+      resourceData = null;
+      CanGetDamage = true;
       damageOverlay.gameObject.SetActive(false);
     }
 

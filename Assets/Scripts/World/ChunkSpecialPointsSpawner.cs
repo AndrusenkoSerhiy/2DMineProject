@@ -10,7 +10,7 @@ namespace World {
     public List<Building> possibleBuildings = new();
     private ChunkController chunkController;
 
-    public bool CheckData(ResourceData data, Coords coords, CellObject cellObject) {
+    public bool CheckData(ResourceData data, CellObject cellObject) {
       if (!chunkController) {
         chunkController = GameManager.Instance.ChunkController;
       }
@@ -20,6 +20,7 @@ namespace World {
       if (!loot && !zombie) {
         return false;
       }
+      var coords = new Coords(cellObject.CellData.x, cellObject.CellData.y);
       cellObject.DestroySilent();
       if (loot) {
         SpawnChest(coords);

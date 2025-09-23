@@ -174,9 +174,10 @@ namespace World {
           cell.Init(cellData, data);
           cell.InitSprite();
           //lock cell under robot
-          if (MiningRobotTool.IsRobotHere(i,j)) {
+          if (MiningRobotTool.IsRobotHere(i, j)) {
             cell.CanGetDamage = false;
           }
+
           _activeCellObjects[_proxyCoords] = cell;
         }
       }
@@ -329,7 +330,7 @@ namespace World {
       _activeCellObjects[new Coords(x, y)] = cell;
     }
 
-    public void TriggerCellDestroyed(CellObject cellObject) {
+    public void TriggerCellDestroyed(CellObject cellObject, bool silent = false) {
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
       cellObject.CellData.Destroy();
@@ -337,7 +338,7 @@ namespace World {
       RemoveCellFromActives(coords);
       AddToRemoved(x, y);
       RemoveCellFromChanged(x, y);
-      UpdateCellAround(x, y);
+      if (!silent) UpdateCellAround(x, y);
     }
 
     public void UpdateCellAround(int x, int y) {

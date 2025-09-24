@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Craft;
 using Scriptables.Items;
 
 namespace Inventory {
@@ -174,7 +175,32 @@ namespace Inventory {
     public bool SwapSlots(InventorySlot slot, InventorySlot targetSlot) {
       var result = slot.SwapWith(targetSlot);
       OnSlotSwapped?.Invoke(new SlotSwappedEventData(slot, targetSlot));
+
+      DiscoverRecipeOnSwap(slot, targetSlot);
+
       return result;
+    }
+
+    private void DiscoverRecipeOnSwap(InventorySlot slot, InventorySlot targetSlot) {
+      var pool = gameManager.PlayerInventory.InventoriesPool;
+      if (pool.IsInventoryInPool(slot.InventoryId) && pool.IsInventoryInPool(targetSlot.InventoryId)) {
+        return;
+      }
+
+      CheckAndDiscover(slot, pool);
+      CheckAndDiscover(targetSlot, pool);
+    }
+
+    private void CheckAndDiscover(InventorySlot slot, InventoriesPool pool) {
+      if (slot.isEmpty) {
+        return;
+      }
+
+      if (!pool.IsInventoryInPool(slot.InventoryId)) {
+        return;
+      }
+
+      gameManager.RecipesManager.DiscoverMaterial(slot.Item.info);
     }
 
     public int RemoveItem(string id, int amount) {
@@ -217,9 +243,14 @@ namespace Inventory {
     /// <param name="amount">The amount of the item to add.</param>
     /// <param name="placeAt">Optional slot to place the item in.</param>
     /// <param name="formSlot">Optional slot form which the item is coming from.</param>
+    /// <param name="unlockRecipes"></param>
     /// <returns>The amount that couldn't be added due to lack of space.</returns>
-    public int AddItem(Item item, int amount, InventorySlot placeAt = null, InventorySlot formSlot = null) {
-      gameManager.RecipesManager.DiscoverMaterial(item.info);
+    public int AddItem(Item item, int amount, InventorySlot placeAt = null, InventorySlot formSlot = null,
+      bool unlockRecipes = true) {
+      if (unlockRecipes) {
+        gameManager.RecipesManager.DiscoverMaterial(item.info);
+      }
+
       if (placeAt != null) {
         if (!placeAt.IsItemAllowed(item.info)) {
           return amount;

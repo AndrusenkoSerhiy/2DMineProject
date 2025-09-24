@@ -155,9 +155,6 @@ namespace World {
     public void DestroyObject() {
       //GameManager.Instance.QuestManager.StartQuest(1);
       var pos = transform.position;
-      GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
-      GameManager.Instance.CellObjectsPool.ReturnObject(this);
-
       var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDestroyEffect", pos, Quaternion.identity)
         .gameObject;
       ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
@@ -168,6 +165,9 @@ namespace World {
       }
 
       highlight.SetHighlight(false);
+      
+      GameManager.Instance.ChunkController.TriggerCellDestroyed(this);
+      GameManager.Instance.CellObjectsPool.ReturnObject(this);
     }
 
     public void DestroySilent() {

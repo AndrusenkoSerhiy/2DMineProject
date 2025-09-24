@@ -38,6 +38,7 @@ namespace UI {
       canvasGroup.alpha = 0f;
       tooltip.SetText(content, header);
       tooltip.gameObject.SetActive(true);
+      tooltip.transform.SetAsLastSibling();
       yield return FadeTo(1f, fadeDelay);
     }
 

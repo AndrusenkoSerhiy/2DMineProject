@@ -103,6 +103,10 @@ namespace Inventory {
         return;
       }
 
+      var healingParticles = GameManager.Instance.PoolEffects.SpawnFromPool("HealingParticleEffect", 
+        playerController.gameObject.transform.position, Quaternion.identity);
+      healingParticles.target = playerController.gameObject;
+
       gameManager.AudioController.PlayAudio(consumableItem?.ConsumeSound);
       gameManager.ObjectivesSystem.ReportItemUse(activeSlot.Item.info, 1);
 

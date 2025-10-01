@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils;
 using World;
+using DG.Tweening;
 
 public class PlaceCellRobot : MonoBehaviour {
   [SerializeField] private GameObject attackCollider;
@@ -138,6 +139,25 @@ public class PlaceCellRobot : MonoBehaviour {
     
     gameManager.AudioController.PlayPlaceBuildingBlock();
     GameManager.Instance.ChunkController.CheckArea();
+
+    //Tween for spawn effect
+    var spawnedGo = gameManager.ChunkController.GetCell(x, y);
+    var spriteRenderer = spawnedGo.GetComponentInChildren<SpriteRenderer>();
+
+    var block = new MaterialPropertyBlock();
+    spriteRenderer.GetPropertyBlock(block);
+    block.SetFloat("_Dissolve", 0f);
+    spriteRenderer.SetPropertyBlock(block);
+
+    DOTween.To(() => block.GetFloat("_Dissolve"),
+      x => {
+        block.SetFloat("_Dissolve", x);
+        spriteRenderer.SetPropertyBlock(block);
+      },
+      1f, 0.4f);
+
+    GameManager.Instance.PoolEffects.SpawnFromPool("PlaceCellEffect", spawnedGo.transform.position,
+      Quaternion.identity);
   }
 
   public void Activate() {

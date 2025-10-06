@@ -13,5 +13,6 @@ namespace Scriptables.Stats {
     public Sprite border;
     public Color borderColor;
     public Color iconColor;
+    public string particleName;
   }
 }

@@ -103,14 +103,22 @@ namespace Inventory {
         return;
       }
 
-      var healingParticles = GameManager.Instance.PoolEffects.SpawnFromPool("HealingParticleEffect", 
-        playerController.gameObject.transform.position, Quaternion.identity);
-      healingParticles.target = playerController.gameObject;
-
+      SpawnEffect();
+      
       gameManager.AudioController.PlayAudio(consumableItem?.ConsumeSound);
       gameManager.ObjectivesSystem.ReportItemUse(activeSlot.Item.info, 1);
 
       activeSlot.RemoveAmount(1);
+    }
+
+    private void SpawnEffect() {
+      var statsType = activeSlot.Item.info.statModifiers[0];
+      var particleName = statsType.modifierDisplayObject != null ? 
+        statsType.modifierDisplayObject.particleName :"HealingParticleEffect";
+
+      var effectParticle = GameManager.Instance.PoolEffects.SpawnFromPool(particleName,
+        playerController.gameObject.transform.position, Quaternion.identity);
+      effectParticle.target = playerController.gameObject;
     }
 
     private void RemoveLeftMouseClickHandler() {

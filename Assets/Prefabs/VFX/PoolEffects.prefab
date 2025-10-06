@@ -84,3 +84,12 @@ MonoBehaviour:
   - tag: HealingParticleEffect
     prefab: {fileID: 2196928431217088736, guid: c7219d378936fee4b88918745625bdad, type: 3}
     size: 1
+  - tag: EatingBlueParticleEffect
+    prefab: {fileID: 4475594017815246665, guid: 0fa83adafe192044095ecd2bcb29a251, type: 3}
+    size: 1
+  - tag: EatingVioletParticleEffect
+    prefab: {fileID: 2756955165699873138, guid: 37a6e4af59b4e5149a5c87cf68aa9b8b, type: 3}
+    size: 1
+  - tag: EatingYellowParticleEffect
+    prefab: {fileID: 1327824101167197888, guid: a09e6bba7569e674a93677cdf1354d2e, type: 3}
+    size: 1

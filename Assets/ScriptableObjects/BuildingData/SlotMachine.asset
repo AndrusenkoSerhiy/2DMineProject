@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0258504fa95245168906ec77e3a114ea, type: 3}
+  m_Name: SlotMachine
+  m_EditorClassIdentifier: 
+  id: 420262a6-1277-4127-83cf-ae1afe89cf29
+  SizeX: 2
+  SizeY: 2
+  previewColor: {r: 0.32156864, g: 0.7529412, b: 1, a: 0.3137255}
+  blockColor: {r: 1, g: 0.3226415, b: 0.3226415, a: 0.29411766}
+  IsAttackable: 0

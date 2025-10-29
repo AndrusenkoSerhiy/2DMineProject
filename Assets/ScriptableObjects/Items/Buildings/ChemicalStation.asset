@@ -26,7 +26,9 @@ MonoBehaviour:
   spawnPrefab: {fileID: 9194511913274475197, guid: dccbc6780046ac049b42cbfac026f6cc, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 0
-  Description: 
+  Description: A small lab for mixing herbs and chemicals into medicine, bandages,
+    and potions.
   statModifiers: []
+  consumeSound: {fileID: 0}
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: 47dec7647ccb2cb4a9c477b7ccf8881b, type: 2}

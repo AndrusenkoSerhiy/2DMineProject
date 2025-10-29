@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: SlotMachine
+  m_EditorClassIdentifier: 
+  id: ec6456a9-4a0f-442b-a033-bcbf55816617
+  RecipeName: SlotMachine
+  RecipeTypes: 02000000
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: 154e8ba0ea2911e40a9cf1f243c3d7ad, type: 2}
+    Amount: 20
+  - Material: {fileID: 11400000, guid: 82612b1c201cd9e4cbc88f66e42816b9, type: 2}
+    Amount: 10
+  - Material: {fileID: 11400000, guid: 305ad173444db6d4e97ff6baee0e90f1, type: 2}
+    Amount: 10
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
+  Result: {fileID: 11400000, guid: 9f6aa36c4e806764bb134d5f00c8283a, type: 2}
+  CraftingTime: 20
+  detailImg: {fileID: 0}
+  Description: 'Slot Machine
+
+
+    Win prizes! Or not!'

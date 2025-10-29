@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8bc6611c57a4211b23b3959ff98e207, type: 3}
+  m_Name: SlotMachine
+  m_EditorClassIdentifier: 
+  id: 57f6a5ae-a31f-4b64-bba6-2c7c54888904
+  Type: 10
+  Name: SlotMachine
+  Weight: 0
+  ParentType: 0
+  UiDisplay: {fileID: 21300000, guid: 339131c9361c0c64294b59fd22a46ff2, type: 3}
+  CharacterDisplay: {fileID: 7576532664203053056, guid: 2955465319d88514980e24ea9a21eea7, type: 3}
+  Stackable: 1
+  MaxStackSize: 1
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 7576532664203053056, guid: ea4ac3e9800a21e4d8918a810548dff4, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 0
+  Description: Win prizes! Or not!
+  statModifiers: []
+  consumeSound: {fileID: 0}
+  ResourceData: {fileID: 0}
+  BuildingData: {fileID: 11400000, guid: a80172fa1ed63fc48937bca75caab2b1, type: 2}

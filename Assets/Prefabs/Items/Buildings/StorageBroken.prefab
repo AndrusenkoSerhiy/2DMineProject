@@ -61,6 +61,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -82,6 +84,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1277350549
   m_SortingLayer: 3
   m_SortingOrder: 1
@@ -242,3 +245,6 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     chance: 0.5
     rndCount: {x: 5, y: 10}
+  - item: {fileID: 11400000, guid: f49a95b357ce9db45b858fdb52a0bb7f, type: 2}
+    chance: 0.5
+    rndCount: {x: 4, y: 7}

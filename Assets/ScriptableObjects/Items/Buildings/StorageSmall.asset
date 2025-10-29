@@ -26,7 +26,8 @@ MonoBehaviour:
   spawnPrefab: {fileID: 3817076882879528663, guid: 3936a09999815234386e4606c0f03ae8, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 0
-  Description: 
+  Description: A sturdy chest for storing items and resources safely.
   statModifiers: []
+  consumeSound: {fileID: 0}
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: e532957c013640c48a9b81200947c6d4, type: 2}

@@ -26,7 +26,9 @@ MonoBehaviour:
   spawnPrefab: {fileID: 5121348168510077464, guid: dc7c810a83ee7a745925cd72a8cb6573, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 0
-  Description: 
+  Description: A blazing hearth fueled by coal. Smelts raw resources into strong
+    metals and alloys.
   statModifiers: []
+  consumeSound: {fileID: 0}
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: 9e3eaeb17a8169d4da4ef1b6ddfb38c1, type: 2}

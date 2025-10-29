@@ -26,7 +26,9 @@ MonoBehaviour:
   spawnPrefab: {fileID: 4470986188835931539, guid: 16dd6a71927901e43a01f3a7ca8a513c, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 0
-  Description: 
+  Description: A cooking setup where ingredients turn into meals that restore and
+    grant buffs.
   statModifiers: []
+  consumeSound: {fileID: 0}
   ResourceData: {fileID: 0}
   BuildingData: {fileID: 11400000, guid: 5e8f7d7929b320f4a95748b3cb37573b, type: 2}

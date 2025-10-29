@@ -19,7 +19,11 @@ MonoBehaviour:
   FuelInventoryType: 21
   RecipeDB: {fileID: 11400000, guid: e43556b5a9f524348a26ce72cd94b97b, type: 2}
   Title: Food Station
-  Description: 
+  Description: 'Food Station
+
+
+    A cooking setup where ingredients turn into meals
+    that restore and grant buffs.'
   ShowSuccessCraftMessages: 0
   CraftSlotsCount: 5
   MusicAudioDatas: []

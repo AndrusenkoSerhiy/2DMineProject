@@ -11,15 +11,13 @@ namespace Craft {
     public class SlotReward {
       public ItemObject itemData;
       [SerializeField] private Vector2Int amount;
-      public int weight = 1;
+      public float weight = 1;
 
       public int Amount() {
         var rand = Random.Range(amount.x, amount.y + 1);
-        rand = 10;
-        Debug.Log("Rand : "+rand);
-        if (rand > 10) rand = Mathf.RoundToInt(Random.Range(amount.x, amount.y + 1) / 10f) * 10;;
+        if (rand > 10) rand = Mathf.RoundToInt(Random.Range(amount.x, amount.y + 1) / 10f) * 10;
         return rand;
-      } 
+      }
     }
 
     [SerializeField] private string interactText;
@@ -42,15 +40,14 @@ namespace Craft {
 
     #region Rewards
 
-    [Header("Rewards")] 
-    public List<SlotReward> possibleRewards;
-    [Header("Settings")]
-    [Range(0f, 1f)] public float baseWinChance = 0.1f;
+    [Header("Rewards")] public List<SlotReward> possibleRewards;
+    [Header("Settings")] [Range(0f, 1f)] public float baseWinChance = 0.1f;
     [Range(0f, 1f)] public float maxWinChance = 0.8f;
     public float chanceIncreasePerLose = 0.08f;
 
-    [Header("Runtime State (Debug)")]
-    [SerializeField] private float currentWinChance;
+    [Header("Runtime State (Debug)")] [SerializeField]
+    private float currentWinChance;
+
     [SerializeField] private SlotReward slot1Result;
     [SerializeField] private SlotReward slot2Result;
     [SerializeField] private SlotReward slot3Result;
@@ -61,25 +58,21 @@ namespace Craft {
       bool win = RollWin();
       lastResultWasWin = win;
 
-      if (win)
-      {
+      if (win) {
         CalculateWin();
         ResetChance();
       }
-      else
-      {
+      else {
         CalculateLose();
         currentWinChance = Mathf.Min(currentWinChance + chanceIncreasePerLose, maxWinChance);
       }
     }
-    
-    private bool RollWin()
-    {
+
+    private bool RollWin() {
       return Random.value < currentWinChance;
     }
-    
-    private void CalculateWin()
-    {
+
+    private void CalculateWin() {
       // Step 1: Pick one reward from the list
       SlotReward reward = GetRandomRewardWeighted();
 
@@ -91,11 +84,9 @@ namespace Craft {
       // Here you can trigger VFX, add reward to inventory, etc.
       GiveReward(reward);
     }
-    
-    private void CalculateLose()
-    {
-      if (possibleRewards.Count < 3)
-      {
+
+    private void CalculateLose() {
+      if (possibleRewards.Count < 3) {
         Debug.LogWarning("Need at least 3 unique rewards for lose sequence!");
         return;
       }
@@ -108,19 +99,16 @@ namespace Craft {
       slot2Result = PopRandom(tempList);
       slot3Result = PopRandom(tempList);
     }
-    
-    private SlotReward GetRandomRewardWeighted()
-    {
+
+    private SlotReward GetRandomRewardWeighted() {
       if (possibleRewards.Count == 0) return null;
 
-      int totalWeight = 0;
+      float totalWeight = 0;
       foreach (var r in possibleRewards)
         totalWeight += r.weight;
-
-      int roll = Random.Range(0, totalWeight);
-      int cumulative = 0;
-      foreach (var r in possibleRewards)
-      {
+      float roll = Random.Range(0, totalWeight);
+      float cumulative = 0;
+      foreach (var r in possibleRewards) {
         cumulative += r.weight;
         if (roll < cumulative)
           return r;
@@ -128,25 +116,21 @@ namespace Craft {
 
       return possibleRewards[0];
     }
-    
-    private SlotReward PopRandom(List<SlotReward> list)
-    {
+
+    private SlotReward PopRandom(List<SlotReward> list) {
       int index = Random.Range(0, list.Count);
       SlotReward result = list[index];
       list.RemoveAt(index);
       return result;
     }
-    
-    private void GiveReward(SlotReward reward)
-    {
+
+    private void GiveReward(SlotReward reward) {
       // Example: add to inventory, play effects, etc.
       Debug.Log($"🎁 Player receives: {reward.itemData.name} x{reward.Amount()}");
     }
-    
-    public SlotReward GetSlotResult(int slotIndex)
-    {
-      return slotIndex switch
-      {
+
+    public SlotReward GetSlotResult(int slotIndex) {
+      return slotIndex switch {
         1 => slot1Result,
         2 => slot2Result,
         3 => slot3Result,
@@ -157,6 +141,7 @@ namespace Craft {
     void ResetChance() {
       currentWinChance = baseWinChance;
     }
+
     #endregion
 
 
@@ -201,6 +186,7 @@ namespace Craft {
         main.startColor = new ParticleSystem.MinMaxGradient(destroyEffectColor);
       }
 
+      ResetChance();
       gameManager.PlaceCell.RemoveBuilding(buildObject, stationObject.InventoryItem);
       gameManager.MessagesManager.ShowSimpleMessage(stationObject.Title + " destroyed");
       gameManager.AudioController.PlayWorkstationDestroyed();

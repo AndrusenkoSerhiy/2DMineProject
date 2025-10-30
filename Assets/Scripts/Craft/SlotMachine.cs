@@ -30,6 +30,10 @@ namespace Craft {
     [SerializeField] protected WorkstationObject stationObject;
     [SerializeField] protected ItemObject itemObject;
 
+    [SerializeField] private SpriteRenderer Slot1Sprite;
+    [SerializeField] private SpriteRenderer Slot2Sprite;
+    [SerializeField] private SpriteRenderer Slot3Sprite;
+
     private CellHolderHandler cellHandler;
 
     public string InteractionText => interactText;
@@ -66,6 +70,9 @@ namespace Craft {
         CalculateLose();
         currentWinChance = Mathf.Min(currentWinChance + chanceIncreasePerLose, maxWinChance);
       }
+      Slot1Sprite.sprite = slot1Result.itemData.UiDisplay;
+      Slot2Sprite.sprite = slot2Result.itemData.UiDisplay;
+      Slot3Sprite.sprite = slot3Result.itemData.UiDisplay;
     }
 
     private bool RollWin() {

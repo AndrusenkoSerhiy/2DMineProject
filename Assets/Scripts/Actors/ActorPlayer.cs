@@ -51,12 +51,20 @@ namespace Actors {
 
       if (stats.Health <= 0 && !IsDead) {
         OnPlayerDeath?.Invoke();
+
+        //Death effect
+        GameManager.Instance.PoolEffects.SpawnFromPool("PlayerDeathParticleEffect", transform.position, 
+          Quaternion.identity);
       }
     }
 
     public override void Respawn() {
       base.Respawn();
       OnPlayerRespawn?.Invoke();
+
+      //Respawn effect
+      GameManager.Instance.PoolEffects.SpawnFromPool("PlayerDeathParticleEffect", transform.position,
+        Quaternion.identity);
     }
   }
 }

@@ -1,6 +1,7 @@
 using Actors;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DG.Tweening;
 
 namespace Windows {
   public class RespawnWindow : WindowBase {
@@ -11,11 +12,13 @@ namespace Windows {
     }
 
     public override void Show() {
-      base.Show();
-      GameManager.Instance.UserInput.controls.UI.Respawn.performed += Respawn;
-      GetInteractionText();
-      SetInteractionText();
-      GameManager.Instance.AudioController.PlayPlayerDeath();
+      DOVirtual.DelayedCall(2.0f, () => {
+        base.Show();
+        GameManager.Instance.UserInput.controls.UI.Respawn.performed += Respawn;
+        GetInteractionText();
+        SetInteractionText();
+        GameManager.Instance.AudioController.PlayPlayerDeath();
+      });
     }
     
     private void GetInteractionText() {

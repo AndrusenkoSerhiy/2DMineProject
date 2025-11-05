@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158a47212d92487daa83dcfe8ddff8f5, type: 3}
+  m_Name: Corn
+  m_EditorClassIdentifier: 
+  id: f0b84fbb-e4d5-4593-8e39-6ca5e492d85b
+  Type: 1
+  Name: Corn
+  Weight: 1
+  ParentType: 2
+  UiDisplay: {fileID: 21300000, guid: 7553ca26dd6594b489bd851be16dbcc8, type: 3}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 2d8552b1e08f7cf438804d9edea48a47, type: 3}
+  Stackable: 1
+  MaxStackSize: 30
+  SpawnPosition: {x: -0.12, y: -0.91, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 8674f17d09116dc49a251a7680b80850, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: 'Food | Ingredient
+
+    +10 Max Health
+
+    Duration: 5 min'
+  statModifiers:
+  - type: 2
+    applyType: 1
+    operatorType: 1
+    value: 10
+    canApplyIfValueIsMax: 1
+    permanent: 0
+    duration: 300
+    timeLeft: 0
+    canApplyWhenPreviousAt: 20
+    removePrevious: 5
+    modifierDisplayObject: {fileID: 11400000, guid: 35ea8439f87facd47992d91c251e335a, type: 2}
+  - type: 1
+    applyType: 1
+    operatorType: 1
+    value: 10
+    canApplyIfValueIsMax: 1
+    permanent: 1
+    duration: 0
+    timeLeft: 0
+    canApplyWhenPreviousAt: 0
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  consumeSound: {fileID: 11400000, guid: 37727e2e4e44dac418f60e497860df27, type: 2}

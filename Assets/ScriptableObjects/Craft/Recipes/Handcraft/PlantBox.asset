@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911f8c27fbf824d4ead0768d3ace24a5, type: 3}
+  m_Name: PlantBox
+  m_EditorClassIdentifier: 
+  id: 6c6d6ae2-8cea-4600-832e-2ae2209fa5d8
+  RecipeName: PlantBox
+  RecipeTypes: 00000000
+  RequiredMaterials:
+  - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
+    Amount: 1
+  Fuel:
+    Material: {fileID: 0}
+    Amount: 0
+  Result: {fileID: 11400000, guid: e7136ef7c69da514893fe82223588ac2, type: 2}
+  CraftingTime: 5
+  detailImg: {fileID: 0}
+  Description: 'Plant box
+
+
+    Box for growing your own food'

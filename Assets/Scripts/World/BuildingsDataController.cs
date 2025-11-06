@@ -88,24 +88,21 @@ namespace World {
         }
       }
       plantBoxDataList = SaveLoadSystem.Instance.gameData.PlantBoxes;
-      Debug.LogError($"Load plant box list {plantBoxDataList.Count}");
     }
 
     //load plantBox!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public void UpdateFromLoad() {
+      //update when we have all objects
       if (plantBoxes.Count < plantBoxDataList.Count)
         return;
-
-      Debug.LogError($"Update all!!!!!!!!!!! {plantBoxDataList.Count}");
+      
       for (int i = 0; i < plantBoxDataList.Count; i++) {
         var a = plantBoxDataList[i];
-        
         var box = plantBoxes.Find(b => Vector3.Distance(b.transform.position, a.position) < 0.01f);
 
         if (box == null) {
           continue; 
         }
-        Debug.LogError($"box {box.gameObject.name}");
         box.SetParamFromLoad(a);
       }
     }

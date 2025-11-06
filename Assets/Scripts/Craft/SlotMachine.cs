@@ -27,7 +27,6 @@ namespace Craft {
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] protected BuildingDataObject buildObject;
-    [SerializeField] protected WorkstationObject stationObject;
     [SerializeField] protected ItemObject itemObject;
 
     [SerializeField] private SpriteRenderer Slot1Sprite;
@@ -194,8 +193,8 @@ namespace Craft {
       }
 
       ResetChance();
-      gameManager.PlaceCell.RemoveBuilding(buildObject, stationObject.InventoryItem);
-      gameManager.MessagesManager.ShowSimpleMessage(stationObject.Title + " destroyed");
+      gameManager.PlaceCell.RemoveBuilding(buildObject, itemObject);
+      gameManager.MessagesManager.ShowSimpleMessage(itemObject.Name + " destroyed");
       gameManager.AudioController.PlayWorkstationDestroyed();
     }
   }

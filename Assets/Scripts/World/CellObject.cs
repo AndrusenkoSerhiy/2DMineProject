@@ -145,7 +145,7 @@ namespace World {
     }
 
     public string GetName() {
-      return name;
+      return gameObject.name;
     }
 
     public float GetMaxHealth() {

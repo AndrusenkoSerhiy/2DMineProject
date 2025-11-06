@@ -20,7 +20,7 @@ MonoBehaviour:
   UiDisplay: {fileID: 21300000, guid: 9aaad3fb33dc16a4d8d4d93b60de3707, type: 3}
   CharacterDisplay: {fileID: 3815914773768959763, guid: 01ac82c7e0ad3d94db181336dcc4b1ed, type: 3}
   Stackable: 1
-  MaxStackSize: 1
+  MaxStackSize: 20
   SpawnPosition: {x: 0, y: 0, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
   spawnPrefab: {fileID: 3815914773768959763, guid: 637eb9df36d01604483a87faf8e9f543, type: 3}

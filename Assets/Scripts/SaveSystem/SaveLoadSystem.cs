@@ -262,6 +262,7 @@ namespace SaveSystem {
         PlayerData = new PlayerData(),
         SiegeData = new SiegeData(),
         Zombies = new List<ZombiesData>(),
+        PlantBoxes = new List<PlantBoxData>(),
         LocatorPointsData = new List<LocatorPointData>(),
         Objectives = new SerializedDictionary<string, ObjectivesData>(),
       };

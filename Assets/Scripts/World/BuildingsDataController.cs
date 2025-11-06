@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Craft;
 using SaveSystem;
 using Scriptables;
 using UnityEngine;
@@ -11,7 +13,8 @@ namespace World {
 
     //Cells fill data array
     private int[,] _buildFillDatas;
-
+    [SerializeField] private List<PlantBox> plantBoxes = new();
+    private List<PlantBoxData> plantBoxDataList = new();
     public int[,] BuildFillDatas => _buildFillDatas;
 
     public void Awake() {
@@ -31,11 +34,31 @@ namespace World {
       Load();
     }
 
+    public void AddPlantBox(PlantBox plantBox) {
+      //Debug.LogError($"Adding plant box: {plantBox.gameObject.name}");
+      if(plantBoxes.Contains(plantBox))
+        return;
+      
+      plantBoxes.Add(plantBox);
+      UpdateFromLoad();
+      //Debug.LogError("Added plantbox");
+    }
+    
+    public void RemovePlantBox(PlantBox plantBox) {
+      if(!plantBoxes.Contains(plantBox))
+        return;
+      
+      plantBoxes.Remove(plantBox);
+      //Debug.LogError("Removed plantbox");
+    }
+
     #region Save/Load
 
     public int Priority => LoadPriority.BUILDINGS;
 
     public void Clear() {
+      plantBoxes.Clear();
+      plantBoxDataList.Clear();
     }
 
     public void Load() {
@@ -64,8 +87,29 @@ namespace World {
           _buildFillDatas[fill.X, fill.Y] = fill.Value;
         }
       }
+      plantBoxDataList = SaveLoadSystem.Instance.gameData.PlantBoxes;
+      Debug.LogError($"Load plant box list {plantBoxDataList.Count}");
     }
 
+    //load plantBox!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void UpdateFromLoad() {
+      if (plantBoxes.Count < plantBoxDataList.Count)
+        return;
+
+      Debug.LogError($"Update all!!!!!!!!!!! {plantBoxDataList.Count}");
+      for (int i = 0; i < plantBoxDataList.Count; i++) {
+        var a = plantBoxDataList[i];
+        
+        var box = plantBoxes.Find(b => Vector3.Distance(b.transform.position, a.position) < 0.01f);
+
+        if (box == null) {
+          continue; 
+        }
+        Debug.LogError($"box {box.gameObject.name}");
+        box.SetParamFromLoad(a);
+      }
+    }
+    
     public void Save() {
       if (_buildDatas == null || _buildFillDatas == null) {
         return;
@@ -102,10 +146,27 @@ namespace World {
           }
         }
       }
+      plantBoxDataList.Clear();
+      //save plant boxes
+      var savedData = SaveLoadSystem.Instance.gameData.PlantBoxes;
+      
+      foreach (var box in plantBoxes) {
+        var boxData = new PlantBoxData() {
+          position = box.transform.position,
+          HasGround = box.HasGround,
+          HasSeeds = box.HasSeeds,
+          StartGrowing = box.StartGrowing,
+          HasRipened = box.HasRipened,
+          CurrSeed = box.CurrSeed,
+          CurrHarvest = box.CurrHarvest,
+          TimeToGrowth = box.TimeToGrowth,
+          CurrTime = box.CurrTime
+        };
+        savedData.Add(boxData);
+      }
     }
 
     #endregion
-
     public Building GetBuildDataConverted(int xCoord, int yCoord) {
       var convertedCoords = CoordsTransformer.GridToBuildingsGrid(xCoord, yCoord);
       return _buildDatas[convertedCoords.X, convertedCoords.Y];

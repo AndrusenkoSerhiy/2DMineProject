@@ -343,6 +343,13 @@ public class PlaceCell : MonoBehaviour {
     else if (build.TryGetComponent<Trap>(out var trap)) {
       AfterPlaceCellWithBaseCells(trap, coords, build.Building.SizeX);
     }
+    else if (build.TryGetComponent<SlotMachine>(out var slotMachine)) {
+      AfterPlaceCellWithBaseCells(slotMachine, coords, build.Building.SizeX);
+    }
+    else if (build.TryGetComponent<PlantBox>(out var box)) {
+      AfterPlaceCellWithBaseCells(box, coords, build.Building.SizeX);
+      buildingDataController.AddPlantBox(box);
+    }
   }
 
   private void SetRespawnPoint(BuildingDataObject build) {
@@ -369,6 +376,10 @@ public class PlaceCell : MonoBehaviour {
   public void AfterBuildingRemoved(BuildingDataObject build) {
     if (build.TryGetComponent<IBaseCellHolder>(out var cellHolder)) {
       cellHolder.ClearBaseCells();
+    }
+
+    if (build.TryGetComponent<PlantBox>(out var box)) {
+      buildingDataController.RemovePlantBox(box);
     }
   }
 

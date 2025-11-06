@@ -97,7 +97,7 @@ namespace Craft {
     }
 
     public string GetName() {
-      return name;
+      return gameObject.name;
     }
 
     public float GetMaxHealth() {

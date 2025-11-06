@@ -219,7 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Craft.PlantBox
   hasHoldInteraction: 0
   dirt: {fileID: 11400000, guid: 154e8ba0ea2911e40a9cf1f243c3d7ad, type: 2}
-  itemObject: {fileID: 11400000, guid: e7136ef7c69da514893fe82223588ac2, type: 2}
+  buildingData: {fileID: 11400000, guid: e7136ef7c69da514893fe82223588ac2, type: 2}
   buildObject: {fileID: 1632932203498815350}
   stationRecipe: {fileID: 11400000, guid: 097949af859170146835fb278bb34eb9, type: 2}
   destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}

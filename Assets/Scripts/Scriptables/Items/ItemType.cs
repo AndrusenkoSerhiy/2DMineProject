@@ -6,6 +6,7 @@ namespace Scriptables.Items {
     Weapon = 3,
     Shield = 8,
     BuildingBlock = 10,
+    Seeds = 30,
     
     Helmet = 20,
     Chest = 21,

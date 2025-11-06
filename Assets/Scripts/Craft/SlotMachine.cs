@@ -4,6 +4,8 @@ using Scriptables.Craft;
 using Scriptables.Items;
 using UnityEngine;
 using World;
+using DG.Tweening;
+using Audio;
 
 namespace Craft {
   public class SlotMachine : MonoBehaviour, IInteractable, IBaseCellHolder {
@@ -28,6 +30,7 @@ namespace Craft {
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] protected BuildingDataObject buildObject;
     [SerializeField] protected ItemObject itemObject;
+    [SerializeField] private Animator animatorController;
 
     [SerializeField] private SpriteRenderer Slot1Sprite;
     [SerializeField] private SpriteRenderer Slot2Sprite;
@@ -55,9 +58,19 @@ namespace Craft {
     [SerializeField] private SlotReward slot2Result;
     [SerializeField] private SlotReward slot3Result;
     [SerializeField] private bool lastResultWasWin;
+    private bool isBusy;
+    private AudioController audioController;
 
     void Play() {
       Debug.Log("Play");
+
+      isBusy = true;
+
+      animatorController.ResetTrigger("Win");
+      animatorController.SetTrigger("Activate");
+      
+      audioController.PlaySlotMachineActive();
+
       bool win = RollWin();
       lastResultWasWin = win;
 
@@ -69,9 +82,32 @@ namespace Craft {
         CalculateLose();
         currentWinChance = Mathf.Min(currentWinChance + chanceIncreasePerLose, maxWinChance);
       }
-      Slot1Sprite.sprite = slot1Result.itemData.UiDisplay;
-      Slot2Sprite.sprite = slot2Result.itemData.UiDisplay;
-      Slot3Sprite.sprite = slot3Result.itemData.UiDisplay;
+
+      Slot1Sprite.gameObject.SetActive(false);
+      Slot2Sprite.gameObject.SetActive(false);
+      Slot3Sprite.gameObject.SetActive(false);
+
+      DOVirtual.DelayedCall(1.0f, () => {
+        Slot1Sprite.gameObject.SetActive(true);
+        Slot1Sprite.sprite = slot1Result.itemData.UiDisplay;
+      });
+      DOVirtual.DelayedCall(2.0f, () => {
+        Slot2Sprite.gameObject.SetActive(true);
+        Slot2Sprite.sprite = slot2Result.itemData.UiDisplay;
+      });
+      DOVirtual.DelayedCall(3.0f, () => {
+        Slot3Sprite.gameObject.SetActive(true);
+        Slot3Sprite.sprite = slot3Result.itemData.UiDisplay;
+        if (win) {
+          animatorController.ResetTrigger("Activate");
+          animatorController.SetTrigger("Win");
+          audioController.PlaySlotMachineWin();
+          DOVirtual.DelayedCall(2.0f, () => { isBusy = false; });
+        }
+        else { 
+          isBusy = false; 
+        }
+      });
     }
 
     private bool RollWin() {
@@ -157,13 +193,15 @@ namespace Craft {
 
     protected void Awake() {
       gameManager = GameManager.Instance;
+      audioController = GameManager.Instance.AudioController;
+
       cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, stationRecipe, transform.position);
       ResetChance();
     }
 
     public bool Interact(PlayerInteractor playerInteractor) {
       //todo main interact
-      Play();
+      if (!isBusy) Play();
       return true;
     }
 

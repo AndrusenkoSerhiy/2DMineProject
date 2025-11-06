@@ -75,6 +75,8 @@ MonoBehaviour:
   robotStep: {fileID: 11400000, guid: e9b0311661a377a4788ddc2e14cda849, type: 2}
   workstationDestroyed: {fileID: 11400000, guid: c93514c3fe8d8ed4da6c73477ad799e5, type: 2}
   storageDestroyed: {fileID: 11400000, guid: 194a02850fb1465408f9547d09ca5094, type: 2}
+  slotMachineActive: {fileID: 11400000, guid: a94591ceb948a544db9bfe72e1e46552, type: 2}
+  slotMachineWin: {fileID: 11400000, guid: 5d5ef874ac32b044caa4a660d80a9d02, type: 2}
 --- !u!1 &1201469009489140599
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,6 +429,10 @@ MonoBehaviour:
   - data: {fileID: 11400000, guid: 194a02850fb1465408f9547d09ca5094, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
   - data: {fileID: 11400000, guid: 368ba8a213e6a0e44996da907fdcf1e8, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: a94591ceb948a544db9bfe72e1e46552, type: 2}
+    audioEmmiter: {fileID: 5032417999087075207}
+  - data: {fileID: 11400000, guid: 5d5ef874ac32b044caa4a660d80a9d02, type: 2}
     audioEmmiter: {fileID: 5032417999087075207}
 --- !u!1 &6473485979532965659
 GameObject:

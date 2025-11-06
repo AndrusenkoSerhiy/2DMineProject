@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Farm;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Utility;
 
 namespace SaveSystem {
   public static class LoadPriority {
+    public const int FARM = -10;
     public const int BUILDINGS = 0;
     public const int CHUNK = 10;
     public const int INVENTORIES = 20;
@@ -262,7 +264,7 @@ namespace SaveSystem {
         PlayerData = new PlayerData(),
         SiegeData = new SiegeData(),
         Zombies = new List<ZombiesData>(),
-        PlantBoxes = new List<PlantBoxData>(),
+        AllPlantBoxes = new SerializedDictionary<string, ProcessingPlantBox>(),
         LocatorPointsData = new List<LocatorPointData>(),
         Objectives = new SerializedDictionary<string, ObjectivesData>(),
       };

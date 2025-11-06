@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Farm;
 using Interaction;
 using SaveSystem;
 using Scriptables.Craft;
@@ -54,9 +56,8 @@ namespace Craft {
       gameManager = GameManager.Instance;
       cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, stationRecipe, transform.position);
     }
-
-    public void SetParamFromLoad(PlantBoxData data) {
-      transform.position = data.position;
+    
+    public void SetParamFromManager(ProcessingPlantBox data) {
       hasGround = data.HasGround;
       hasSeeds = data.HasSeeds;
       startGrowing = data.StartGrowing;
@@ -65,7 +66,24 @@ namespace Craft {
       currHarvest = data.CurrHarvest;
       timeToGrowth = data.TimeToGrowth;
       currTime = data.CurrTime;
+      
+      if (currTime > 0) {
+        var now = DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds;
+        var timePassed = now - data.LastUpdateTime;
+        currTime += (float)timePassed; 
+      }
+      else {
+        ResetGrownSprites();
+      }
       UpdateSprites();
+    }
+    
+    private void ResetGrownSprites() {
+      Debug.LogError("RESET GROUND ICON!!!!!!!!!");
+      foreach (var sprite in grownSprites) {
+        sprite.enabled = false;
+      }
+      groundIcon.enabled = false;
     }
 
     private void UpdateSprites() {
@@ -151,6 +169,10 @@ namespace Craft {
       }
     }
     private string GetInteractionText() {
+      if (hasRipened) {
+        return CollectStr;
+      }
+      
       if (!hasGround) {
         return AddGroundStr;
       }
@@ -161,10 +183,6 @@ namespace Craft {
 
       if (startGrowing) {
         return GrowingStr;
-      }
-
-      if (hasRipened) {
-        return CollectStr;
       }
       
       return string.Empty;

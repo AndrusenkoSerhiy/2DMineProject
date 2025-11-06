@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Farm;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -19,7 +20,7 @@ namespace SaveSystem {
     public PlayerData PlayerData;
     public SiegeData SiegeData;
     public List<ZombiesData> Zombies;
-    public List<PlantBoxData> PlantBoxes;
+    public SerializedDictionary<string, ProcessingPlantBox> AllPlantBoxes;
     public List<LocatorPointData> LocatorPointsData;
     public QuestData QuestData;
     public SerializedDictionary<string, ObjectivesData> Objectives;

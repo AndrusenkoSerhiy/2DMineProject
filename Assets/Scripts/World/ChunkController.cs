@@ -213,6 +213,7 @@ namespace World {
             var building = SpawnBuild(_proxyCoords, buildData);
             _activeBuildObjects[_proxyCoords] = building;
             AfterBuildingGet(building, _proxyCoords);
+            GameManager.Instance.FarmManager.UpdateParamAfterEnable($"{_proxyCoords.X}|{_proxyCoords.Y}", building);
           }
         }
       }
@@ -278,6 +279,7 @@ namespace World {
       foreach (var coord in _activeBuildObjects.Keys) {
         if (Mathf.Abs(playerCoordsBuild.X - coord.X) > visionOffsetX ||
             Mathf.Abs(playerCoordsBuild.Y - coord.Y) > visionOffsetY) {
+          GameManager.Instance.FarmManager.SetParamFromBuild($"{coord.X}|{coord.Y}", _activeBuildObjects[coord]);
           BuildPoolsController.ReturnObject(_activeBuildObjects[coord]);
           AfterBuildingReturned(_activeBuildObjects[coord]);
           clearList.Add(coord);

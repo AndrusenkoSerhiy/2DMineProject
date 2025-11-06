@@ -6,6 +6,7 @@ using Audio;
 using Craft;
 using Craft.Recipes;
 using DG.Tweening;
+using Farm;
 using Interaction;
 using Player;
 using Scriptables;
@@ -84,6 +85,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   [SerializeField] private ChunkSpecialPointsSpawner chunkSpecialPointsSpawner;
 
   [SerializeField] private ActorBaseController actorBaseController;
+  [SerializeField] private FarmManager farmManager;
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
@@ -148,6 +150,7 @@ public class GameManager : PersistentSingleton<GameManager> {
   public QuestManager QuestManager => questManager;
   public POIDataLibrary POIDataLibrary => _poiDataLibrary;
   public ActorBaseController ActorBaseController => actorBaseController;
+  public FarmManager FarmManager => farmManager;
   public ObjectivesSystem ObjectivesSystem => objectivesSystem;
   public ChunkSpecialPointsSpawner ChunkSpecialPointsSpawner => chunkSpecialPointsSpawner;
 

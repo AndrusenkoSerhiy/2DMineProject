@@ -348,7 +348,7 @@ public class PlaceCell : MonoBehaviour {
     }
     else if (build.TryGetComponent<PlantBox>(out var box)) {
       AfterPlaceCellWithBaseCells(box, coords, build.Building.SizeX);
-      buildingDataController.AddPlantBox(box);
+      buildingDataController.AddPlantBox(box, coords);
     }
   }
 

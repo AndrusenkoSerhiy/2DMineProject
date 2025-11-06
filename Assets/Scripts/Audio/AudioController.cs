@@ -31,6 +31,8 @@ namespace Audio {
     [SerializeField] private AudioData robotStep;
     [SerializeField] private AudioData workstationDestroyed;
     [SerializeField] private AudioData storageDestroyed;
+    [SerializeField] private AudioData slotMachineActive;
+    [SerializeField] private AudioData slotMachineWin;
 
     public async Task PreloadAsync(AudioData audioData) {
       await soundPooler.PreloadAudioAsync(audioData, GetRootTransform(audioData.type));
@@ -102,6 +104,8 @@ namespace Audio {
     public AudioEmmiter PlayPlayerJumpLanding() => PlayAudio(playerJumpLanding);
     public AudioEmmiter PlayWorkstationDestroyed() => PlayAudio(workstationDestroyed);
     public AudioEmmiter PlayStorageDestroyed() => PlayAudio(storageDestroyed);
+    public AudioEmmiter PlaySlotMachineActive() => PlayAudio(slotMachineActive);
+    public AudioEmmiter PlaySlotMachineWin() => PlayAudio(slotMachineWin);
 
     public void PlayPlayerLeftStep() {
       if (!GameManager.Instance.PlayerController.enabled ||

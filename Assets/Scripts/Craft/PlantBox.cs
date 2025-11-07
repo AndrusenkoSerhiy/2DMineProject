@@ -57,7 +57,7 @@ namespace Craft {
       cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, stationRecipe, transform.position);
     }
     
-    public void SetParamFromManager(ProcessingPlantBox data) {
+    public void SetParamFromManager(ProcessingPlantBox data, bool load = false) {
       hasGround = data.HasGround;
       hasSeeds = data.HasSeeds;
       startGrowing = data.StartGrowing;
@@ -68,9 +68,11 @@ namespace Craft {
       currTime = data.CurrTime;
       
       if (currTime > 0) {
-        var now = DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds;
-        var timePassed = now - data.LastUpdateTime;
-        currTime += (float)timePassed; 
+        if (!load) {
+          var now = DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds;
+          var timePassed = now - data.LastUpdateTime;
+          currTime += (float)timePassed; 
+        }
       }
       else {
         ResetGrownSprites();
@@ -79,7 +81,6 @@ namespace Craft {
     }
     
     private void ResetGrownSprites() {
-      Debug.LogError("RESET GROUND ICON!!!!!!!!!");
       foreach (var sprite in grownSprites) {
         sprite.enabled = false;
       }

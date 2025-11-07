@@ -278,14 +278,14 @@ public class PlaceCell : MonoBehaviour {
   }
 
   public bool RemoveBuilding(BuildingDataObject buildObject, ItemObject itemObject) {
-    // var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
+    var coords = CoordsTransformer.MouseToGridPosition(buildObject.transform.position);
     // var worldCoords = CoordsTransformer.WorldToGridBuildings(buildObject.transform.position);
     chunkController.RemoveBuild(buildObject);
     //SetCellsUndamegable(coords.X, coords.Y, buildObject.Building.SizeX, true);
     GameManager.Instance.Locator.RemoveTarget(itemObject.Id);
     audioController.PlayTakeBuilding();
 
-    AfterBuildingRemoved(buildObject);
+    AfterBuildingRemoved(buildObject, coords);
 
     return true;
   }
@@ -373,14 +373,13 @@ public class PlaceCell : MonoBehaviour {
     baseCellHolder.SetBaseCells(cells);
   }
 
-  public void AfterBuildingRemoved(BuildingDataObject build) {
+  //coords use for delete plantBox from manager
+  public void AfterBuildingRemoved(BuildingDataObject build, Coords coords) {
     if (build.TryGetComponent<IBaseCellHolder>(out var cellHolder)) {
       cellHolder.ClearBaseCells();
     }
-
-    if (build.TryGetComponent<PlantBox>(out var box)) {
-      buildingDataController.RemovePlantBox(box);
-    }
+    
+    buildingDataController.RemovePlantBox(coords);
   }
 
   private void PlayBuildingPlaceSound() {

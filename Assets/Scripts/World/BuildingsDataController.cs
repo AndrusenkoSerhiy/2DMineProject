@@ -38,8 +38,8 @@ namespace World {
       //Debug.LogError("Added plantbox");
     }
     
-    public void RemovePlantBox(PlantBox plantBox) {
-      //GameManager.Instance.FarmManager.RemovePlantBox(plantBox, coords);
+    public void RemovePlantBox(Coords coords) {
+      GameManager.Instance.FarmManager.RemovePlantBox(coords);
       Debug.LogError("Removed plantbox");
     }
 

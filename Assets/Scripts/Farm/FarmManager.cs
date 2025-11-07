@@ -21,7 +21,7 @@ namespace Farm {
       if (allPlantBoxes.ContainsKey(key))
         return;
       
-      Debug.LogError($"init {key}");
+      //Debug.LogError($"init {key}");
       allPlantBoxes.Add($"{key}", new ProcessingPlantBox() {
         Coord = $"{key}",
         HasGround = false,
@@ -36,15 +36,16 @@ namespace Farm {
       box.SetParamFromManager(allPlantBoxes[$"{key}"]);
     }
 
-    public void RemovePlantBox(PlantBox box, Coords coords) {
-      Debug.LogError($"RemovePlantBox{coords.X}{coords.Y}");
-      if (allPlantBoxes.ContainsKey($"{coords.X}{coords.Y}")) {
-        allPlantBoxes.Remove($"{coords.X}{coords.Y}");
+    public void RemovePlantBox(Coords coords) {
+      var gridCoords = CoordsTransformer.GridToBuildingsGrid(coords);
+      //Debug.LogError($"RemovePlantBox{gridCoords.X}|{gridCoords.Y}");
+      if (allPlantBoxes.ContainsKey($"{gridCoords.X}|{gridCoords.Y}")) {
+        allPlantBoxes.Remove($"{gridCoords.X}|{gridCoords.Y}");
       }
     }
     //when obj disable because we are to far
     public void SetParamFromBuild(string key, BuildingDataObject build) {
-      Debug.LogError($"SetParamFromBuild: {key}");
+      //Debug.LogError($"SetParamFromBuild: {key}");
       if (build.TryGetComponent<PlantBox>(out var box)) {
         allPlantBoxes[key].Coord = key;//string coord
         allPlantBoxes[key].HasGround = box.HasGround;
@@ -60,11 +61,11 @@ namespace Farm {
     }
 
     //when we close enough to the obj
-    public void UpdateParamAfterEnable(string key, BuildingDataObject build) {
+    public void UpdateParamAfterEnable(string key, BuildingDataObject build, bool load = false) {
       //Debug.LogError($"UpdateParamAfterEnable: {key}");
       if (build.TryGetComponent<PlantBox>(out var box)) {
-        Debug.LogError($"SetParamFromManager!!!!!!!!!!: {key}");
-        box.SetParamFromManager(allPlantBoxes[key]);
+        //Debug.LogError($"SetParamFromManager!!!!!!!!!!: {key}");
+        box.SetParamFromManager(allPlantBoxes[key], load);
       }
     }
     
@@ -75,7 +76,7 @@ namespace Farm {
       var buildData = GameManager.Instance.ChunkController.GetBuildingData(first, second);
       if (buildData) {
         //Debug.LogError($"UpdateParamAfterLoad!!!!!!!!!!: {key}");
-        GameManager.Instance.FarmManager.UpdateParamAfterEnable($"{first}|{second}", buildData);
+        GameManager.Instance.FarmManager.UpdateParamAfterEnable($"{first}|{second}", buildData, true);
       }
     }
     
@@ -107,7 +108,7 @@ namespace Farm {
       if (SaveLoadSystem.Instance.IsNewGame()) {
         return;
       }
-      Debug.LogError("load boxes");
+      //Debug.LogError("load boxes");
       allPlantBoxes.Clear();
       foreach (var boxData in SaveLoadSystem.Instance.gameData.AllPlantBoxes) {
         allPlantBoxes.Add(boxData.Key, boxData.Value);

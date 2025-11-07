@@ -40,7 +40,9 @@ namespace World {
 
     private bool useSavedPlayerCoordsOnce = false;
     private Coords savedPlayerCoords;
-
+    //we use spawnNearbyCells for show plantFarm, and after load we need to 
+    //transfer this bool to update method for plantBox
+    private bool loadFarm;
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
       Seed = GenerateSeed();
@@ -85,6 +87,7 @@ namespace World {
 
         savedPlayerCoords = CoordsTransformer.WorldToGrid(SaveLoadSystem.Instance.gameData.PlayerData.Position);
         useSavedPlayerCoordsOnce = true;
+        loadFarm = true;
       }
 
       Init();
@@ -213,10 +216,11 @@ namespace World {
             var building = SpawnBuild(_proxyCoords, buildData);
             _activeBuildObjects[_proxyCoords] = building;
             AfterBuildingGet(building, _proxyCoords);
-            GameManager.Instance.FarmManager.UpdateParamAfterEnable($"{_proxyCoords.X}|{_proxyCoords.Y}", building);
+            GameManager.Instance.FarmManager.UpdateParamAfterEnable($"{_proxyCoords.X}|{_proxyCoords.Y}", building, loadFarm);
           }
         }
       }
+      loadFarm = false;
 
       //for zombies
       var enemies = GameManager.Instance.ActorBaseController.Enemies;
@@ -281,7 +285,7 @@ namespace World {
             Mathf.Abs(playerCoordsBuild.Y - coord.Y) > visionOffsetY) {
           GameManager.Instance.FarmManager.SetParamFromBuild($"{coord.X}|{coord.Y}", _activeBuildObjects[coord]);
           BuildPoolsController.ReturnObject(_activeBuildObjects[coord]);
-          AfterBuildingReturned(_activeBuildObjects[coord]);
+          AfterBuildingReturned(_activeBuildObjects[coord], coord);
           clearList.Add(coord);
         }
       }
@@ -314,8 +318,8 @@ namespace World {
       GameManager.Instance.PlaceCell.AfterPlaceCellActions(activeBuildObject, pos);
     }
 
-    private void AfterBuildingReturned(BuildingDataObject activeBuildObject) {
-      GameManager.Instance.PlaceCell.AfterBuildingRemoved(activeBuildObject);
+    private void AfterBuildingReturned(BuildingDataObject activeBuildObject, Coords coord) {
+      GameManager.Instance.PlaceCell.AfterBuildingRemoved(activeBuildObject, coord);
     }
 
     private void RemoveCellFromActives(Coords coords) {

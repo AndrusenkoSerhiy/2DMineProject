@@ -12,6 +12,7 @@ public class StaminaBase : MonoBehaviour {
   [SerializeField] protected bool isSprinting;
 
   protected UserInput userInput;
+  protected PlayerControllerBase playerController;
   public bool IsSprinting => isSprinting;
 
   public virtual void Start() {
@@ -19,6 +20,11 @@ public class StaminaBase : MonoBehaviour {
     userInput = GameManager.Instance.UserInput;
     userInput.controls.GamePlay.Sprint.performed += SprintPerformed;
     userInput.controls.GamePlay.Sprint.canceled += SprintCanceled;
+  }
+  
+  private bool IsMoving() {
+    var isMove = !userInput.GetMovement().Equals(Vector2.zero);
+    return isMove;
   }
 
   public void EnableSprintScript(bool state) {
@@ -46,7 +52,7 @@ public class StaminaBase : MonoBehaviour {
   }
 
   private void UpdateStaminaValue() {
-    if (isSprinting && stats.Stamina > 0) {
+    if (isSprinting && stats.Stamina > 0 && IsMoving()) {
       stats.UseStamina(Time.deltaTime);
     }
 

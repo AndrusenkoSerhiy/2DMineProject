@@ -70,9 +70,18 @@ namespace Player {
         ? _stats.MaxSpeed : _stats.MaxBackSpeed;
     }*/
     protected override float GetMaxSpeed() {
-      var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
+      //old version when you can sprint only forward
+      /*var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
       return isMovingForward ? (stamina.IsSprinting) ? PlayerStats.SprintSpeed : PlayerStats.MaxSpeed
-        : PlayerStats.MaxBackSpeed;
+        : PlayerStats.MaxBackSpeed;*/
+      
+      var isMovingForward = Mathf.Approximately(Mathf.Sign(_frameVelocity.x), Mathf.Sign(transform.localScale.x));
+      if (isMovingForward) {
+        return stamina.IsSprinting ? PlayerStats.SprintSpeed : PlayerStats.MaxSpeed;
+      }
+      else {
+        return stamina.IsSprinting ? PlayerStats.SprintBackSpeed : PlayerStats.MaxBackSpeed;
+      }
     }
 
     public override void EnableController(bool state) {

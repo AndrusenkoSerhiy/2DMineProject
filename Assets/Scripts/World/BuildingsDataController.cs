@@ -40,7 +40,7 @@ namespace World {
     
     public void RemovePlantBox(Coords coords) {
       GameManager.Instance.FarmManager.RemovePlantBox(coords);
-      Debug.LogError("Removed plantbox");
+      //Debug.LogError("Removed plantbox");
     }
 
     #region Save/Load

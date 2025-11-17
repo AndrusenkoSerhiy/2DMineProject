@@ -35,6 +35,7 @@ namespace Craft {
     [SerializeField] private SpriteRenderer Slot1Sprite;
     [SerializeField] private SpriteRenderer Slot2Sprite;
     [SerializeField] private SpriteRenderer Slot3Sprite;
+    [SerializeField] private bool canDestroyCellsBelow = true;
 
     private CellHolderHandler cellHandler;
 
@@ -215,8 +216,11 @@ namespace Craft {
       cellHandler.ClearBaseCells();
     }
 
+    public bool CanDestroyCellsBelow { get; set; }
+
     public void SetBaseCells(List<CellData> cells) {
-      cellHandler.SetBaseCells(cells, transform.position);
+      CanDestroyCellsBelow = canDestroyCellsBelow;
+      cellHandler.SetBaseCells(cells, transform.position, CanDestroyCellsBelow);
     }
 
     private void OnAllBaseCellsDestroyed() {

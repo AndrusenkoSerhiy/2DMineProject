@@ -11,6 +11,7 @@ namespace World {
     private readonly Action onAllDestroyed;
     private readonly Recipe recipe;
     private Vector3 spawnPosition;
+    private bool canDestroyCellsBelow;
 
     public CellHolderHandler(Action onAllDestroyed, Recipe recipe, Vector3 spawnPosition) {
       this.onAllDestroyed = onAllDestroyed;
@@ -18,23 +19,43 @@ namespace World {
       this.spawnPosition = spawnPosition;
     }
 
-    public void SetBaseCells(List<CellData> cells, Vector3 position) {
+    public void SetBaseCells(List<CellData> cells, Vector3 position, bool canDestroyCellsBelow) {
       spawnPosition = position;
-
+      this.canDestroyCellsBelow = canDestroyCellsBelow;
       ClearBaseCells();
 
       baseCells = cells;
-
-      foreach (var cell in cells) {
-        Action handler = () => OnBaseCellDestroyedHandler(cell);
-        cellDestroyedHandlers[cell] = handler;
-        cell.OnDestroyed += handler;
+      //subscribe to destroy cells
+      if (canDestroyCellsBelow) {
+        foreach (var cell in cells) {
+          Action handler = () => OnBaseCellDestroyedHandler(cell);
+          cellDestroyedHandlers[cell] = handler;
+          cell.OnDestroyed += handler;
+        }
+      }
+      else {
+        //just lock cells from the damage (for example stoneCutter)
+        foreach (var cellData in cells) {
+          var cell = GameManager.Instance.ChunkController.GetCell(cellData.x, cellData.y);
+          if (cell != null) {
+            GameManager.Instance.ChunkController.GetCell(cellData.x, cellData.y).CanGetDamage = false;
+          }
+        }
       }
     }
 
     public void ClearBaseCells() {
       foreach (var kvp in cellDestroyedHandlers) {
         kvp.Key.OnDestroyed -= kvp.Value;
+      }
+
+      if (!canDestroyCellsBelow) {
+        foreach (var cellData in baseCells) {
+          var cell = GameManager.Instance.ChunkController.GetCell(cellData.x, cellData.y);
+          if (cell != null) {
+            GameManager.Instance.ChunkController.GetCell(cellData.x, cellData.y).CanGetDamage = true;
+          }
+        } 
       }
 
       cellDestroyedHandlers.Clear();

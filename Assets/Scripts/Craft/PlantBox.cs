@@ -38,6 +38,7 @@ namespace Craft {
     [SerializeField] private string AddSeedStr;
     [SerializeField] private string GrowingStr;
     [SerializeField] private string CollectStr;
+    [SerializeField] private bool canDestroyCellsBelow = true;
     
     public bool HasGround => hasGround;
     public bool HasSeeds => hasSeeds;
@@ -246,8 +247,11 @@ namespace Craft {
       hasRipened = false;
     }
 
+    public bool CanDestroyCellsBelow { get; set; }
+
     public void SetBaseCells(List<CellData> cells) {
-      cellHandler.SetBaseCells(cells, transform.position);
+      CanDestroyCellsBelow = canDestroyCellsBelow;
+      cellHandler.SetBaseCells(cells, transform.position, CanDestroyCellsBelow);
     }
 
     public void ClearBaseCells() {

@@ -19,6 +19,7 @@ namespace Inventory {
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] protected bool PlayerOwner = true;
+    [SerializeField] private bool canDestroyCellsBelow = true;
 
     public string InteractionText => interactText;
     public bool HasHoldInteraction => hasHoldInteraction;
@@ -101,9 +102,12 @@ namespace Inventory {
       return entityId;
     }
 
+    public bool CanDestroyCellsBelow { get; set; }
+
     public void SetBaseCells(List<CellData> cells) {
       // if (Indestructible) return;
-      cellHandler.SetBaseCells(cells, transform.position);
+      CanDestroyCellsBelow = canDestroyCellsBelow;
+      cellHandler.SetBaseCells(cells, transform.position, CanDestroyCellsBelow);
     }
 
     public void ClearBaseCells() {

@@ -18,6 +18,7 @@ namespace Craft {
     [SerializeField] private AudioData damageAudioData;
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
     [SerializeField] private Recipe trapRecipe;
+    [SerializeField] private bool canDestroyCellsBelow = true;
 
     public string InteractionText { get; }
     public bool HasHoldInteraction => hasHoldInteraction;
@@ -87,8 +88,11 @@ namespace Craft {
       return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);
     }
 
+    public bool CanDestroyCellsBelow { get; set; }
+
     public void SetBaseCells(List<CellData> cells) {
-      cellHandler.SetBaseCells(cells, transform.position);
+      CanDestroyCellsBelow = canDestroyCellsBelow;
+      cellHandler.SetBaseCells(cells, transform.position, CanDestroyCellsBelow);
     }
 
     public void ClearBaseCells() {

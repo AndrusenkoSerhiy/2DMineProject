@@ -12,7 +12,6 @@ public class StaminaBase : MonoBehaviour {
   [SerializeField] protected bool isSprinting;
 
   protected UserInput userInput;
-  protected PlayerControllerBase playerController;
   public bool IsSprinting => isSprinting;
 
   public virtual void Start() {

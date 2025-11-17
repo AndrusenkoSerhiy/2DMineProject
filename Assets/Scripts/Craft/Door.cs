@@ -25,6 +25,7 @@ namespace Craft {
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
     [SerializeField] private Recipe stationRecipe;
+    [SerializeField] private bool canDestroyCellsBelow = true;
     public string InteractionText => IsOpened ? interactCloseText : interactOpenText;
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => holdInteractText;
@@ -110,8 +111,11 @@ namespace Craft {
     public void DestroyObject() {
     }
 
+    public bool CanDestroyCellsBelow { get; set; }
+
     public void SetBaseCells(List<CellData> cells) {
-      cellHandler.SetBaseCells(cells, transform.position);
+      CanDestroyCellsBelow = canDestroyCellsBelow;
+      cellHandler.SetBaseCells(cells, transform.position, CanDestroyCellsBelow);
     }
     
     private void OnAllBaseCellsDestroyed() {

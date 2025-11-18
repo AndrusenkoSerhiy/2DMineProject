@@ -434,7 +434,7 @@ namespace Tools {
         return;
       }
 
-      repairValue = playerInventory.Repair(stats.MaxHealth, stats.Health, robotObject.RepairCost);
+      repairValue = playerInventory.Repair(stats.MaxHealth,/* stats.Health,*/ robotObject.RepairCost);
 
       if (repairValue == 0) {
         return;

@@ -269,19 +269,17 @@ namespace Inventory {
 
       return true;
     }
-
-    public int Repair(float max, float currentValue, int repairCost) {
+    
+    public int Repair(float max, int repairCost) {
       if (!InventoriesPool.HasRepairKits()) {
         gameManager.MessagesManager.ShowSimpleMessage("You don't have repair kits.");
         return 0;
       }
 
       var valuePerKit = max / repairCost;
-      var kitsNeeded = Mathf.CeilToInt((max - currentValue) / valuePerKit);
 
-      var remainingKits = InventoriesPool.UseRepairKits(kitsNeeded);
-      var kitsUsed = kitsNeeded - remainingKits;
-      var repairValue = Mathf.CeilToInt(kitsUsed * valuePerKit);
+      InventoriesPool.UseRepairKits(1);
+      var repairValue = Mathf.CeilToInt(valuePerKit);
 
       return repairValue;
     }

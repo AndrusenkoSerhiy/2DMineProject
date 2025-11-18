@@ -255,8 +255,8 @@ namespace Inventory {
 
     private void RepairEquippedItem() {
       var repairValue =
-        GetPlayerInventory().Repair(equippedItem.MaxDurability, equippedItem.Durability, equippedItem.RepairCost);
-
+        GetPlayerInventory().Repair(equippedItem.MaxDurability, equippedItem.RepairCost);
+      
       if (repairValue == 0) {
         return;
       }

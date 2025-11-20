@@ -100,10 +100,17 @@ MonoBehaviour:
       reward:
         item: {fileID: 0}
         amount: 0
-    - id: 45b4dc0c-655c-45b1-ad0f-867dec5870b6
+    - id: d5baf3fe-c07c-4c21-a76b-b199814551d5
+      title: Collect iron
+      taskData:
+        rid: 3702748811688149072
+      reward:
+        item: {fileID: 0}
+        amount: 0
+    - id: 892e9d87-0dd0-4616-9f49-2d1492a891f2
       title: Place Forge
       taskData:
-        rid: 6898645522660982789
+        rid: 3702748811688149074
       reward:
         item: {fileID: 0}
         amount: 0
@@ -143,6 +150,16 @@ MonoBehaviour:
       data:
         itemObject: {fileID: 11400000, guid: ed9ccb5b17204e642be25817d0a55a99, type: 2}
         amount: 1
+    - rid: 3702748811688149072
+      type: {class: PickupItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        itemObject: {fileID: 11400000, guid: a0fceb7a32ff8ef41b0e52e28a78ade1, type: 2}
+        amount: 5
+    - rid: 3702748811688149074
+      type: {class: BuildTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
+      data:
+        buildingBlock: {fileID: 11400000, guid: f1bef750166edcf41b0864c062106763, type: 2}
+        amount: 1
     - rid: 6898645522660982784
       type: {class: PickupItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
       data:
@@ -167,11 +184,6 @@ MonoBehaviour:
       type: {class: BuildTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
       data:
         buildingBlock: {fileID: 11400000, guid: 04f03a73700b35a4da4840f9a2f14a71, type: 2}
-        amount: 1
-    - rid: 6898645522660982789
-      type: {class: BuildTaskData, ns: Objectives.Data, asm: Assembly-CSharp}
-      data:
-        buildingBlock: {fileID: 11400000, guid: f1bef750166edcf41b0864c062106763, type: 2}
         amount: 1
     - rid: 6898645522660982790
       type: {class: CraftItemTaskData, ns: Objectives.Data, asm: Assembly-CSharp}

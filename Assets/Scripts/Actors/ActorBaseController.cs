@@ -198,11 +198,11 @@ namespace Actors {
       //return UnityEngine.Random.Range(0, 2) == 0 ? GetLeftPos(false) : GetLeftPos();
     }
 
-    private void Update() {
+    /*private void Update() {
       if (Input.GetKeyDown(KeyCode.O)) {
         SpawnSiegeZombieTest();
       }
-    }
+    }*/
 
     #region TestSpawnShowHideZombies
     private void SpawnSiegeZombieTest() {

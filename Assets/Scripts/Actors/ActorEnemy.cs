@@ -84,6 +84,10 @@ namespace Actors {
       InitHealth();
     }
 
+    public BehaviourTree GetBehaviourTree() {
+      return behaviourTreeOwner.behaviour;
+    }
+
     private void InitHealth() {
       stats.AddHealth(stats.MaxHealth);
     }

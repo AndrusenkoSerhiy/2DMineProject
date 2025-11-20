@@ -1,24 +1,39 @@
+using System;
 using System.Collections.Generic;
 using NodeCanvas.BehaviourTrees;
 using SaveSystem;
 using Scriptables.Siege;
 using Siege;
 using Stats;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Utils;
 using World;
+using Random = UnityEngine.Random;
 
 namespace Actors {
+  [Serializable]
+  //info about zombies outside the screen
+  public class ZombieData {
+    public Vector3 position;
+    public string behaviourName;
+    public ZombieDifficultyProfile difficulty;
+    public PlayerStatsData playerStatsData;
+  }
   public class ActorBaseController : MonoBehaviour, ISaveLoad {
     [SerializeField] private BehaviourTree patrolBehaviour;
     [SerializeField] private BehaviourTree siegeBehaviour;
     [SerializeField] private List<ActorEnemy> enemies = new();
+    //use for zombie outside the screen like cells
+    [SerializeField] private SerializedDictionary<Vector3, ZombieData> zombiesData = new();
     private SiegeManager siegeManager;
     private int areaWidth;
     private int areaHeight;
     private GameManager gameManager;
 
     public List<ActorEnemy> Enemies => enemies;
+    public SerializedDictionary<Vector3, ZombieData> ZombiesData => zombiesData;
 
     private void Start() {
       SaveLoadSystem.Instance.Register(this);
@@ -29,6 +44,12 @@ namespace Actors {
       areaHeight = gameManager.GameConfig.PlayerAreaHeight;
       gameManager.OnGamePaused += PauseZombies;
       gameManager.OnGameResumed += UnpauseZombies;
+    }
+
+    private BehaviourTree GetBehaviourByName(string name) {
+      if(name.Equals("ZombiePatrol")) return patrolBehaviour;
+      if(name.Equals("ZombieSiege")) return siegeBehaviour;
+      return null;
     }
 
     private void PauseZombies() {
@@ -47,12 +68,31 @@ namespace Actors {
 
     //when zombie is out of visible range
     public void RemoveZombie(ActorEnemy actor) {
+      //Debug.LogError("RemoveZombie from scene");
       actor.gameObject.SetActive(false);
+      
+      var pos = actor.transform.position;
+      zombiesData.Add(pos, new ZombieData() {
+        position = pos,
+        behaviourName = actor.GetBehaviourTree().name,
+        difficulty = actor.Difficulty,
+        playerStatsData = actor.GetStats().PrepareSaveData()
+      });
+      enemies.Remove(actor);
     }
 
     //when zombie is in of visible range
-    public void ReturnZombieToScene(ActorEnemy actor) {
-      actor.gameObject.SetActive(true);
+    public void ReturnZombieToScene(Vector3 pos) {
+      var zombieData = zombiesData[pos];
+      //Debug.LogError("ReturnZombieToScene!!!!!!!!!!!!!!");
+      var zombie = (ActorEnemy)GameManager.Instance.ActorsPooler.SpawnFromPool("Zombie_1", pos, Quaternion.identity);
+      zombie.SetBehaviour(GetBehaviourByName(zombieData.behaviourName));
+      zombie.SetDifficulty(zombieData.difficulty);
+      zombie.GetStats().UpdateBaseValue(StatType.Health, zombieData.playerStatsData.Health);
+
+      enemies.Add(zombie);
+      
+      zombiesData.Remove(pos);
     }
 
     #region Save/Load
@@ -72,6 +112,9 @@ namespace Actors {
         };
         data.Add(enemyData);
       }
+      
+      var outside = SaveLoadSystem.Instance.gameData.OutsideZombies;
+      outside.AddRange(zombiesData);
     }
 
     public void Load() {
@@ -80,6 +123,7 @@ namespace Actors {
       }
 
       var data = SaveLoadSystem.Instance.gameData.Zombies;
+      
       foreach (var zombieData in data) {
         var profile = siegeManager.ZombieDifficultyDatabase.ItemsMap[zombieData.ProfileId];
         if (profile == null) {
@@ -95,12 +139,17 @@ namespace Actors {
         zombie.GetStats().UpdateBaseValue(StatType.Health, zombieData.PlayerStatsData.Health);
         enemies.Add(zombie);
       }
+      
+      var outside = SaveLoadSystem.Instance.gameData.OutsideZombies;
+      zombiesData.AddRange(outside);
 
       data.Clear();
+      outside.Clear();
     }
 
     public void Clear() {
       enemies.Clear();
+      zombiesData.Clear();
     }
 
     #endregion
@@ -134,7 +183,9 @@ namespace Actors {
         //var zombie = (ActorEnemy)Instantiate(actor, pos, Quaternion.identity);
         zombie.SetBehaviour(behaviourTree);
         zombie.SetDifficulty(profile);
-        enemies.Add(zombie);
+        if (!enemies.Contains(zombie)) {
+          enemies.Add(zombie);
+        }
       }
     }
 
@@ -147,13 +198,24 @@ namespace Actors {
       //return UnityEngine.Random.Range(0, 2) == 0 ? GetLeftPos(false) : GetLeftPos();
     }
 
-    /*private void Update() {
+    private void Update() {
       if (Input.GetKeyDown(KeyCode.O)) {
-        //TryGetFreeCell();
-        //GetUpPos();
-        Spawn(GetDifficultyList()[0].profile,1);
+        SpawnSiegeZombieTest();
       }
-    }*/
+    }
+
+    #region TestSpawnShowHideZombies
+    private void SpawnSiegeZombieTest() {
+      //Debug.LogError($"spawn zombie");
+      var difficultyList = GetDifficultyList();
+
+      for (int i = 0; i < difficultyList.Count; i++) {
+        var count = 1;
+        Spawn(difficultyList[i].profile, count, siegeBehaviour, Vector3.zero);
+      }
+    }
+
+    #endregion
 
     //try to get pos from left or right side from player (out of visible zone)
     private Vector3 GetLeftPos(bool left = true) {

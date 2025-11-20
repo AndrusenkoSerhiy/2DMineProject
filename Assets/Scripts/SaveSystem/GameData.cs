@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Actors;
 using Farm;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 namespace SaveSystem {
   [Serializable]
@@ -20,6 +22,7 @@ namespace SaveSystem {
     public PlayerData PlayerData;
     public SiegeData SiegeData;
     public List<ZombiesData> Zombies;
+    public SerializedDictionary<Vector3, ZombieData> OutsideZombies = new();
     public SerializedDictionary<string, ProcessingPlantBox> AllPlantBoxes;
     public List<LocatorPointData> LocatorPointsData;
     public QuestData QuestData;

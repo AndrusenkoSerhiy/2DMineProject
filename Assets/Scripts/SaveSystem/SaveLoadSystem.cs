@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Actors;
 using Farm;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -264,6 +265,7 @@ namespace SaveSystem {
         PlayerData = new PlayerData(),
         SiegeData = new SiegeData(),
         Zombies = new List<ZombiesData>(),
+        OutsideZombies = new SerializedDictionary<Vector3, ZombieData>(),
         AllPlantBoxes = new SerializedDictionary<string, ProcessingPlantBox>(),
         LocatorPointsData = new List<LocatorPointData>(),
         Objectives = new SerializedDictionary<string, ObjectivesData>(),

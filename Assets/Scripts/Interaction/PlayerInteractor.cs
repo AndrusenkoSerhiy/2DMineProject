@@ -123,6 +123,9 @@ namespace Interaction {
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext context) {
+      if (gameManager.QuestManager.BlockInteraction)
+        return;
+        
       if (context.interaction is HoldInteraction holdInteraction) {
         HoldInteract(holdInteraction);
       }

@@ -19,8 +19,11 @@ namespace Quests {
     private bool secondQuestCompleted;
     private bool thirdQuestCompleted;
     private AudioController audioController;
+    //while cat is active block interaction
+    [SerializeField] private bool blockInteraction;
 
     public int Priority => LoadPriority.QUESTS;
+    public bool BlockInteraction => blockInteraction;
 
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
@@ -30,6 +33,7 @@ namespace Quests {
     }
     public void StartQuest(int index) {
       if (!CanStartQuest(index)) return;
+      blockInteraction = true;
       GameManager.Instance.UserInput.EnableUIControls(false);
       GameManager.Instance.UserInput.controls.GamePlay.Interact.performed += StopQuest;
       var pos = GameManager.Instance.PlayerController.transform.position;
@@ -80,6 +84,8 @@ namespace Quests {
 
       dialoguePanel.HideDialogue();
       audioController.StopAudio(loopedSound);
+      
+      blockInteraction = false;
     }
 
     private void OnDestroy() {

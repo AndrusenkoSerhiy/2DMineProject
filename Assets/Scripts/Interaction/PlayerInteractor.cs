@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Inventory;
 using TMPro;
 using UnityEngine;
@@ -68,7 +69,9 @@ namespace Interaction {
     }
 
     private void UpdateInteractionPrompt() {
-      colliders = Physics2D.OverlapCircleAll(interactionPoint.position, radius, interactableMask);
+      colliders = Physics2D.OverlapCircleAll(interactionPoint.position, radius, interactableMask).
+        OrderBy(c => Vector2.Distance(interactionPoint.position, c.transform.position))
+        .ToArray();
       numFound = colliders.Length;
 
       if (numFound <= 0) {
@@ -94,8 +97,11 @@ namespace Interaction {
         return;
       }
 
-      // interactionPromtUI.ShowPrompt(true, ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName));
-      if (!String.IsNullOrEmpty(interactable.InteractionText))
+      //hide prompts because next item will don't have prompt and show prev
+      objectInteractionPrompts.HideInteractionPrompt();
+      objectInteractionPrompts.HideHoldInteractionPrompt();
+      
+      if (!string.IsNullOrEmpty(interactable.InteractionText))
         objectInteractionPrompts.ShowInteractionPrompt(interactable,
           ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName, true));
 

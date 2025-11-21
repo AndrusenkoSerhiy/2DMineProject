@@ -71,9 +71,11 @@ namespace World {
     }
 
     public void InitSprite() {
-      /*if (resourceData.IsBuilding)
-        return;*/
-
+      //if cell data null the all method is broke
+      //and after save the visible area don't change when we move
+      if(_cellData == null) 
+        return;
+      
       var neighbourIndex = _cellData.NeighboursIndex;
       var targetSprite = resourceData.Sprite(neighbourIndex);
       sprite.sprite = atlasRef.GetSprite(targetSprite.name);

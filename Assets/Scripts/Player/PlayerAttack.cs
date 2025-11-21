@@ -57,12 +57,18 @@ namespace Player {
       if (isRangedAttack && !playerEquipment.EquippedItem.CanShoot()) {
         return;
       }
-
+      
       base.TriggerAttack();
-      if (!firstAttack) {
-        firstAttack = true;
-        animator.SetTrigger("Attack");
-        animator.SetInteger("WeaponID", attackID);
+      //if we use last item, then we block attack first time
+      if (!GameManager.Instance.IsConsumeItem) {
+        if (!firstAttack) {
+          firstAttack = true;
+          animator.SetTrigger("Attack");
+          animator.SetInteger("WeaponID", attackID);
+        }
+      }
+      else {
+        GameManager.Instance.IsConsumeItem = false;
       }
     }
     

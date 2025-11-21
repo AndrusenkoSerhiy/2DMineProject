@@ -31,6 +31,7 @@ using Siege;
 using Stats;
 using Tools;
 using UI;
+using Unity.VisualScripting;
 using UnityEngine.Serialization;
 using Utility;
 
@@ -86,6 +87,10 @@ public class GameManager : PersistentSingleton<GameManager> {
 
   [SerializeField] private ActorBaseController actorBaseController;
   [SerializeField] private FarmManager farmManager;
+  //when we use item like food or bandage we block attack
+  //but now these items consume immediately and if you have one selected in
+  //quickslot during the use player also attack
+  [SerializeField] private bool isConsumeItem;
   //TODO 
   //robot don't need this param in own script
   [SerializeField] private LadderMovement playerLadderMovement;
@@ -162,6 +167,11 @@ public class GameManager : PersistentSingleton<GameManager> {
   public MiningRobotController MiningRobotController {
     set => miningRobotController = value;
     get => miningRobotController;
+  }
+
+  public bool IsConsumeItem {
+    set => isConsumeItem = value;
+    get => isConsumeItem;
   }
 
   public PlayerControllerBase CurrPlayerController {

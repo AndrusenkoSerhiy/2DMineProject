@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 6c6d6ae2-8cea-4600-832e-2ae2209fa5d8
   RecipeName: PlantBox
-  RecipeTypes: 00000000
+  RecipeTypes: 02000000
   RequiredMaterials:
   - Material: {fileID: 11400000, guid: d457bc2cb149afd43b6db07a28870946, type: 2}
     Amount: 1
@@ -22,7 +22,7 @@ MonoBehaviour:
     Material: {fileID: 0}
     Amount: 0
   Result: {fileID: 11400000, guid: e7136ef7c69da514893fe82223588ac2, type: 2}
-  CraftingTime: 5
+  CraftingTime: 40
   detailImg: {fileID: 0}
   Description: 'Plant box
 

@@ -69,7 +69,7 @@ namespace Craft {
 
       animatorController.ResetTrigger("Win");
       animatorController.SetTrigger("Activate");
-      
+
       audioController.PlaySlotMachineActive();
 
       bool win = RollWin();
@@ -103,10 +103,13 @@ namespace Craft {
           animatorController.ResetTrigger("Activate");
           animatorController.SetTrigger("Win");
           audioController.PlaySlotMachineWin();
-          DOVirtual.DelayedCall(2.0f, () => { isBusy = false; });
+          DOVirtual.DelayedCall(2.0f, () => {
+            isBusy = false;
+            GiveReward(slot1Result);
+          });
         }
-        else { 
-          isBusy = false; 
+        else {
+          isBusy = false;
         }
       });
     }
@@ -123,9 +126,7 @@ namespace Craft {
       slot1Result = reward;
       slot2Result = reward;
       slot3Result = reward;
-
       // Here you can trigger VFX, add reward to inventory, etc.
-      GiveReward(reward);
     }
 
     private void CalculateLose() {
@@ -170,6 +171,8 @@ namespace Craft {
     private void GiveReward(SlotReward reward) {
       // Example: add to inventory, play effects, etc.
       Debug.Log($"🎁 Player receives: {reward.itemData.name} x{reward.Amount()}");
+      GameManager.Instance.PlayerInventory.AddItemToInventory(reward.itemData, reward.Amount(),
+        Slot2Sprite.transform.position);
     }
 
     public SlotReward GetSlotResult(int slotIndex) {

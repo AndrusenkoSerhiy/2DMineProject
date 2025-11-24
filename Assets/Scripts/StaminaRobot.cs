@@ -17,6 +17,6 @@ public class StaminaRobot : StaminaBase {
       return;
     }
 
-    isSprinting = value;
+    base.SetSprinting(value);
   }
 }

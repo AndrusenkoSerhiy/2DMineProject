@@ -41,6 +41,7 @@ public class StaminaBase : MonoBehaviour {
 
   protected virtual void SetSprinting(bool value) {
     isSprinting = value;
+    stats.StaminaInUse = value;
   }
 
   private void StopSprinting() {

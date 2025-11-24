@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerStats : StatsBase {
   private bool staminaInUse;
-
+  public bool StaminaInUse{set{staminaInUse = value;}}
   public PlayerStatsObject StatsObject => (PlayerStatsObject)statsObject;
 
   public float Stamina => Mathf.Min(baseValues[StatType.Stamina], MaxStamina);
@@ -64,20 +64,16 @@ public class PlayerStats : StatsBase {
   }
 
   public void UseStamina(float time) {
-    staminaInUse = true;
     baseValues[StatType.Stamina] = Mathf.Max(0, Stamina - StaminaDrain * time);
-    staminaInUse = false;
   }
 
   private void RecoverStamina(float time) {
     if (GameManager.Instance.Paused) {
       return;
     }
-    
     if (staminaInUse || Stamina >= MaxStamina) {
       return;
     }
-
     var recovery = StaminaRecovery * time;
     baseValues[StatType.Stamina] = Mathf.Clamp(Stamina + recovery, 0, MaxStamina);
   }

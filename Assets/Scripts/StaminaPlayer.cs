@@ -17,6 +17,6 @@ public class StaminaPlayer : StaminaBase {
       return;
     }
 
-    isSprinting = value;
+    base.SetSprinting(value);
   }
 }

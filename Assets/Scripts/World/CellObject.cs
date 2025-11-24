@@ -101,8 +101,12 @@ namespace World {
     }
 
     private void UpdateDurability(float damage, bool isPlayer) {
+      //if zombie attack cells and then player moving away
+      //and cell disabled by distance
+      if (_cellData == null)
+        return;
+        
       _cellData.UpdateDurability(damage);
-      //Debug.LogError($"Durability {resourceData.Durability} _cellData.durability {_cellData.durability}");
     }
 
     private void AddItemToInventory(float damage, bool isPlayer) {

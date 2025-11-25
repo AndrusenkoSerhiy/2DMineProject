@@ -28,8 +28,10 @@ namespace Actors {
     //use for zombie outside the screen like cells
     [SerializeField] private SerializedDictionary<Vector3, ZombieData> zombiesData = new();
     private SiegeManager siegeManager;
-    private int areaWidth;
-    private int areaHeight;
+    private int visionOffsetX;
+    private int visionOffsetY;
+    private int cols;
+    private int rows;
     private GameManager gameManager;
 
     public List<ActorEnemy> Enemies => enemies;
@@ -40,8 +42,10 @@ namespace Actors {
       gameManager = GameManager.Instance;
       siegeManager = gameManager.SiegeManager;
       gameManager.SiegeManager.OnZombieSpawn += SpawnSiegeZombie;
-      areaWidth = gameManager.GameConfig.PlayerAreaWidth;
-      areaHeight = gameManager.GameConfig.PlayerAreaHeight;
+      visionOffsetX = gameManager.GameConfig.PlayerAreaWidth;
+      visionOffsetY = gameManager.GameConfig.PlayerAreaHeight;
+      cols = gameManager.GameConfig.ChunkSizeX;
+      rows = gameManager.GameConfig.ChunkSizeY;
       gameManager.OnGamePaused += PauseZombies;
       gameManager.OnGameResumed += UnpauseZombies;
     }
@@ -83,6 +87,7 @@ namespace Actors {
 
     //when zombie is in of visible range
     public void ReturnZombieToScene(Vector3 pos) {
+      //Debug.LogError("Returning Zombie to Scene");
       var zombieData = zombiesData[pos];
       //Debug.LogError("ReturnZombieToScene!!!!!!!!!!!!!!");
       var zombie = (ActorEnemy)GameManager.Instance.ActorsPooler.SpawnFromPool("Zombie_1", pos, Quaternion.identity);
@@ -219,42 +224,62 @@ namespace Actors {
 
     //try to get pos from left or right side from player (out of visible zone)
     private Vector3 GetLeftPos(bool left = true) {
-      var playerPos = gameManager.PlayerController.PlayerCoords.GetCoords();
+      //var playerCoords = gameManager.PlayerController.PlayerCoords.GetCoords();
+      var playerCoords = CoordsTransformer.WorldToGrid(gameManager.MainCamera.transform.position);
+      var min_x = Mathf.Clamp(playerCoords.X - visionOffsetX, 0, cols - 1);
+      var max_x = Mathf.Clamp(playerCoords.X + visionOffsetX, 0, cols - 1);
 
-      var leftX = left ? playerPos.X - (areaWidth / 2) + 1 : playerPos.X + (areaWidth / 2) - 1;
-      var rightX = left ? playerPos.X - areaWidth / 4 : playerPos.X + areaWidth / 4;
+      var leftX = left ? playerCoords.X - (visionOffsetX / 2) + 1 : playerCoords.X + (visionOffsetX / 2) - 1;
+      var rightX = left ? playerCoords.X - visionOffsetX / 4 : playerCoords.X + visionOffsetX / 4;
 
-      var leftPos = CoordsTransformer.GridToWorld(leftX, playerPos.Y);
-      var rightPos = CoordsTransformer.GridToWorld(rightX, playerPos.Y);
-      var randomX = UnityEngine.Random.Range(leftPos.x, rightPos.x);
+      //if we stay on the left/right border need to change 
+      //the area for spawn zombie
+      //                             for left border
+      if (left && leftX < min_x || playerCoords.X <= 20) {
+        leftX = playerCoords.X + (visionOffsetX / 4);
+        rightX = playerCoords.X + (visionOffsetX / 4) + 1;
+      }
+      //                             for right border
+      if (!left && rightX > max_x || playerCoords.X >= cols - 20) {
+        leftX = playerCoords.X - (visionOffsetX / 4) - 1;
+        rightX = playerCoords.X - visionOffsetX / 4;
+      }
+      
+      var leftPos = CoordsTransformer.GridToWorld(leftX, playerCoords.Y);
+      var rightPos = CoordsTransformer.GridToWorld(rightX, playerCoords.Y);
+      var randomX = Random.Range(leftPos.x, rightPos.x);
       return new Vector3(randomX, leftPos.y, 0);
     }
 
     //try get pos above the player visible zone
     private Vector3 GetUpPos() {
-      var playerPos = gameManager.PlayerController.PlayerCoords.GetCoords();
+      //var playerCoords = gameManager.PlayerController.PlayerCoords.GetCoords();
+      var playerCoords = CoordsTransformer.WorldToGrid(gameManager.MainCamera.transform.position);
 
 
-      var leftX = playerPos.X - (areaWidth / 4) + 1;
-      var rightX = playerPos.X + (areaWidth / 4) - 1;
+      var leftX = playerCoords.X - (visionOffsetX / 4) + 2;
+      var rightX = playerCoords.X + (visionOffsetX / 4) - 2;
 
-      var upY = playerPos.Y - (areaHeight / 4);
-      //var upY = playerPos.Y - (areaHeight / 2) + 1;
-      var upDownY = playerPos.Y - (areaHeight / 6);
-      //var upDownY = playerPos.Y - (areaHeight / 4);
+      var upY = playerCoords.Y - (visionOffsetY / 4);
+      var upDownY = playerCoords.Y - (visionOffsetY / 6);
 
-      var leftPos = CoordsTransformer.GridToWorld(leftX, playerPos.Y);
-      var rightPos = CoordsTransformer.GridToWorld(rightX, playerPos.Y);
-      var upHighPos = CoordsTransformer.GridToWorld(playerPos.X, upY);
-      var upLowPos = CoordsTransformer.GridToWorld(playerPos.X, upDownY);
-      var randomX = UnityEngine.Random.Range(leftPos.x, rightPos.x);
-      var randomY = UnityEngine.Random.Range(upLowPos.y, upHighPos.y);
+      var leftPos = CoordsTransformer.GridToWorld(leftX, playerCoords.Y);
+      var rightPos = CoordsTransformer.GridToWorld(rightX, playerCoords.Y);
+      
+      /*Debug.DrawRay(gameManager.MainCamera.transform.position, Vector3.up, Color.blue, 10f);
+      Debug.DrawRay(leftPos, Vector3.up, Color.green, 10f);
+      Debug.DrawRay(rightPos, Vector3.up, Color.red, 10f);*/
+      
+      var upHighPos = CoordsTransformer.GridToWorld(playerCoords.X, upY);
+      var upLowPos = CoordsTransformer.GridToWorld(playerCoords.X, upDownY);
+      var randomX = Random.Range(leftPos.x, rightPos.x);
+      var randomY = Random.Range(upLowPos.y, upHighPos.y);
       //Debug.DrawRay(new Vector3(randomX, randomY, 0), Vector3.up, Color.red, 3f);
       return new Vector3(randomX, randomY, 0);
     }
 
     private Vector3 TryGetFreeCell() {
-      var rndPos = UnityEngine.Random.Range(0, 2) == 0 ? GetLeftPos(false) : GetLeftPos();
+      var rndPos = Random.Range(0, 2) == 0 ? GetLeftPos(false) : GetLeftPos();
       var coords = CoordsTransformer.MouseToGridPosition(rndPos);
       var chunkData = gameManager.ChunkController.ChunkData;
 

@@ -56,6 +56,9 @@ namespace Craft {
     private Recipe currentRecipe;
     private string[] recipeIngredientsIds;
 
+    private Input cancelRequestedInput = null;
+    private int cancelRequestedPosition = -1;
+
     public CurrentProgress CurrentProgress;
     public List<Input> Inputs = new();
     public WorkstationObject WorkstationObject => workstationObject;
@@ -516,6 +519,13 @@ namespace Craft {
       stopwatch.Start();
 
       while (input.Count > 0 && !token.IsCancellationRequested) {
+        if (cancelRequestedInput != null && cancelRequestedInput == input) {
+          CancelInput(cancelRequestedInput, cancelRequestedPosition);
+          ClearCancelRequestedInput();
+          CancelCraft();
+          return;
+        }
+
         var startTime = stopwatch.ElapsedMilliseconds;
 
         await Task.Delay(tickDelay, token);
@@ -648,16 +658,34 @@ namespace Craft {
       if (WorkstationObject.ShowSuccessCraftMessages && !craftManager.IsWindowOpen(Id)) {
         messageManager.ShowCraftMessage(inputRecipe.Result, count);
       }
-      
+
       gameManager.ObjectivesSystem.ReportCraft(inputRecipe.Result, count);
     }
 
-    public bool CancelInput(Input inputData, int position) {
+    public bool RequestCancelInput(Input inputData, int position) {
       if (!CanCancelCraft(inputData)) {
         messageManager.ShowSimpleMessage("You can't cancel craft. Not enough space in inventory.");
         return false;
       }
 
+      //only first input crafting
+      if (position == 0) {
+        cancelRequestedInput = inputData;
+        cancelRequestedPosition = position;
+      }
+      else {
+        CancelInput(inputData, position);
+      }
+
+      return true;
+    }
+
+    private void ClearCancelRequestedInput() {
+      cancelRequestedInput = null;
+      cancelRequestedPosition = -1;
+    }
+
+    private bool CancelInput(Input inputData, int position) {
       if (!RemoveInputFromInputs(position)) {
         return false;
       }
@@ -668,9 +696,8 @@ namespace Craft {
         ReturnCraftResourcesToInventory(addItem, totalCount);
       }
 
-      //Stop input crafting
+      //Start next craft
       if (position == 0) {
-        CancelCraft();
         StartCrafting();
       }
 

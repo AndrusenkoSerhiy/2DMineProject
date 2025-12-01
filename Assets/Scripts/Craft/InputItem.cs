@@ -46,7 +46,7 @@ namespace Craft {
 
     private void CancelHandler() {
       GameManager.Instance.AudioController.PlayUIClick();
-      station.CancelInput(input, position);
+      station.RequestCancelInput(input, position);
     }
 
     private void SetupUI() {

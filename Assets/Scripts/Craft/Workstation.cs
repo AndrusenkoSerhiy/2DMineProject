@@ -623,6 +623,13 @@ namespace Craft {
       StartCrafting();
     }
 
+    public void Clear() {
+      CancelCraft();
+      ClearCancelRequestedInput();
+      Inputs.Clear();
+      CurrentProgress.Reset();
+    }
+
     #endregion
 
     #region Actions

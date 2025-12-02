@@ -33,6 +33,7 @@ namespace Craft {
 
     public void Clear() {
       craftWindow = null;
+      station = null;
       Destroy(craftWindowObj);
     }
 

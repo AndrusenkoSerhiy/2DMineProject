@@ -31,6 +31,15 @@ namespace Craft {
     }
 
     public void Clear() {
+      foreach (var id in stations) {
+        if (!allStationsMap.ContainsKey(id)) {
+          continue;
+        }
+
+        var station = allStationsMap[id];
+        station.Clear();
+      }
+
       allStationsMap.Clear();
       stations.Clear();
       windowOpenStates.Clear();
@@ -118,7 +127,9 @@ namespace Craft {
     }
 
     public bool IsWindowOpen(string stationId) {
-      return windowOpenStates != null && windowOpenStates[stationId];
+      return windowOpenStates != null
+             && windowOpenStates.ContainsKey(stationId)
+             && windowOpenStates[stationId];
     }
 
     public Workstation GetWorkstation(string fullId, string stationObjectId) {

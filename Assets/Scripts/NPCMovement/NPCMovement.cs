@@ -31,6 +31,7 @@ namespace NPCMovement
     
     private Vector3 currPosition;
     public bool HasArrived => hasArrived;
+    public bool Knocked;
     private void Start() {
       rb = GetComponent<Rigidbody2D>();
       boxCollider2D = GetComponent<BoxCollider2D>();
@@ -52,6 +53,10 @@ namespace NPCMovement
     }
 
     private void FixedUpdate() {
+      if (Knocked) {
+        return;
+      }
+      
       if (gameManager.Paused || targetTransform == null && target.Equals(Vector3.zero)) {
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
         return;
@@ -303,7 +308,7 @@ namespace NPCMovement
     }
 
     private void Jump() {
-      if (actor != null && actor.IsDead) {
+      if (actor != null && actor.IsDead || Knocked) {
         return;
       }
 

@@ -331,7 +331,7 @@ namespace Actors {
         shape.spriteRenderer = _spriteRenderer;
 
         DOTween.To(() => _spriteRenderer.material.GetFloat("_Dissolve"),
-        x => _spriteRenderer.material.SetFloat("_Dissolve", x), 0f, 1f)
+        x => _spriteRenderer.material.SetFloat("_Dissolve", x), 0f, .8f)
         .SetEase(Ease.InOutSine);
 
       });

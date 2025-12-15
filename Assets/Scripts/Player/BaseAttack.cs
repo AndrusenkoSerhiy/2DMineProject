@@ -27,7 +27,7 @@ namespace Player {
 
     protected Vector2 colliderSize;
 
-    private List<IDamageable> targets = new();
+    protected List<IDamageable> targets = new();
     [SerializeField] private bool isHighlightLock;
     [SerializeField] private Vector2 originalSize;
     [SerializeField] protected int lookDirection;
@@ -158,7 +158,7 @@ namespace Player {
     List<IDamageable> results = new();
     private IOrderedEnumerable<KeyValuePair<Vector2Int, IDamageable>> sorted;
 
-    private List<IDamageable> LockByWall() {
+    protected List<IDamageable> LockByWall() {
       results.Clear();
       var tempList = SetTargetsFromHighlight();
       
@@ -335,7 +335,7 @@ namespace Player {
         
       return results;
     }
-    protected void Attack() {
+    protected virtual void Attack() {
       //return to previous version, without check block 
       //SetTargetsFromHighlight();
       //targets = SetTargetsFromHighlight();

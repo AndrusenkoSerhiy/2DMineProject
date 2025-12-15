@@ -27,6 +27,76 @@ namespace Player {
       base.Start();
     }
 
+    protected override void Attack() {
+      targets = LockByWall();
+      
+      var lookDir = GetLookDirection();
+
+      if ((targets == null || targets.Count == 0)
+          && !HasNearbyZombie()) {
+        return;
+      }
+
+      IDamageable target = null;
+      var hasZombieTarget = false;
+      if (targets != null && targets.Count > 0) {
+        target = targets[0];
+      }
+      float closestDist = float.MaxValue;
+      //try to find nearest zombie
+      foreach (var npc in GameManager.Instance.ActorBaseController.Enemies) {
+        Vector2 toNpc = npc.transform.position - transform.position;
+        var distance = toNpc.magnitude;
+
+        if (distance > playerStats.AttackRange)
+          continue;
+
+        var dot = Vector2.Dot(lookDir.normalized, toNpc.normalized);
+
+        // NPC має бути попереду
+        if (dot < 0.3f)
+          continue;
+        if (distance < closestDist) {
+          closestDist = distance;
+          target = npc;
+          hasZombieTarget = true;
+        }
+      }
+
+      var damage = hasZombieTarget ? playerStats.EntityDamage : playerStats.BlockDamage;
+      target?.Damage(damage, true);
+      var targetsCount = targets != null && targets.Count > 0 || hasZombieTarget ? 1 : 0;
+      AfterTargetsTakenDamage(targetsCount);
+      
+      //attack blocks
+      if (targets != null && targetsCount > 0) {
+        for (int i = 0; i < targets.Count; i++) {
+          targets[i]?.AfterDamageReceived();
+        }
+      }
+      //attack zombie
+      if (hasZombieTarget) {
+        target.AfterDamageReceived();
+      }
+    }
+
+    private Vector2 GetLookDirection() {
+      return transform.localScale.x > 0
+        ? Vector2.right
+        : Vector2.left;
+    }
+    
+    //If targets is empty try to check are we have zombie in attack range
+    private bool HasNearbyZombie() {
+      foreach (var npc in GameManager.Instance.ActorBaseController.Enemies){
+        Vector2 toNpc = npc.transform.position - transform.position;
+        var distance = toNpc.magnitude;
+        if (distance <= playerStats.AttackRange)
+          return true;
+      }
+      return false;
+    }
+
     protected override void AfterTargetsTakenDamage(int targetsCount) {
       var isHit = targetsCount > 0;
       /*//play sound when we hit something

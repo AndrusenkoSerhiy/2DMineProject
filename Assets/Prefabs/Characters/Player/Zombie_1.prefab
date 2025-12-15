@@ -122,6 +122,7 @@ MonoBehaviour:
   _animator: {fileID: 4141543556025107183}
   rigidbody: {fileID: 8148056154536312960}
   capsuleCollider: {fileID: 8141082641052085697}
+  _spriteRenderer: {fileID: 1486529621788147635}
   npcMovement: {fileID: 6852139997247226084}
   coords: {fileID: 4278888900822443520}
   behaviourTreeOwner: {fileID: 1260485521753335071}
@@ -354,6 +355,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -375,6 +378,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 2145118225
   m_SortingLayer: 4
   m_SortingOrder: 3

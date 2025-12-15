@@ -13,12 +13,15 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
 using Random = UnityEngine.Random;
+using DG.Tweening;
 
 namespace Actors {
   public class ActorEnemy : ActorBase {
     public bool shouldBeDamaging { get; private set; } = false;
     private List<IDamageable> iDamageables = new List<IDamageable>();
     private IDamageable currentTarget;
+
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
     [SerializeField] private NPCMovement.NPCMovement npcMovement;
     [SerializeField] private EnemyCoords coords;
@@ -148,6 +151,9 @@ namespace Actors {
 
     protected override void Awake() {
       base.Awake();
+
+      _spriteRenderer.material.SetFloat("_Blink", 0f);
+
       audioController = GameManager.Instance.AudioController;
       DamageableType = DamageableType.Enemy;
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
@@ -269,6 +275,30 @@ namespace Actors {
     }
 
     public override void Damage(float damage, bool isPlayer) {
+      //Debug.Log("Enemy Damage");
+      _spriteRenderer.material.SetFloat("_Blink", 1f);
+      DOTween.To(() => _spriteRenderer.material.GetFloat("_Blink"),
+      x => _spriteRenderer.material.SetFloat("_Blink", x), 0f, 0.25f)
+      .SetEase(Ease.InOutSine);
+      Vector3 pos = transform.position;
+      pos.y = pos.y + 1f;
+      GameManager.Instance.PoolEffects.SpawnFromPool("ZombieDamageParticleEffect", 
+        pos, Quaternion.identity);
+
+      npcMovement.Knocked = true;
+
+      Vector3 playerPos = GameManager.Instance.PlayerController.gameObject.transform.position;
+      Vector2 direction = (transform.position - playerPos).normalized;
+      direction.y = 0.3f;
+      //Debug.Log("direction = " + direction);
+      rigidbody.AddForce(direction * 20, ForceMode2D.Impulse);
+
+      DOVirtual.DelayedCall(0.2f, () =>
+      {
+        npcMovement.Knocked = false;
+      });
+      
+
       DamageAudio();
       base.Damage(damage, isPlayer);
       if (stats.Health > 0)
@@ -282,6 +312,23 @@ namespace Actors {
     }
 
     protected override void DeathActions() {
+      Vector3 pos = transform.position;
+      pos.y = pos.y + 1f;
+      GameManager.Instance.PoolEffects.SpawnFromPool("ZombieDeathParticleEffect",
+        pos, Quaternion.identity);
+
+      npcMovement.Knocked = true;
+
+      Vector3 playerPos = GameManager.Instance.PlayerController.gameObject.transform.position;
+      Vector2 direction = (transform.position - playerPos).normalized;
+      direction.y = 0.3f;
+      //Debug.Log("direction = " + direction);
+      rigidbody.AddForce(direction * 20, ForceMode2D.Impulse);
+
+      DOVirtual.DelayedCall(0.2f, () => {
+        npcMovement.Knocked = false;
+      });
+
       //Debug.LogError($"Death actions");
       base.DeathActions();
       DeathAudio();
@@ -314,6 +361,7 @@ namespace Actors {
       _animator.Update(0f);
       rigidbody.excludeLayers = excludeLayerOnAlive;
       InitHealth();
+      _spriteRenderer.material.SetFloat("_Blink", 0f);
     }
 
     private void SpawnDrop() {

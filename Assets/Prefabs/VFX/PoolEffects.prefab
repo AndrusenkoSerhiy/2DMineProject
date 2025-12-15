@@ -96,3 +96,9 @@ MonoBehaviour:
   - tag: PlayerDeathParticleEffect
     prefab: {fileID: 7799052153105756522, guid: 3fce9222dc13d3a4f8993f9a90f2a9a5, type: 3}
     size: 1
+  - tag: ZombieDamageParticleEffect
+    prefab: {fileID: 7627430630564262196, guid: 3b75b73b6fecab748ae76427982f3815, type: 3}
+    size: 1
+  - tag: ZombieDeathParticleEffect
+    prefab: {fileID: 1892265869297854717, guid: 0b7eda1dfcfbc0c409d818dd923edb62, type: 3}
+    size: 1

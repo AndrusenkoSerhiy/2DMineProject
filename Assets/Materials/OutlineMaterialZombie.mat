@@ -36,6 +36,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _DissolveNoise:
+        m_Texture: {fileID: 2800000, guid: 264af31f40aa67c44ae0a48ba54ecf12, type: 3}
+        m_Scale: {x: 1.5, y: 1.5}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -57,6 +61,7 @@ Material:
     - _Blink: 0
     - _BlinkPower: 1.5
     - _ColorPower: 5
+    - _Dissolve: 1
     - _MaxXOffset: 0.003
     - _MaxYOffset: 0.003
     - _Thickness: 0

@@ -153,6 +153,7 @@ namespace Actors {
       base.Awake();
 
       _spriteRenderer.material.SetFloat("_Blink", 0f);
+      _spriteRenderer.material.SetFloat("_Dissolve", 1f);
 
       audioController = GameManager.Instance.AudioController;
       DamageableType = DamageableType.Enemy;
@@ -278,7 +279,7 @@ namespace Actors {
       //Debug.Log("Enemy Damage");
       _spriteRenderer.material.SetFloat("_Blink", 1f);
       DOTween.To(() => _spriteRenderer.material.GetFloat("_Blink"),
-      x => _spriteRenderer.material.SetFloat("_Blink", x), 0f, 0.25f)
+      x => _spriteRenderer.material.SetFloat("_Blink", x), 0f, 0.2f)
       .SetEase(Ease.InOutSine);
       Vector3 pos = transform.position;
       pos.y = pos.y + 1f;
@@ -290,13 +291,9 @@ namespace Actors {
       Vector3 playerPos = GameManager.Instance.PlayerController.gameObject.transform.position;
       Vector2 direction = (transform.position - playerPos).normalized;
       direction.y = 0.3f;
-      //Debug.Log("direction = " + direction);
-      rigidbody.AddForce(direction * 20, ForceMode2D.Impulse);
+      rigidbody.AddForce(direction * 15, ForceMode2D.Impulse);
 
-      DOVirtual.DelayedCall(0.2f, () =>
-      {
-        npcMovement.Knocked = false;
-      });
+      DOVirtual.DelayedCall(0.2f, () => {npcMovement.Knocked = false;});
       
 
       DamageAudio();
@@ -322,11 +319,21 @@ namespace Actors {
       Vector3 playerPos = GameManager.Instance.PlayerController.gameObject.transform.position;
       Vector2 direction = (transform.position - playerPos).normalized;
       direction.y = 0.3f;
-      //Debug.Log("direction = " + direction);
       rigidbody.AddForce(direction * 20, ForceMode2D.Impulse);
 
-      DOVirtual.DelayedCall(0.2f, () => {
-        npcMovement.Knocked = false;
+      DOVirtual.DelayedCall(0.2f, () => {npcMovement.Knocked = false;});
+
+      DOVirtual.DelayedCall(destroyAfter -1f, () => {
+        var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("ZombieDissolveParticleEffect",
+        pos, Quaternion.identity).gameObject;
+        ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
+        var shape = ps.shape;
+        shape.spriteRenderer = _spriteRenderer;
+
+        DOTween.To(() => _spriteRenderer.material.GetFloat("_Dissolve"),
+        x => _spriteRenderer.material.SetFloat("_Dissolve", x), 0f, 1f)
+        .SetEase(Ease.InOutSine);
+
       });
 
       //Debug.LogError($"Death actions");
@@ -362,6 +369,7 @@ namespace Actors {
       rigidbody.excludeLayers = excludeLayerOnAlive;
       InitHealth();
       _spriteRenderer.material.SetFloat("_Blink", 0f);
+      _spriteRenderer.material.SetFloat("_Dissolve", 1f);
     }
 
     private void SpawnDrop() {

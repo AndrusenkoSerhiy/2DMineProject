@@ -186,7 +186,7 @@ namespace World {
       var psGo = GameManager.Instance.PoolEffects.SpawnFromPool("CellDamageEffect", pos, Quaternion.identity)
         .gameObject;
       var ps = psGo.GetComponent<ParticleSystem>();
-      if (ps != null) {
+      if (ps != null && resourceData != null) {
         var main = ps.main;
         main.startColor = new ParticleSystem.MinMaxGradient(resourceData.EffectColor);
       }

@@ -264,7 +264,8 @@ namespace World {
       var playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
       var visionOffsetX = GameManager.Instance.GameConfig.PlayerAreaWidth / 2;
       var visionOffsetY = GameManager.Instance.GameConfig.PlayerAreaHeight / 2;
-      foreach (var coord in _activeCellObjects.Keys) {
+      foreach (var kvp in _activeCellObjects) {
+        var coord = kvp.Key;
         if (Mathf.Abs(playerCoords.X - coord.X) > visionOffsetX ||
             Mathf.Abs(playerCoords.Y - coord.Y) > visionOffsetY) {
           //if (!_activeCellObjects[coord].resourceData.IsBuilding)
@@ -281,7 +282,8 @@ namespace World {
       clearList.Clear();
 
       var playerCoordsBuild = CoordsTransformer.GridToBuildingsGrid(playerCoords);
-      foreach (var coord in _activeBuildObjects.Keys) {
+      foreach (var kvp in _activeBuildObjects) {
+        var coord = kvp.Key;
         if (Mathf.Abs(playerCoordsBuild.X - coord.X) > visionOffsetX ||
             Mathf.Abs(playerCoordsBuild.Y - coord.Y) > visionOffsetY) {
           GameManager.Instance.FarmManager.SetParamFromBuild($"{coord.X}|{coord.Y}", _activeBuildObjects[coord]);
@@ -294,17 +296,7 @@ namespace World {
       for (int i = 0; i < clearList.Count; i++) {
         _activeBuildObjects.Remove(clearList[i]);
       }
-
-      //try remove zombies
-      /*foreach (var enemy in GameManager.Instance.ActorBaseController.Enemies) {
-        if (!enemy.gameObject.activeInHierarchy) continue;
-
-        var enemyCoords = enemy.GetCoords;
-        if (Mathf.Abs(playerCoords.X - enemyCoords.X) > visionOffsetX ||
-            Mathf.Abs(playerCoords.Y - enemyCoords.Y) > visionOffsetY) {
-          GameManager.Instance.ActorBaseController.RemoveZombie(enemy);
-        }
-      }*/
+      
       var enemies = GameManager.Instance.ActorBaseController.Enemies;
       for (int i = enemies.Count - 1; i >= 0; i--) {
         var enemy = enemies[i];

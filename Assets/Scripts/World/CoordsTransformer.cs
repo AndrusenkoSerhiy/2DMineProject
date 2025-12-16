@@ -4,6 +4,7 @@ using Utils;
 
 namespace World {
   public static class CoordsTransformer {
+    private static Coords tempCoords = new Coords();
     public static Vector3 GridToWorld(int col, int row) {
       // Shift column and row by their respective origins
       var x = (col - GameManager.Instance.GameConfig.OriginCol) * GameManager.Instance.GameConfig.CellSizeX;
@@ -46,11 +47,15 @@ namespace World {
     }
     
     public static Coords GridToBuildingsGrid(Coords original) {
-      return new Coords(original.X, original.Y + GameManager.Instance.GameConfig.BuildingAreaYDiff);
+      tempCoords.X = original.X;
+      tempCoords.Y = original.Y + GameManager.Instance.GameConfig.BuildingAreaYDiff;
+      return tempCoords;
     }
     
     public static Coords GridToBuildingsGrid(int x_original, int y_original) {
-      return new Coords(x_original, y_original + GameManager.Instance.GameConfig.BuildingAreaYDiff);
+      tempCoords.X = x_original;
+      tempCoords.Y = y_original + GameManager.Instance.GameConfig.BuildingAreaYDiff;
+      return tempCoords;
     }
     
     public static Coords BuildingsGridToGrid(Coords original) {

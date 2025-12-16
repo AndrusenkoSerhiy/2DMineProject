@@ -27,12 +27,13 @@ namespace SaveSystem {
   public class WorldData {
     public int Seed = -1;
     public List<BuildingData> BuildDatas = new();
-    public List<CellFill> BuildFillDatas = new();
-    public List<string> RemovedCells = new(); //x_y format
-    public SerializedDictionary<string, ChangedCellData> ChangedCells = new();
 
-    public static string GetCellKey(int x, int y) {
-      return $"{x}_{y}";
+    public List<CellFill> BuildFillDatas = new();
+    public List<int> RemovedCells = new();
+    public SerializedDictionary<int, ChangedCellData> ChangedCells = new();
+
+    public static int GetCellIndex(int x, int y, int width) {
+      return x + y * width;
     }
   }
 }

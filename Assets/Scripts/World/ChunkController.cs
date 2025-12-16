@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Actors;
-using Craft;
-using Inventory;
 using SaveSystem;
 using Scriptables;
 using Scriptables.POI;
 using Tools;
 using UnityEngine;
-using UnityEngine.Rendering;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -31,19 +27,22 @@ namespace World {
     private Dictionary<Coords, BuildingDataObject> _activeBuildObjects = new();
     private ChunkData chunkData;
     public ChunkData ChunkData => chunkData;
-
-    private List<string> removedCells = new();
-    private Dictionary<string, ChangedCellData> changedCells = new();
+    
+    private HashSet<int> removedCells = new();
+    private Dictionary<int, ChangedCellData> changedCells = new();
     public int Seed;
 
     private bool isInited = false;
 
     private bool useSavedPlayerCoordsOnce = false;
     private Coords savedPlayerCoords;
+
     private Coords enemyCoords;
+
     //we use spawnNearbyCells for show plantFarm, and after load we need to 
     //transfer this bool to update method for plantBox
     private bool loadFarm;
+
     private void Awake() {
       SaveLoadSystem.Instance.Register(this);
       Seed = GenerateSeed();
@@ -83,8 +82,16 @@ namespace World {
         var data = SaveLoadSystem.Instance.gameData.WorldData;
 
         Seed = data.Seed;
-        removedCells = data.RemovedCells;
-        changedCells = data.ChangedCells;
+
+        removedCells.Clear();
+        foreach (var removed in data.RemovedCells) {
+          removedCells.Add(removed);
+        }
+
+        changedCells.Clear();
+        foreach (var kvp in data.ChangedCells) {
+          changedCells[kvp.Key] = kvp.Value;
+        }
 
         CoordsTransformer.WorldToGrid(SaveLoadSystem.Instance.gameData.PlayerData.Position, ref savedPlayerCoords);
         useSavedPlayerCoordsOnce = true;
@@ -99,8 +106,12 @@ namespace World {
       var data = SaveLoadSystem.Instance.gameData.WorldData;
 
       data.Seed = Seed;
-      data.RemovedCells = removedCells;
-      data.ChangedCells = new SerializedDictionary<string, ChangedCellData>();
+      data.RemovedCells.Clear();
+      foreach (var index in removedCells) {
+        data.RemovedCells.Add(index);
+      }
+
+      data.ChangedCells.Clear();
       foreach (var kvp in changedCells) {
         data.ChangedCells[kvp.Key] = kvp.Value;
       }
@@ -217,15 +228,17 @@ namespace World {
             var building = SpawnBuild(_proxyCoords, buildData);
             _activeBuildObjects[_proxyCoords] = building;
             AfterBuildingGet(building, _proxyCoords);
-            GameManager.Instance.FarmManager.UpdateParamAfterEnable($"{_proxyCoords.X}|{_proxyCoords.Y}", building, loadFarm);
+            GameManager.Instance.FarmManager.UpdateParamAfterEnable($"{_proxyCoords.X}|{_proxyCoords.Y}", building,
+              loadFarm);
           }
         }
       }
+
       loadFarm = false;
 
       //for zombies
       var enemies = GameManager.Instance.ActorBaseController.ZombiesData;
-      
+
       foreach (var enemy in enemies) {
         CoordsTransformer.WorldToGrid(enemy.Key, ref enemyCoords);
         //Debug.LogError($"{enemyCoords.X} | {enemyCoords.Y} enemy coord");
@@ -296,7 +309,7 @@ namespace World {
       for (int i = 0; i < clearList.Count; i++) {
         _activeBuildObjects.Remove(clearList[i]);
       }
-      
+
       var enemies = GameManager.Instance.ActorBaseController.Enemies;
       for (int i = enemies.Count - 1; i >= 0; i--) {
         var enemy = enemies[i];
@@ -308,6 +321,7 @@ namespace World {
           GameManager.Instance.ActorBaseController.RemoveZombie(enemy);
         }
       }
+
       clearList.Clear();
       SpawnNearbyCells();
     }
@@ -345,8 +359,11 @@ namespace World {
       cellObject.CellData.Destroy();
       var coords = new Coords(x, y);
       RemoveCellFromActives(coords);
-      AddToRemoved(x, y);
-      RemoveCellFromChanged(x, y);
+
+      var index = GetIndex(x, y);
+
+      AddToRemoved(index);
+      RemoveCellFromChanged(index);
       if (!silent) UpdateCellAround(x, y);
     }
 
@@ -429,41 +446,41 @@ namespace World {
       return Random.Range(0, 10000);
     }
 
-    private void AddToRemoved(int x, int y) {
-      removedCells.Add(WorldData.GetCellKey(x, y));
+    private void AddToRemoved(int index) {
+      removedCells.Add(index);
+    }
+
+    private int GetIndex(int x, int y) {
+      return x + y * GameManager.Instance.GameConfig.ChunkSizeX;
     }
 
     public bool IsRemoved(int x, int y) {
-      var key = WorldData.GetCellKey(x, y);
-      return removedCells.Contains(key);
+      return removedCells.Contains(GetIndex(x, y));
     }
 
     public ChangedCellData GetChanged(int x, int y) {
-      var key = WorldData.GetCellKey(x, y);
-      changedCells.TryGetValue(key, out var value);
-      return value;
+      changedCells.TryGetValue(GetIndex(x, y), out var data);
+      return data;
     }
 
     public void AfterCellChanged(CellData data) {
-      var key = WorldData.GetCellKey(data.x, data.y);
-      var changedData = new ChangedCellData { Perlin = data.perlin, Durability = data.durability };
-      if (changedCells.TryGetValue(key, out var value)) {
-        changedCells[key] = changedData;
-      }
-      else {
-        changedCells.Add(WorldData.GetCellKey(data.x, data.y), changedData);
-      }
+      var index = GetIndex(data.x, data.y);
 
-      removedCells.Remove(key);
+      changedCells[index] = new ChangedCellData {
+        Perlin = data.perlin,
+        Durability = data.durability
+      };
+
+      removedCells.Remove(index);
     }
 
     public BuildingDataObject GetBuildingData(int x, int y) {
       return _activeBuildObjects.GetValueOrDefault(new Coords(x, y));
     }
 
-    private void RemoveCellFromChanged(int x, int y) {
-      var key = WorldData.GetCellKey(x, y);
-      changedCells.Remove(key);
+    private void RemoveCellFromChanged(int index) {
+      // var key = WorldData.GetCellKey(x, y);
+      changedCells.Remove(index);
     }
   }
 }

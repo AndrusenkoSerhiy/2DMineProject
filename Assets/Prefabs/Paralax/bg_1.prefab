@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4097460593135981626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 610859632633915000}
+  - component: {fileID: 2458299169233427372}
+  m_Layer: 0
+  m_Name: bg_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &610859632633915000
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4097460593135981626}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 30, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2458299169233427372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4097460593135981626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c792c5ee5c14d86488b70e8e313b10ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  borderPrefab: {fileID: 8375862946578343728, guid: a91bf3f4c7430b74a889601cf68af73d, type: 3}
+  bufferZone: 5
+  layers:
+  - prefab: {fileID: 8375862946578343728, guid: 9765912b9a491ad4fbc52299854b37a4, type: 3}
+    speedMultiplier: 0.2
+    minColumnWidth: 18
+    maxColumnWidth: 20
+    minDistanceBetweenColumns: 10
+    maxDistanceBetweenColumns: 20
+  - prefab: {fileID: 9176460779682957301, guid: 80001f9c91ec99747a9d0a0ddc977114, type: 3}
+    speedMultiplier: 0.3
+    minColumnWidth: 5
+    maxColumnWidth: 12
+    minDistanceBetweenColumns: 7
+    maxDistanceBetweenColumns: 10
+  - prefab: {fileID: 9176460779682957301, guid: 02c469e2bf24da447a5381033fb6ba5f, type: 3}
+    speedMultiplier: 0.5
+    minColumnWidth: 10
+    maxColumnWidth: 12
+    minDistanceBetweenColumns: 20
+    maxDistanceBetweenColumns: 40
+  mainCamera: {fileID: 0}

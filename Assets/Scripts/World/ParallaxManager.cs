@@ -41,6 +41,7 @@ namespace World {
 
     private Coords previousPlayerCoords;
     private SpriteRenderer borderRenderer;
+    private float borderWidth;
     private readonly List<GameObject> borders = new();
     private bool borderLeft;
     private bool borderRight;
@@ -61,15 +62,18 @@ namespace World {
       parallaxHeight = mainCamera.orthographicSize * 2f * 3f;
 
       borderRenderer = borderPrefab.GetComponent<SpriteRenderer>();
+      var box = borderPrefab.GetComponent<BoxCollider2D>();
+      // borderWidth = borderRenderer.bounds.size.x - (borderRenderer.bounds.size.x - box.size.x) / 2;
+      borderWidth = box.size.x;
       var sizeDiff = (GameManager.Instance.GameConfig.CellSizeX -
-                      borderRenderer.bounds.size.x) / 2;
+                      borderWidth) / 2;
       leftBorderX = CoordsTransformer.GridToWorld(-1, 0).x + sizeDiff;
       rightBorderX = CoordsTransformer.GridToWorld(GameManager.Instance.GameConfig.ChunkSizeX - 1, 0).x - sizeDiff;
 
       cinemachineCamera = GameManager.Instance.StartGameCameraController.cinemachineCamera;
       lockCameraExtension = cinemachineCamera.GetComponent<LockCameraXWhenBorderVisible>();
-      cameraLockLeftX = leftBorderX + screenWidth / 2f - borderRenderer.bounds.size.x / 2f;
-      cameraLockRightX = rightBorderX - screenWidth / 2f + borderRenderer.bounds.size.x / 2f;
+      cameraLockLeftX = leftBorderX + screenWidth / 2f - borderWidth / 2f;
+      cameraLockRightX = rightBorderX - screenWidth / 2f + borderWidth / 2f;
 
       UpdateVisibleBounds();
 

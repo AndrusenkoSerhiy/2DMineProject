@@ -22,13 +22,16 @@ namespace UI {
   }
 
   public class Locator : MonoBehaviour, ISaveLoad {
-    [SerializeField] private Transform locatorPoints;
+    [Header("References")] [SerializeField]
+    private Transform locatorPoints;
+
     [SerializeField] private Transform locatorDistances;
     [SerializeField] private GameObject locatorPointPrefab;
     [SerializeField] private GameObject locatorDistancePrefab;
     [SerializeField] private GameObject pointerUI;
     [SerializeField] private Camera cam;
-    [SerializeField] private List<LocatorPoint> points = new();
+
+    [Header("Data")] [SerializeField] private List<LocatorPoint> points = new();
     [SerializeField] private List<LocatorDistance> distances = new();
     [SerializeField] private List<AllowPoint> allowed = new();
     [SerializeField] private float sortInterval = 1f;
@@ -36,28 +39,45 @@ namespace UI {
     private Queue<Point> pointsPool = new();
     private Dictionary<string, LocatorTarget> locatorTargets = new();
     private Dictionary<string, AllowPoint> allowedPoints = new();
+
     private GameManager gameManager;
     private SaveLoadSystem saveLoadSystem;
+
     private bool hidden;
     private bool paused;
     private float lastSortTime;
 
-    #region Save/Load
+    private Transform playerTransform;
+    private float cellSizeX;
+
+    private readonly List<VisiblePoint> visiblePoints = new(16);
+
+    private struct VisiblePoint {
+      public float distance;
+      public LocatorPoint point;
+    }
+
+    #region Save / Load
 
     public int Priority => LoadPriority.LOCATOR;
 
     public void Save() {
       saveLoadSystem.gameData.LocatorPointsData.Clear();
 
-      foreach (var (id, target) in locatorTargets) {
-        saveLoadSystem.gameData.LocatorPointsData.Add(new LocatorPointData
-          { Id = id, Position = target.target, Color = allowedPoints[id].color });
+      foreach (var kvp in locatorTargets) {
+        saveLoadSystem.gameData.LocatorPointsData.Add(
+          new LocatorPointData {
+            Id = kvp.Key,
+            Position = kvp.Value.target,
+            Color = allowedPoints[kvp.Key].color
+          }
+        );
       }
     }
 
     public void Load() {
       if (saveLoadSystem.IsNewGame() ||
-          saveLoadSystem.gameData.LocatorPointsData.Count <= 0) {
+          saveLoadSystem.gameData.LocatorPointsData.Count == 0) {
         return;
       }
 
@@ -67,10 +87,9 @@ namespace UI {
     }
 
     public void Clear() {
-      foreach (var (id, target) in locatorTargets) {
-        target.point.locatorPoint.Hide();
-        target.point.locatorDistance.Hide();
-        pointsPool.Enqueue(target.point);
+      foreach (var kvp in locatorTargets) {
+        ResetPoint(kvp.Value.point);
+        pointsPool.Enqueue(kvp.Value.point);
       }
 
       locatorTargets.Clear();
@@ -88,16 +107,24 @@ namespace UI {
       saveLoadSystem = SaveLoadSystem.Instance;
       saveLoadSystem.Register(this);
 
+      playerTransform = gameManager.PlayerController.transform; // NEW
+      cellSizeX = gameManager.GameConfig.CellSizeX; // NEW
+
       for (var i = 0; i < points.Count; i++) {
         var point = points[i];
         var distance = distances[i];
+
         point.gameObject.SetActive(false);
         distance.gameObject.SetActive(false);
-        pointsPool.Enqueue(new Point { locatorPoint = point, locatorDistance = distance });
+
+        pointsPool.Enqueue(new Point {
+          locatorPoint = point,
+          locatorDistance = distance
+        });
       }
 
-      foreach (var point in allowed) {
-        allowedPoints.Add(point.id, point);
+      foreach (var allow in allowed) {
+        allowedPoints.Add(allow.id, allow);
       }
 
       gameManager.OnGamePaused += OnGamePausedHandler;
@@ -107,17 +134,16 @@ namespace UI {
     private void Update() => CheckArea();
 
     public void ShowHide(bool state) {
-      if (state) {
-        hidden = false;
-      }
-      else {
-        hidden = true;
-        pointerUI.gameObject.SetActive(false);
+      hidden = !state;
+
+      if (hidden) {
+        pointerUI.SetActive(false);
       }
     }
 
     public void SetTarget(Vector3 position, string id) {
-      if (!allowedPoints.ContainsKey(id)) {
+      // CHANGED: TryGetValue instead of ContainsKey
+      if (!allowedPoints.TryGetValue(id, out var allow)) {
         return;
       }
 
@@ -126,44 +152,50 @@ namespace UI {
       }
 
       var point = pointsPool.Count > 0 ? pointsPool.Dequeue() : CreateNewPoint();
-      var icon = allowedPoints[id].sprite;
-      var color = allowedPoints[id].color;
 
-      point.locatorPoint.SetPoint(icon, color);
-      point.locatorDistance.SetPoint(icon);
+      point.locatorPoint.SetPoint(allow.sprite, allow.color);
+      point.locatorDistance.SetPoint(allow.sprite);
 
-      locatorTargets[id] = new LocatorTarget { target = position, point = point };
+      locatorTargets[id] = new LocatorTarget {
+        target = position,
+        point = point
+      };
     }
 
     private Point CreateNewPoint() {
       var pointObject = Instantiate(locatorPointPrefab, locatorPoints);
       var distanceObject = Instantiate(locatorDistancePrefab, locatorDistances);
+
       var locatorPoint = pointObject.GetComponent<LocatorPoint>();
       var locatorDistance = distanceObject.GetComponent<LocatorDistance>();
 
       locatorPoint.gameObject.SetActive(false);
       locatorDistance.gameObject.SetActive(false);
 
-      return new Point { locatorPoint = locatorPoint, locatorDistance = locatorDistance };
+      return new Point {
+        locatorPoint = locatorPoint,
+        locatorDistance = locatorDistance
+      };
     }
 
     public void RemoveTarget(string id) {
-      if (!locatorTargets.ContainsKey(id)) {
+      if (!locatorTargets.TryGetValue(id, out var target))
         return;
-      }
 
-      var target = locatorTargets[id];
-
+      ResetPoint(target.point);
       pointsPool.Enqueue(target.point);
-      locatorTargets.Remove(id);
 
-      target.point.locatorPoint.Hide();
-      target.point.locatorDistance.Hide();
+      locatorTargets.Remove(id);
+    }
+
+    private void ResetPoint(Point p) {
+      p.locatorPoint.Hide();
+      p.locatorDistance.Hide();
     }
 
     private void OnGamePausedHandler() {
       paused = true;
-      pointerUI.gameObject.SetActive(false);
+      pointerUI.SetActive(false);
     }
 
     private void OnGameResumedHandler() {
@@ -171,49 +203,57 @@ namespace UI {
     }
 
     private void CheckArea() {
-      if (locatorTargets.Count == 0 || hidden || paused) {
+      if (locatorTargets.Count == 0 || hidden || paused)
         return;
-      }
 
+      visiblePoints.Clear();
       var showLocator = false;
-      var visiblePoints = new List<(float distance, LocatorPoint locatorPoint)>();
 
-      foreach (var (id, locatorTarget) in locatorTargets) {
-        var screenPos = cam.WorldToScreenPoint(locatorTarget.target);
+      var playerPos = playerTransform.position;
 
-        if (screenPos.x > 0 && screenPos.x < Screen.width &&
-            screenPos.y > 0 && screenPos.y < Screen.height) {
-          locatorTarget.point.locatorPoint.Hide();
-          locatorTarget.point.locatorDistance.Hide();
+      foreach (var kvp in locatorTargets) {
+        var target = kvp.Value;
+
+        var vp = cam.WorldToViewportPoint(target.target);
+
+        var onScreen =
+          vp.z > 0 &&
+          vp.x > 0 && vp.x < 1 &&
+          vp.y > 0 && vp.y < 1;
+
+        if (onScreen) {
+          ResetPoint(target.point);
           continue;
         }
 
-        var playerPos = gameManager.PlayerController.PlayerCoords.GetPosition();
-        var directionToTarget = (locatorTarget.target - playerPos).normalized;
-        var distance = Vector3.Distance(playerPos, locatorTarget.target) / gameManager.GameConfig.CellSizeX;
+        var dir = target.target - playerPos;
+        var distance = dir.magnitude / cellSizeX;
 
-        locatorTarget.point.locatorPoint.UpdateArrow(directionToTarget);
-        locatorTarget.point.locatorDistance.UpdateDistance(distance);
+        target.point.locatorPoint.UpdateArrow(dir.normalized);
+        target.point.locatorDistance.UpdateDistance(distance);
 
-        locatorTarget.point.locatorPoint.Show();
-        locatorTarget.point.locatorDistance.Show();
+        target.point.locatorPoint.Show();
+        target.point.locatorDistance.Show();
 
-        visiblePoints.Add((distance, locatorTarget.point.locatorPoint));
+        visiblePoints.Add(new VisiblePoint {
+          distance = distance,
+          point = target.point.locatorPoint
+        });
 
         showLocator = true;
       }
 
-      if (Time.time - lastSortTime > sortInterval) {
+      if (Time.time - lastSortTime > sortInterval && visiblePoints.Count > 1) {
         lastSortTime = Time.time;
 
         visiblePoints.Sort((a, b) => b.distance.CompareTo(a.distance));
 
-        foreach (var (_, point) in visiblePoints) {
-          point.transform.SetAsLastSibling();
+        for (var i = 0; i < visiblePoints.Count; i++) {
+          visiblePoints[i].point.transform.SetAsLastSibling();
         }
       }
 
-      pointerUI.gameObject.SetActive(showLocator);
+      pointerUI.SetActive(showLocator);
     }
   }
 }

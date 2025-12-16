@@ -107,9 +107,6 @@ namespace UI {
       saveLoadSystem = SaveLoadSystem.Instance;
       saveLoadSystem.Register(this);
 
-      playerTransform = gameManager.PlayerController.transform; // NEW
-      cellSizeX = gameManager.GameConfig.CellSizeX; // NEW
-
       for (var i = 0; i < points.Count; i++) {
         var point = points[i];
         var distance = distances[i];
@@ -129,6 +126,11 @@ namespace UI {
 
       gameManager.OnGamePaused += OnGamePausedHandler;
       gameManager.OnGameResumed += OnGameResumedHandler;
+    }
+
+    private void Start() {
+      playerTransform = gameManager.PlayerController.transform; // NEW
+      cellSizeX = gameManager.GameConfig.CellSizeX; // NEW
     }
 
     private void Update() => CheckArea();

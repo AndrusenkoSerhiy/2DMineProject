@@ -7,6 +7,7 @@ namespace Player {
   public class PlayerCoords : MonoBehaviour {
     public Coords Coords;
     [SerializeField] private Transform trForGrid;
+    private Coords tempCoords;
     private Vector2Int lastCoords;
 
     public Vector3 GetPosition() {
@@ -30,16 +31,15 @@ namespace Player {
     }
 
     private void SetCoords() {
-      var coords = CoordsTransformer.WorldToGrid(trForGrid.position);
+      CoordsTransformer.WorldToGrid(trForGrid.position, ref tempCoords);
       
-      if (coords.X == lastCoords.x && coords.Y == lastCoords.y)
+      if (tempCoords.X == lastCoords.x && tempCoords.Y == lastCoords.y)
         return;
       //Debug.LogError($"Update coords {coords.X} | {coords.Y}");
-      lastCoords.x = coords.X;
-      lastCoords.y = coords.Y;
+      lastCoords.x = tempCoords.X;
+      lastCoords.y = tempCoords.Y;
       
-      Coords.X = coords.X;
-      Coords.Y = coords.Y;
+      Coords = tempCoords;
       GameManager.Instance.ChunkController.CheckArea();
     }
   }

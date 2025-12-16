@@ -40,6 +40,7 @@ namespace World {
 
     private bool useSavedPlayerCoordsOnce = false;
     private Coords savedPlayerCoords;
+    private Coords enemyCoords;
     //we use spawnNearbyCells for show plantFarm, and after load we need to 
     //transfer this bool to update method for plantBox
     private bool loadFarm;
@@ -85,7 +86,7 @@ namespace World {
         removedCells = data.RemovedCells;
         changedCells = data.ChangedCells;
 
-        savedPlayerCoords = CoordsTransformer.WorldToGrid(SaveLoadSystem.Instance.gameData.PlayerData.Position);
+        CoordsTransformer.WorldToGrid(SaveLoadSystem.Instance.gameData.PlayerData.Position, ref savedPlayerCoords);
         useSavedPlayerCoordsOnce = true;
         loadFarm = true;
       }
@@ -224,8 +225,9 @@ namespace World {
 
       //for zombies
       var enemies = GameManager.Instance.ActorBaseController.ZombiesData;
+      
       foreach (var enemy in enemies) {
-        var enemyCoords = CoordsTransformer.WorldToGrid(enemy.Key);
+        CoordsTransformer.WorldToGrid(enemy.Key, ref enemyCoords);
         //Debug.LogError($"{enemyCoords.X} | {enemyCoords.Y} enemy coord");
         //Debug.LogError($"{playerCoords.Y} | {enemyCoords.Y} | {visionOffsetY}");
         if (Mathf.Abs(playerCoords.X - enemyCoords.X) < visionOffsetX

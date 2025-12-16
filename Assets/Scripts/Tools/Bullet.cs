@@ -1,6 +1,7 @@
 ﻿using Craft;
 using Scriptables.Items;
 using UnityEngine;
+using Utils;
 using World;
 
 namespace Tools {
@@ -16,7 +17,8 @@ namespace Tools {
     private int visionOffsetY;
     private PlayerStats playerStats;
     private string id;
-    private GameObject trail; 
+    private GameObject trail;
+    private Coords pos;
 
     public string Id => id;
 
@@ -96,7 +98,7 @@ namespace Tools {
       var min_y = Mathf.Clamp(playerCoords.Y - visionOffsetY, 0, rows - 1);
       var max_y = Mathf.Clamp(playerCoords.Y + visionOffsetY, 0, rows - 1);
 
-      var pos = CoordsTransformer.WorldToGrid(transform.position);
+      CoordsTransformer.WorldToGrid(transform.position, ref pos);
 
       if (pos.X < min_x || pos.X > max_x || pos.Y < min_y || pos.Y > max_y) {
         Deactivate();

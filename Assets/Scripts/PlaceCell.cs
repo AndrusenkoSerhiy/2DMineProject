@@ -38,6 +38,7 @@ public class PlaceCell : MonoBehaviour {
   private WindowsController windowsController;
   private AudioController audioController;
   private BuildingBlock currentBuildingBlock;
+  private Coords coords;
 
   private void Start() {
     playerController = GameManager.Instance.CurrPlayerController;
@@ -291,7 +292,7 @@ public class PlaceCell : MonoBehaviour {
   }
 
   private void PlaceBuildingBlock() {
-    var coords = CoordsTransformer.WorldToGrid(GetSnappedWorldPosition());
+    CoordsTransformer.WorldToGrid(GetSnappedWorldPosition(), ref coords);
     var cell = chunkController.ChunkData.ForceCellFill(resourceData, coords.X, coords.Y);
     chunkController.AfterCellChanged(cell);
     chunkController.UpdateCellAround(coords.X, coords.Y);

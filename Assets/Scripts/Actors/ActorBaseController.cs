@@ -33,7 +33,7 @@ namespace Actors {
     private int cols;
     private int rows;
     private GameManager gameManager;
-
+    private Coords playerCoords;
     public List<ActorEnemy> Enemies => enemies;
     public SerializedDictionary<Vector3, ZombieData> ZombiesData => zombiesData;
 
@@ -225,7 +225,7 @@ namespace Actors {
     //try to get pos from left or right side from player (out of visible zone)
     private Vector3 GetLeftPos(bool left = true) {
       //var playerCoords = gameManager.PlayerController.PlayerCoords.GetCoords();
-      var playerCoords = CoordsTransformer.WorldToGrid(gameManager.MainCamera.transform.position);
+      CoordsTransformer.WorldToGrid(gameManager.MainCamera.transform.position, ref playerCoords);
       var min_x = Mathf.Clamp(playerCoords.X - visionOffsetX, 0, cols - 1);
       var max_x = Mathf.Clamp(playerCoords.X + visionOffsetX, 0, cols - 1);
 
@@ -254,7 +254,7 @@ namespace Actors {
     //try get pos above the player visible zone
     private Vector3 GetUpPos() {
       //var playerCoords = gameManager.PlayerController.PlayerCoords.GetCoords();
-      var playerCoords = CoordsTransformer.WorldToGrid(gameManager.MainCamera.transform.position);
+      CoordsTransformer.WorldToGrid(gameManager.MainCamera.transform.position, ref playerCoords);
 
 
       var leftX = playerCoords.X - (visionOffsetX / 4) + 2;

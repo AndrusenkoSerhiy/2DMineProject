@@ -29,6 +29,8 @@ namespace Interaction {
     private bool isHolding;
     private float holdTime;
     private float requiredHoldDuration;
+    private string cachedInteractText;
+    private string cachedHoldText;
 
     private void Start() {
       gameManager = GameManager.Instance;
@@ -69,10 +71,7 @@ namespace Interaction {
     }
 
     private void UpdateInteractionPrompt() {
-      colliders = Physics2D.OverlapCircleAll(interactionPoint.position, radius, interactableMask).
-        OrderBy(c => Vector2.Distance(interactionPoint.position, c.transform.position))
-        .ToArray();
-      numFound = colliders.Length;
+      numFound = Physics2D.OverlapCircleNonAlloc(interactionPoint.position, radius, colliders, interactableMask);
 
       if (numFound <= 0) {
         interactable = null;
@@ -84,37 +83,41 @@ namespace Interaction {
         ShowEquipmentHoldActionPrompt();
         return;
       }
+      
+      float bestDist = float.MaxValue;
+      Vector3 pos = interactionPoint.position;
 
-      foreach (var col in colliders) {
-        interactable = col.GetComponent<IInteractable>();
+      for (int i = 0; i < numFound; i++) {
+        Collider2D col = colliders[i];
+        float dist = (col.transform.position - pos).sqrMagnitude;
 
-        if (interactable != null) {
-          break;
+        if (dist < bestDist && col.TryGetComponent(out IInteractable inter)) {
+          bestDist = dist;
+          interactable = inter;
         }
       }
-
-      if (interactable == null) {
-        return;
-      }
+      
+      if (interactable == null) return;
 
       //hide prompts because next item will don't have prompt and show prev
       objectInteractionPrompts.HideInteractionPrompt();
       objectInteractionPrompts.HideHoldInteractionPrompt();
-      
-      if (!string.IsNullOrEmpty(interactable.InteractionText))
-        objectInteractionPrompts.ShowInteractionPrompt(interactable,
-          ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName, true));
 
-      if (!interactable.HasHoldInteraction) {
-        ShowEquipmentHoldActionPrompt();
-        //return;
+      if (!string.IsNullOrEmpty(interactable.InteractionText)) {
+        cachedInteractText = ButtonPromptSprite.GetFullPrompt(interactable.InteractionText, actionName, true);
+        objectInteractionPrompts.ShowInteractionPrompt(interactable, cachedInteractText);
       }
 
-      //when you repair robot the prompt is hided
-      var str = interactable.HasHoldInteraction
-        ? ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true, true)
-        : string.Empty;
-      objectInteractionPrompts.ShowHoldInteractionPrompt(interactable, str);
+      if (interactable.HasHoldInteraction) {
+        //when you repair robot the prompt is hided
+        cachedHoldText = interactable.HasHoldInteraction
+          ? ButtonPromptSprite.GetFullPrompt(interactable.HoldInteractionText, actionName, true, true)
+          : string.Empty;
+        objectInteractionPrompts.ShowHoldInteractionPrompt(interactable, cachedHoldText); 
+      }
+      else {
+        ShowEquipmentHoldActionPrompt();
+      }
     }
 
     private void ShowEquipmentHoldActionPrompt() {

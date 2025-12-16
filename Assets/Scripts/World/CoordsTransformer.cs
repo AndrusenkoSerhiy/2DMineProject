@@ -12,15 +12,15 @@ namespace World {
     }
 
     // Convert from world position (Vector3) to grid coordinates (col, row)
-    public static Coords WorldToGrid(Vector3 position) {
+    public static void WorldToGrid(Vector3 position, ref Coords result) {
+      var config = GameManager.Instance.GameConfig;
       // Shift position back to grid coordinates
-      var col = Mathf.RoundToInt(position.x / GameManager.Instance.GameConfig.CellSizeX) +
-                GameManager.Instance.GameConfig.OriginCol;
-      col = Mathf.Clamp(col, 0, GameManager.Instance.GameConfig.ChunkSizeX - 1);
-      var row = Mathf.RoundToInt(position.y / (-GameManager.Instance.GameConfig.CellSizeY)) +
-                GameManager.Instance.GameConfig.OriginRow;
-      row = Mathf.Clamp(row, 0, GameManager.Instance.GameConfig.ChunkSizeY - 1);
-      return new Coords(col, row);
+      var col = Mathf.RoundToInt(position.x / config.CellSizeX) + config.OriginCol;
+      col = Mathf.Clamp(col, 0, config.ChunkSizeX - 1);
+      var row = Mathf.RoundToInt(position.y / (-config.CellSizeY)) + config.OriginRow;
+      row = Mathf.Clamp(row, 0, config.ChunkSizeY - 1);
+      result.X = col;
+      result.Y = row;
     }
     
     //can get coord outside the array boundaries for cell object

@@ -6,6 +6,7 @@ using Inventory;
 using Scriptables;
 using Scriptables.Stats;
 using UnityEngine;
+using Utils;
 using World;
 
 namespace Player {
@@ -36,6 +37,7 @@ namespace Player {
 
     protected PlayerStats playerStats;
     protected bool firstAttack;
+    private Coords coords;
     public PlayerStats PlayerStats => playerStats ??= GameManager.Instance.CurrPlayerController.PlayerStats;
 
     protected virtual void Awake() {
@@ -184,7 +186,7 @@ namespace Player {
     private Dictionary<Vector2Int, IDamageable> CreateCellMap(List<IDamageable> tempList) {
       var map = new Dictionary<Vector2Int, IDamageable>();
       foreach (var cell in tempList) {
-        var coords = CoordsTransformer.WorldToGrid(cell.GetPosition());
+        CoordsTransformer.WorldToGrid(cell.GetPosition(), ref coords);
         var key = new Vector2Int(coords.X, coords.Y);
         //add only first IDamageable
         if (!map.ContainsKey(key)) {

@@ -4,11 +4,11 @@ using Utils;
 
 namespace World {
   public static class CoordsTransformer {
-    private static Coords tempCoords = new Coords();
     public static Vector3 GridToWorld(int col, int row) {
       // Shift column and row by their respective origins
-      var x = (col - GameManager.Instance.GameConfig.OriginCol) * GameManager.Instance.GameConfig.CellSizeX;
-      var y = (row - GameManager.Instance.GameConfig.OriginRow) * (-GameManager.Instance.GameConfig.CellSizeY);
+      var config = GameManager.Instance.GameConfig;
+      var x = (col - config.OriginCol) * config.CellSizeX;
+      var y = (row - config.OriginRow) * (-config.CellSizeY);
       return new Vector3(x, y, 0);
     }
 
@@ -27,11 +27,12 @@ namespace World {
     //can get coord outside the array boundaries for cell object
     //use to place building on the same level then player spawned
     public static Coords MouseToGridPosition(Vector3 position) {
-      var col = Mathf.RoundToInt(position.x / GameManager.Instance.GameConfig.CellSizeX) +
-                GameManager.Instance.GameConfig.OriginCol;
-      var row = Mathf.RoundToInt(position.y / (-GameManager.Instance.GameConfig.CellSizeY)) +
-                GameManager.Instance.GameConfig.OriginRow;
-      return new Coords(col, row);
+      var config = GameManager.Instance.GameConfig;
+      
+      return new Coords(Mathf.RoundToInt(position.x / config.CellSizeX) +
+                        config.OriginCol,
+        Mathf.RoundToInt(position.y / (-config.CellSizeY)) +
+        config.OriginRow);
     }
     
     //buildings converter
@@ -43,19 +44,17 @@ namespace World {
     
     public static Coords WorldToGridBuildings(Vector3 position) {
       var original = MouseToGridPosition(position);
-      return new Coords(original.X, original.Y + GameManager.Instance.GameConfig.BuildingAreaYDiff); // convert back from real to offset
+      original.Y += GameManager.Instance.GameConfig.BuildingAreaYDiff;
+      return original; // convert back from real to offset
     }
-    
+
     public static Coords GridToBuildingsGrid(Coords original) {
-      tempCoords.X = original.X;
-      tempCoords.Y = original.Y + GameManager.Instance.GameConfig.BuildingAreaYDiff;
-      return tempCoords;
+      return new Coords(original.X,
+        original.Y + GameManager.Instance.GameConfig.BuildingAreaYDiff);
     }
     
     public static Coords GridToBuildingsGrid(int x_original, int y_original) {
-      tempCoords.X = x_original;
-      tempCoords.Y = y_original + GameManager.Instance.GameConfig.BuildingAreaYDiff;
-      return tempCoords;
+      return new Coords(x_original, y_original + GameManager.Instance.GameConfig.BuildingAreaYDiff);
     }
     
     public static Coords BuildingsGridToGrid(Coords original) {
@@ -63,8 +62,9 @@ namespace World {
     }
 
     public static Vector3 OutOfGridToWorls(int x_original, int y_original) {
-      var x = (x_original - GameManager.Instance.GameConfig.OriginCol) * GameManager.Instance.GameConfig.CellSizeX;
-      var y = (y_original - GameManager.Instance.GameConfig.OriginRow) * (-GameManager.Instance.GameConfig.CellSizeY);
+      var config = GameManager.Instance.GameConfig;
+      var x = (x_original - config.OriginCol) * config.CellSizeX;
+      var y = (y_original - config.OriginRow) * (-config.CellSizeY);
       return new Vector3(x, y, 0);
     }
   }

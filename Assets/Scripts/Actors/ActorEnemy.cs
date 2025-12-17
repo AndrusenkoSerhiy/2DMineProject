@@ -14,11 +14,12 @@ using UnityEngine.Serialization;
 using Utils;
 using Random = UnityEngine.Random;
 using DG.Tweening;
+using Player;
 
 namespace Actors {
   public class ActorEnemy : ActorBase {
     public bool shouldBeDamaging { get; private set; } = false;
-    private List<IDamageable> iDamageables = new List<IDamageable>();
+    //private List<IDamageable> iDamageables = new List<IDamageable>();
     private IDamageable currentTarget;
 
     [SerializeField] private SpriteRenderer _spriteRenderer;
@@ -35,7 +36,7 @@ namespace Actors {
     [SerializeField] private float destroyAfter = 5f;
     [SerializeField] private LayerMask excludeLayerOnDeath;
     [SerializeField] private LayerMask excludeLayerOnAlive;
-    
+    private Material _material;
     private IEnumerator coroutine;
     public Coords GetCoords => coords.GetCoords();
     public Coords GetCoordsOutOfBounds => coords.GetCoordsOutOfBounds();
@@ -51,6 +52,8 @@ namespace Actors {
     private bool isDead;
 
     private Vector3 currPosition;
+    private PlayerCoords playerCoords;
+    private int playerAreaHeight;
     private void Update() {
       PlayGroan();
       ActivateZombieByDistance();
@@ -58,9 +61,9 @@ namespace Actors {
 
     //zombie cant fall if chunk under them don't load
     private void ActivateZombieByDistance() {
-      var playerCoords = GameManager.Instance.PlayerController.PlayerCoords.GetCoords();
-      var upDownY = Mathf.Abs(playerCoords.Y - GetCoords.Y);
-      if (upDownY < GameManager.Instance.GameConfig.PlayerAreaHeight / 3) {
+      var plCoods = playerCoords.GetCoords();
+      var upDownY = Mathf.Abs(plCoods.Y - plCoods.Y);
+      if (upDownY < playerAreaHeight) {
         rigidbody.simulated = true;
       }
       else {
@@ -151,11 +154,13 @@ namespace Actors {
 
     protected override void Awake() {
       base.Awake();
-
-      _spriteRenderer.material.SetFloat("_Blink", 0f);
-      _spriteRenderer.material.SetFloat("_Dissolve", 1f);
+      _material = _spriteRenderer.material;
+      _material.SetFloat("_Blink", 0f);
+      _material.SetFloat("_Dissolve", 1f);
 
       audioController = GameManager.Instance.AudioController;
+      playerCoords = GameManager.Instance.PlayerController.PlayerCoords;
+      playerAreaHeight = GameManager.Instance.GameConfig.PlayerAreaHeight / 3; 
       DamageableType = DamageableType.Enemy;
       AnimationEventManager.onAttackStarted += HandleAnimationStarted;
       AnimationEventManager.onAttackEnded += HandleAnimationEnded;
@@ -268,7 +273,7 @@ namespace Actors {
 
       //TODO choose damage for player or cell
       currentTarget.Damage(stats.EntityDamage, false);
-      iDamageables.Add(currentTarget);
+      //iDamageables.Add(currentTarget);
     }
 
     public PlayerStats GetStats() {
@@ -277,9 +282,9 @@ namespace Actors {
 
     public override void Damage(float damage, bool isPlayer) {
       //Debug.Log("Enemy Damage");
-      _spriteRenderer.material.SetFloat("_Blink", 1f);
-      DOTween.To(() => _spriteRenderer.material.GetFloat("_Blink"),
-      x => _spriteRenderer.material.SetFloat("_Blink", x), 0f, 0.2f)
+      _material.SetFloat("_Blink", 1f);
+      DOTween.To(() => _material.GetFloat("_Blink"),
+      x => _material.SetFloat("_Blink", x), 0f, 0.2f)
       .SetEase(Ease.InOutSine);
       Vector3 pos = transform.position;
       pos.y = pos.y + 1f;
@@ -330,8 +335,8 @@ namespace Actors {
         var shape = ps.shape;
         shape.spriteRenderer = _spriteRenderer;
 
-        DOTween.To(() => _spriteRenderer.material.GetFloat("_Dissolve"),
-        x => _spriteRenderer.material.SetFloat("_Dissolve", x), 0f, .8f)
+        DOTween.To(() => _material.GetFloat("_Dissolve"),
+        x => _material.SetFloat("_Dissolve", x), 0f, .8f)
         .SetEase(Ease.InOutSine);
 
       });
@@ -349,6 +354,7 @@ namespace Actors {
       if (!destroyAfterDeath)
         return;
       //Debug.LogError("destroy after death");
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       coroutine = WaitDestroy();
       StartCoroutine(coroutine);
     }
@@ -368,8 +374,8 @@ namespace Actors {
       _animator.Update(0f);
       rigidbody.excludeLayers = excludeLayerOnAlive;
       InitHealth();
-      _spriteRenderer.material.SetFloat("_Blink", 0f);
-      _spriteRenderer.material.SetFloat("_Dissolve", 1f);
+      _material.SetFloat("_Blink", 0f);
+      _material.SetFloat("_Dissolve", 1f);
     }
 
     private void SpawnDrop() {

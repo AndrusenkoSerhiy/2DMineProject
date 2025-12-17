@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Inventory;
 using TMPro;
 using UnityEngine;
@@ -31,6 +30,7 @@ namespace Interaction {
     private float requiredHoldDuration;
     private string cachedInteractText;
     private string cachedHoldText;
+    private string cachedEquipmentHoldText;
 
     private void Start() {
       gameManager = GameManager.Instance;
@@ -54,7 +54,7 @@ namespace Interaction {
 
     private void Update() {
       //if any window is open don't allow to find items and show interaction message
-      if (GameManager.Instance.WindowsController.IsAnyWindowOpen ||
+      if (gameManager.WindowsController.IsAnyWindowOpen ||
           gameManager.MiningRobotController.GetExitInteract()) {
         interactionPromtUI.ShowPrompt(false);
 
@@ -122,9 +122,9 @@ namespace Interaction {
 
     private void ShowEquipmentHoldActionPrompt() {
       if (playerEquipment.ShowEquippedItemHoldAction()) {
-        holdInteractionPromtUI.ShowPrompt(true,
-          ButtonPromptSprite.GetFullPrompt(playerEquipment.EquippedItemHoldActionText(),
-            actionName + "_hold"));
+        cachedEquipmentHoldText = ButtonPromptSprite.GetFullPrompt(playerEquipment.EquippedItemHoldActionText(),
+          actionName + "_hold");
+        holdInteractionPromtUI.ShowPrompt(true, cachedEquipmentHoldText);
       }
       else {
         holdInteractionPromtUI.ShowPrompt(false);

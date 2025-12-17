@@ -165,7 +165,7 @@ namespace World {
         .gameObject;
       ParticleSystem ps = psGo.GetComponent<ParticleSystem>();
       //ps.startColor = resourceData.EffectColor;
-      if (ps != null) {
+      if (ps != null && resourceData != null) {
         var main = ps.main;
         main.startColor = new ParticleSystem.MinMaxGradient(resourceData.EffectColor);
       }

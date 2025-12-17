@@ -354,6 +354,9 @@ namespace World {
     }
 
     public void TriggerCellDestroyed(CellObject cellObject, bool silent = false) {
+      if(cellObject == null || cellObject.CellData == null)
+        return;
+      
       var x = cellObject.CellData.x;
       var y = cellObject.CellData.y;
       cellObject.CellData.Destroy();

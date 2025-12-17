@@ -7,6 +7,7 @@ namespace Actors {
   public class ActorPlayer : ActorBase, ISaveLoad {
     public static event Action OnPlayerDeath;
     public static event Action OnPlayerRespawn;
+    public static event Action OnPlayerTakeDamage;
 
     protected override void Awake() {
       base.Awake();
@@ -56,6 +57,11 @@ namespace Actors {
         GameManager.Instance.PoolEffects.SpawnFromPool("PlayerDeathParticleEffect", transform.position, 
           Quaternion.identity);
       }
+    }
+
+    protected override void PlayTakeDamage() {
+      base.PlayTakeDamage();
+      OnPlayerTakeDamage?.Invoke();
     }
 
     public override void Respawn() {

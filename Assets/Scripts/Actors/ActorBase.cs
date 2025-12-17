@@ -52,7 +52,7 @@ namespace Actors {
       PlayDeathAnim();
     }
 
-    private void PlayTakeDamage() {
+    protected virtual void PlayTakeDamage() {
       _animator.SetTrigger(animParam.TakeDamage);
     }
 

@@ -235,6 +235,10 @@ namespace World {
     }
 
     private void MoveLayer(int layerIndex, Vector2 deltaMovement) {
+      if (layers[layerIndex].speedMultiplier <= 0) {
+        return;
+      }
+
       foreach (var column in activeColumns[layerIndex]) {
         column.gameObject.transform.position += new Vector3(deltaMovement.x * layers[layerIndex].speedMultiplier,
           deltaMovement.y * layers[layerIndex].speedMultiplier, 0);

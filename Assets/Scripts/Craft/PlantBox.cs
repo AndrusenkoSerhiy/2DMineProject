@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Farm;
 using Interaction;
 using SaveSystem;
@@ -21,7 +22,7 @@ namespace Craft {
     [SerializeField] private Color destroyEffectColor = new(148, 198, 255, 255);
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private SpriteRenderer groundIcon;
-    
+
     [SerializeField] private bool hasGround;
     [SerializeField] private bool hasSeeds;
     [SerializeField] private bool startGrowing;
@@ -29,17 +30,21 @@ namespace Craft {
 
     [SerializeField] private Seeds currSeed;
     [SerializeField] private ItemObject currHarvest;
+    [SerializeField] private ItemObject currItemToHarvest;
     [SerializeField] private int timeToGrowth;
     [SerializeField] private float currTime;
-    
+
     [SerializeField] private List<SpriteRenderer> grownSprites;
 
     [SerializeField] private string AddGroundStr;
+    [SerializeField] private string AddGroundFailedStr;
     [SerializeField] private string AddSeedStr;
+    [SerializeField] private string AddSeedFailedStr;
     [SerializeField] private string GrowingStr;
     [SerializeField] private string CollectStr;
+    [SerializeField] private string CollectFailedStr;
     [SerializeField] private bool canDestroyCellsBelow = true;
-    
+
     public bool HasGround => hasGround;
     public bool HasSeeds => hasSeeds;
     public bool StartGrowing => startGrowing;
@@ -53,11 +58,12 @@ namespace Craft {
     public bool HasHoldInteraction => hasHoldInteraction;
     public string HoldInteractionText => "Collect seed";
     public string HoldProcessText { get; }
+
     private void Awake() {
       gameManager = GameManager.Instance;
       cellHandler = new CellHolderHandler(OnAllBaseCellsDestroyed, stationRecipe, transform.position);
     }
-    
+
     public void SetParamFromManager(ProcessingPlantBox data, bool load = false) {
       hasGround = data.HasGround;
       hasSeeds = data.HasSeeds;
@@ -67,24 +73,26 @@ namespace Craft {
       currHarvest = data.CurrHarvest;
       timeToGrowth = data.TimeToGrowth;
       currTime = data.CurrTime;
-      
+
       if (currTime > 0) {
         if (!load) {
           var now = DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds;
           var timePassed = now - data.LastUpdateTime;
-          currTime += (float)timePassed; 
+          currTime += (float)timePassed;
         }
       }
       else {
         ResetGrownSprites();
       }
+
       UpdateSprites();
     }
-    
+
     private void ResetGrownSprites() {
       foreach (var sprite in grownSprites) {
         sprite.enabled = false;
       }
+
       groundIcon.enabled = false;
     }
 
@@ -92,19 +100,22 @@ namespace Craft {
       if (hasGround) {
         groundIcon.enabled = true;
       }
+
       SetInfoFromSeedData();
       if (hasSeeds) {
         SetGrownSprites();
       }
     }
+
     public bool Interact(PlayerInteractor playerInteractor) {
       var equipedItem = gameManager.PlayerEquipment.EquippedItem;
 
       if (hasRipened) {
+        if (!HasItemToHarvestInHands()) return false;
         AddToInventory(currHarvest);
         ClearPlantBox();
       }
-      
+
       if (!hasGround) {
         if (equipedItem != null && equipedItem.info == dirt) {
           groundIcon.enabled = true;
@@ -124,7 +135,7 @@ namespace Craft {
           //Debug.LogError($"growing time {((Seeds)currSeed).TimeToGrowth}");
         }
       }
-      
+
       return true;
     }
 
@@ -132,6 +143,7 @@ namespace Craft {
       if (currSeed != null) {
         timeToGrowth = currSeed.TimeToGrowth;
         currHarvest = currSeed.Harvest;
+        currItemToHarvest = currSeed.ItemToHarvest;
         var spritesFromSeed = currSeed.GrownSprites;
         for (int i = 0; i < grownSprites.Count; i++) {
           grownSprites[i].sprite = spritesFromSeed[i];
@@ -143,6 +155,7 @@ namespace Craft {
       foreach (var sprite in grownSprites) {
         sprite.enabled = false;
       }
+
       grownSprites[index].enabled = true;
     }
 
@@ -158,11 +171,11 @@ namespace Craft {
       if (currTime < timeToGrowth * .5f) {
         ActivateGrownSprites(0);
       }
-      
+
       if (currTime >= timeToGrowth * .5f) {
         ActivateGrownSprites(1);
       }
-        
+
       if (currTime >= timeToGrowth) {
         ActivateGrownSprites(2);
         startGrowing = false;
@@ -170,23 +183,39 @@ namespace Craft {
         hasHoldInteraction = false;
       }
     }
+
+    bool HasDirtInHands() {
+      var equipedItem = gameManager.PlayerEquipment.EquippedItem;
+      return equipedItem != null && equipedItem.info == dirt;
+    }
+
+    bool HasSeedInHands() {
+      var equipedItem = gameManager.PlayerEquipment.EquippedItem;
+      return equipedItem != null && equipedItem.info.Type == ItemType.Seeds;
+    }
+
+    bool HasItemToHarvestInHands() {
+      var equipedItem = gameManager.PlayerEquipment.EquippedItem;
+      return currItemToHarvest == null || (equipedItem != null && equipedItem.info == currItemToHarvest);
+    }
+
     private string GetInteractionText() {
       if (hasRipened) {
-        return CollectStr;
+        return HasItemToHarvestInHands() ? CollectStr : string.Format(CollectFailedStr,currItemToHarvest.Name);
       }
-      
+
       if (!hasGround) {
-        return AddGroundStr;
+        return HasDirtInHands() ? AddGroundStr : AddGroundFailedStr;
       }
 
       if (!hasSeeds) {
-        return AddSeedStr;
+        return HasSeedInHands() ? AddSeedStr : AddSeedFailedStr;
       }
 
       if (startGrowing) {
         return GrowingStr;
       }
-      
+
       return string.Empty;
     }
 
@@ -194,7 +223,7 @@ namespace Craft {
       if (!hasHoldInteraction || hasRipened) {
         return false;
       }
-      
+
       AddToInventory(currSeed);
       hasHoldInteraction = false;
       ClearPlantBox();
@@ -215,7 +244,7 @@ namespace Craft {
     public Bounds GetBounds() {
       return spriteRenderer ? spriteRenderer.bounds : new Bounds(transform.position, Vector3.zero);
     }
-    
+
     private void OnAllBaseCellsDestroyed() {
       var psGo = GameManager.Instance.PoolEffects
         .SpawnFromPool("CellDestroyEffect", transform.position, Quaternion.identity)
@@ -237,11 +266,13 @@ namespace Craft {
       currTime = 0;
       currSeed = null;
       currHarvest = null;
+      currItemToHarvest = null;
       groundIcon.enabled = false;
 
       foreach (var plant in grownSprites) {
         plant.enabled = false;
       }
+
       hasGround = false;
       hasSeeds = false;
       hasRipened = false;

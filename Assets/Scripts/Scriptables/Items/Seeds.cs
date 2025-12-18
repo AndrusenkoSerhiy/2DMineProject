@@ -6,6 +6,7 @@ namespace Scriptables.Items {
   public class Seeds : ItemObject {
     public int TimeToGrowth;
     public ItemObject Harvest;
+    public ItemObject ItemToHarvest;
     public List<Sprite> GrownSprites;
   }
 }

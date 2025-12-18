@@ -231,6 +231,7 @@ MonoBehaviour:
   hasRipened: 0
   currSeed: {fileID: 0}
   currHarvest: {fileID: 0}
+  currItemToHarvest: {fileID: 0}
   timeToGrowth: 0
   currTime: 0
   grownSprites:
@@ -238,9 +239,13 @@ MonoBehaviour:
   - {fileID: 5498257288185244561}
   - {fileID: 5109952424620213658}
   AddGroundStr: Add ground
+  AddGroundFailedStr: Need dirt in hand
   AddSeedStr: Add seed
+  AddSeedFailedStr: Need seeds in hand
   GrowingStr: Growing
   CollectStr: Collect harvest
+  CollectFailedStr: Need {0} in hand
+  canDestroyCellsBelow: 1
 --- !u!1 &4041299947039996774
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b4cf83abade4eb7937fdac8db25a0fc, type: 3}
+  m_Name: PineSeed
+  m_EditorClassIdentifier: Assembly-CSharp::Scriptables.Items.Seeds
+  id: a7ef2e50-a369-4917-bb56-84820fc92f68
+  Type: 30
+  Name: PineSeed
+  Weight: 1
+  ParentType: 2
+  UiDisplay: {fileID: 21300000, guid: d311848387d325646bbcc9f3ada34f0f, type: 3}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: 58e7302b8814bc94aad20617e292d55a, type: 3}
+  Stackable: 0
+  MaxStackSize: 20
+  SpawnPosition: {x: -0.42, y: -0.89, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 3890226224433729309, guid: feadcf2f3e161ed40a3aaaee9ee32e81, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: 'Pine seed
+
+'
+  statModifiers: []
+  TimeToGrowth: 270
+  Harvest: {fileID: 11400000, guid: 20d9c6f0055d0924b8623819e3907288, type: 2}
+  ItemToHarvest: {fileID: 0}
+  GrownSprites:
+  - {fileID: 21300000, guid: ec5fe61a39f97454ba365e7069de5be3, type: 3}
+  - {fileID: 21300000, guid: a8f8391f609087a43a75f496f5631f84, type: 3}
+  - {fileID: 21300000, guid: c7098b53ef841cb4794dbb142b3e1354, type: 3}

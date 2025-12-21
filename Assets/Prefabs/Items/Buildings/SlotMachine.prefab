@@ -23997,14 +23997,23 @@ MonoBehaviour:
   destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
   spriteRenderer: {fileID: 2329576825058850560}
   buildObject: {fileID: 8353487390178152608}
-  stationObject: {fileID: 0}
   itemObject: {fileID: 11400000, guid: 9f6aa36c4e806764bb134d5f00c8283a, type: 2}
   animatorController: {fileID: 1647577218372943261}
   Slot1Sprite: {fileID: 2804917169549086699}
   Slot2Sprite: {fileID: 3216574382144484640}
   Slot3Sprite: {fileID: 2276205694417137713}
+  canDestroyCellsBelow: 1
   possibleRewards:
   - itemData: {fileID: 11400000, guid: 17c91b937474e6345968eb301aa39aea, type: 2}
+    amount: {x: 1, y: 5}
+    weight: 7
+  - itemData: {fileID: 11400000, guid: 2a3481b24b2c5dc469e66b668981bdd8, type: 2}
+    amount: {x: 1, y: 5}
+    weight: 7
+  - itemData: {fileID: 11400000, guid: 865296cc94e863b4aa44395161d2dc03, type: 2}
+    amount: {x: 1, y: 5}
+    weight: 7
+  - itemData: {fileID: 11400000, guid: 923a9d5011627344e9b750c28ca3730f, type: 2}
     amount: {x: 1, y: 5}
     weight: 7
   - itemData: {fileID: 11400000, guid: a03ba1c09a86eab4d9e124f7e5c034af, type: 2}
@@ -24029,6 +24038,9 @@ MonoBehaviour:
     amount: {x: 1, y: 5}
     weight: 7
   - itemData: {fileID: 11400000, guid: db0be83bc9865b8498552bc76a3dcf23, type: 2}
+    amount: {x: 1, y: 1}
+    weight: 7
+  - itemData: {fileID: 11400000, guid: d4fefab83ff6d8a4f8842408392c13b8, type: 2}
     amount: {x: 1, y: 1}
     weight: 7
   - itemData: {fileID: 11400000, guid: b842459342758864ea8fd5dd1fc317ac, type: 2}

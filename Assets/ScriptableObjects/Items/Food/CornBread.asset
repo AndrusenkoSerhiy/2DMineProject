@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158a47212d92487daa83dcfe8ddff8f5, type: 3}
+  m_Name: CornBread
+  m_EditorClassIdentifier: 
+  id: 15b3d639-ad1d-4675-a53c-331a3a8f311a
+  Type: 1
+  Name: Corn Bread
+  Weight: 5
+  ParentType: 2
+  UiDisplay: {fileID: 21300000, guid: 762ea44fcf70e1f488f8693ac4e0bc0f, type: 3}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: a9869d793a3a46b44b22e4be7ea8126d, type: 3}
+  Stackable: 1
+  MaxStackSize: 20
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 21194aea85cc91a4fbbddde1bdb00407, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: 'Food
+
+    +10 Max Health
+
+    +10 Max Stamina
+
+    Duration: 15 min'
+  statModifiers:
+  - type: 2
+    applyType: 1
+    operatorType: 1
+    value: 10
+    canApplyIfValueIsMax: 1
+    permanent: 0
+    duration: 900
+    timeLeft: 0
+    canApplyWhenPreviousAt: 20
+    removePrevious: 5
+    modifierDisplayObject: {fileID: 11400000, guid: c54aaa7f91949184ab0c94ae995e4970, type: 2}
+  - type: 21
+    applyType: 1
+    operatorType: 1
+    value: 10
+    canApplyIfValueIsMax: 1
+    permanent: 0
+    duration: 900
+    timeLeft: 0
+    canApplyWhenPreviousAt: 20
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 1
+    applyType: 1
+    operatorType: 1
+    value: 10
+    canApplyIfValueIsMax: 1
+    permanent: 1
+    duration: 0
+    timeLeft: 0
+    canApplyWhenPreviousAt: 0
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  - type: 20
+    applyType: 1
+    operatorType: 1
+    value: 10
+    canApplyIfValueIsMax: 1
+    permanent: 1
+    duration: 0
+    timeLeft: 0
+    canApplyWhenPreviousAt: 0
+    removePrevious: 1
+    modifierDisplayObject: {fileID: 0}
+  consumeSound: {fileID: 11400000, guid: 37727e2e4e44dac418f60e497860df27, type: 2}

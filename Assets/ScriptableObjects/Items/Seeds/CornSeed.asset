@@ -19,7 +19,7 @@ MonoBehaviour:
   ParentType: 2
   UiDisplay: {fileID: 21300000, guid: d311848387d325646bbcc9f3ada34f0f, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 4adb83a32dda22d40bedd7c9833dacf1, type: 3}
-  Stackable: 0
+  Stackable: 1
   MaxStackSize: 20
   SpawnPosition: {x: -0.42, y: -0.89, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
@@ -30,8 +30,16 @@ MonoBehaviour:
 
 '
   statModifiers: []
-  TimeToGrowth: 270
-  Harvest: {fileID: 11400000, guid: 20d9c6f0055d0924b8623819e3907288, type: 2}
+  TimeToGrowthMin: 180
+  TimeToGrowthMax: 220
+  HarvestList:
+  - Harvest: {fileID: 11400000, guid: 20d9c6f0055d0924b8623819e3907288, type: 2}
+    MinCount: 2
+    MaxCount: 4
+  - Harvest: {fileID: 11400000}
+    MinCount: 1
+    MaxCount: 2
+  ItemToHarvest: {fileID: 0}
   GrownSprites:
   - {fileID: 21300000, guid: ec5fe61a39f97454ba365e7069de5be3, type: 3}
   - {fileID: 21300000, guid: a8f8391f609087a43a75f496f5631f84, type: 3}

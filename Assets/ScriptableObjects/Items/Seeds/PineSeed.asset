@@ -12,28 +12,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b4cf83abade4eb7937fdac8db25a0fc, type: 3}
   m_Name: PineSeed
   m_EditorClassIdentifier: Assembly-CSharp::Scriptables.Items.Seeds
-  id: a7ef2e50-a369-4917-bb56-84820fc92f68
+  id: 5c4b1aa6-49f9-45d0-962a-19c522ef8379
   Type: 30
   Name: PineSeed
   Weight: 1
   ParentType: 2
-  UiDisplay: {fileID: 21300000, guid: d311848387d325646bbcc9f3ada34f0f, type: 3}
+  UiDisplay: {fileID: 21300000, guid: cd6aa669b44dddd44a1b2ec905eddc6e, type: 3}
   CharacterDisplay: {fileID: 3890226224433729309, guid: 58e7302b8814bc94aad20617e292d55a, type: 3}
-  Stackable: 0
+  Stackable: 1
   MaxStackSize: 20
   SpawnPosition: {x: -0.42, y: -0.89, z: 0}
   SpawnRotation: {x: 0, y: 0, z: 0}
-  spawnPrefab: {fileID: 3890226224433729309, guid: feadcf2f3e161ed40a3aaaee9ee32e81, type: 3}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 21a5b0aa615acfc4faed3dcc8a2895af, type: 3}
   CanMoveToAnotherInventory: 1
   CanDrop: 1
   Description: 'Pine seed
 
 '
   statModifiers: []
-  TimeToGrowth: 270
-  Harvest: {fileID: 11400000, guid: 20d9c6f0055d0924b8623819e3907288, type: 2}
-  ItemToHarvest: {fileID: 0}
+  TimeToGrowthMin: 230
+  TimeToGrowthMax: 270
+  HarvestList:
+  - Harvest: {fileID: 11400000, guid: ae331a09b254a1d41b1204a3da18f873, type: 2}
+    MinCount: 3
+    MaxCount: 5
+  - Harvest: {fileID: 11400000}
+    MinCount: 1
+    MaxCount: 3
+  ItemToHarvest: {fileID: 11400000, guid: d4fefab83ff6d8a4f8842408392c13b8, type: 2}
   GrownSprites:
-  - {fileID: 21300000, guid: ec5fe61a39f97454ba365e7069de5be3, type: 3}
-  - {fileID: 21300000, guid: a8f8391f609087a43a75f496f5631f84, type: 3}
-  - {fileID: 21300000, guid: c7098b53ef841cb4794dbb142b3e1354, type: 3}
+  - {fileID: 21300000, guid: 0e7a459866b8a91479149b7cc7ba66b4, type: 3}
+  - {fileID: 21300000, guid: df95bbeaea6bbfb4a9f09df99347da9e, type: 3}
+  - {fileID: 21300000, guid: a75f9f8b8c2092c48b205f196e05c5a6, type: 3}

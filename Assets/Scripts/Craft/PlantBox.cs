@@ -8,6 +8,7 @@ using Scriptables.Craft;
 using Scriptables.Items;
 using UnityEngine;
 using World;
+using Random = UnityEngine.Random;
 
 namespace Craft {
   public class PlantBox : MonoBehaviour, IInteractable, IBaseCellHolder {
@@ -29,10 +30,11 @@ namespace Craft {
     [SerializeField] private bool hasRipened;
 
     [SerializeField] private Seeds currSeed;
-    [SerializeField] private ItemObject currHarvest;
+    [SerializeField] private List<SeedHarvest> currHarvest;
     [SerializeField] private ItemObject currItemToHarvest;
     [SerializeField] private int timeToGrowth;
     [SerializeField] private float currTime;
+    [SerializeField] private int currIndex = -1;
 
     [SerializeField] private List<SpriteRenderer> grownSprites;
 
@@ -51,7 +53,7 @@ namespace Craft {
     public bool HasRipened => hasRipened;
 
     public Seeds CurrSeed => currSeed;
-    public ItemObject CurrHarvest => currHarvest;
+    public List<SeedHarvest> CurrHarvest => currHarvest;
     public int TimeToGrowth => timeToGrowth;
     public float CurrTime => currTime;
     public string InteractionText => GetInteractionText();
@@ -70,7 +72,7 @@ namespace Craft {
       startGrowing = data.StartGrowing;
       hasRipened = data.HasRipened;
       currSeed = data.CurrSeed;
-      currHarvest = data.CurrHarvest;
+      currHarvest = data.CurrHarvest != null ? new List<SeedHarvest>(data.CurrHarvest) : new List<SeedHarvest>();
       timeToGrowth = data.TimeToGrowth;
       currTime = data.CurrTime;
 
@@ -112,7 +114,11 @@ namespace Craft {
 
       if (hasRipened) {
         if (!HasItemToHarvestInHands()) return false;
-        AddToInventory(currHarvest);
+        if (equipedItem != null) equipedItem.ApplyDurabilityLoss(true);
+        for (int i = 0; i < currHarvest.Count; i++) {
+          AddToInventory(currHarvest[i].Harvest, Random.Range(currHarvest[i].MinCount, currHarvest[i].MaxCount));
+        }
+
         ClearPlantBox();
       }
 
@@ -141,8 +147,8 @@ namespace Craft {
 
     private void SetInfoFromSeedData() {
       if (currSeed != null) {
-        timeToGrowth = currSeed.TimeToGrowth;
-        currHarvest = currSeed.Harvest;
+        timeToGrowth = Random.Range(currSeed.TimeToGrowthMin, currSeed.TimeToGrowthMax);
+        currHarvest = new List<SeedHarvest>(currSeed.HarvestList);
         currItemToHarvest = currSeed.ItemToHarvest;
         var spritesFromSeed = currSeed.GrownSprites;
         for (int i = 0; i < grownSprites.Count; i++) {
@@ -152,10 +158,15 @@ namespace Craft {
     }
 
     private void ActivateGrownSprites(int index) {
+      if (currIndex == index) return;
+      currIndex = index;
       foreach (var sprite in grownSprites) {
         sprite.enabled = false;
       }
 
+      var scale = grownSprites[index].transform.localScale;
+      scale.x = Random.value < 0.5f ? -1 : 1;
+      grownSprites[index].transform.localScale = scale;
       grownSprites[index].enabled = true;
     }
 
@@ -201,7 +212,7 @@ namespace Craft {
 
     private string GetInteractionText() {
       if (hasRipened) {
-        return HasItemToHarvestInHands() ? CollectStr : string.Format(CollectFailedStr,currItemToHarvest.Name);
+        return HasItemToHarvestInHands() ? CollectStr : string.Format(CollectFailedStr, currItemToHarvest.Name);
       }
 
       if (!hasGround) {
@@ -230,15 +241,13 @@ namespace Craft {
       return true;
     }
 
-    private void AddToInventory(ItemObject itemObject) {
+    private void AddToInventory(ItemObject itemObject, int amount = 1) {
       if (!gameManager.PlayerInventory.CanAddItemToInventory(itemObject)) {
         gameManager.MessagesManager.ShowSimpleMessage("Inventory is full");
         return;
       }
 
-      var addedAmount =
-        gameManager.PlayerInventory.AddItemToInventoryWithOverflowDrop(new Item(itemObject, 0), 1);
-      gameManager.MessagesManager.ShowPickupResourceMessage(itemObject, addedAmount);
+      gameManager.PlayerInventory.AddItemToInventory(itemObject, amount, grownSprites[1].transform.position);
     }
 
     public Bounds GetBounds() {
@@ -264,6 +273,7 @@ namespace Craft {
     private void ClearPlantBox() {
       startGrowing = false;
       currTime = 0;
+      currIndex = -1;
       currSeed = null;
       currHarvest = null;
       currItemToHarvest = null;

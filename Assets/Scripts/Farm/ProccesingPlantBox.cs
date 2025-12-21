@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Scriptables.Items;
 
 namespace Farm {
@@ -11,7 +12,7 @@ namespace Farm {
     public bool HasRipened;
 
     public Seeds CurrSeed;
-    public ItemObject CurrHarvest;
+    public List<SeedHarvest> CurrHarvest = new List<SeedHarvest>();
     public int TimeToGrowth;
     public float CurrTime;
     public double LastUpdateTime;

@@ -226,6 +226,7 @@ MonoBehaviour:
   destroyEffectColor: {r: 148, g: 198, b: 255, a: 255}
   spriteRenderer: {fileID: 0}
   PlayerOwner: 0
+  canDestroyCellsBelow: 1
   bonusResources:
   - item: {fileID: 11400000, guid: db43257807b832a4f98163cfbb108812, type: 2}
     chance: 0.5
@@ -248,3 +249,9 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: f49a95b357ce9db45b858fdb52a0bb7f, type: 2}
     chance: 0.5
     rndCount: {x: 4, y: 7}
+  - item: {fileID: 11400000, guid: 2a3481b24b2c5dc469e66b668981bdd8, type: 2}
+    chance: 0.5
+    rndCount: {x: 1, y: 2}
+  - item: {fileID: 11400000, guid: 865296cc94e863b4aa44395161d2dc03, type: 2}
+    chance: 0.5
+    rndCount: {x: 1, y: 2}

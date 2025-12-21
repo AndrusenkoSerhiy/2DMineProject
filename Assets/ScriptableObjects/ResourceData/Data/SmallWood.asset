@@ -70,6 +70,12 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: f49a95b357ce9db45b858fdb52a0bb7f, type: 2}
     chance: 0.4
     rndCount: {x: 3, y: 5}
+  - item: {fileID: 11400000, guid: 2a3481b24b2c5dc469e66b668981bdd8, type: 2}
+    chance: 0.4
+    rndCount: {x: 1, y: 3}
+  - item: {fileID: 11400000, guid: 865296cc94e863b4aa44395161d2dc03, type: 2}
+    chance: 0.4
+    rndCount: {x: 1, y: 3}
   OnTakeDamageAudioData: {fileID: 11400000, guid: 8c31f43c9a736a24696ae83244e0bdf0, type: 2}
   debug: 0
   CanTakeDamage: 1

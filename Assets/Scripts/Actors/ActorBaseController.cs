@@ -60,6 +60,7 @@ namespace Actors {
       //Debug.LogError("Pause Zombies");
       foreach (var enemy in enemies) {
         enemy.PauseBehaviour();
+        enemy.PauseAnimator(true);
       }
     }
 
@@ -67,6 +68,7 @@ namespace Actors {
       //Debug.LogError("Unpause Zombies");
       foreach (var enemy in enemies) {
         enemy.UnpauseBehaviour();
+        enemy.PauseAnimator(false);
       }
     }
 

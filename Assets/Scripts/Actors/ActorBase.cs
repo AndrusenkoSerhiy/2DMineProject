@@ -33,6 +33,10 @@ namespace Actors {
       set { _hasTakenDamage = value; }
     }*/
 
+    //use for stop zombie when we pressed pause (stop attack)
+    public void PauseAnimator(bool state) {
+      _animator.speed = state ? 0 : 1;
+    }
     public virtual void Damage(float damage, bool isPlayer) {
       //get param from animator
       if (IsDead)

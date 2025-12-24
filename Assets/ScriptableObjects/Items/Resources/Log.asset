@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45ffae542be510841ad8c188bc4d1a90, type: 3}
+  m_Name: Log
+  m_EditorClassIdentifier: 
+  id: 95858f37-598c-4815-959b-27bc845c684d
+  Type: 0
+  Name: Log
+  Weight: 0
+  ParentType: 2
+  UiDisplay: {fileID: 21300000, guid: 46cb9c16e7fc5d74c8af2a38a4c39c35, type: 3}
+  CharacterDisplay: {fileID: 3890226224433729309, guid: c1217c2637b65754084de96db98d0c19, type: 3}
+  Stackable: 1
+  MaxStackSize: 999
+  SpawnPosition: {x: 0, y: 0, z: 0}
+  SpawnRotation: {x: 0, y: 0, z: 0}
+  spawnPrefab: {fileID: 3890226224433729309, guid: 7f20b12e7d1218d45b0112566b747f39, type: 3}
+  CanMoveToAnotherInventory: 1
+  CanDrop: 1
+  Description: Crafting material
+  statModifiers: []

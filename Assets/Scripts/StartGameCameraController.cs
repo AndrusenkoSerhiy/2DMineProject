@@ -36,7 +36,7 @@ public class StartGameCameraController : MonoBehaviour {
 
   public void Play() {
     followCoroutine = StartCoroutine(FollowPlayer());
-    vignetteCoroutine = StartCoroutine(FadeVignette(0.537f, 1.5f));
+    vignetteCoroutine = StartCoroutine(FadeVignette(0.436f, 1.5f));
   }
 
   public void SetCameraTarget() {

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb5c8db67648502478d850572187dda7, type: 3}
+  m_Name: 4_Food
+  m_EditorClassIdentifier: Assembly-CSharp::Scriptables.Objectives.JournalEntrySO
+  id: a6c4c339-c00c-4494-8a34-a48f059c67b0
+  uniqueID: 4
+  entryName: Food
+  subName: Eating is more important than I thought.
+  description: "Food doesn\u2019t just fill my stomach \u2014 it makes me stronger.\nThere
+    are three types of food:\nMeat\nVegetables\nDesserts\nEach type gives a time-based
+    buff.\nCooked food is always better than raw.\nImportant rule:\nI can\u2019t
+    eat only one type of food.\nEach food type has its own buff slot.\nSo if I want
+    to be at my best, I need balance."
+  imageRef: {fileID: 21300000, guid: d2e00ccee2583bb4386f4b7d7b38a38b, type: 3}

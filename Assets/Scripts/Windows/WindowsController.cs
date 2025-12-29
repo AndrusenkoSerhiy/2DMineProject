@@ -12,6 +12,8 @@ namespace Windows {
     public List<WindowBase> WindowsList => windowsList;
     public bool IsAnyWindowOpen => isAnyWindowOpen;
 
+    [SerializeField] private JournalWindow journalWindow;
+    
     public T GetWindow<T>() where T : WindowBase {
       return windowsList.OfType<T>().FirstOrDefault();
     }
@@ -38,6 +40,16 @@ namespace Windows {
 
     private void Start() {
       GameManager.Instance.UserInput.controls.UI.Cancel.performed += HandleEsc;
+      GameManager.Instance.UserInput.controls.UI.Journal.performed += ctx => ShowJournal();
+    }
+
+    private void ShowJournal() {
+      if (journalWindow.IsShow) {
+        journalWindow.Hide();
+      }
+      else {
+        journalWindow.Show();
+      }
     }
 
     /*private void Start() {

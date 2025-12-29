@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb5c8db67648502478d850572187dda7, type: 3}
+  m_Name: 3_Zombies
+  m_EditorClassIdentifier: Assembly-CSharp::Scriptables.Objectives.JournalEntrySO
+  id: 819c0ea6-51cb-44a4-892a-65fe1239598a
+  uniqueID: 3
+  entryName: Zombies
+  subName: "They don\u2019t stop coming."
+  description: "There are creatures here.\nThey look like zombies\u2026 and they
+    are aggressive.\nThey attack me on sight.\nSometimes they guard important places.\nSometimes
+    they just wander \u2014 like they\u2019re looking for something.\nZombies can
+    drop useful loot, so fighting them is dangerous\u2026 but necessary."
+  imageRef: {fileID: 21300000, guid: 766df207de4edac4e99cb3b1954b138d, type: 3}

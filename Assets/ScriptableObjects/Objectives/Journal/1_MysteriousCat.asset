@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb5c8db67648502478d850572187dda7, type: 3}
+  m_Name: 1_MysteriousCat
+  m_EditorClassIdentifier: Assembly-CSharp::Scriptables.Objectives.JournalEntrySO
+  id: 37a205a2-cb16-4136-86cf-960bba46d499
+  uniqueID: 1
+  entryName: Mysterious Cat
+  subName: The cat was here before me.
+  description: "I\u2019m not alone.\nThere is a cat. A strange one.\nSometimes it
+    just watches me.\nSometimes it disappears and comes back from nowhere.\nIt doesn\u2019t
+    act like a normal cat\u2026 like it knows more than it shows.\nIt helps me sometimes.\nOr
+    maybe it tests me?\nI don\u2019t know where it came from.\nBut I think it\u2019s
+    important.\nI should keep an eye on it."
+  imageRef: {fileID: 21300000, guid: e202a5ea37a8b734295a55190ac9f199, type: 3}

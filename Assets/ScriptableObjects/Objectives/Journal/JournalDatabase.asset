@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 311e03203b434383a19f95babcd62aed, type: 3}
+  m_Name: JournalDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::Scriptables.Objectives.JournalDatabaseSO
+  id: c63c5128-be41-43e2-9efd-47202486bdb8
+  entries:
+  - {fileID: 11400000, guid: 26055c4b6c4a9b345a385e3941d169be, type: 2}
+  - {fileID: 11400000, guid: 216b2ea393a1c3b4e8984ef3e161c641, type: 2}
+  - {fileID: 11400000, guid: f4bf2bfcb0c4aac4f935b5c581f721b9, type: 2}
+  - {fileID: 11400000, guid: 1a8ff50f8bdcce54ba114a32ac3f371e, type: 2}
+  - {fileID: 11400000, guid: d57f7af11a0f2df4ba9ffb17bffde52c, type: 2}
+  - {fileID: 11400000, guid: e6687360adc99824481315d701ccf7ed, type: 2}
+  - {fileID: 11400000, guid: a3e80d31c57c7604aa8b3bc54abc1e74, type: 2}
+  - {fileID: 11400000, guid: 4c85e772488985548b6322814848f7ce, type: 2}

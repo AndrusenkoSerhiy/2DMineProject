@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Craft;
 using Siege;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +13,12 @@ namespace UI {
     [SerializeField] private Image timePointerIcon;
     [SerializeField] private Image timePointerIconFrame;
     [SerializeField] private GameObject segmentPrefab;
+
     [SerializeField] private List<SiegeSegmentUI> preloadedSegments = new();
-    [SerializeField] protected TooltipTrigger tooltipTrigger;
+
+    // [SerializeField] protected TooltipTrigger tooltipTrigger;
+    [SerializeField] private TextMeshProUGUI timeTooltipTextField;
+    [SerializeField] private GameObject timeTooltip;
 
     [Header("Colors")] [SerializeField] private Color pauseColor = Color.gray;
     [SerializeField] private Color siegeColor = Color.red;
@@ -135,6 +140,7 @@ namespace UI {
       }
 
       if (!siegeManager || siegeManager.TotalCycleTime <= 0f || siegeManager.IsPaused) {
+        HideTime();
         return;
       }
 
@@ -158,12 +164,29 @@ namespace UI {
       }
 
       SetTooltipContent();
-      tooltipTrigger.UpdateText();
+      ShowTime();
+      // tooltipTrigger.UpdateText();
     }
 
     private void SetTooltipContent() {
-      tooltipTrigger.content = siegeManager.IsSiegeInProgress ? "Siege will end in:" : "Siege will start in:";
-      tooltipTrigger.content += $" {Helper.SecondsToTimeString(siegeManager.TimeToNextSegment)}";
+      timeTooltipTextField.text = siegeManager.IsSiegeInProgress ? "Siege will end in:" : "Siege will start in:";
+      timeTooltipTextField.text += $" {Helper.SecondsToTimeString(siegeManager.TimeToNextSegment)}";
+    }
+
+    private void ShowTime() {
+      if (timeTooltip.activeSelf) {
+        return;
+      }
+
+      timeTooltip.SetActive(true);
+    }
+
+    private void HideTime() {
+      if (!timeTooltip.activeSelf) {
+        return;
+      }
+
+      timeTooltip.SetActive(false);
     }
   }
 }

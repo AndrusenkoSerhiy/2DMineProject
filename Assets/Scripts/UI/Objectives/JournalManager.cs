@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Objectives {
-  public struct JournalEntrySave {
-    public int id;
-    public bool isOpened;
-    public bool isSeen;
+  public class JournalEntrySave {
+    public int id = -1;
+    public bool isOpened = false;
+    public bool isSeen = false;
   }
 
   public class JournalManager : MonoBehaviour {
@@ -35,6 +35,7 @@ namespace UI.Objectives {
     }
 
     private void InitNewSave() {
+      Debug.LogError("Init new save");
       if (isInited) return;
       //new save
       for (var i = 0; i < journalEntriesUI.Count; i++) {
@@ -44,7 +45,7 @@ namespace UI.Objectives {
           isSeen = false
         };
       }
-
+      UnlockEntry(1);
       //todo init from save
       isInited = true;
     }
@@ -60,7 +61,7 @@ namespace UI.Objectives {
     public void UnlockEntry(int id) {
       var entry = GetEntrySave(id);
       if (entry.id == 0) return;
-
+      if (IsEntryUnlocked(id)) return;
       entry.isOpened = true;
       entry.isSeen = false;
       Save();
@@ -68,18 +69,18 @@ namespace UI.Objectives {
 
     public void MarkAsSeen(int id) {
       var entry = GetEntrySave(id);
-      if (entry.id == 0) return;
+      if (entry.id == -1) return;
       entry.isSeen = true;
       Save();
     }
 
     public bool IsEntryUnlocked(int id) {
       var entry = GetEntrySave(id);
-      return entry.id != 0 && entry.isOpened;
+      return entry.id != -1 && entry.isOpened;
     } 
     public bool IsEntrySeen(int id) {
       var entry = GetEntrySave(id);
-      return entry.id != 0 && entry.isSeen;
+      return entry.id != -1 && entry.isSeen;
     }
 
     private void Save() {
@@ -90,7 +91,7 @@ namespace UI.Objectives {
     public void SetSelected(int index) {
       JournalEntryUI target = null;
       for (var i = 0; i < journalEntriesUI.Count; i++) {
-        if (i != index)
+        if (i != index-1)
           journalEntriesUI[i].DeSelect();
         else {
           target = journalEntriesUI[i];

@@ -10,6 +10,7 @@ using Player;
 using Scriptables;
 using Scriptables.Craft;
 using Scriptables.Items;
+using UI.Objectives;
 using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
@@ -240,6 +241,7 @@ public class PlaceCell : MonoBehaviour {
     //for forge, stoneCutter etc
     if (buildingData) {
       PlaceBuilding();
+      JournalManager.Instance.UnlockEntry(3);
     }
     else {
       PlaceBuildingBlock();

@@ -169,8 +169,8 @@ namespace UI {
     }
 
     private void SetTooltipContent() {
-      timeTooltipTextField.text = siegeManager.IsSiegeInProgress ? "Siege will end in:" : "Siege will start in:";
-      timeTooltipTextField.text += $" {Helper.SecondsToTimeString(siegeManager.TimeToNextSegment)}";
+      timeTooltipTextField.text = siegeManager.IsSiegeInProgress ? "Ends in:\n" : "Starts in:\n";
+      timeTooltipTextField.text += $"{Helper.SecondsToTimeString(siegeManager.TimeToNextSegment)}";
     }
 
     private void ShowTime() {

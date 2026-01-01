@@ -15,6 +15,7 @@ using Utils;
 using Random = UnityEngine.Random;
 using DG.Tweening;
 using Player;
+using UI.Objectives;
 
 namespace Actors {
   public class ActorEnemy : ActorBase {
@@ -314,6 +315,7 @@ namespace Actors {
     }
 
     protected override void DeathActions() {
+      JournalManager.Instance.UnlockEntry(4);
       Vector3 pos = transform.position;
       pos.y = pos.y + 1f;
       GameManager.Instance.PoolEffects.SpawnFromPool("ZombieDeathParticleEffect",

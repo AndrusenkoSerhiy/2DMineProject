@@ -6,6 +6,7 @@ using SaveSystem;
 using Scriptables.Items;
 using Stats;
 using UI;
+using UI.Objectives;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -228,6 +229,7 @@ namespace Inventory {
       else {
         GetPlayerController().PlayerStats.Mediator.ApplyModifiers(ApplyType.Equip, data.after.Item.info);
         gameManager.ObjectivesSystem.ReportItemEquip(data.after.Item.info, 1);
+        JournalManager.Instance.UnlockEntry(8);
       }
     }
 

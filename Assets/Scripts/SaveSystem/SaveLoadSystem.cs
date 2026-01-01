@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Actors;
 using Farm;
+using UI.Objectives;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Utility;
@@ -269,6 +270,7 @@ namespace SaveSystem {
         AllPlantBoxes = new SerializedDictionary<string, ProcessingPlantBox>(),
         LocatorPointsData = new List<LocatorPointData>(),
         Objectives = new SerializedDictionary<string, ObjectivesData>(),
+        JournalEntrySaves = new List<JournalEntrySave>()
       };
     }
 

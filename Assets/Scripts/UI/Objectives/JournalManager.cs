@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using SaveSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utility;
 
 namespace UI.Objectives {
+  [Serializable]
   public class JournalEntrySave {
     public int id = -1;
     public bool isOpened = false;
@@ -34,12 +36,22 @@ namespace UI.Objectives {
     }
 
     public void OnEnable() {
-      InitNewSave();
+      if (!CheckSaved()) InitNewSave();
       ShowEntries();
     }
 
     public void OnDisable() {
       HideEntries();
+    }
+
+    private bool CheckSaved() {
+      var savesData = SaveLoadSystem.Instance.gameData.JournalEntrySaves;
+      if (savesData != null && savesData.Count != 0) {
+        journalEntriesSaves = new List<JournalEntrySave>(savesData);
+        return true;
+      }
+
+      return false;
     }
 
     private void InitNewSave() {
@@ -74,6 +86,7 @@ namespace UI.Objectives {
       if (IsEntryUnlocked(id)) return;
       entry.isOpened = true;
       entry.isSeen = false;
+      OnEntrySeen?.Invoke();
       Save();
     }
 
@@ -105,6 +118,7 @@ namespace UI.Objectives {
 
     private void Save() {
       //todo make save to file
+      SaveLoadSystem.Instance.gameData.JournalEntrySaves = new List<JournalEntrySave>(journalEntriesSaves);
     }
 
 
@@ -137,6 +151,7 @@ namespace UI.Objectives {
           journalEntriesUI[i].SetNew(true);
         }
       }
+
       journalEntriesUI[0].Select();
     }
 

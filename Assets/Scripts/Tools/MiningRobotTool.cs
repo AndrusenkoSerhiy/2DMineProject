@@ -11,6 +11,7 @@ using Player;
 using SaveSystem;
 using Scriptables;
 using Scriptables.Repair;
+using UI.Objectives;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils;
@@ -253,6 +254,7 @@ namespace Tools {
       miningRobotController.EnableController(true);
       miningRobotController.SetLockHighlight(false);
       EnablePhysics(true);
+      JournalManager.Instance.UnlockEntry(6);
 
       SetPlayerPosition(playerTransform, positionForPlayer, new Vector3(0, 0, -92));
       GameManager.Instance.CurrPlayerController = miningRobotController;
@@ -443,6 +445,7 @@ namespace Tools {
       gameManager.QuestManager.StartQuest(2);
       gameManager.SiegeManager.StartSieges();
       gameManager.ObjectivesSystem.ReportRobotRepair(true);
+      JournalManager.Instance.UnlockEntry(7);
 
       if (broken) {
         AnimationEventManager.onRobotRepaired += RobotRepaired;

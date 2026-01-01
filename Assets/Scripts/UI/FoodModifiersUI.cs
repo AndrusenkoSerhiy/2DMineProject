@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Scriptables.Stats;
+using UI.Objectives;
 using UnityEngine;
 using StatModifier = Stats.StatModifier;
 
@@ -80,7 +81,7 @@ public class FoodModifiersUI : MonoBehaviour {
     if (!modifiersMap.TryGetValue(modifier.modifierDisplayObject.Id, out var item)) {
       return;
     }
-
+    JournalManager.Instance.UnlockEntry(5);
     item.Show(modifier);
   }
 

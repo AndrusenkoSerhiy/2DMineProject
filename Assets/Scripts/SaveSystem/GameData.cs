@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Actors;
 using Farm;
+using UI.Objectives;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
@@ -28,6 +29,7 @@ namespace SaveSystem {
     public QuestData QuestData;
     public SerializedDictionary<string, ObjectivesData> Objectives;
     public Vector3 RespawnPosition;
+    public List<JournalEntrySave> JournalEntrySaves;
   }
 
   [Serializable]
